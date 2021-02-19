@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>timhsu: March 2005 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~timhsu/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~timhsu/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~timhsu/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~timhsu/archives/2004_05.html" title="May 2004" />
+
+<link rel="next" href="http://blog.linux.org.tw/~timhsu/archives/2005_05.html" title="May 2005" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~timhsu/" accesskey="1">timhsu</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~timhsu/archives/2004_05.html">&laquo; May 2004</a> |
+
+<a href="http://blog.linux.org.tw/~timhsu/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~timhsu/archives/2005_05.html">May 2005 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">March 17, 2005</h2>
+
+
+<div class="blogbody">
+<a name="001064"></a>
+<h3 class="title">WISE 2005</h3>
+
+<p>  2005 網際網路安全工程(WISE 2005)研討會這兩天在警政署刑事警察局舉行。而我在第一天的下午上台介紹了 Linux Rootkit ，包含 Rookit 的特色、種類及偵測方式等，詳細內容全文已收錄在論文集，而我上台時所使用的投影片檔則可以在<a href="http://timhsu.sayya.org/security/WISE2005_Linux_Rootkit.ppt">這裡</a>下載。<br />
+  事實上，Linux Rootkit 所包涵的內容很廣泛，而我所描述仍不夠充足，還有許多疏漏的地方，希望在我寫作計畫裡可以把內容補全。</p>
+
+<p><br />
+  </p>
+
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~timhsu/archives/001064.html">11:40 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1064" onclick="OpenComments(this.href); return false">迴響 (9)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">March 03, 2005</h2>
+
+
+<div class="blogbody">
+<a name="001012"></a>
+<h3 class="title">邪惡的 GGKit</h3>
+
+<p>  真是一個邪惡的點子啊 - 我心裡這麼想.<br />
+  有一個邪惡且威力強大的 Linux Kernel Rootkit - SucKIT，在著名的 <a href="http://www.phrack.org/show.php?p=58&a=7"> Phrack </a> 裡有作者完整的技術介紹。而我的奮戰，便從將 SucKIT 1.3b 移植到 kernel 2.6 開始....<br />
+   1. kernel 2.6 移除了 query_module(2) 系統呼叫，往後要取得核心符號表可透過 /proc/kallsyms。<br />
+  2. 系統呼叫增加到 28x個，比 kernel 2.4 的 25x 多很多。<br />
+  3. task_struct 結構也略有更動，增加了 struct thread_info *thread_info 等欄位。<br />
+  4. 支援 <a href="http://linux.web.cern.ch/linux/scientific3/docs/rhel-gcc-en-3/thread-local.html">TLS - Thread Local Storage</a>，新增 get_thread_area(2)/set_thread_area(2) 系統呼叫。不過這和我要作的沒啥關係 :)。<br />
+  5. kernel 2.6 支援 Pentium III+ 的快速系統呼叫 sysenter/sysexit 機制。核心提供了原先的 int 0x80 和 sysenter 雙介面，並虛擬印射了 linux-gate.so.1 來實作，詳細內容可閱讀<a href="http://www-900.ibm.com/developerWorks/cn/linux/kernel/l-k26ncpu/index.shtml">這裡</a>。<br />
+   <br />
+  就這樣奮戰了兩天，我一個個解決了 kernel 2.4 和 2.6 差異造成的問題，並且讓 GGKIT (原 SucKIT 1.3b，我取作新名字)順利的在 2.6 下運作，不過仍然有些奇怪的 bugs 待解決 :(<br />
+  值得一提的是，GGKIT 可動態偵測核心 2.4 還是 2.6 並作即時修正，不需重新編譯即可在 2.4 和 2.6 kernel 下運作。<br />
+  我所用的偵測方式乃取 ES 暫存器來判斷，2.4 kernel 下 ES 為 0x2b，而 2.6 kernel 則為 0x7b。底下是在 GGKIT 在 kernel mode 下的程式片段：</p>
+
+<p>   --------------<br />
+         long    *es;</p>
+
+<p>        asm ("movl %es, %eax\n");<br />
+        asm ("movl %%eax, %0\n"  <br />
+                : "=g"(es));     <br />
+        if (es == (int)0x7b)     <br />
+        {<br />
+                /* kernel 2.6 */<br />
+                *runkernel() = 0x26;<br />
+        } else<br />
+                *runkernel() = 0x24;<br />
+  --------------<br />
+  <br />
+  Q:既然 GGKit 這麼邪惡，那麼可在何處下載玩弄呢?<br />
+  A: 應該找不到下載點，但也許會在你的系統裡發現 :-)</p>
+
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~timhsu/archives/001012.html">06:43 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1012" onclick="OpenComments(this.href); return false">迴響 (29)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

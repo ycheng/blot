@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: 演講：沒有政府補助，照樣寫自己的作業系統 -- 如何善用開放原始碼工具，加速作業系統的開發</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2010/08/_android_toolch.html" title="演講：打造特製的 Android Toolchain" />
+
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2010/08/_mupdf.html" title="為 mupdf 加上全螢幕切換功能" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2010/08/_android_toolch.html">« 演講：打造特製的 Android Toolchain</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+| <a href="http://blog.linux.org.tw/~jserv/archives/2010/08/_mupdf.html">為 mupdf 加上全螢幕切換功能 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">August 18, 2010</h2>
+
+<div class="blogbody">
+
+<h3 class="title">演講：沒有政府補助，照樣寫自己的作業系統 -- 如何善用開放原始碼工具，加速作業系統的開發</h3>
+
+應 ICOS 2010 之邀，小弟將在該研討會在九月 18 日 (週六) 的議程中，以「沒有政府補助，照樣寫自己的作業系統 -- 如何善用開放原始碼工具，加速作業系統的開發」之名，作為演說分享。詳情可參考 [<a href="http://icos.org.tw">ICOS 2010 網站</a>] 與 [<a href="http://icos.org.tw/?p=Commercial_%26_Technical_Track">議程資訊</a>]。<br />
+<br />
+作為一位沒受過高等教育、社會最低階的軟體開發者，小弟每年練習寫一套不同的作業系統，期許自己能提昇資訊素養，雖稱不上有什麼成果，但這段歷程著實讓我體驗到開放原始碼工具的重要性，於是藉這個議程，野人獻曝一番。一如往常，每年都要發表一個 (玩具) 作業系統，今年則是將 [<a href="http://blog.linux.org.tw/~jserv/archives/001865.html">Orz Microkernel</a>] 用 C 語言重寫，同樣是具體而微的系統，可作為教學研究使用。在 ICOS 2010 的議程中，小弟會探討發展這樣一個 microkernel，如何在相當有限的開發資源，善用 GNU Toolchain 搭配如 QEMU 這類強悍的工具，快速從 prototyping 到系統驗證，即便只用下班後寶貴的時間，還是能搭建一個小而美的 microkernel。<br />
+<br />
+以往，我們總能以既有的資源去解決軟硬體問題，但今日我們面對五花八門的技術、日新月異的技術，許多人都亂了方寸，一味盲從，卻忘了資訊技術的提出，就是要解決既有的問題。我一直認為，唯有親身體驗一個完整系統的設計，才得以獲得成長，也才可創造更廣泛且深入的應用，無論是奠基於既有的架構抑或是重起爐灶皆是，這就是小弟這幾年多場技術演講的核心概念。期待您的參與指教，謝謝！<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 August 18, 2010 11:34 AM
+
+<br /></span>
+
+</div>
+
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2157" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

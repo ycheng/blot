@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: MP3 專利議題與自由軟體</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002097.html" title="編譯器技術的革新：談移動平台的機會" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002099.html" title="演講：實做輕量級 RTOS 網路堆疊" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002097.html">« 編譯器技術的革新：談移動平台的機會</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002099.html">演講：實做輕量級 RTOS 網路堆疊 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">April 08, 2009</h2>
+
+<div class="blogbody">
+
+<h3 class="title">MP3 專利議題與自由軟體</h3>
+
+去年十月的演講 [<a href="http://blog.linux.org.tw/~jserv/archives/002071.html">考量到自由軟體授權的軟體系統規劃</a>] 特別提醒到一個事實：軟體本體是電腦程式，但伴隨著作權 (聲明)、法律與合理專利使用 (執行的行為)。考量點即是掌握 copyright holder 的行使權利的範圍，並依據通行的 Law 來解釋其「具體行為」，以此觀點去思考 GNU GPL 一類的自由軟體授權條款。現實是殘酷的，作為一個自由軟體開發者，偶爾也得 [<a href="http://blog.linux.org.tw/~jserv/archives/001364.html">醉 coding</a>]，妄想可寫出 patent-free 的程式碼。VM (Virtual Machine) 領域的專利不少，而多媒體就更不用說，在美妙的 MP3 音樂旋律背後，有多少齷齪的事呢？姑且不論危害有多大，自由軟體開發早已受到影響，不時成為有心人攻訐的手法。<br />
+<br />
+去年底，[<a href="http://www.openmoko.com/">Openmoko.com</a>] 就陷入 MP3 專利的危機，被一家握有 MPEG 技術專利的義大利公司 [<a href="http://www.sisvel.com/">Sisvel</a>] (Società Italiana per lo Sviluppo dell'Elettronica) 控訴侵權，在業界，Sisve 因壟斷 MPEG 而聞名，之前的知名官司就是 Sisve 與 SanDisk 對簿公堂。作為一個開放原始碼的計畫，openmoko.org 背負了頗無奈的指控，畢竟，真正出貨的時候，openmoko.com 僅提供硬體裝置，以及 boot loader (採用 u-boot) 在內的基本軟體，使用者依據喜好，燒錄 (flashing) 多樣的系統映像檔案 (image file) 到 NAND flash 儲存裝置中，可以是 Linux 為基礎的 Android, Qtopia, X11/Gtk+，甚至，還能將 FreeBSD 或 NetBSD 放進去跑。原本是美事一樁，但，問題出在，openmoko.com 販售的裝置並非單純的「開發板」(DevBoard, EVM)，而是貨真價實的手機，通過 FCC 認證，無論你是否接受，這就是一款手機，即電子商品，Sisve 自然也注意到是否有機會去「警告」。<br />
+<br />
+openmoko 的軟體設計很多元，但基本上會透過 mp3/mpeg audio 來播放系統音效，而在電子商品中實現如此的功能，就該獲得握有 MPEG 專利的廠商同意，否則即造成侵權行為。對來自 Sisvel 的威脅，openmoko.com 的工程 VP -- Wolfgang Spraul 在去年底宣佈 Openmoko 徹下網站的軟體下載，稍後將 mpeg 相關的 playback 程式與資料移除後，再行上線。這就是去年曾在 openmoko 喧騰一時的新聞，儘管，現在 openmoko 已宣佈放棄手機設計製造的業務。<br />
+<br />
+在不揭露機密資料的前提下，實做與散佈 (redistribute) 自由軟體，原則上是合理的，但，實務上，卻有太多該留意的議題，就像本文提及的 MP3 專利，Sisvel 公司要求在該公司專利的涵蓋範圍內，所有的電子裝置若要內建 MP3/MP2 的 playback 功能，需要付費取得該公司的授權許可，即便是在 .mp3 的檔案沒有版權爭議的前提下 (比方說自行錄製的 MP3 音樂輸出)，重點是「播放 MPEG 多媒體技術」的行為。我們也可以見到，自由軟體發展至今的二十五個年頭，不適當的專利箝制了自由軟體的廣泛應用，本文提及的 openmoko 專案，雖然以硬體獲利，但「MPEG playback」實際上僅是某個非必要的功能，但這就造成有心者控訴的漏洞。<br />
+<br />
+Google Android 開放原始碼平台內建 OpenCore 多媒體框架 (multimedia framework)，等同於 GStreamer 的地位，最早稱為 PacketVideo。PacketVideo 是一家公司的名稱，而 OpenCore 是這套多媒體框架的軟體名稱，一套完整的 C++ framework，包含兩大方面：<ul>
+  <li>PVPlayer -- 提供媒體播放器的功能：Audio/Video 的 playback</li>
+  <li>PVAuthor -- 提供媒體流記錄的功能：Audio/Video 的紀錄與靜態圖像擷取</li>
+</ul>
+如此的「行為」顯然在 Sisvel 公司聲明的專利生效範圍內，為了避免爭議，Google 開發團隊必須準備一份免責聲明 (disclaimers) [<a href="http://android.git.kernel.org/?p=platform/external/opencore.git;a=blob;f=codecs_v2/audio/mp3/patent_disclaimer.txt;h=b4bf11d4ab14011ba28ce5ff6090529d2b7b587f;hb=HEAD">出處</a>]：<pre class="code" style="margin: 6px;">
+THIS IS NOT A GRANT OF PATENT RIGHTS.
+
+Google makes no representation or warranty that the codecs for which
+source code is made available hereunder are unencumbered by
+third-party patents.  Those intending to use this source code in
+hardware or software products are advised that implementations of
+these codecs, including in open source software or shareware, may
+require patent licenses from the relevant patent holders.
+</pre>
+善意提醒使用 Android 平台的廠商與個人，Google 不擔保透過 OpenCore 多媒體框架所進行的行為，包含 MPEG audio playback 等等，相關的法律議題非 Google 能掌控，也就是所謂的「請自重」，同樣的道理，即是自由軟體實務應用的重要考量點。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 April  8, 2009 05:46 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>「實務上卻有太多剛留意的議題」 是否應為 「實務上卻有太多該留意的議題」？</p>
+<span class="comments-post">由 <a href="mailto&#58;crazyscorpio&#64;gmail&#46;com">CrBoy</a> 發表於</MTIfNonEmpty> April 20, 2009 12:17 PM</span>
+</div>
+<div class="comments-body">
+<p>@CrBoy,<br />
+FIXED. Thanks!</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> April 20, 2009 01:34 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2098" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

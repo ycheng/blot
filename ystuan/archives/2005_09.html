@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>帝國反抗君之古戰場。PowerOp請您速至 blog.yam.com/ystuan 支援前線！: September 2005 Archives</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~ystuan/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~ystuan/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~ystuan/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~ystuan/archives/2005_08.html" title="August 2005" />
+
+<link rel="next" href="http://blog.linux.org.tw/~ystuan/archives/2005_10.html" title="October 2005" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~ystuan/" accesskey="1">帝國反抗君之古戰場。PowerOp請您速至 blog.yam.com/ystuan 支援前線！</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~ystuan/archives/2005_08.html">&laquo; August 2005</a> |
+
+<a href="http://blog.linux.org.tw/~ystuan/">Main</a>
+| <a href="http://blog.linux.org.tw/~ystuan/archives/2005_10.html">October 2005 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">September 26, 2005</h2>
+
+
+<div class="blogbody">
+<a name="001304"></a>
+<h3 class="title">[備忘] OpenVPN on CentOS 4 (part 2)</h3>
+
+<p>時光飛逝，上次寫<a href="http://blog.linux.org.tw/~ystuan/archives/001208.html">[備忘] OpenVPN on CentOS 4</a>已經是兩個月前的事了。"OpenVPN on CentOS 4"這件事終於又推進了一步。底下的紀錄，包含失敗的部份以及成功的紀錄。即便是成功的紀錄，也忠實的留下了跌跌撞撞的過程，希望讓大家感受一下，在CentOS 4的<b>最小安裝</b>上面再安裝套件的難度/容易度。至於到底是難是易，這就看妳對系統的熟悉度囉。</p>
+
+<p>[嘗試以Binary RPM安裝的<b>失敗紀錄</b>]<br />
+<a href="http://openvpn.net/">OpenVPN官方網站</a>並不提供RPM binary，它建議妳可以去<a href="http://dag.wieers.com/packages/openvpn/">Dag Wieers維護的站台</a>下載。底下有 # 開頭的表示是以 root 權限執行的指令，括號則是自己加的說明。</p>
+
+<p>(如果妳的環境不需要proxy，底下這行可以免了)<br />
+# export http_proxy=http://proxy.my.company:3128/<br />
+(我用 wget 這個指令來下載檔案，因為RHEL/CentOS沒有提供lzo套件，所以一併下載)<br />
+# wget http://dag.wieers.com/packages/lzo/lzo-2.00-1.2.el4.test.i386.rpm<br />
+# wget http://dag.wieers.com/packages/openvpn/openvpn-2.0.2-1.2.el4.rf.i386.rpm<br />
+(用rpm -ivh來安裝套件, lzo順利裝好)<br />
+# rpm -ivh lzo-2.00-1.2.el4.test.i386.rpm<br />
+(但是要裝openvpn的時候就...)<br />
+# rpm -ivh openvpn-2.0.2-1.2.el4.rf.i386.rpm<br />
+(遇上了相依性的問題：failed dependency: need liblzo.so.1)<br />
+(看了一下，lzo安裝套件提供的是liblzo.so.2.0.0，做個symbolic link試試看能不能騙過系統)<br />
+# cd /usr/lib<br />
+# ln -s liblzo.so.2.0.0 liblzo.so.1<br />
+# rpm -ivh openvpn-2.0.2-1.2.el4.rf.i386.rpm<br />
+(還是不行，決定放棄這條路，移掉lzo rpm binary)<br />
+# rpm -e lzo<br />
+(寫了個email給Dag，向他反應他包的lzo和openvpn這個相依性問題)</p>
+
+<p></p>
+
+<p>[從原始碼編譯RPM的<b>成功紀錄</b>]<br />
+根據官網<a href="http://openvpn.net/faq.html#rpmbuild">http://openvpn.net/faq.html#rpmbuild</a>，它說要自行編譯的話，需要有下列四個套件：<br />
+    * openssl<br />
+    * openssl-devel<br />
+    * lzo<br />
+    * lzo-devel<br />
+因為我當初在安裝CentOS 4的時候選的是最小安裝，系統裡面只有openssl，因此接下來要準備上述相依性套件。後來發現我至少還需要另外三個套件，在這邊賣個關子，往下看就有答案啦。<br />
+(先來安裝openssl-devel)<br />
+# yum -y install openssl-devel<br />
+(由於我用了 -y 這個參數，所以系統不會問我問題，會自動把相依性套件--對，為了裝openssl-devel還要先裝其他的套件--都下載並安裝)<br />
+(妳會看到類似這樣的訊息<br />
+Installed: openssl-devel.i386 0:0.9.7a-43.2<br />
+Dependency Installed: e2fsprogs-devel.i386 0:1.35-12.1.EL4 krb5-devel.i386 0:1.3.4-17 zlib-devel.i386 0:1.2.1.2-1.2)<br />
+(下載lzo-devel套件)<br />
+# wget http://dag.wieers.com/packages/lzo/lzo-devel-2.00-1.2.el4.test.i386.rpm<br />
+(安裝lzo, lzo-devel)<br />
+# rpm -ivh lzo-2.00-1.2.el4.test.i386.rpm<br />
+# rpm -ivh lzo-devel-2.00-1.2.el4.test.i386.rpm<br />
+接下來參考官網<a href="http://openvpn.net/download.html">Download</a>下載原始碼，目前是2.0.2<br />
+# wget http://openvpn.net/release/openvpn-2.0.2.tar.gz<br />
+(接下來我花了一點時間，研究為什麼我的系統沒有rpmbuild，也許是問Google的關鍵字下的不好，最後是用底下這個指令去查詢，有哪些套件是rpm開頭的)<br />
+# yum list rpm*<br />
+(原來這個套件名稱叫做rpm-build)<br />
+# yum -y install rpm-build<br />
+(好，相依套件應該到齊了，使用rpmbuild來編譯吧)<br />
+# rpmbuild -tb openvpn-2.0.2.tar.gz<br />
+(還是失敗，需要pam-devel，那就裝吧)<br />
+# yum -y install pam-devel<br />
+(再來一次)<br />
+# rpmbuild -tb openvpn-2.0.2.tar.gz<br />
+(又失敗，這次告訴我"no acceptable C compiler found in $PATH"，原來CentOS 4<b>最小安裝</b>連gcc都沒包含啊，那就裝吧！)<br />
+# yum -y install gcc<br />
+(嗯，為了裝gcc，還幫我裝了一堆<br />
+Installed: gcc.i386 0:3.4.3-22.1<br />
+Dependency Installed: cpp.i386 0:3.4.3-22.1 glibc-devel.i386 0:2.3.4-2.9 glibc-headers.i386 0:2.3.4-2.9 glibc-kernheaders.i386 0:2.4-9.1.87)<br />
+(再試一次！）<br />
+# rpmbuild -tb openvpn-2.0.2.tar.gz<br />
+(成功了，一堆編譯的訊息，最後幾行應該會有一行類似底下的，也就是編譯出來的RPM binary)<br />
+Wrote: /usr/src/redhat/RPMS/i386/openvpn-2.0.2-1.i386.rpm<br />
+(好啦，終於可以安裝openvpn了)<br />
+# rpm -ivh /usr/src/redhat/RPMS/i386/openvpn-2.0.2-1.i386.rpm</p>
+
+<p>所以，謎底揭曉，除了官網提到的，我還需要這些套件，才能編譯OpenVPN:<br />
+    * pam-devel<br />
+    * rpm-build<br />
+    * gcc</p>
+
+<p><br />
+就這樣！？<br />
+對啊，我只說要往前推進<b>一步</b>，這次弄好了「安裝」，下次再來弄「設定」囉！<br />
+^_^</p>
+
+<p>想打我的人請不要打我，直接去看網中人的<a href="http://www.study-area.org/tips/openvpn.html">OpenVPN 建置方案</a>，就是在CentOS 4上面裝OpenVPN 2.0.2，跟我的環境一模一樣 :p</p>
+
+
+<div class="posted">
+	Posted by ystuan at <a href="http://blog.linux.org.tw/~ystuan/archives/001304.html">03:00 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1304" onclick="OpenComments(this.href); return false">Comments (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">September 06, 2005</h2>
+
+
+<div class="blogbody">
+<a name="001292"></a>
+<h3 class="title">七個關於開放原始碼的基本事實</h3>
+
+<p>之前在做一份投影片的時候，找到了<a href="http://winslow.linuxworld.com/seventruths.htm">Seven basic truths about open source</a>，<a href="http://virtuas.com/osl-7bt-01.pdf">這裡</a>有完整版本(PDF,四頁)，覺得可以拿來澄清一些外界的誤解。我試著翻譯這七個事實，並且對完整版本的論點做摘要翻譯。</p>
+
+<p>下次妳需要簡潔有力的論點來對抗關於開放原始碼軟體或自由軟體的<a href="http://zh.wikipedia.org/wiki/FUD">FUD</a>，可以參考一下。</p>
+
+<p>1. You are not required to share changes and enhancements you make to open source software for internal use (but it's a good idea to do so in many cases).<br />
+如果僅供內部使用，妳不需要分享妳對開放原始碼軟體的修改或增補。（但是大多數的情況下，這樣做有益無害）</p>
+
+<p>如果這些增補，和妳的核心競爭力無關，為什麼不提交給開發團隊，<b>由她們來幫妳維護</b>呢？在組織內部自行維護這些增補可能會很耗費資源喔。</p>
+
+<p>2. Software published under the GPL cannot be revoked.<br />
+採用GPL授權釋出的軟體不能再撤銷。</p>
+
+<p>3. Applications written to run on top of Linux do not need to be open source.<br />
+在Linux作業系統上開發的程式不需要開放原始碼。</p>
+
+<p>4. Applications written using most open source tools, languages, code libraries, or databases are not required to be open source.<br />
+在開發妳應用程式的過程，運用到大部分的開放原始碼工具、程式語言、code libraries（語言函式庫？），或資料庫，妳的應用程式不需要開放原始碼。</p>
+
+<p>有些可能會有license（許可證）的限制，在妳用它們來開發妳的私有軟體時，應該加以確認，以確保妳沒有違反（例如）GPL。</p>
+
+<p>5. The most popular open source software is produced by professionals, not hobbyists.<br />
+最熱門的開放原始碼軟體往往是專業人士的心血，不是業餘玩家隨便玩玩。</p>
+
+<p>熱門的開放原始碼軟體專案常常是架構完備的，有些甚至有大公司花錢請人專職參與開發。雖然任何人都可以提交程式碼的增補，通常只有夠水準的才會被接受。「任何人都可以瀏覽程式碼」這件事也影響大家，要提交夠水準的程式碼。</p>
+
+<p>6. Open source software can be sold for a profit.<br />
+妳可以販賣開放原始碼軟體來牟利。</p>
+
+<p>雖然妳在散佈軟體的時候必須附上程式碼，妳仍然可以收費，市場機制會決定價格。很多商業模式都搭配諮詢服務、維護合約，或者軟體增補。</p>
+
+<p>7. Commercial support is available for open source software. <br />
+開放原始碼軟體也找得到付費支援。</p>
+
+<p>對規模小的開放原始碼軟體商來說，常見的模式是讓使用者自由取得軟體，然後提供商業等級的支援服務。一些大公司也對開放原始碼軟體提供支援服務。</p>
+
+
+<div class="posted">
+	Posted by ystuan at <a href="http://blog.linux.org.tw/~ystuan/archives/001292.html">08:55 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1292" onclick="OpenComments(this.href); return false">Comments (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

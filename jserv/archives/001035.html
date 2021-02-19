@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: KDE 的 IPC 實做該採用 D-Bus？</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001034.html" title="Free Software Foundation 徵才資訊" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001042.html" title="新酷音進度報告2" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001034.html">« Free Software Foundation 徵才資訊</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001042.html">新酷音進度報告2 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 10, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">KDE 的 IPC 實做該採用 D-Bus？</h3>
+
+<p>莎士比亞有句名言："To be, or not to be: that is the question." (Hamlet 3/1)，而 KDE 開發者 Mathieu Chouinard 在他的 blog [<a href="http://www.kdedevelopers.org/node/view/912">The "Foie Gras" syndrom or the force fed technology syndrom</a>] 裡面的敘述，也讓我們有這種感覺。</p>
+
+<p>KDE 2 所引入的眾多技術，奠定 KDE 日後卓越發展的基礎，感謝莊明哲前輩的大作《KDE2 技術開發》(終於拿到親筆簽名了，參考 [<a href="http://blog.linux.org.tw/~jserv/archives/000851.html">首度 KDE@Taiwan 使用者聚會圓滿落幕</a>]，感謝前輩的加持)。在這本大作裡頭有提到 KDE 的 IPC (Inter-Processs Communication) 技術變遷，在 KDE 1.x 時代，曾經有一組人馬試著採用 CORBA 作為 IPC 與 Desktop Object Model，但是實際測試的結果，發現 CORBA 實在太複雜了，難以掌控，在 KDE cvs repository 還保有 [<a href="http://webcvs.kde.org/corba/">過去嘗試 CORBA 的遺跡</a>]。</p>
+
+<p>而儘管 GNOME 陣營採用 CORBA 作為 Object Model，但是卻沒有使用其 IPC 設計，並且也只使用 CORBA 最小的實做 Mico 的部份功能，那麼，KDE 2 最後採用什麼技術呢？答案是自己開發一套，針對桌面環境需求，開發出 DCOP (Desktop COmmunication Protocol)，每次提到這個典故，都不由自主佩服 KDE Developers 當時的氣度與勇氣。</p>
+
+<p>在 2000 年，KDE 與 GNOME 開發者共同釋出善意，開啟了 FreeDesktop.org 的計畫，促進桌面系統的標準化，以及加強兩大系統的交互運作，<a href="http://www.freedesktop.org/Software/dbus">D-Bus</a> 算是這樣訴求的產物，目前 GNOME 與 Qt4 都已經正式支援了，而 KDE 陣營也傾向採用 D-Bus 作為 IPC 基礎。然而，D-Bus 仍然是相當新的設計，很多 API 也才剛邁向穩定，這點在之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/000930.html">D-Bus 邁向 1.0 之路</a>] 有提及。</p>
+
+<p>Mathieu Chouinard 提出 DCOP 發展的可能性：<br />
+1) leave it in the current state and pray that nothing break<br />
+2) reimplement libICE<br />
+3) reimplement DCOP using another mechanism like shared memory<br />
+4) ditch dcop and using something else</p>
+
+<p>而在四個選擇中，Mathieu 的看法如下：<ul><br />
+I personnaly prefers the third option because I don’t need a networked ipc 99.999999% of the time and if we really need to interoperate with gnome let just use a bridge. And if people prefers to go with option 4 why use D-BUS? why not use DCE which is now Opensource and which will enable us to interoperate with more systems. <br />
+</ul></p>
+
+<p>目前的 DCOP 相當有效率也穩定，相對來說，D-Bus 有彈性但也需要更多歷練，究竟 KDE Team 要如何抉擇呢？本 blog 後續的評論提供我們許多重要的參考。</p>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March 10, 2005 01:23 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>這一期(2月應該是上一期)的Linux Jounal 有專文說明D-BUS喔。</p>
+<span class="comments-post">由 <a href="mailto&#58;checko&#64;gmail&#46;com">checko</a> 發表於</MTIfNonEmpty> March 11, 2005 08:15 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

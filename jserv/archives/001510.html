@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 初探 Linux Mobile Phone</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001509.html" title="NetBSD 的 framebuffer console 與 progress bar 支援" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001511.html" title="Sex + Math = Max" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001509.html">« NetBSD 的 framebuffer console 與 progress bar 支援</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001511.html">Sex + Math = Max »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February 14, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">初探 Linux Mobile Phone</h3>
+
+因為某種緣故，我不是很想寫這個主題的文章，但在拜讀 [<a href="http://mobile.newsforge.com/print.pl?sid=06/02/01/1655248">Linux-based Motorola cell phones frustrate third-party developers</a>] 與 [<a href="http://www.thinknext.net/archives/237">何種Linux Phone?</a>] 兩篇文章後，我覺得該說點話。首先，我對 Motorola 公司是有好感的，特別是其 m68k 更是我第一個學習的硬體架構 (原始設計團隊現於 Freescale)，會到現在的公司服務 (手機 ODM)，我想某種程度來說，是有關係的 (好吧，您說是「緣份」，我也接受)。[<a href="http://www.thinknext.net/archives/237">何種Linux Phone?</a>] 很多敘述是相當正確，並以簡要的文字帶過，Motorola 與 Trolltech 兩家公司的合作，的確創造新的契機，2003 年的初試啼聲，也為原本「虛無飄渺」的手機作業系統市場中 "Linux OS" 的項目，造就一份真實性，在此之前，Linux 早已被預測是「未來的主流作業系統」，但 Linux 的確只是 kernel。<br>
+<br>
+如果不談 mobile phone，Linux 應用在消費性通訊器材的計畫，以 [<a href="http://tuxscreen.net/">TuxScreen</a>] 作為代表，這個計畫除了建構於 Linux kernel on StrongARM 外，還提供一系列的軟體與韌體，如 toolchain、GUI system、driver、DSP firmware、Applications、... 等，"Open" 的精神在這類的計畫是很重要的訴求，然而許多硬體除了規格取得的困難度外，還得考慮到元件的「可取代性」，無論是技術上抑或非技術議題。以 MMI solution 切入的 Trolltech，如之前 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001473.html">Trolltech Qtopia 大放異彩</a>] 提及，在商業與實務上，證明了 free / open source 模式的可行性，然而這其實只在純粹軟體的範疇生效，光是 GSM/GPRS/CDMA protocol stack 這個項目就是極其深奧的黑盒子。Red Ferret Journal 的文章 [<a href="http://www.redferret.net/?p=6121">The Tux Phone</a>] 提到 open source community 有些勇敢的 hackers 展開對現有手機產品的研究，也包含前述 protocol stack 的部份，該文有一段相當有意思，引用作參考：<ul>
+So they’re going to make a Linux mobile phone. A Tux Phone, if you will. Open source ringtones? Who knows.<br>
+<br>
+For a programmer, this is a dream come true. Here’s the entire telephone presented to me as a data object. I literally write to and read from a file to run the entire phone if I’m programming in linux. The GM862’s the core of the phone, the thing that actually lets you communicate to the GSM and GPRS networks. They even have one that has an embedded Python interpreter. Seriously slick. But, I want a phone with features to rival my V3. So, I want a fairly powerful controller.
+</ul>
+Motorola 接手 Trolltech Qtopia 許多 MMI 的基礎建設，並且著手做了重大的改進，可參考 [<a href="http://www.linuxdevices.com/news/NS2102246580.html">Motorola aims new Linux phone UI at replacement market</a>] 報導提到 A910 的設計觀點與突破，未來的變化也會更多元。<br>
+<center><a href="http://www.mobileburn.com/imagepop.jsp?file=%3Cimg+src%3D%22media%2Fmotorola%2Fa910%2Fthumb_a910_screen_media-IMG_3986.jpg%22+width%3D%22117%22+height%3D%22150%22+alt%3D%22Multimedia%22+border%3D%220%22+pos1%3E"><img src="http://jserv.sayya.org/misc/thumb_a910_screen_media-IMG_3986.jpg"></a></center><br>
+儘管許多軟硬體大廠合組了 [<a href="http://lipsforum.org/">Linux Phone Standards Forum (LiPS) </a>]，以制定一系列 Linux-based mobile phone 的功能性需求與參考軟體建設等標準，並且 MontaVista 之前也提出 [<a href="http://mobilinux.com/">Mobilinux</a>]，作為完整的 total solution，與 Microsoft 或 Symbian 等公司的系統作區別化：<br>
+<img src="http://linuxdevices.com/files/misc/mobilephone-os-comparison.jpg"><br>
+甚至連 [<a href="http://www.osdl.org/">OSDL (open source development labs)</a>] 也提出 [<a href="http://linuxdevices.com/news/NS5746144590.html">Mobile Linux Initiative (MLI)</a>]，相當有趣的是，當我們比較這幾個檯面上組織與實做，有相當大的 overlapping，並且成員的組合也可說是「各懷鬼胎」，逐步走入百家爭鳴的戰國時代。<br>
+<br>
+除了 [<a href="http://www.sda-asia.com/sda/article/psecom,id,73,nodeid,1,_language,Singapore.html#">The Rise of Real-time Linux</a>] 這篇描述到 Linux Realtime capability 的改善與實做，現今許多 Embedded Linux devices 也巧妙地融入 resource kernel、nano-kernel，以及 exo-kernel 的嶄新設計 (有意思的是，這些架構在一定程度都視 Linux kernel/application 為 legacy system)，以因應更複雜的能源管理機制、高負載的運算量、多元的通訊架構、... 等重大議題，特別在 ARM RISC 上，最近陸續有 software/hardware co-design 的突破，可以想見的是，未來仍充斥著並行發展、開放規格，以及強韌的參考實做 codebase 的概念與原則。<br>
+<br>
+至於 Linux mobile phone 到底會不會成功呢？我無法斷言，但是我已經很明確看到發展的方向與概念，縱使有新秀 killer application 崛起，或許還是會秉持這些原則吧。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 February 14, 2006 12:40 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

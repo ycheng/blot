@@ -1,0 +1,526 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: SM 版 Hello World</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001772.html" title="OCF-Linux" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001774.html" title="員工只是一種工具" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001772.html">« OCF-Linux</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001774.html">員工只是一種工具 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">July 31, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">SM 版 Hello World</h3>
+
+準備「深入淺出 Hello World」系列的演講與文件之際，陸續寫了許多 "Hello World" 範例程式與變種，也包含在 emulator 層面的應用，而這裡來提個簡單但有趣的版本：「SM 版 Hello World」。乍看 "SM"，真令人臉紅心跳，不過呢，本文的 "SM" 乃 "Self-Modifying" 的縮寫，更明確來說，應該是 SMC (Self-Modifying Code)，這是許多高深技術的基石，比方說 Java / .Net Framework 的 JIT (Just-In-Time) compiler、Runtime / Live patching、Firmware update、進階軟體保護、... 等等。其實，SMC 的概念很單純，先看看下圖：<br>
+<center><img src="http://ch.tudelft.nl/~arthur/smc/voorkant.png"></center><br>
+圖中可見，名為 my_code 的 procedure 原本有個 "nop" (x86 指令，CPU 除了消耗 clock cycle 外不做事) 指令 (紅色標示下)，不過 self-modifying 的立意就是希望能於 Runtime 動態改變行為，圖中展示「抹除」nop 指令並改為 "return"，這導致程式碼執行流程的變化：原本若從 x 的位址開始執行，那麼會先執行 "nop" 指令，因為沒做事，所以 PC (program counter) 遞增到後面的 "move #0, R0" (將 0 值指定到 Register 0)，但如果 "nop" 被改寫為 return，如此一來，procedure my_code 就會直接 return 回 caller。別小看這樣的舉動，這會產生許多意想不到的變化 (註：手稿整理中)，接下來我們來試著在 Linux 下用 C 語言來實做。<ul>
+<pre class="code" style="margin: 6px;">
+<span class="keyword">#include</span> &lt;stdio.h>
+<span class="keyword">#include</span> &lt;string.h>
+
+<span class="keyword">static</span> <span class="keyword">int</span> counter = 0;
+<span class="keyword">extern</span> <span class="keyword">char</span> Here, Start, End;
+
+<span class="keyword">int</span> main()
+{
+        <span class="keyword">asm</span> <span class="keyword">volatile</span>( <span class="literal">"Here:"</span> );
+        printf(<span class="literal">"/* Program invoked.\n"</span>);
+        printf(<span class="literal">"Hello World!\n"</span>);
+        memcpy(&amp;Here, &amp;Start, (<span class="keyword">int</span>) &amp;End - (<span class="keyword">int</span>) &amp;Start);
+        printf(<span class="literal">"  #%d */\n"</span>, ++counter);
+        <span class="keyword">return</span> 0;
+}
+
+<span class="keyword">void</span> dummyCodeContext()
+{
+        <span class="keyword">int</span> (*callPrintf)( <span class="keyword">const</span> <span class="keyword">char</span> *format, ... );
+
+        <span class="keyword">asm</span> <span class="keyword">volatile</span>( <span class="literal">"Start:"</span> );
+        (*(callPrintf = &amp;printf))( <span class="literal">"/* Dummy code context invoked.\n"</span>);
+        <span class="keyword">asm</span> <span class="keyword">volatile</span>( <span class="literal">"End:"</span> );
+}</pre>
+</ul>
+這裡用到 Inline assembly，主要是標示程式碼位址的 label，在 GCC 的編譯環境下可通用，並且冠以 "volatile" 修飾是確保依據指令順序、避免因為編譯器最佳化而調整，因為 C Programming Language 在設計上即有「限制 self-modifying code」的考量，所以我們得稍微迂迴，才得以在執行時期找到其 Image 中之絕對位址 (注意：這裡針對 Linux process / memory model)。在 main() 中，我們試圖呼叫 memcpy，將原本放在 dummyCodeContext() 中部份程式碼複製並蓋掉 [Here:] 開頭的程式碼，概念上就如同前面提到的圖例。<br>
+<br>
+看來一切就緒，姑且將程式命名為 pre-hello.c，接下來編譯與執行：<ul><pre class="code" style="margin: 6px;">
+$ gcc -W -Wall -ggdb -O0 -o pre-hello pre-hello.c
+$ ./pre-hello 
+/* Program invoked.
+Hello World!
+程式記憶體區段錯誤
+</pre></ul>
+奇怪，竟然發生 SegFault，用 gdb 看看：<ul><pre class="code" style="margin: 6px;">
+$ gdb ./pre-hello
+GNU gdb 6.4.90-debian
+Copyright (C) 2006 Free Software Foundation, Inc.
+GDB is free software, covered by the GNU General Public License, and you are
+welcome to change it and/or distribute copies of it under certain conditions.
+Type "show copying" to see the conditions.
+There is absolutely no warranty for GDB.  Type "show warranty" for details.
+This GDB was configured as "i486-linux-gnu"...
+Using host libthread_db library "/lib/tls/i686/cmov/libthread_db.so.1".
+
+(gdb) run
+Starting program: /tmp/hello-C++/pre-hello 
+/* Program invoked.
+Hello World!
+
+Program received signal SIGSEGV, Segmentation fault.
+0x080483cc in Here () at pre-hello.c:12
+12		memcpy(&Here, &Start, (int) &End - (int) &Start);
+</pre></ul>
+要說明這個現象，又得將 Linux memory model 拿出來複習，尤其是 memory page 的部份，「深入淺出 Hello World」系列的演講有提過重點，並且一般的 POSIX/UNIX System Programming 書籍也有解釋，這裡就忽略細節。簡單來說，預設 memory page 的保護限制我們對 code context 作寫入的動作 (data 與 code 是獨立的 section)，要改變預設的行為，可透過 mprotect(2)，以下節錄 man page；<ul><pre class="code" style="margin: 6px;">
+NAME
+       mprotect - control allowable accesses to a region of memory
+
+SYNOPSIS
+       #include &lt;sys/mman.h&gt;
+       int mprotect(const void *addr, size_t len, int prot);
+
+DESCRIPTION
+       The function mprotect() specifies the desired protection for 
+       the memory page(s) containing part or all of the interval 
+       [addr,addr+len-1].  If an access is disallowed by the protection 
+       given it, the program receives a SIGSEGV.
+</pre></ul>
+又因為 SM 版的 "Hello World" 規模不大，基本上我們可以假設全部 code 都會在同一 page 中，以下是解除 memory write protection 的程式碼片段：<ul><pre class="code" style="margin: 6px;"><span class="keyword">unsigned</span> page = (<span class="keyword">unsigned</span>) &amp;Here &amp; ~( getpagesize() - 1 );
+<span class="comment">/* chmod u=rwx page */</span>
+<span class="keyword">if</span> (mprotect((<span class="keyword">char</span>*) page,
+             getpagesize(),
+             PROT_READ | PROT_WRITE | PROT_EXEC ) ) {
+             perror( <span class="literal">"mprotect failed"</span> );
+}</pre>
+</ul>
+看來突破「枷鎖」後，我們終於大行 "SM" 之實，不過呢，為了比較清楚地整合剛剛的程式碼片段，這裡玩個 C++ 小技巧。依據 C++ 語言規範，一個 object (class instance) 之 constructor 會優先於 main 前執行完畢，而其 destructor 則會於 main 執行完畢再進行善後動作，於是，利用這個概念，我們「升級」剛剛的 C 語言程式為 C++ 程式，以下是程式碼列表：<ul>
+<pre class="code" style="margin: 6px;"><span class="keyword">#include</span> &lt;stdio.h><span class="keyword">
+#include</span> &lt;stdlib.h><span class="keyword">
+#include</span> &lt;unistd.h><span class="keyword">
+#include</span> &lt;sys/mman.h><span class="keyword">
+#include</span> &lt;string.h>
+
+<span class="keyword">using</span> <span class="keyword">namespace</span> std;
+
+<span class="keyword">static</span> <span class="keyword">int</span> counter = 0;
+<span class="keyword">extern</span> <span class="keyword">char</span> Here, Start, End;
+
+<span class="keyword">int</span> main()
+{
+        <span class="keyword">asm</span> <span class="keyword">volatile</span>( <span class="literal">"Here:"</span> );
+        printf(<span class="literal">"/* Program invoked.\n"</span>);
+        printf(<span class="literal">"Hello World!\n"</span>);
+        memcpy(&amp;Here, &amp;Start, (<span class="keyword">int</span>) &amp;End - (<span class="keyword">int</span>) &amp;Start);
+        printf(<span class="literal">"  #%d */\n"</span>, ++counter);
+        <span class="keyword">return</span> 0;
+}
+
+<span class="keyword">void</span> dummyCodeContext()
+{
+        <span class="keyword">int</span> (*callPrintf)( <span class="keyword">const</span> <span class="keyword">char</span> *format, ... ); 
+
+        <span class="keyword">asm</span> <span class="keyword">volatile</span>( <span class="literal">"Start:"</span> );
+        (*(callPrintf = &amp;printf))( <span class="literal">"/* Dummy code context invoked.\n"</span>);
+        <span class="keyword">asm</span> <span class="keyword">volatile</span>( <span class="literal">"End:"</span> );
+}
+
+<span class="keyword">static</span> <span class="keyword">char</span> shellcode[] =
+        <span class="literal">"\x31\xc0"</span>      <span class="comment">/* xor %eax, %eax       */</span>
+        <span class="literal">"\x40"</span>          <span class="comment">/* inc %eax             */</span>
+        <span class="literal">"\xcd\x80"</span>;     <span class="comment">/* int $0x80            */</span>
+
+<span class="keyword">class </span>Foo {
+<span class="keyword">public</span>:
+        Foo() {
+                <span class="keyword">unsigned</span> page = (<span class="keyword">unsigned</span>) &amp;Here &amp; ~( getpagesize() - 1 );
+                <span class="comment">/* chmod u=rwx page */</span>
+                <span class="keyword">if</span> (mprotect((<span class="keyword">char</span>*) page,
+                             getpagesize(),
+                             PROT_READ | PROT_WRITE | PROT_EXEC ) ) {
+                        perror( <span class="literal">"mprotect failed"</span> );
+                }
+                main();
+        }
+        <span class="keyword">virtual</span> ~Foo() {
+                memcpy(&amp;Here, &amp;shellcode, <span class="keyword">sizeof</span>(shellcode));
+                main();
+        }
+} foo_instance;</pre></ul>
+程式碼看起來變多，但反而有種 [<a href="http://blog.linux.org.tw/~jserv/archives/001624.html">快速堆積式程式設計？</a>] 的感覺，跟稍早的程式列表相比，main() 與 dummyCodeContext() 的實做一行都沒有改變，而我們在 class Foo 中，透過 constructor 處理 memory page protection 的 WRITE 處理，然後... 呼叫 main (?!)，是的，這樣會讓 main() 的實做多跑一次 (原本就會被 C Runtime 所呼叫)，當然這跟其他 C++ 的「奇計淫巧」相比，實在沒什麼。另外值得一提的是，我們在 class Foo destructor 中，將一段 shellcode 複製塞入 [Here:] 開頭的程式碼，這個 shellcode 就以字串形式存在，好像很單純。為了統計 "Hello World" 到底被印了幾次，我們弄個 counter 的變數來儲存，先來猜猜看，counter 應該會是多少？可以確定的是，main() 會被呼叫三次，分別是 constructor 與 destructor 貢獻與原本的行為，真好，完全不需要多加迴圈，結果 main() 沒有修改一行程式碼，就被執行三次，C++ 真是神奇的語言啊，「快速堆積」必備。<br>
+<br>
+還有，因為我們加入 x86 shellcode，所以這個程式只能在 x86 運作。好，轉吧，七彩霓虹燈：<ul><pre class="code" style="margin: 6px;">
+$ g++ -W -Wall -ggdb -O0 -o hello hello.cpp
+$ ./hello 
+/* Program invoked.
+Hello World!
+  #1 */
+/* Dummy code context invoked.
+/* Dummy code context invoked.
+
+  #2 */
+</pre></ul>
+看來 memcpy 的動作是成功的，再回頭看看被改寫的部份：<ul><pre class="code" style="margin: 6px;">
+<span class="keyword">int</span> main()
+{
+        <span class="keyword">asm</span> <span class="keyword">volatile</span>( <span class="literal">"Here:"</span> );
+        printf(<span class="literal">"/* Program invoked.\n"</span>);
+        printf(<span class="literal">"Hello World!\n"</span>);
+        memcpy(&amp;Here, &amp;Start, (<span class="keyword">int</span>) &amp;End - (<span class="keyword">int</span>) &amp;Start);
+        printf(<span class="literal">"  #%d */\n"</span>, ++counter);
+        <span class="keyword">return</span> 0;
+}
+</pre></ul>
+memcpy 寫入的位址自 [Here:] 開始，這是在第一次執行 main() 時 (也就是 class Foo constructor 之際)，所以呢，原本該印出 "/* Program invoked." 與 "Hello World!" 的輸出，在第二次執行 main() 時 (C Runtime 的呼叫行為)，程式碼被更換為 dummyCodeContext() 中印出 "* Dummy code context invoked." 的部份，不過，問題沒那麼簡單，反而疑惑變多了：<ul>
+<li>既然 main() 應該要被執行三次，為何只看到 #1 與 #2 呢？</li>
+<li>[Start:] 到 [End:] 間的程式碼，為何需要迂迴地先指定 C Library printf function address 後，再塞入參數後呼叫呢？如果單純改為 "printf("/* Dummy code context invoked.\n");" 反而沒效果？</li>
+<li>延續上一個問題，既然那段程式碼只呼叫一次印出 "/* Dummy code context invoked."，為何執行時印出兩次呢？</li>
+</ul>
+受限於篇幅，這裡先解答第一個疑惑。無論是 code 或 data，在硬體都會有一種特定的表示方式，而我們可在以下程式列表中發現：<ul><pre class="code" style="margin: 6px;">
+<span class="keyword">static</span> <span class="keyword">char</span> shellcode[] =
+        <span class="literal">"\x31\xc0"</span>      <span class="comment">/* xor %eax, %eax       */</span>
+        <span class="literal">"\x40"</span>          <span class="comment">/* inc %eax             */</span>
+        <span class="literal">"\xcd\x80"</span>;     <span class="comment">/* int $0x80            */</span>
+</pre></ul>
+這個看似單純 char array 的 shellcode，原本的功能是擺放資料，不過卻被塞入特定的機械碼，是由三個組合語言命令所組譯得到的，其功能就是執行 exit 系統呼叫，在執行第三次 main() 時 (也就是於 class Foo destructor)，我們已經先 memcpy shellcode 到 自 [Here:] 開始的位址去，換言之，原本位於 data section 的資料，頓時植入 code section，接著，第三次呼叫 main() 時，exit 系統呼叫被觸發，這也導致程式流程終止，原本該遞增 counter 數值並印出的動作，也就沒機會執行到。<br>
+<br>
+所以呢，這又變成 "Orz Programming 2.0" 的範例了，驗證其中精神：「執行時期的行為可不是那麼簡單，任何細節的疏忽都可能釀成無止盡的挫折感」。dummyCodeContext() 乍看下似乎跟 main() 沒什麼關聯，但在程式運作時，改變了 main() 應有的行為，也就是實現 "self-modifying code"，而，我們透過 C++ object constructor / destructor 的語意，又成功變更程式碼執行流程，最後，植入 shellcode 讓整個系統變得難以駕馭。<br>
+<br>
+既然我們切進 "Orz Programming 2.0"，我們順便看看用 gdb 追蹤的情況 (註：後續會探討該如何正確且安全透過 gdb 追蹤)，同樣的程式透過 gdb 這個「史上最強大的跨平台 source-level debugger」，結果會是如何呢？<ul><pre class="code" style="margin: 6px;">
+$ gdb ./hello
+GNU gdb 6.4.90-debian
+Copyright (C) 2006 Free Software Foundation, Inc.
+GDB is free software, covered by the GNU General Public License, and you are
+welcome to change it and/or distribute copies of it under certain conditions.
+Type "show copying" to see the conditions.
+There is absolutely no warranty for GDB.  Type "show warranty" for details.
+This GDB was configured as "i486-linux-gnu"...
+Using host libthread_db library "/lib/tls/i686/cmov/libthread_db.so.1".
+
+(gdb) b main
+Breakpoint 1 at 0x8048623: file hello.cpp, line 15.
+(gdb) run
+Starting program: /tmp/hello-C++/hello 
+
+Breakpoint 1, Here () at hello.cpp:15
+15		printf("/* Program invoked.\n");
+(gdb) next
+/* Program invoked.
+16		printf("Hello World!\n");
+(gdb) next
+Hello World!
+17		memcpy(&Here, &Start, (int) &End - (int) &Start);
+(gdb) next
+18		printf("  #%d */\n", ++counter);
+(gdb) next
+  #1 */
+19		return 0;
+(gdb) next
+20	}
+(gdb) next
+Foo (this=0x8049be8) at hello.cpp:47
+47		}
+(gdb) next
+0x080486b3 in __static_initialization_and_destruction_0 (__initialize_p=1, __priority=65535)
+    at hello.cpp:52
+52	} foo_instance;
+(gdb) next
+0x080486e7 in global constructors keyed to main () at hello.cpp:53
+Line number 53 out of range; hello.cpp has 52 lines.
+(gdb) next
+0x0804885d in __do_global_ctors_aux ()
+(gdb) next
+Single stepping until exit from function __do_global_ctors_aux, 
+which has no line number information.
+0x080484a1 in _init ()
+(gdb) next
+Single stepping until exit from function _init, 
+which has no line number information.
+0x080487fe in __libc_csu_init ()
+(gdb) next
+Single stepping until exit from function __libc_csu_init, 
+which has no line number information.
+0xb7d6a85d in __libc_start_main () from /lib/tls/i686/cmov/libc.so.6
+(gdb) next
+Single stepping until exit from function __libc_start_main, 
+which has no line number information.
+程式記憶體區段錯誤
+</pre></ul>
+在解說前，我們直接看到最後一行，是的，gdb 自己就「程式記憶體區段錯誤」，話說 Debugger 設計不就是要協助開發者處理 SegFault，而 gdb 遇到 "Orz Programming 2.0" 之 SM 版 "Hello World" 竟然沒轍，舉白旗宣佈投降，丟了 SegFault 出來，那該怎麼辦呢？難道要我們 "Debugging the Debugger" 嗎？<ul>
+「媽媽，我要回家，我不要寫程式了啦，電腦欺負我」
+</ul>
+充滿挫折的我們，無力地攤在地上，只能喃喃自語。<br>
+<br>
+剛剛透過 gdb 追蹤的過程是，先設定會被呼叫三次的 main() 為中斷點，然後 "run" 啟動該 process，在 class Foo constructor 結束前，呼叫了 main()，觸發了 debugger 中斷，然後我們用 "next" 逐行執行追蹤。剛開始：<ul><pre class="code" style="margin: 6px;">
+breakpoint 1, Here () at hello.cpp:15
+15              printf("/* Program invoked.\n");
+(gdb) next
+/* Program invoked.
+16              printf("Hello World!\n");
+(gdb) next
+Hello World!
+17              memcpy(&Here, &Start, (int) &End - (int) &Start);
+(gdb) next
+18              printf("  #%d */\n", ++counter);
+(gdb) next
+  #1 */
+19              return 0;
+(gdb) next
+20      }
+(gdb) next
+Foo (this=0x8049be8) at hello.cpp:47
+47              }
+</pre></ul>
+很好，就如我們預期，並且也執行了 memcpy 的動作。接下來就有趣了：<ul><pre class="code" style="margin: 6px;">
+(gdb) next
+0x080486b3 in __static_initialization_and_destruction_0 (__initialize_p=1, __priority=65535)
+    at hello.cpp:52
+52      } foo_instance;
+(gdb) next
+0x080486e7 in global constructors keyed to main () at hello.cpp:53
+Line number 53 out of range; hello.cpp has 52 lines.
+(gdb) next
+</pre></ul>
+因為第一次 main() 的執行圓滿落幕，constructor 即將結束，將控制權移轉給原本就該被執行的 main()，可是這時候發現一個奇怪的事情："Line number 53 out of range; hello.cpp has 52 lines."，是的，就是因為 self-modifying code，然而，我們硬是逼迫 gdb 作 source-level debugging，但是現在 Runtime code section 已非 gdb 所預期，於是乎，前面種下的「惡果」讓錯誤一路到底，最後，流程 __do_global_ctors_aux ()  ==&gt;  _init ()  ==&gt;  __libc_csu_init ()  ==&gt;  __libc_start_main ()，stack 中資訊錯亂，就爆炸了。<br>
+<br>
+前面所提到、剩下的兩個問題，稍後會給予解釋，並且也會探討在 self-modifying code 的情況下，如何進行 tracing / debugging，因為接下來有段時間我會保持忙碌，所以這裡開放有獎徵答，只要在我更新解答的資訊前，提出解釋或指出其中盲點者，就會有神秘禮物 :-)<br>
+<br>
+Good Luck!<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 July 31, 2006 05:22 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>神秘禮物是啥?</p>
+<span class="comments-post">由 <a href="mailto&#58;guest&#64;guest&#46;com&#46;tw">guest</a> 發表於</MTIfNonEmpty> July 31, 2006 08:58 AM</span>
+</div>
+<div class="comments-body">
+<p>1. Above program assumes the return address of the self-modifying "memcpy()" will be a valid IA32 instruction, which is not necessarily true due to variable-length nature of IA32 instructions.<br />
+2. The "/* Dummy code context invoked." was printed twice _possibly_ because you've overwritten the epilog of main() after memcpy() so the first was printed from the copied code while the second one was printed from the original code site.<br />
+3. Most use of indirect function invocation in tricky code are to confuse the compiler to get rid of optimizations such as function inlining. Your code seems being in this category.</p>
+<span class="comments-post">由 <a href="mailto&#58;ijsung&#64;gmail&#46;com">I-Jui Sung</a> 發表於</MTIfNonEmpty> July 31, 2006 10:08 AM</span>
+</div>
+<div class="comments-body">
+<p>IIRC, C 中允許呼叫 main 可是標準 C++ 中不允許喔 :p</p>
+<span class="comments-post">由 <a href="mailto&#58;scwg2001&#64;yahoo&#46;com">scw</a> 發表於</MTIfNonEmpty> July 31, 2006 01:05 PM</span>
+</div>
+<div class="comments-body">
+<p>今晚半夜快一點, 大同的學弟給我這網站, 果真奇怪...  ==_==|||</p>
+
+<p>後來讓我手癢...</p>
+
+<p>不過, 很悲哀的是,<br />
+上面範例,<br />
+你都可以成功, 連續兩次Dummy code context invoked.</p>
+
+<p>我跟我學弟... 很悲哀...<br />
+顯示一次Dummy code context invoked.後...<br />
+就立刻exception.程式掛點!!</p>
+
+<p>這樣就掛掉了, 接下來, 別說研究...<br />
+實在無法著手, 畢竟手邊沒有成功的程式.<br />
+若有成功範例binary, 只要我逆向看一下組合語言, 追一下, 那超簡單, 不用多久, 就會徹底答案出來.</p>
+
+<p>好吧,<br />
+既然這樣,<br />
+就讓我花一個深夜,<br />
+逆向工程,<br />
+完整弄出一個這樣的範例!!!</p>
+
+<p>很簡單,<br />
+後來當然我知道, 為何我們一模一樣程式, 我卻會失敗!?<br />
+因為, image base address!!</p>
+
+<p>我Linux上的ld script如下:<br />
+SECTIONS<br />
+{<br />
+  /* Read-only sections, merged into text segment: */<br />
+  PROVIDE (__executable_start = 0x08048000); . = 0x08048000 + SIZEOF_HEADERS;</p>
+
+<p>我後來修正為:<br />
+  /* Read-only sections, merged into text segment: */<br />
+  PROVIDE (__executable_start = 0x10ec7b00); . = 0x10ec7b00 + SIZEOF_HEADERS;</p>
+
+<p>就正常....  :)</p>
+
+<p>原因很簡單, 如下:<br />
+10ec8100 :<br />
+10ec8100:       83 ec 0c                sub    $0xc,%esp<br />
+10ec8103:       68 b8 83 ec 10          push   $0x10ec83b8<br />
+10ec8108:       e8 ef fe ff ff          call   10ec7ffc <br />
+10ec810d:       83 c4 10                add    $0x10,%esp<br />
+10ec8110:       83 ec 0c                sub    $0xc,%esp<br />
+10ec8113:       68 cd 83 ec 10          push   $0x10ec83cd<br />
+                            ^^^^^^^^^^<br />
+                           只要想辦法, 讓83 ec 10這三個bytes產生出來就可以啦！！！<br />
+                           因為sub    $0x10,%esp 就是 0x10ec83<br />
+                           因此只要產生push $0x10ec83??(最後一個byte隨便), 所以必須改ld script, 才能編出這樣組合語言.<br />
+                           然後memcpy會剛好毀掉10ec8100到10ec8115 ==> 印出第一個Dummy code context invoked<br />
+                           緊接著, 我只是設法把esp-0x10, 立刻復援之前esp的值, 當然啦, 會再立刻印出第二個Dummy code context invoked</p>
+
+<p>10ec8118:       e8 df fe ff ff          call   10ec7ffc </p>
+
+<p><br />
+這一題,<br />
+以後,<br />
+拿來考其他搞hack的人,<br />
+就知道,<br />
+對方有沒有基本的sense!!</p>
+
+<p><br />
+--<br />
+CIH<br />
+Software Magician<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;cih&#46;104&#64;gigabytecm&#46;com">CIH</a> 發表於</MTIfNonEmpty> August  1, 2006 04:54 AM</span>
+</div>
+<div class="comments-body">
+<p>是指"體悟"吧？</p>
+<span class="comments-post">由 <a href="mailto&#58;aguaithefreak&#64;hotmail&#46;com">aguai</a> 發表於</MTIfNonEmpty> August  4, 2006 10:33 PM</span>
+</div>
+<div class="comments-body">
+<p>jserv，這樣的 code 太 unpredictible 了。前面 CIH 還 work around 才能動。還要考量到 cache 和 CPU 的 code fetching/data path 等問題。基本上，每台機器 run 的結果會不太一樣，會因 CPU 的不同，而有不同的結果。也會因為系統執行的 process 的不同，影嚮到 cache 和 code fetching 的結果。以前在 DOS 下，就有一些防 debugger 的技術，就是透過 cache 和 code fetching 的 timming，產生 debugger 和實際執行結果不同，而使的 debugger 沒法正確的 trace。</p>
+
+<p>當然，這是個有趣的問題，現在已經很少人知道了，這篇文章還是很有參考價值。<br />
+</p>
+<span class="comments-post">由 <a href="http://heaven.branda.to/~thinker/GinGin_CGI.py">Thinker</a> 發表於</MTIfNonEmpty> August  5, 2006 12:40 PM</span>
+</div>
+<div class="comments-body">
+<p>在 C++ 中<br />
+不是 object 會在 main 之前會被 construct 吧？</p>
+
+<p>應該是 global 的物件才會於 main 之前建構<br />
+範例中<br />
+foo_instance 位於 main 的 scope 之外<br />
+所以它是一個 global object<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;email&#64;email&#46;com">小魚</a> 發表於</MTIfNonEmpty> August 10, 2006 03:44 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

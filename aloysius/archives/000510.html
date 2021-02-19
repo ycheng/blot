@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>黑麻吉達康: Postfix+SASL auth</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~aloysius/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~aloysius/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~aloysius/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~aloysius/archives/2003_10.html#000455" title="好個主機板大國~" />
+
+<link rel="next" href="http://blog.linux.org.tw/~aloysius/archives/2003_11.html#000516" title="SuSE 9 Professional初探" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~aloysius/" accesskey="1">黑麻吉達康</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~aloysius/archives/2003_10.html#000455">&laquo; 好個主機板大國~</a> |
+
+<a href="http://blog.linux.org.tw/~aloysius/">Main</a>
+| <a href="http://blog.linux.org.tw/~aloysius/archives/2003_11.html#000516">SuSE 9 Professional初探 &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">November 20, 2003</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Postfix+SASL auth</h3>
+
+<p>sendmail只要一分鐘搞定的事，換在postfix上還真是不方便.....<br />
+算了，寫個小筆記記錄一下:</p>
+
+<p>確認安裝所需套件:<br />
+1. cyrus-sasl<br />
+2. cyrus-sasl-plain<br />
+3. cyrus-sasl-md5<br />
+4. postfix 1.1.x</p>
+
+<p>vi /etc/postfix/main.cf<br />
+#add<br />
+smtpd_sasl_auth_enable = yes<br />
+smtpd_recipient_restrictions = permit_mynetworks, permit_sasl_authenticated,reject_unauth_destination<br />
+smtpd_client_restrictions = permit_sasl_authenticated<br />
+smtpd_sasl_security_options = noanonymous</p>
+
+<p>vi/etc/postfix/master.conf<br />
+smtp inet n - y - - smtpd <br />
+#change to<br />
+smtp inet n - n - - smtpd</p>
+
+<p><br />
+vi /usr/lib/sasl/smtpd.conf<br />
+ pwcheck_method: sasldb <br />
+#change to<br />
+pwcheck_method:pam</p>
+
+<p>#make sure /etc/pam.d/smtp is look like this<br />
+#%PAM-1.0<br />
+auth       required     pam_stack.so service=system-auth<br />
+account    required     pam_stack.so service=system-auth</p>
+
+<p>#final <br />
+chmod 640 /etc/shadow<br />
+usermod -G root postfix <br />
+service postfix restart</p>
+
+<p>telnet 127.0.0.1 25<br />
+220 xxx.com.tw ESMTP Postfix<br />
+ehlo localhost<br />
+250-.xxx.com.tw<br />
+250-PIPELINING<br />
+250-SIZE 10240000<br />
+250-VRFY<br />
+250-ETRN<br />
+250-AUTH PLAIN LOGIN<br />
+250-XVERP<br />
+250 8BITMIME</p>
+
+<p></p>
+
+<p>大功告成～ :D</p>
+
+<p>後記：<br />
+          感覺上這種作法似乎不是很正統，因為他降低了系統的安全性總共三個地方：<br />
+          1. master.cf　中原本有chroot的設定沒了<br />
+          2. chmod shadow 這種增加檔案被讀取的風險<br />
+          3. usermod把postfix群組設定成 root,這樣跟 1. 2.加起來，對於系統的風險是非常嚴重的。<br />
+          預計在一個月內將主機改採LDAP auth的方式，到時再把安裝記錄寫在這邊備忘。</p>
+
+<a name="more"></a>
+
+
+<span class="posted">Posted by aloysius at November 20, 2003 01:40 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>Comments</div>
+
+
+
+
+<div class="comments-head">Post a comment</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-comments.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="510" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">Name:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email Address:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">URL:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+Remember personal info?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">Yes</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">No</label><br style="clear: both;" />
+
+<label for="text">Comments:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;Preview&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;Post&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+</div>
+</div>
+</body>
+</html>

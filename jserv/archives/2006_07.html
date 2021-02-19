@@ -1,0 +1,1483 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: July 2006 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2006_06.html" title="June 2006" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2006_08.html" title="August 2006" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/2006_06.html">« June 2006</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/2006_08.html">August 2006 »</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">July 31, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001773"></a>
+<h3 class="title">SM 版 Hello World</h3>
+
+準備「深入淺出 Hello World」系列的演講與文件之際，陸續寫了許多 "Hello World" 範例程式與變種，也包含在 emulator 層面的應用，而這裡來提個簡單但有趣的版本：「SM 版 Hello World」。乍看 "SM"，真令人臉紅心跳，不過呢，本文的 "SM" 乃 "Self-Modifying" 的縮寫，更明確來說，應該是 SMC (Self-Modifying Code)，這是許多高深技術的基石，比方說 Java / .Net Framework 的 JIT (Just-In-Time) compiler、Runtime / Live patching、Firmware update、進階軟體保護、... 等等。其實，SMC 的概念很單純，先看看下圖：<br>
+<center><img src="http://ch.tudelft.nl/~arthur/smc/voorkant.png"></center><br>
+圖中可見，名為 my_code 的 procedure 原本有個 "nop" (x86 指令，CPU 除了消耗 clock cycle 外不做事) 指令 (紅色標示下)，不過 self-modifying 的立意就是希望能於 Runtime 動態改變行為，圖中展示「抹除」nop 指令並改為 "return"，這導致程式碼執行流程的變化：原本若從 x 的位址開始執行，那麼會先執行 "nop" 指令，因為沒做事，所以 PC (program counter) 遞增到後面的 "move #0, R0" (將 0 值指定到 Register 0)，但如果 "nop" 被改寫為 return，如此一來，procedure my_code 就會直接 return 回 caller。別小看這樣的舉動，這會產生許多意想不到的變化 (註：手稿整理中)，接下來我們來試著在 Linux 下用 C 語言來實做。<ul>
+<pre class="code" style="margin: 6px;">
+<span class="keyword">#include</span> &lt;stdio.h>
+<span class="keyword">#include</span> &lt;string.h>
+
+<span class="keyword">static</span> <span class="keyword">int</span> counter = 0;
+<span class="keyword">extern</span> <span class="keyword">char</span> Here, Start, End;
+
+<span class="keyword">int</span> main()
+{
+        <span class="keyword">asm</span> <span class="keyword">volatile</span>( <span class="literal">"Here:"</span> );
+        printf(<span class="literal">"/* Program invoked.\n"</span>);
+        printf(<span class="literal">"Hello World!\n"</span>);
+        memcpy(&amp;Here, &amp;Start, (<span class="keyword">int</span>) &amp;End - (<span class="keyword">int</span>) &amp;Start);
+        printf(<span class="literal">"  #%d */\n"</span>, ++counter);
+        <span class="keyword">return</span> 0;
+}
+
+<span class="keyword">void</span> dummyCodeContext()
+{
+        <span class="keyword">int</span> (*callPrintf)( <span class="keyword">const</span> <span class="keyword">char</span> *format, ... );
+
+        <span class="keyword">asm</span> <span class="keyword">volatile</span>( <span class="literal">"Start:"</span> );
+        (*(callPrintf = &amp;printf))( <span class="literal">"/* Dummy code context invoked.\n"</span>);
+        <span class="keyword">asm</span> <span class="keyword">volatile</span>( <span class="literal">"End:"</span> );
+}</pre>
+</ul>
+這裡用到 Inline assembly，主要是標示程式碼位址的 label，在 GCC 的編譯環境下可通用，並且冠以 "volatile" 修飾是確保依據指令順序、避免因為編譯器最佳化而調整，因為 C Programming Language 在設計上即有「限制 self-modifying code」的考量，所以我們得稍微迂迴，才得以在執行時期找到其 Image 中之絕對位址 (注意：這裡針對 Linux process / memory model)。在 main() 中，我們試圖呼叫 memcpy，將原本放在 dummyCodeContext() 中部份程式碼複製並蓋掉 [Here:] 開頭的程式碼，概念上就如同前面提到的圖例。<br>
+<br>
+看來一切就緒，姑且將程式命名為 pre-hello.c，接下來編譯與執行：<ul><pre class="code" style="margin: 6px;">
+$ gcc -W -Wall -ggdb -O0 -o pre-hello pre-hello.c
+$ ./pre-hello 
+/* Program invoked.
+Hello World!
+程式記憶體區段錯誤
+</pre></ul>
+奇怪，竟然發生 SegFault，用 gdb 看看：<ul><pre class="code" style="margin: 6px;">
+$ gdb ./pre-hello
+GNU gdb 6.4.90-debian
+Copyright (C) 2006 Free Software Foundation, Inc.
+GDB is free software, covered by the GNU General Public License, and you are
+welcome to change it and/or distribute copies of it under certain conditions.
+Type "show copying" to see the conditions.
+There is absolutely no warranty for GDB.  Type "show warranty" for details.
+This GDB was configured as "i486-linux-gnu"...
+Using host libthread_db library "/lib/tls/i686/cmov/libthread_db.so.1".
+
+(gdb) run
+Starting program: /tmp/hello-C++/pre-hello 
+/* Program invoked.
+Hello World!
+
+Program received signal SIGSEGV, Segmentation fault.
+0x080483cc in Here () at pre-hello.c:12
+12		memcpy(&Here, &Start, (int) &End - (int) &Start);
+</pre></ul>
+要說明這個現象，又得將 Linux memory model 拿出來複習，尤其是 memory page 的部份，「深入淺出 Hello World」系列的演講有提過重點，並且一般的 POSIX/UNIX System Programming 書籍也有解釋，這裡就忽略細節。簡單來說，預設 memory page 的保護限制我們對 code context 作寫入的動作 (data 與 code 是獨立的 section)，要改變預設的行為，可透過 mprotect(2)，以下節錄 man page；<ul><pre class="code" style="margin: 6px;">
+NAME
+       mprotect - control allowable accesses to a region of memory
+
+SYNOPSIS
+       #include &lt;sys/mman.h&gt;
+       int mprotect(const void *addr, size_t len, int prot);
+
+DESCRIPTION
+       The function mprotect() specifies the desired protection for 
+       the memory page(s) containing part or all of the interval 
+       [addr,addr+len-1].  If an access is disallowed by the protection 
+       given it, the program receives a SIGSEGV.
+</pre></ul>
+又因為 SM 版的 "Hello World" 規模不大，基本上我們可以假設全部 code 都會在同一 page 中，以下是解除 memory write protection 的程式碼片段：<ul><pre class="code" style="margin: 6px;"><span class="keyword">unsigned</span> page = (<span class="keyword">unsigned</span>) &amp;Here &amp; ~( getpagesize() - 1 );
+<span class="comment">/* chmod u=rwx page */</span>
+<span class="keyword">if</span> (mprotect((<span class="keyword">char</span>*) page,
+             getpagesize(),
+             PROT_READ | PROT_WRITE | PROT_EXEC ) ) {
+             perror( <span class="literal">"mprotect failed"</span> );
+}</pre>
+</ul>
+看來突破「枷鎖」後，我們終於大行 "SM" 之實，不過呢，為了比較清楚地整合剛剛的程式碼片段，這裡玩個 C++ 小技巧。依據 C++ 語言規範，一個 object (class instance) 之 constructor 會優先於 main 前執行完畢，而其 destructor 則會於 main 執行完畢再進行善後動作，於是，利用這個概念，我們「升級」剛剛的 C 語言程式為 C++ 程式，以下是程式碼列表：<ul>
+<pre class="code" style="margin: 6px;"><span class="keyword">#include</span> &lt;stdio.h><span class="keyword">
+#include</span> &lt;stdlib.h><span class="keyword">
+#include</span> &lt;unistd.h><span class="keyword">
+#include</span> &lt;sys/mman.h><span class="keyword">
+#include</span> &lt;string.h>
+
+<span class="keyword">using</span> <span class="keyword">namespace</span> std;
+
+<span class="keyword">static</span> <span class="keyword">int</span> counter = 0;
+<span class="keyword">extern</span> <span class="keyword">char</span> Here, Start, End;
+
+<span class="keyword">int</span> main()
+{
+        <span class="keyword">asm</span> <span class="keyword">volatile</span>( <span class="literal">"Here:"</span> );
+        printf(<span class="literal">"/* Program invoked.\n"</span>);
+        printf(<span class="literal">"Hello World!\n"</span>);
+        memcpy(&amp;Here, &amp;Start, (<span class="keyword">int</span>) &amp;End - (<span class="keyword">int</span>) &amp;Start);
+        printf(<span class="literal">"  #%d */\n"</span>, ++counter);
+        <span class="keyword">return</span> 0;
+}
+
+<span class="keyword">void</span> dummyCodeContext()
+{
+        <span class="keyword">int</span> (*callPrintf)( <span class="keyword">const</span> <span class="keyword">char</span> *format, ... ); 
+
+        <span class="keyword">asm</span> <span class="keyword">volatile</span>( <span class="literal">"Start:"</span> );
+        (*(callPrintf = &amp;printf))( <span class="literal">"/* Dummy code context invoked.\n"</span>);
+        <span class="keyword">asm</span> <span class="keyword">volatile</span>( <span class="literal">"End:"</span> );
+}
+
+<span class="keyword">static</span> <span class="keyword">char</span> shellcode[] =
+        <span class="literal">"\x31\xc0"</span>      <span class="comment">/* xor %eax, %eax       */</span>
+        <span class="literal">"\x40"</span>          <span class="comment">/* inc %eax             */</span>
+        <span class="literal">"\xcd\x80"</span>;     <span class="comment">/* int $0x80            */</span>
+
+<span class="keyword">class </span>Foo {
+<span class="keyword">public</span>:
+        Foo() {
+                <span class="keyword">unsigned</span> page = (<span class="keyword">unsigned</span>) &amp;Here &amp; ~( getpagesize() - 1 );
+                <span class="comment">/* chmod u=rwx page */</span>
+                <span class="keyword">if</span> (mprotect((<span class="keyword">char</span>*) page,
+                             getpagesize(),
+                             PROT_READ | PROT_WRITE | PROT_EXEC ) ) {
+                        perror( <span class="literal">"mprotect failed"</span> );
+                }
+                main();
+        }
+        <span class="keyword">virtual</span> ~Foo() {
+                memcpy(&amp;Here, &amp;shellcode, <span class="keyword">sizeof</span>(shellcode));
+                main();
+        }
+} foo_instance;</pre></ul>
+程式碼看起來變多，但反而有種 [<a href="http://blog.linux.org.tw/~jserv/archives/001624.html">快速堆積式程式設計？</a>] 的感覺，跟稍早的程式列表相比，main() 與 dummyCodeContext() 的實做一行都沒有改變，而我們在 class Foo 中，透過 constructor 處理 memory page protection 的 WRITE 處理，然後... 呼叫 main (?!)，是的，這樣會讓 main() 的實做多跑一次 (原本就會被 C Runtime 所呼叫)，當然這跟其他 C++ 的「奇計淫巧」相比，實在沒什麼。另外值得一提的是，我們在 class Foo destructor 中，將一段 shellcode 複製塞入 [Here:] 開頭的程式碼，這個 shellcode 就以字串形式存在，好像很單純。為了統計 "Hello World" 到底被印了幾次，我們弄個 counter 的變數來儲存，先來猜猜看，counter 應該會是多少？可以確定的是，main() 會被呼叫三次，分別是 constructor 與 destructor 貢獻與原本的行為，真好，完全不需要多加迴圈，結果 main() 沒有修改一行程式碼，就被執行三次，C++ 真是神奇的語言啊，「快速堆積」必備。<br>
+<br>
+還有，因為我們加入 x86 shellcode，所以這個程式只能在 x86 運作。好，轉吧，七彩霓虹燈：<ul><pre class="code" style="margin: 6px;">
+$ g++ -W -Wall -ggdb -O0 -o hello hello.cpp
+$ ./hello 
+/* Program invoked.
+Hello World!
+  #1 */
+/* Dummy code context invoked.
+/* Dummy code context invoked.
+
+  #2 */
+</pre></ul>
+看來 memcpy 的動作是成功的，再回頭看看被改寫的部份：<ul><pre class="code" style="margin: 6px;">
+<span class="keyword">int</span> main()
+{
+        <span class="keyword">asm</span> <span class="keyword">volatile</span>( <span class="literal">"Here:"</span> );
+        printf(<span class="literal">"/* Program invoked.\n"</span>);
+        printf(<span class="literal">"Hello World!\n"</span>);
+        memcpy(&amp;Here, &amp;Start, (<span class="keyword">int</span>) &amp;End - (<span class="keyword">int</span>) &amp;Start);
+        printf(<span class="literal">"  #%d */\n"</span>, ++counter);
+        <span class="keyword">return</span> 0;
+}
+</pre></ul>
+memcpy 寫入的位址自 [Here:] 開始，這是在第一次執行 main() 時 (也就是 class Foo constructor 之際)，所以呢，原本該印出 "/* Program invoked." 與 "Hello World!" 的輸出，在第二次執行 main() 時 (C Runtime 的呼叫行為)，程式碼被更換為 dummyCodeContext() 中印出 "* Dummy code context invoked." 的部份，不過，問題沒那麼簡單，反而疑惑變多了：<ul>
+<li>既然 main() 應該要被執行三次，為何只看到 #1 與 #2 呢？</li>
+<li>[Start:] 到 [End:] 間的程式碼，為何需要迂迴地先指定 C Library printf function address 後，再塞入參數後呼叫呢？如果單純改為 "printf("/* Dummy code context invoked.\n");" 反而沒效果？</li>
+<li>延續上一個問題，既然那段程式碼只呼叫一次印出 "/* Dummy code context invoked."，為何執行時印出兩次呢？</li>
+</ul>
+受限於篇幅，這裡先解答第一個疑惑。無論是 code 或 data，在硬體都會有一種特定的表示方式，而我們可在以下程式列表中發現：<ul><pre class="code" style="margin: 6px;">
+<span class="keyword">static</span> <span class="keyword">char</span> shellcode[] =
+        <span class="literal">"\x31\xc0"</span>      <span class="comment">/* xor %eax, %eax       */</span>
+        <span class="literal">"\x40"</span>          <span class="comment">/* inc %eax             */</span>
+        <span class="literal">"\xcd\x80"</span>;     <span class="comment">/* int $0x80            */</span>
+</pre></ul>
+這個看似單純 char array 的 shellcode，原本的功能是擺放資料，不過卻被塞入特定的機械碼，是由三個組合語言命令所組譯得到的，其功能就是執行 exit 系統呼叫，在執行第三次 main() 時 (也就是於 class Foo destructor)，我們已經先 memcpy shellcode 到 自 [Here:] 開始的位址去，換言之，原本位於 data section 的資料，頓時植入 code section，接著，第三次呼叫 main() 時，exit 系統呼叫被觸發，這也導致程式流程終止，原本該遞增 counter 數值並印出的動作，也就沒機會執行到。<br>
+<br>
+所以呢，這又變成 "Orz Programming 2.0" 的範例了，驗證其中精神：「執行時期的行為可不是那麼簡單，任何細節的疏忽都可能釀成無止盡的挫折感」。dummyCodeContext() 乍看下似乎跟 main() 沒什麼關聯，但在程式運作時，改變了 main() 應有的行為，也就是實現 "self-modifying code"，而，我們透過 C++ object constructor / destructor 的語意，又成功變更程式碼執行流程，最後，植入 shellcode 讓整個系統變得難以駕馭。<br>
+<br>
+既然我們切進 "Orz Programming 2.0"，我們順便看看用 gdb 追蹤的情況 (註：後續會探討該如何正確且安全透過 gdb 追蹤)，同樣的程式透過 gdb 這個「史上最強大的跨平台 source-level debugger」，結果會是如何呢？<ul><pre class="code" style="margin: 6px;">
+$ gdb ./hello
+GNU gdb 6.4.90-debian
+Copyright (C) 2006 Free Software Foundation, Inc.
+GDB is free software, covered by the GNU General Public License, and you are
+welcome to change it and/or distribute copies of it under certain conditions.
+Type "show copying" to see the conditions.
+There is absolutely no warranty for GDB.  Type "show warranty" for details.
+This GDB was configured as "i486-linux-gnu"...
+Using host libthread_db library "/lib/tls/i686/cmov/libthread_db.so.1".
+
+(gdb) b main
+Breakpoint 1 at 0x8048623: file hello.cpp, line 15.
+(gdb) run
+Starting program: /tmp/hello-C++/hello 
+
+Breakpoint 1, Here () at hello.cpp:15
+15		printf("/* Program invoked.\n");
+(gdb) next
+/* Program invoked.
+16		printf("Hello World!\n");
+(gdb) next
+Hello World!
+17		memcpy(&Here, &Start, (int) &End - (int) &Start);
+(gdb) next
+18		printf("  #%d */\n", ++counter);
+(gdb) next
+  #1 */
+19		return 0;
+(gdb) next
+20	}
+(gdb) next
+Foo (this=0x8049be8) at hello.cpp:47
+47		}
+(gdb) next
+0x080486b3 in __static_initialization_and_destruction_0 (__initialize_p=1, __priority=65535)
+    at hello.cpp:52
+52	} foo_instance;
+(gdb) next
+0x080486e7 in global constructors keyed to main () at hello.cpp:53
+Line number 53 out of range; hello.cpp has 52 lines.
+(gdb) next
+0x0804885d in __do_global_ctors_aux ()
+(gdb) next
+Single stepping until exit from function __do_global_ctors_aux, 
+which has no line number information.
+0x080484a1 in _init ()
+(gdb) next
+Single stepping until exit from function _init, 
+which has no line number information.
+0x080487fe in __libc_csu_init ()
+(gdb) next
+Single stepping until exit from function __libc_csu_init, 
+which has no line number information.
+0xb7d6a85d in __libc_start_main () from /lib/tls/i686/cmov/libc.so.6
+(gdb) next
+Single stepping until exit from function __libc_start_main, 
+which has no line number information.
+程式記憶體區段錯誤
+</pre></ul>
+在解說前，我們直接看到最後一行，是的，gdb 自己就「程式記憶體區段錯誤」，話說 Debugger 設計不就是要協助開發者處理 SegFault，而 gdb 遇到 "Orz Programming 2.0" 之 SM 版 "Hello World" 竟然沒轍，舉白旗宣佈投降，丟了 SegFault 出來，那該怎麼辦呢？難道要我們 "Debugging the Debugger" 嗎？<ul>
+「媽媽，我要回家，我不要寫程式了啦，電腦欺負我」
+</ul>
+充滿挫折的我們，無力地攤在地上，只能喃喃自語。<br>
+<br>
+剛剛透過 gdb 追蹤的過程是，先設定會被呼叫三次的 main() 為中斷點，然後 "run" 啟動該 process，在 class Foo constructor 結束前，呼叫了 main()，觸發了 debugger 中斷，然後我們用 "next" 逐行執行追蹤。剛開始：<ul><pre class="code" style="margin: 6px;">
+breakpoint 1, Here () at hello.cpp:15
+15              printf("/* Program invoked.\n");
+(gdb) next
+/* Program invoked.
+16              printf("Hello World!\n");
+(gdb) next
+Hello World!
+17              memcpy(&Here, &Start, (int) &End - (int) &Start);
+(gdb) next
+18              printf("  #%d */\n", ++counter);
+(gdb) next
+  #1 */
+19              return 0;
+(gdb) next
+20      }
+(gdb) next
+Foo (this=0x8049be8) at hello.cpp:47
+47              }
+</pre></ul>
+很好，就如我們預期，並且也執行了 memcpy 的動作。接下來就有趣了：<ul><pre class="code" style="margin: 6px;">
+(gdb) next
+0x080486b3 in __static_initialization_and_destruction_0 (__initialize_p=1, __priority=65535)
+    at hello.cpp:52
+52      } foo_instance;
+(gdb) next
+0x080486e7 in global constructors keyed to main () at hello.cpp:53
+Line number 53 out of range; hello.cpp has 52 lines.
+(gdb) next
+</pre></ul>
+因為第一次 main() 的執行圓滿落幕，constructor 即將結束，將控制權移轉給原本就該被執行的 main()，可是這時候發現一個奇怪的事情："Line number 53 out of range; hello.cpp has 52 lines."，是的，就是因為 self-modifying code，然而，我們硬是逼迫 gdb 作 source-level debugging，但是現在 Runtime code section 已非 gdb 所預期，於是乎，前面種下的「惡果」讓錯誤一路到底，最後，流程 __do_global_ctors_aux ()  ==&gt;  _init ()  ==&gt;  __libc_csu_init ()  ==&gt;  __libc_start_main ()，stack 中資訊錯亂，就爆炸了。<br>
+<br>
+前面所提到、剩下的兩個問題，稍後會給予解釋，並且也會探討在 self-modifying code 的情況下，如何進行 tracing / debugging，因為接下來有段時間我會保持忙碌，所以這裡開放有獎徵答，只要在我更新解答的資訊前，提出解釋或指出其中盲點者，就會有神秘禮物 :-)<br>
+<br>
+Good Luck!<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001773.html">05:22 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1773" onclick="OpenComments(this.href); return false">迴響 (7)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">July 28, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001772"></a>
+<h3 class="title">OCF-Linux</h3>
+
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001736.html">強化 Linux 網路安全性設計：引入 OpenBSD Cryptographic Framework</a>] 提過 OpenBSD Cryptographic Framework 在 Linux 上的商業化版本，事實上也有一個以 GNU GPL 發行的類似計畫 [<a href="http://ocf-linux.sourceforge.net/">OCF-linux</a>]。在 [<a href="http://ocf-linux.sourceforge.net/hardware.html">OCF-Linux: Hardware</a>] 可看到目前支援的硬體清單，主要是 i386、SuperH，以及 ARM/IXP 平台，而 [<a href="http://ocf-linux.sourceforge.net/benchmarks.html">OCF-Linux: Benchmarks</a>] 的 [OpenSSL speed with CPU usage] 段落中，我們可看到透過 [<a href="http://ocf-linux.sourceforge.net/">OCF-linux</a>] 來驅動 [<a href="http://www.safenet-inc.com/">SafeNet</a>] 出品的 Safenet 1141 (33MHz PCI) 裝置後，在 Triple-DES 的比較上，原本 8192 bytes /cpu 的效能為 "1234.93k/%100"，後來改善為 "10705.05k/%57"，非常亮麗的表現。<br>
+<br>
+目前 [<a href="http://ocf-linux.sourceforge.net/">OCF-linux</a>] 最新版本是今年三月底的 snapshot，包含 Linux kernel 2.4 與 2.6 的支援，對於 Linux 在 IPSec 領域與資訊安全系統來說，是個很大的突破。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001772.html">12:57 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1772" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">July 27, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001771"></a>
+<h3 class="title">Sputnik 人造衛星</h3>
+
+<center>
+<img src="http://www.phys.ncku.edu.tw/~astrolab/mirrors/apod/image/9810/sputnik1_nasahq.jpg">
+</center><br>
+曾經維護一個中大型的軟體專案，命名為 "Sputnik!"，取其第一顆成功發射的人造衛星之革命性意義，最近手頭有類似的計畫，於是回頭檢視過去撰寫的文件與架構圖，也順道整理 "Sputnik" 人造衛星的歷史背景。<br>
+<br>
+"Sputnik" 是俄文「旅伴」的意思。1957 年十月四日，蘇聯發射之人類第一顆人造衛星的代號，就是 Sputnik。就規格來說，Sputnik I 重量約 83 kg，外觀可見四支鞭狀的天線、配有兩具無線電廣播發射器，繞地球運轉的高度預計約 250 km，發報機持續二十三日，將連續的 Beep 傳送給地球上驚愕莫名的聽眾，一個月後的十一月三日，蘇聯繼而發射 Sputnik II，裡面帶了一隻萊卡犬 (Laika)，是第一次送出有機生命體，但因衛星無法回收，所以也是史上第一個太空飛行犧牲者。<br>
+<br>
+作為老美的死對頭的蘇聯，發射 Sputnik 人造衛星的訊息重創美國股市。發射 Sputnik I 前一日道瓊斯工業平均指數為 465.82 點，而該月 22 日跌至 419.79 點，三周跌幅近 10%，來自軍方與民間的擔憂，美國積極投入太空科技的鉅額研發，也開啟太空競賽的序幕。1958 年一月，也就是 Sputnik 1 發射將近四個月後，美國發射了第一顆人造衛星 Explorer I。<br>
+<br>
+提到 Sputnik 與蘇聯在人類太空史多項「第一」的紀錄，一定要介紹蘇聯太空開發之父 Sergei Korolev (1906 - 1966)。Korolev 於 1930 年代投入火箭開發工作，第二次世界大戰後成為蘇聯太空計畫的最高負責人，在他的領導下，發射了人類史上第一枚人造衛星 Sputnik、完成載人的太空飛行，其中參與此次人類史上第一次太空飛行者，就是 Yurii Aleksevich Gagarin (1934 - 1968)。<br>
+<br>
+在 Korolev 樸素的辦公室中，設有直通蘇聯共黨總書記辦公室的熱線電話，東西方冷戰方酣時期，蘇聯當局絕口不提 Korolev 的名字，因為對蘇聯來說，Korelev 是極為重要的人物，當時西方人士只稱呼他「主任設計師」(chief designer)。直到 1966 年，Korolev 逝世後，蘇聯才公開他的名字，並且讚揚對蘇聯太空開發計畫的貢獻。<br>
+<br>
+Korolev 自 1946 年到去世之前為止，一直待在「Korolev 特設局」(現在改稱「能量 EPO」，此處過去連蘇聯的記者都無法進入，更遑論是外國人了。其建築內的一角落設有小而整齊的博物館，不只有紀念 Korolev 的展示堂，和蘇聯太空開發歷史的概要。其他房間則展示有從 1948 年發射成功的蘇聯第一枚 R1 飛彈，一直到發射 Sputnik、聯合號的 R7，對蘇聯初期火箭開發史而言，可說是極具價值。<br>
+<br>
+初期的人造衛星 Sputnik I、Sputnik II，以及月球探測船 (Luna)、聯合號太空船等陳列品，在其他地方也可看到。不過，Gagarin 第一次載人飛行所使用的東方一號 (Vostok I) 返回艙陳列於此，其外殼燒成黑色，內部仍保有當時的模樣，或許因此沒有對外公開。<br>
+<br>
+在人類文化的層面來說，因為 Sputnik 人造衛星的巨大震撼，原意為「旅伴」的這個詞也被擴充為「人造衛星」之意，並且造就一連串以 "nik" 結尾的新詞彙，比方說 beatnik (披頭族)、computernik (電腦迷)、jazznik (爵士樂迷) 等等。<br>
+<br>
+參考資料：<ul>
+<li>《Newton》第 101 期，Oct., 1991</li>
+</ul>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001771.html">01:05 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1771" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001770"></a>
+<h3 class="title">輕舞</h3>
+
+翻閱以前的個人板，瞥見 ct 小貓的一篇創作，酒意微醺的我，不自覺感到一股 [<a href="http://blog.linux.org.tw/~jserv/archives/001758.html">生活就像洋蔥</a>] 的念頭襲身，這些年來，我們以有限的時間與精力，一片一片地編織生命中獨一無二的記憶，回眸時交會的目光，已然模糊而無從辨識所及...<br>
+<br>
+以下是小貓的創作原文：<ul><pre class="code" style="margin: 6px;">
+ 作者  ct (ct)
+ 標題  [essay] 輕舞                                                                               
+ 時間  Thu Jul 10 02:59:50 2003                                                                   
+<hr>
+        輕舞            ct
+
+        平柏乾枯的果實
+        落在思念的腳邊　我經過
+        溪流　在森林前小片的平原
+        漫步，在意著未來和現在
+        輕舞，握著你給的細細的花瓣
+        剪枝　是不是殘忍或錯誤
+
+        台東的水淵
+        花蓮拾起的大理石殘渣
+        能否保存記憶？
+        有一天　陌生變成熟悉
+        的灰幕
+        下午的脫軌沒於疲憊佔領的夜
+
+        而我所期待的夢境
+        預演過
+        然後
+        執起你的手
+        漫舞
+</pre></ul>
+憶及三年前的一景一物，也讓我聯想起 Norman Maclean 的名著《大河戀》(A River Runs Through It) 中的一句話：<ul>
+「那些與我們共同生活，讓我們愛，並且是我們應該有所了解的人，正是最令我們難以捉摸的人。」
+</ul>
+小說中追憶亡弟的主人翁如此感嘆，良辰美景或許被保存著，但記憶呢？我們共通的記憶，是歷史的微量構成，進而透過時間轉化為歷史的流變，我們得以知曉現狀，小貓也說過：<ul><pre class="code" style="margin: 6px;">
+「淚水，是透明的；距離，也是透明的。所見者為其他。                                             
+  遙遠，是恆常的。然而宇宙間恢恢乎一光明，亦是恆常的。
+  至少在我眼波所及之處，總能望見你所回報、愧澀的笑容。
+  回憶與想像，迴盪乎時間之外、你我之間。」
+</pre></ul>
+這段話，是引自四年前的來信，作為時間的過客，多次拜讀後，我總是想再多表達些什麼，不過或許如杜斯妥也夫斯基所說：「獲得生命的訣竅不僅僅是活著，而在於，為了什麼而活。」，無論我的生命是如此卑微、低賤，甚至是全然的錯誤，我始終認為如戲劇般的人生，本質就是藝術，又，哲人如叔本華與尼釆者，認定藝術具救贖的功效，藝術家如梵谷，或孟克者，以狂放不羈、扭曲乖張的畫作宣洩壓抑的痛楚，我的生命至今延續著，並由血淚所刻劃、撰述這段歷史性的藝術，或陌生，抑或熟悉，難以捉摸。<br>
+<br>
+霎時，穿越時空限制，情感的交織，激起彼此心靈的觸發，然，在未能一窺全貌時，這一切崩解了，依稀腦海浮現以下字句：：<ul><pre class="code" style="margin: 6px;">
+What if I leave? What if you go? What if what if?
+People ask stupid questions all the time. 
+</pre></ul>
+過去，拿來緬懷；未來，拿來寄託；現在，只有掌握。頓時，從夢中甦醒，抑或，這是陷入遞迴性的錯覺呢？<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001770.html">12:14 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1770" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">July 25, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001769"></a>
+<h3 class="title">Runlib32 - Linux 的 Rundll32.exe 實做</h3>
+
+rundll.exe (Win16 / Windows 3.x) 與 rundll32.exe (Win32) 是 Microsoft Windows 提供一個特別的機制，允許直接找出 .DLL 或 .EXE 中 function entry，並給定參數後作呼叫，使用方法如下：<ul><pre class="code" style="margin: 6px;">
+Rundll32.exe  DllFileName  FuncName
+</pre></ul>
+如果我們設計了一個 MyDLL.dll，並在其中定義了一個 MyFunc 的函式，於是透過以下指令即可呼叫該函式的實做部份：
+<ul><pre class="code" style="margin: 6px;">
+Rundll32.exe  MyDLL.dll MyFunc
+</pre></ul>
+而不需要額外的應用程式去呼叫，這也讓我們想到，如果某個套裝軟體安裝後，在某個 .dll 提供了惡意的 function，是不是有機會以 shell 去觸發 RunDll32.exe 去執行惡意行為呢？是的，的確有這樣的方式，也有許多變形。這裡不探討作壞事的技術細節 (小弟金盆洗手很久了 :P)，詳細 Rundll 的應用方式可參考 [<a href="http://www.ericphelps.com/batch/rundll/">Using Rundll</a>]，熟悉 Win32 底層技術的開發者，切換到 UNIX 系統時，不免會有些疑惑：是否有類似 Rundll32.exe 的工具去驗證 shared objects 呢？<br>
+<br>
+[<a href="http://www.tty64.org/">izik</a>] 創作了 [<a href="http://www.tty64.org/code/runlib-project/">runlib</a>] 這個軟體專案，允許在 Linux 上施行類似 Win32 Rundll32.exe 的行為，並提供更強大的功能，這裡展示 "Hello World" 的 Runlib 版本：<br>
+<pre class="code" style="margin: 6px;">
+Runlib32$ ./runlib -v -x printf-out libc.so.6,puts \""Hello World"\"
+------------------------------------------------------------
+puts[<0xb7ed8610>]@libc.so.6[</lib/tls/i686/cmov/libc.so.6>]
+------------------------------------------------------------
+
+	* Stack Generated (1 parameters, 4 bytes)
+	-----------------------------------------
+
+	Generated Assembly
+	------------------
+		 * pushl $0xbfce7c9a
+		 * call 0xb7ed8610
+
+	Streams Buffers
+	---------------
+		 * Standart Output (STDOUT) : 15 bytes
+		 * Standart Error  (STDERR) : 0 bytes
+
+	Function Result
+	---------------
+		 * Pointer: No
+		 * Value: 12
+
+Runlib32$ cat printf-out 
+Hello World
+</pre>
+首先，我們試著去尋找 glibc (libc.so.6，數字 6 表示 ABI version) 中 Standard C Library 的 puts 函式進入點，產生 x86 stack push / call 的動作，執行的結果導入 stdout，並獲得一個 Function result，我們將過程所產生的 streams buffers 印出即得到 "Hello World"，[<a href="http://www.tty64.org/code/runlib-project/">runlib</a>] 提供的文件 RUNLIB-HOWTO 介紹更複雜的使用方式，可作為參考。<br>
+<br>
+稍早在「深入淺出 Hello World」系列演講提到 function / system call invocation 的細節，[<a href="http://www.tty64.org/code/runlib-project/">runlib</a>] 就是一個很好的示範，整個程式最核心的部份就是 src/lib.c，而呼叫 syscall 的程式碼片段如下：<br>
+<pre class="code" style="margin: 6px;">        <span class="comment">/*
+         * Manually pushing the function arguments to the stack
+         */</span>
+&nbsp;
+        <span class="keyword">if</span> (ptr->stack) {
+                <span class="keyword">for</span> (j = 0; j &lt; ptr->stack->stack_items; j++) {
+                        __asm__ __volatile__ (\
+                                <span class="literal">"pushl %0 \n"</span> \
+                                : <span class="comment">/* no output */</span> \
+                                : <span class="literal">"r"</span> (ptr->stack->stack[j]) \
+                                : <span class="literal">"%eax"</span> \
+                                );
+                }
+        }
+&nbsp;
+        <span class="comment">/*
+         * Make the CALL!
+         */</span>
+        ret = (<span class="keyword">unsigned</span> <span class="keyword">long</span>) ptr->fcn_handler();
+&nbsp;
+        <span class="comment">/*
+         * Be polite, let's clean the stack afterward
+         */</span>
+        <span class="keyword">if</span> (ptr->stack) {
+                ptr->stack->stack_items *= <span class="keyword">sizeof</span>(<span class="keyword">long</span>);
+                __asm__ __volatile__ (\                       
+                        <span class="literal">"addl %0, %%esp \n"</span> \
+                        : <span class="comment">/* no output */</span> \
+                        : <span class="literal">"r"</span> (ptr->stack->stack_items) \
+                        : <span class="literal">"%esp"</span> \
+                        );
+                ptr->stack->stack_items /= <span class="keyword">sizeof</span>(<span class="keyword">long</span>);
+        }
+
+        s_errno = errno;
+        signal(SIGSEGV, SIG_DFL);
+</pre>
+首先我們必須處理 x86 stack 中 function parameter 的順序與返回狀態的議題，上述兩個 inline assembly 片段則負責這個工作，至於 ptr->fcn_handler，可參考載入 shared object 並查詢 symbol 的部份：<br>
+<pre class="code" style="margin: 6px;"><span class="comment">/*
+ * lib_load, load library and resolv the symbol
+ * * ptr, given library pointer
+ */</span>
+<span class="keyword">int</span> lib_load(libptr *ptr) {
+        <span class="comment">/*
+         * Open handler to library and resolv the symbol/function
+         */</span>
+        ptr->lib_handler = __lib_dlaction(dlopen(ptr->lib_name, RTLD_LAZY));
+        ptr->fcn_handler = __lib_dlaction(dlsym(ptr->lib_handler, ptr->fcn_name));                  
+        <span class="keyword">if</span> (!ptr->lib_handler || !ptr->fcn_handler) {
+                <span class="keyword">return</span> 0;
+        }
+</pre>
+[<a href="http://www.tty64.org/code/runlib-project/">runlib</a>] 也特別處理了 Stream I/O 的部份，也給我們許多新的啟發，比方說實做一個 ELF sandbox，對 Unit test 也派得上用場，特定的 Test case 則可驗證單獨 function，搭配 PIE (Position-Independent Execution) 或許可創造更多變化。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001769.html">10:37 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1769" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001768"></a>
+<h3 class="title">Ubuntu Counter Project</h3>
+
+在 Ubuntu BBS 討論區瞥見 [<a href="http://ubuntucounter.geekosophical.net/">Ubuntu Counter Project</a>]，覺得很有趣，也來玩玩，拿到 Ubuntu User #3423：<ul>
+<a href="http://ubuntucounter.geekosophical.net" title="The Ubuntu Counter Project - user number # 3423"><img src="http://ubuntucounter.geekosophical.net/img/ubuntu-user2.php?user=3423" alt="The Ubuntu Counter Project - user number # 3423" /></a>
+</ul>
+不知道有無比較大的 Icon 呢？突然想到，某公司內部的 Ubuntu-powered machine 越來越多了，不到半年就衝到十幾台 :P<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001768.html">09:18 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1768" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">July 24, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001767"></a>
+<h3 class="title">jpg2ascii 搭配 objcopy 的展示</h3>
+
+連續兩週都在講「深入淺出 Hello World」，也提到 binutils 的操作，但我忽略 objcopy，剛剛試著寫個範例介紹。查詢 man page，得知 objcopy 的功能為 "copy and translate object files"，這是什麼意思呢？man page 又繼續說道：<ul class="code" style="margin: 6px;">
+The  GNU  objcopy  utility copies the contents of an object file to another.  objcopy uses the GNU BFD Library to read and write the object files.   It  can  write  the  destination object file in a format different from that of the source object file.  The exact behavior of objcopy is controlled by command-line options.  Note that objcopy  should  be  able  to copy  a  fully  linked file between any two formats. However, copying a relocatable object file between any two formats may not work as expected.<br>
+<br>
+objcopy creates temporary files to do its translations and deletes them  afterward.   objcopy  uses  BFD to do all its translation work; it has access to all the formats described in BFD and thus is able to recognize most formats without being told explicitly.
+</ul>
+實在很抽象，所以我決定弄個「視覺化」的說明，稍微修改 [<a href="http://jp2a.sourceforge.net/">jp2a</a>] 後，做了一個足以展示 objcopy 的範例。我的目標是將 JPEG 圖檔「植入」ELF 執行檔，這樣只需要一個檔案而不需額外的資料檔，最後透過 [<a href="http://jp2a.sourceforge.net/">jp2a</a>] 原本的功能，將 JPEG image 給 decompress 並作正規化為 ASCII text，執行畫面如下： (click to enlarge)<br>
+<center><a href="http://jserv.sayya.org/helloworld/pix/ascii-ally.png"><img src="http://jserv.sayya.org/helloworld/pix/ascii-ally-small.png"></a></center><br>
+喔，我用的範例圖片是自行繪製的 [<a href="http://blog.linux.org.tw/~jserv/archives/001541.html">隨手畫 - Ally</a>]，這樣可避免複雜的授權議題 (因為要 embedded into ELF executables)。將 JPEG image 轉換為 ASCII text 的演算法這裡就不細談，而我們的重點在於：<ul>
+「該如何用最簡單的方式來將 JPEG image 植入執行檔呢？」
+</ul>
+objcopy 提供很便利的機制，事實上，只需要以下一行指令，就解決我們的問題：<ul><pre class="code" style="margin: 6px;">
+$ objcopy --readonly-text -I binary \
+    -O elf32-i386 -B i386 ally.jpg ally.o
+</pre></ul>
+ally.jpg 就是原始圖檔，然後 objcopy 可產生不折不扣的 ELF relocatable object，這樣我們可進一步作 linking 的動作。咱們觀察輸出的 ally.o：<ul><pre class="code" style="margin: 6px;">
+$ objdump -x ally.o | grep ally
+ally.o：     檔案格式 elf32-i386
+ally.o
+00000000 g       .data	00000000 _binary_ally_jpg_start
+00006e27 g       .data	00000000 _binary_ally_jpg_end
+00006e27 g       *ABS*	00000000 _binary_ally_jpg_size
+</pre></ul>
+於是乎，"ally.jpg" 被標記為以上三個 symbol，分別是資料開始、結束，以及長度等資訊。取得我寫的範例程式 [<a href="http://jserv.sayya.org/helloworld/jpg2ascii.tar.bz2">jpg2ascii.tar.bz2</a>] 後，參考 jpg2ascii.c 可得知如何操作：<ul><pre class="code" style="margin: 6px;">
+extern char _binary_ally_jpg_start[];
+extern char _binary_ally_jpg_end[];
+extern char _binary_ally_jpg_size[];
+...
+/* Drop-in memory-based data source of jpeg_stdio_src(&cinfo, fp); */
+{
+    struct jpeg_source_mgr *src_mgr = NULL;
+
+    /* Setup RAM source manager. */
+    src_mgr = calloc(1, sizeof(struct jpeg_source_mgr));
+    src_mgr->init_source = _jpeg_init_source;
+    src_mgr->fill_input_buffer = _jpeg_fill_input_buffer;
+    src_mgr->skip_input_data = _jpeg_skip_input_data;
+    src_mgr->resync_to_restart = jpeg_resync_to_restart;
+    src_mgr->term_source = _jpeg_term_source;
+    src_mgr->bytes_in_buffer = (int) _binary_ally_jpg_size;                             
+
+    src_mgr->next_input_byte = 
+        (JOCTET *) (unsigned char *) _binary_ally_jpg_start;
+    cinfo.src = (struct jpeg_source_mgr *) src_mgr;
+}
+</pre></ul>
+上面是 libjpeg 的 hack，這樣就可避免使用 FILE stream I/O，而改用 memory-based data，而重點就在於 _binary_ally_jpg_size 與 _binary_ally_jpg_start 的 casting 方式。objcopy 的參數很多，而且也可施加多元的變化，不過大致上這個範例介紹了概念上的使用方式。<br>
+<br>
+稍後，我們會探討如何從一個既有的 ELF 執行檔，如上述的 jpg2ascii，依據特定的 symbol 與長度或內容要求，去萃取出其中的 data representation。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001767.html">10:06 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1767" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001766"></a>
+<h3 class="title">「演講：深入淺出 Hello World (台南場次)」簡報上線</h3>
+
+上週六 (July 22) 舉辦的 [<a href="http://tnlug.linux.org.tw/newest.php?AId=106">TnLUG活動：深入淺出 Hello World - 台南場
+</a>]，如期結束，有興趣的朋友可取得簡報 [<a href="http://jserv.sayya.org/helloworld/HackingHelloWorld-2006-07-22.pdf">HackingHelloWorld-2006-07-22.pdf</a>] 作參考，搭配的 sample files 也請一併參考 [<a href="http://jserv.sayya.org/helloworld/samples-2006-07-22.tar.bz2">samples-2006-07-22.tar.bz2</a>]，簡報內文為 [<a href="http://creativecommons.org/">Creative Commons</a>] 授權，sample files 則是 Public Domain 形式發佈。<br>
+<br>
+週六午夜開始 hack OpenOffice，因為之前的簡報一直弄不出我預期的效果，弄著弄著整夜沒睡，之後就趕去搭乘台鐵自強號，自松山站一路站到台南站，東搖西晃終於結束 4.5 hr 的路程，這段時間我閱讀 [<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010330416">果蠅．基因．怪老頭：生物行為起源的探尋</a>]，相較於之前讀過生物類的科普讀物，Jonathan Weiner 與 Seymour Benzer 用豐富的人文筆調，潤飾了艱澀的技術細節，也多次引用我喜愛的詩人 [<a href="http://www.blakearchive.org/blake/">William Blake</a>] 的詩作，以靈性的角度巧妙詮釋基因與生物行為，希望日後我的創作也能仿效這樣的筆觸與思維。這次的演講更清楚地提到 "Orz Programming 2.0" 的概念，強調「寫程式就會遇到挫折，而且在 Runtime 發生的行為更是難以預料」，這導致我們心中滿滿的 "Orz" 符號。其次，這次也略為提到 shellcode，以及可用來輔助建構 shellcode 的工具與流程，因為有 Kuon 與 zha 等 hacker 蒞臨指導，所以中間的空檔就提了一些有趣的技術細節，如果日後有時間，或許也可討論 UNIX 與 Win32 在實做細節與 system call 方面的異同處。<br>
+<br>
+當然，要感謝 HaWay 協助處理場地與議程進行，與當日熱心商借視聽教室的老師，還有冒著炙熱天氣出門與會的朋友們，當時還真讓我嚇一跳，網頁報名人數有 80 人，當天前來的人數也頗驚人，很高興對於這麼冷門的主題還願意前來指教，也歡迎來信討論指教，謝謝！<br>
+<br>
+儘管花了很多時間探討，其實我覺得還是沒有把 "Hello World" 程式運作在 Linux 的 Runtime 行為解釋清楚，目前已經展開 Part II 的內容，預計有以下項目：<ul>
+<li>"Hello World" on User-Mode-Linux + gdb</li>
+<li>Linux memory model - VMA, LMA, MMU Overview, etc.</li>
+<li>深入 syscall</li>
+<li>透過 x86 / ARM / MIPS emulator 作系統分析</li>
+<li>Profiling 與 Realtime analysis</li>
+<li>Embedded Linux 專題實做與技巧探討</li>
+</ul>
+乍看這些子項目，似乎與 "Hello World" 相形漸遠，這裡援引 William Blake 的「感覺調整」來說明。一旦我們看清楚一切事物的本來面貌，會發現，那個面貌就是「無限」，就如他的詩作〈Auguries of Innocence〉的三十五段、超過八百字中最經典的一段：<ul><pre class="code" style="margin: 6px;">
+    To see a world in a grain of sand,
+    And a heaven in a wild flower,
+    Hold infinity in the palm of your hand,                                                         
+    And eternity in an hour.
+</pre></ul>
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001597.html">保有瞬間的永恆</a>] 已經引用過此詩作，而這裡談談與 Programming 相關的概念。平凡的事物，如一粒沙子或一朵野花者，對多愁善感的詩人來說，啟發思維並造就不朽的作品，化一剎那成了永恆。心思越單純的人，就賦予越豐富的想像力，好比垂髫童子的幻想世界，總是天馬行空、不為成人們所無法了解，我多次提及的 "Hello World" 程式亦然。好的作家不僅需要對文字的良好掌握能力，更需要過人的想像力與領悟力，而好的程式設計師就是一個特別的作家，讀者是電子機械與使用產品的人們，唯有我們掌握了這最基本的概念與原則後，才得以體會「一沙一世界」的真諦，屆時，再來探討 Embedded Linux、Linux Memory model、x86 execution flow，或者其他複雜的技術，才發現那些只是「無限」的各種表示罷了。<br>
+<br>
+未來，希望我能繼續整理這些跨越 user-space 與 kernel-space、從極其簡單的蛛絲馬跡去探索整個複雜的系統，以及進一步掌握系統層面的設計與改良議題，找時間分享，看看能否激發更大的想像力迴響。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001766.html">01:58 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1766" onclick="OpenComments(this.href); return false">迴響 (5)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">July 21, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001765"></a>
+<h3 class="title">Qtopia Phone Edition VMware Image (4.1.3)</h3>
+
+<center><img src="http://www.linuxdevices.com/files/misc/qtopia_phone_edition_demo.png"></center><br>
+之前提過 [<a href="http://blog.linux.org.tw/~jserv/archives/001673.html">Qtopia Phone Edition Live-CD</a>]，Trolltech 又更新 Qtopia Phone Edition 的 Demo，並且做了 VMware Image，可使用 [<a href="http://www.vmware.com/download/player/">WMware Player</a>] 來執行。取得 Trolltech 官方 image 的方式可參考 [<a href="http://www.trolltech.com/products/qtopia/learnmore/qtopiademo">Qtopia Phone Edition demo</a>]，我另外在台大的伺服器上做了一份 mirror，可取得 [<a href="http://kde.linux.org.tw/~jserv/qtopia-4.1.3-2006_07-07_1115.zip">qtopia-4.1.3-2006_07-07_1115.zip</a>] (MD5sum: 3d0f2f7729e13c0499c5f8b4edff4214, Size: 105Mb)，相較於之前的 qtopia-4.1.1，又做了些修正，現在更順暢了。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001765.html">11:06 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1765" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">July 20, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001764"></a>
+<h3 class="title">X Window 下泰文輸入法實做概況</h3>
+
+活躍於泰文 Linux 社群的 [<a href="http://linux.thai.net/~thep/">Theppitak Karoonboonyanan</a>]，日前撰寫了一份文件 [<a href="http://linux.thai.net/~thep/th-xim/">Thai Input Method Implementations</a>]，探討了泰文書寫系統的歷史緣由與資訊化處理的議題，過去在 Unicode 之前，曾有若干廠商制定了TIS-620 八位元字元集的 WTT 2.0 (發音為 "Wor Thor Thor"，為泰文 "Wing Thook Thee" 的縮寫，意思就是到處通行)，泰文資訊化的過程不僅得面臨數位表示的問題，伴隨輸出與輸入系統也在 WTT 2.0 的設計考量中，Unicode 的制定有吸取部份 WTT 的經驗與看法，但仍有不足處，也因此，作為一種妥協與簡化的規格與實做分析也被提出。<br>
+<br>
+文章很大部份在探討 WTT 的規格與原則，諸如以十七種字元結合狀態的表示法、WTT-based Input Sequence Correction，與 CJK 相較不同的系統需求等，接下來探討 X Window System 下傳統 XIM 的運作方式，也分析了 Xi18n 的實做 (modules in Xlib & XIM protocol)，最後則提到 Gtk+ 與 Qt IM module，也可以看到泰文輸入發展的近況與參考資訊。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001764.html">08:32 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1764" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001763"></a>
+<h3 class="title">惡搞 C++</h3>
+
+我很佩服那些熟悉 C++ Programming 的高手，之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001492.html">用 C++ Template 算階層</a>] 與 [<a href="http://blog.linux.org.tw/~jserv/archives/001300.html">Awesome C++</a>] 提到如何一「虧」C++ 之美，實在不是我這種平凡人可以想像的，美妙的 C++ Programming Language 對我來說，就如杜甫〈贈花卿〉所說：「此曲只應天上有，人間能得幾回聞！」。剛剛又作新的惡搞：
+<ul><pre class="code" style="margin: 6px;"><span class="keyword">struct</span> Foo {
+    Foo&amp; <span class="keyword">operator</span>() () { <span class="keyword">return</span> *<span class="keyword">this</span>; }
+};
+<span class="keyword">int</span> main(<span class="keyword">void</span>)
+{
+    Foo foo;
+    ((foo ()) ())()();                                                                              
+    <span class="keyword">return</span> 0;
+}</pre></ul>
+乍看還有種 LISP 的風味呢，說是「惡搞」一點也沒錯，用 objdump 看一下：<ul><pre class="code" style="margin: 6px;">
+$ objdump -S foo | grep -A23 main
+080483c0 <main>:
+ 80483c0:	8d 4c 24 04          	lea    0x4(%esp),%ecx
+ 80483c4:	83 e4 f0             	and    $0xfffffff0,%esp
+ 80483c7:	ff 71 fc             	pushl  0xfffffffc(%ecx)
+ 80483ca:	55                   	push   %ebp
+ 80483cb:	89 e5                	mov    %esp,%ebp
+ 80483cd:	51                   	push   %ecx
+ 80483ce:	83 ec 14             	sub    $0x14,%esp
+ 80483d1:	8d 45 fb             	lea    0xfffffffb(%ebp),%eax
+ 80483d4:	89 04 24             	mov    %eax,(%esp)
+ 80483d7:	e8 26 00 00 00       	call   8048402 <_ZN3FooclEv>
+ 80483dc:	89 04 24             	mov    %eax,(%esp)
+ 80483df:	e8 1e 00 00 00       	call   8048402 <_ZN3FooclEv>
+ 80483e4:	89 04 24             	mov    %eax,(%esp)
+ 80483e7:	e8 16 00 00 00       	call   8048402 <_ZN3FooclEv>
+ 80483ec:	89 04 24             	mov    %eax,(%esp)
+ 80483ef:	e8 0e 00 00 00       	call   8048402 <_ZN3FooclEv>
+ 80483f4:	b8 00 00 00 00       	mov    $0x0,%eax
+ 80483f9:	83 c4 14             	add    $0x14,%esp
+ 80483fc:	59                   	pop    %ecx
+ 80483fd:	5d                   	pop    %ebp
+ 80483fe:	8d 61 fc             	lea    0xfffffffc(%ecx),%esp
+ 8048401:	c3                   	ret
+$ c++filt _ZN3FooclEv
+Foo::operator()()
+</pre></ul>
+可以從產生的機械碼中看出 method invocation 的過程，有四次 operator() 的 invoking 動作，再多弄幾個 ()，大概眼睛就花了。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001763.html">02:31 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1763" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001762"></a>
+<h3 class="title">符合 ELF32/i386 格式的最小 "Hello World"</h3>
+
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001759.html">「深入淺出 Hello World」演講 Sample 檔案上線</a>] 公佈了「深入淺出 Hello World」演講所用的 sample files，後續維護的版本可透過 Subversion 取得：<ul><pre class="code" style="margin: 6px;">
+# svn co https://svn.csie.net/helloworld/samples
+</pre></ul>
+我新增了 "A5-nasm" 範例，是我目前寫出符合 ELF32/i386 格式的最小 "Hello World" 程式，用 readelf 觀察：<ul><pre class="code" style="margin: 6px;">
+$ ls -l hello
+-rwxr-xr-x 1 jserv jserv 115 Jul 20 13:19 hello
+$ ./hello 
+Hello World!
+$ readelf -a hello
+ELF Header:
+  Magic:   7f 45 4c 46 01 01 01 00 00 00 00 00 00 00 00 00 
+  Class:                             ELF32
+  Data:                              2's complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              EXEC (Executable file)
+  Machine:                           Intel 80386
+  Version:                           0x1
+  Entry point address:               0x804804c
+  Start of program headers:          44 (bytes into file)
+  Start of section headers:          0 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               52 (bytes)
+  Size of program headers:           32 (bytes)
+  Number of program headers:         1
+  Size of section headers:           0 (bytes)
+  Number of section headers:         0
+  Section header string table index: 0
+
+There are no sections in this file.
+There are no sections in this file.
+
+Program Headers:
+  Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
+  LOAD           0x000000 0x08048000 0x08048000 0x00073 0x00073 RWE 0x1000
+
+There is no dynamic section in this file.
+There are no relocations in this file.
+There are no unwind sections in this file.
+No version information found in this file.
+</pre></ul>
+程式碼的註解參考了 /usr/include/elf.h 提供的 ELF Header 資訊，並且填入必要的欄位，可對照參考，所以這 115 bytes 就成為具體而微的 "Hello World" 程式了，在依循 ELF32 format 的前提下，應該沒辦法再縮小空間。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001762.html">01:26 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1762" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">July 18, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001761"></a>
+<h3 class="title">「演講：深入淺出 Hello World (台中場次)」簡報上線</h3>
+
+上週六結束的 [<a href="http://blog.linux.org.tw/~jserv/archives/001728.html">演講：深入淺出 Hello World -- 理解 Linux 上運作 Hello World 的種種機制 (台中場次)</a>]，簡報已經 upload 了，可取得 [<a href="http://jserv.sayya.org/helloworld/HackingHelloWorld-2006-07-15.pdf">HackingHelloWorld-2006-07-15.pdf</a>] 作參考，搭配的 sample files 請參考 [<a href="http://blog.linux.org.tw/~jserv/archives/001759.html">「深入淺出 Hello World」演講 Sample 檔案上線</a>]，簡報內文為 [<a href="http://creativecommons.org/">Creative Commons</a>] 授權，請多指教，謝謝！<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001761.html">12:16 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1761" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">July 17, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001760"></a>
+<h3 class="title">Challenge X：Crossover to Sustainable Mobility</h3>
+
+剛剛在 EETaiwan 瞥見報導 [<a href="http://www.eettaiwan.com/ARTP_8800425713_676964.HTM">「X挑戰賽」揭示未來汽車面貌</a>]，讓我注意到上個月剛公佈排名的 [<a href="http://www.challengex.org/">Challenge X：Crossover to Sustainable Mobility</a>]。這個為期三年、由美國能源部、GM、Freescale、National Instruments 等單位贊助的大型競賽，主要目標是提升混合引擎動力車的效能、消除有害物排放並降低成本，今年進入第二年，參與此次競賽的 University of Wisconsin  團隊總監 Glenn Bower 表示：<ul>
+「現在，已經有兩種人會購買混合動力車。工程師們購買混合動力車的原因是他們對這種科技著迷，而環保人士購買的理由是他們認為此舉可節省化石燃料。但對多數消費者來說，除非價格下降，否則他們不會購買混合動力車。... 我們所做的改良將為消費者提供更多節能優勢，因為它將僅花費約四千到五千美元的貼水，在一輛汽車約五到六年的生命週期中，大約可節省 1,000~1,500 美元的汽油費。」
+</ul>
+報導中概略介紹前三名得主中，所採用的技術與實施方案，依稀憶及《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010204117">綠色資本主義－創造經濟雙贏的策略</a>》一書第二章「未來汽車：超級汽車與理想社區」的內文，書中提到：<ul>
+世界上最大的產業，汽車運輸業，正朝著「四倍數」地方向前進。目前，汽車在提昇資源生產力已有重大突破，業者開始採用耐久性材料來封鎖材料循環。這些耐久性材料可以不斷重複使用，這將會大幅減輕空氣污染和溫室效應。然而，這必須透過徹底檢討汽車結構才能實現，重組這個已經在經濟體系中取得穩定發展地位的產業動力，並非來自上層決策者的命令、稅收或補助，而是來自於創新技術、顧客需求和企業之間的競爭。
+</ul>
+雖過了六年，書中所提的數據與趨勢仍有一定的參考性。[<a href="http://www.challengex.org/">Challenge X</a>] 的參賽隊伍中，有若干隊採用燃料電池作為高效率的驅動並可重複利用煞車能量，這接近書中「超級汽車」的想法，就目前的技術來說，先進的混合電力動力系統，其重量只需要低於蓄電池的三分之一，再來，書中提到一般人對燃料電池中壓縮氫氣的安全疑慮：<ul>
+裝著壓縮氫氣到處行駛的高效能汽車，事實上要比帶著等效能油箱的汽車還安全。... 雖然氫氣容易著火，但要達到燃點所需的空氣量，要比點燃汽油所需高出三倍，而引爆氫氣則需要七倍的空氣量。... 由於氫氣獨特燃燒性質，在 1937 年 Hindenburg 飛船災難事件中，沒有人是直接被氫氣燃燒死亡，有些人是死於柴油灼傷，有些死於跳船，而其他六十二名坐在燃燒飛船的乘客，都安全返回地面。這是因為氫氣火焰只在上空盤旋上升，所以才得以毫髮無傷地逃脫這場災難。
+</ul>
+當然，動力來源只是其中一個議題，真正能大量生產、廣為接受的混合動力車仍有很大段的路要走，[<a href="http://www.challengex.org/">Challenge X</a>] 是個很好的里程碑，讓這之中的軟體、硬體、機構，以及控制等項目，能夠全面性的發展並投入應用，衷心期待未來人們不僅能獲得良好的交通便利性，也能對環境的破壞程度降到合理的水準。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001760.html">04:18 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1760" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001759"></a>
+<h3 class="title">「深入淺出 Hello World」演講 Sample 檔案上線</h3>
+
+之前提過的 [<a href="http://blog.linux.org.tw/~jserv/archives/001728.html">演講：深入淺出 Hello World -- 理解 Linux 上運作 Hello World 的種種機制 (台中場次)</a>]，在上週六已經落幕，感謝天公作美，雖然早上台中下大雨，但近中午時就放晴了。週六當天開始把之前作的文件整理成 slides，但是發現不同版本的 OpenOffice 簡報文件竟然不相容，所以後來花了很大的時間用 MS-PowerPoint 重打，就這樣，保持未闔眼的狀態到搭乘火車前一小時才弄好，在台鐵自強號列車上又吹到強烈的冷氣，害我整個人頭痛好久...<br>
+<br>
+目前 slides 的排版有很大的問題 (估計跟 PowerPoint 有關)，所以暫時不放上來，先提供當天演講所用到的 sample files，可下載 [<a href="http://jserv.sayya.org/helloworld/samples-2006-07-15.tar.bz2">samples-2006-07-15.tar.bz2</a>]，數字開頭的目錄是 "Orz Programming 2.0" 的「展示程式」，而 A 開頭的目錄則表示 Annex，對照於 "Orz Programming 1.0"，以下是 sample 列表：<ul>
+<li>00-pureC</li>
+<li>01-preload</li>
+<li>02-avoid-preload</li>
+<li>03-dynamic-loading</li>
+<li>04-PIE</li>
+<li>05-printf-vs-puts</li>
+<li>06-backtrace</li>
+<li>07-SegFault</li>
+</ul>
+使用 Debian 或 Ubuntu 系統的朋友，請安裝 package [<a href="http://packages.debian.org/stable/devel/binutils-dev">binutils-dev</a>] 與 [<a href="http://packages.debian.org/stable/text/colordiff">colordiff</a>]，進入每個目錄後，執行 make 即可建立個別的 "Hello World" 程式，並且可參考 run.sh 來執行，授權方式當然是 Public Domain 了。這週六 (July 22) 在台南還有一場，詳情可參考 [<a href="http://tnlug.linux.org.tw/newest.php?AId=106">TnLUG活動主題：深入淺出 Hello World - 台南場</a>]，我決定將 "Orz Programming 2.0" 的 Sample 再加入三個，並且將原本探討 ELF 與 dynamic linking 的部份作些壓縮，把 slides 拆成主要的部份，以及可事後參考的 extra parts。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001759.html">12:20 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1759" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">July 14, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001758"></a>
+<h3 class="title">生活就像洋蔥</h3>
+
+幾米曾說過：<ul><pre class="code" style="margin: 6px;">
+「其實，
+  生活就像洋蔥，
+  一片一片地剝開，
+  總有一片會讓我們流淚。」
+</pre></ul>
+真正雋永的文字不需要繁複的文字包裝，但是卻能讓人透過字裡行間，感受原作者的深度與情感，短暫的人生，不啻充滿著酸甜苦辣，不也有
+
+令人回味不止的「洋蔥」嗎？不知道念舊的定義為何，亦不清楚具體的表現又是如何，我只知道與其瞻首明日，有時候我寧可活在往昔的光影
+
+，即便過去對我來說，是如此的晦暗。<br>
+<br>
+七年前的某一天，娜娜寄了一封信給我，裡面包含她自己做的軟木卡片，很精緻，上面刻劃著勵志格言，自此，這張小卡一直夾在我的皮夾中
+
+，不時會取出自勉。這七年中，經過無數的擠壓、兵役出操的汗水浸濡，以及軟木本身的變質，已經出現些微的損毀，但是特別的是，字跡至
+
+今仍可清楚辨識，雖然我從未作特別的保護，反而是皮夾已經壞了兩次。<br>
+<br>
+一年前整理信件時，恰好又瞥見小貓捎來的記憶，其中，小貓的札記 [夜裡的台南] 觸動我相當多的思緒，我特別喜愛第一段：<ul><pre 
+
+class="code" style="margin: 6px;">
+我在黑暗裡向這裡道別
+離開時的行李  化做無骨的依偎
+我在黑暗裡向這裡道別
+回眸時交會的雙瞳　是黑貓望著我蹣跚的步伐
+車燈的濃度不若從前  我拋棄的一部份你的和我的
+回來的心情未必能拾起  散落了
+</pre></ul>
+一直試著捕捉這樣的感受，但卻不免流於「為賦新詞強說愁」的矯情，而小貓卻能相當精確的勾勒，這是令我相當佩服的。道別，拎著行李的
+
+目送，何時能再重逢？我不知道，也不敢去想，或許只是無止盡的空虛吧。<br>
+<br>
+是過客吧，我彷彿是個葉片，一個枝枒末處的微小生命體，忘卻自我，尋找到一種暫時的永恆，不，我寧可說是解脫，恣意的受飛揚的風牽引
+
+，但最終仍不免依循牛頓力學，徐徐的落下，葉片上，還有遠在天上靜止如雲的妳，所投影的蹤跡，還有過按壓的痕跡。當記憶逐漸蒸逝，我
+
+漂浮在永恆的河畔中，於是，怎能不思念，那遺忘與曾經擁有的過去？<br>
+<br>
+颱風帶來強勁的雨勢，這場雨，淅淅瀝瀝不止，卻也喚醒我沉睡的記憶。周夢蝶在《等待》中寫到：<ul><pre class="code" style="margin: 
+
+6px;">
+「我是眼中的瞳仁
+  雖有容納這世界一切美醜的閱歷
+  卻也厭倦這單掉了
+  於是我們的眼便只好闔上
+  可不是入眠，是等待」
+</pre></ul>
+時時刻刻與詩為伍，一生孜孜不倦的周夢蝶，詩就是生命的全部，安逸的生活、外界的毀譽、紅塵俗世，對他來說都不足掛齒。可想見，此刻
+
+的周夢蝶正等待他人，以詩與他真心對話吧，而心中最後一絲的純真，是否也願意追隨詩人一般，等待著呢？一個旖旎的景象，多次迴盪在夢
+
+境，山花爛漫、清泉綿綿，谷間隱約傳來脆生生的鳥鳴，雨停歇，枝枒正要伸展新芽，心靈的幽處有種渴望在生長，如同那充滿生命力的胚芽
+
+，迎接初春而要破土而出。瞧著外頭的日光，我是多麼知足，冒雨涉足如此漫長的歷程，只為到忘憂谷，與大自然對話，這才是真我啊。<br>
+<br>
+早晨起床後，了無睡意，頓時有些詩興，久久沒沾濡文墨的雙手，竟然無法訴諸紙筆紀錄。心坎聯想到《老子》中這麼記載：<ul><pre 
+
+class="code" style="margin: 6px;">
+「上士聞道，勤而行之；
+  中士聞道，若存若亡；
+  下士聞道，大笑之。」
+</pre></ul>
+文化低落者如我，就算有機會聞道，大概也只是如莽夫不解奧意，狂笑不止吧，怎不羞愧？是此，我迷失了，存在的價值為何呢？或許，這慢
+
+無目標的旅程是我的宿命，這不禁令我想到劉軒在《Why not？給自己一點自由》提及：<ul><pre class="code" style="margin: 6px;">
+「每個人的一生，
+  都有些流浪的自由，
+  流浪的目的不是為迷失自己，
+  而是為了把自己放在天地之間，
+  成熟得即使肉體漂泊，
+  心靈也能不再漂泊。」
+</pre></ul>
+物化的自我，難以透過唯心論解釋「自我存在的意義」這個命題，轉而嘗試透過物理的途徑，或許可以得到一些啟示。《How Nature Works》
+
+這本科普讀物介紹一個稱為「自構臨界機制」(self-organized criticality) 的物理學新理論，以全方位思考自然界的基本問題 －<ul>
+「大自然為什麼那麼複雜」
+</ul>
+物理學家根據實驗與觀測結果藉以尋求「以最簡單的法則來闡述複雜的大自然」的真諦。<br>
+<br>
+大霹靂理論問世之後 ，宇宙就被認為是按照著這些規律來進行演化，然，宇宙在經歷大霹靂後，如何從區區幾種基本粒子開始演化成生命，乃
+
+至人類歷史、經濟活動等複雜現象？「自構臨界機制」以全新方法來看待自然界。它的基本概念為：<ul>
+「當永久性失衡現象將要來臨之際，一種臨界狀態 (critical state) 便會出現」
+</ul>
+在此前提下，作此推論：<ul>
+「在明確的統計學範圍內，自然界將會演變成任何可能發生的事情」
+</ul>
+著名科學家 John von Neumann 曾經提到，沒有一個獨特的理論能夠處理非平衡體系這個如此浩翰的科學領域，或許「自構臨界機制」是開路先鋒吧。思索著這個理論之際，身軀似乎頓時被簡約化成若干基本粒子，深深著迷於賦予生命的強大力量，該是何等的不可思議。<br>
+<br>
+英國浪漫派詩人 Shelly 的〈雲雀〉：<ul><pre class="code" style="margin: 6px;">
+    We look before and after,
+      And pine for what is not;
+    Our sincerset laughter
+      With some pain is fraught;
+    Our sweetest songs are those that tell of sadddest thought.
+                                            (Shelly, "To a Skylark")
+
+        我們瞻前顧後，
+          所渴望的，卻是虛無；
+        在最真誠的笑容中，
+          滿載著痛苦；
+        我們最甜美的歌聲，所訴說的是，最悲傷的心思。
+</pre></ul>
+浩瀚的宇宙必定依據若干基本準則運行，非平衡體系的提出，也象徵著能以更廣的角度去解釋，事實上，無論是物質面抑或精神生活面，其實
+
+都是個巨大無比的洋蔥球，我們以有限的時間與精力，一片一片地剝開，編織著個別單元獨一無二的記憶，回眸時交會的雙瞳，不自覺就被洋
+
+蔥片所潤濕周圍了。然而，簡短的〈雲雀〉道盡了這一切，充滿矛盾與冀望的心靈，或許，等待是最好的解答...<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001758.html">03:03 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1758" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">July 13, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001757"></a>
+<h3 class="title">天黑黑</h3>
+
+<ul><pre class="code" style="margin: 6px;">
+天黑黑 - 孫燕姿
+曲︰李偲菘      
+詞︰廖瑩如 吳依錚 
+編︰吳慶隆        
+
+我的小時候　吵鬧任性的時侯
+我的外婆　總會唱歌哄我    
+夏天的午後　老老的歌安慰我
+那首歌好像這樣唱的        
+
+＊天黑黑　欲落雨　天黑黑　黑黑
+
+離開小時候　有了自己的生活
+新鮮的歌　新鮮的念頭      
+任性和衝動　無法控制的時候
+我忘記　還有這樣的歌      
+
+重唱　＊
+
+＃我愛上讓我奮不顧身的一個人
+我以為這就是我所追求的世界
+然而橫衝直撞被誤解被騙    
+是否成人的世界背後　總有殘缺
+
+＋我走在每天必須面對的分岔路
+我懷念過去單純美好小幸福  
+愛總是讓人哭　讓人覺得不滿足
+天空很大卻看不清楚　好孤獨  
+
+重唱　＃,＋
+
+天黑的時候　我又想起那首歌 
+＃我愛上讓我奮不顧身的一個人
+我以為這就是我所追求的世界
+然而橫衝直撞被誤解被騙    
+是否成人的世界背後　總有殘缺
+
+突然期待　下起安靜的雨
+原來外婆的道理早就唱給我聽
+下起雨　也要勇敢前進
+我相信　一切都會平息好孤獨  
+我現在　好想回家去
+</pre></ul>
+Last accident caused a great deal of upset, and I just recall that. Suddenly, someone shattered it like glass, and I know at frist that that is what I had experience of because that is what I was taught that it was about abuse. I defy you to prove I have cheated that I shall not mind at all. Being defeated, and I am as an underdog.<br>
+<br>
+*sigh*<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001757.html">07:16 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1757" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001756"></a>
+<h3 class="title">Hello World !</h3>
+
+自從貼出 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001728.html">演講：深入淺出 Hello World -- 理解 Linux 上運作 Hello World 的種種機制 (台中場次)
+</a>] 後，幾乎每天都會收到網友的來信或 private message，有來信說對方是成功大學的學長、學弟，請多指教一類的 (原來心得分享也有「認親」的作用？)；也有來信要我幫忙 debug、移植 toolchain、建構 kernel debugger；還有出錢請我 tune 在 ARM9 與 MIPS 下某個 codec 的 performance... 感謝各位網友的支持與幫忙打廣告，結果連對岸的新聞網站都出現這次演講的資訊 (!!)，不過，問最多的問題還是：<ul>
+<li>台南場次在什麼時間？</li>
+<li>ARM 與 MIPS 架構的課程要怎麼參加？</li>
+<li>需要什麼背景知識？</li>
+</ul>
+簡要的回答，第一，台南場次時間訂於 7/22，詳情見 [<a href="http://tnlug.linux.org.tw/newest.php?AId=106">TnLUG活動主題：深入淺出 Hello World - 台南場</a>]，相關的問題 (台中或台南場)，請多利用討論區 [<a href="http://phorum.study-area.org/viewforum.php?f=22">酷！學園 :: 檢視版面 - SA相關活動討論區</a>]；第二，目前已安排為某公司作兩天的 ARM training，請來信附上聯絡資訊，再來進一步安排；最後，所謂的背景知識應該要明確列出，不過我總認為，這種公開且免費的議程，不應該做太多限制，而且每個人的學習歷程不同、領悟力也有所差異，最重要的是，之所以題目定為「深入淺出 Hello World」，就是希望從不同的角度去思考。前面提到給其他公司的 training，以往題目都訂得很死板，比方說 "Practical Introdcution to GNU Toolchain"、"ARM System Programming"，以及 "Embedded Linux Development"，不僅準備教材內容是個苦差事，來參加 training 也很辛苦。<br>
+<br>
+有時後會很懷念起，十幾年前開始學習程式設計的模樣，那個時候，80386 搭配 DOS，竟然可以做出那麼多事情，而且對系統的掌握還算足夠，或許，系統夠簡單吧。國小只學習兩種程式語言，一個是 BASIC，另一個是 8086 Assembly，前者開機時就有 BASIC ROM，而且 MS-DOS 後來也提供 QuickBASIC，後者就不必說了，debug.com 打開後，用 "e" 和 "u" 指令就一窺系統軟體的奧妙，好幾個寒暑假就泡在追蹤 DOS 核心與 BIOS 呼叫中度過。那時候，還不懂英文的我，翻著一堆原文技術書籍，依樣畫葫蘆加上亂猜就敲了一些程式進去，也很幸運的動起來，於是，陸續就開始整合一些小程式，逐漸開發出小型專案，說也好玩，等我會寫 "Hello World" 程式時，是國中以後的事情了，那時候才懂 "World" 單字的意思。當然，我不是個好的 programmer，學的東西還只是皮毛罷了，但是，讓我覺得相當幸運的是，我當初接觸的系統是 80386/DOS，只要看到 DOS 提示字元 C:\&gt; 就讓我高興的睡不著，太神奇了，竟然有互動的效果，好像能跟電腦「說話」一樣，如果是現在的小孩，恐怕會覺得單調無趣至極吧。debug.com 對我來說，是個多麼神奇的程式，可以動態修改一個程式的行為、可作有限度的單步追蹤，也能寫些小程式，用中斷呼叫激發出種種不可思議。<br>
+<br>
+然而，現在一切都改觀了，就算是相當有經驗的程式設計師，都得依賴某些「假設」，任憑這些「黑盒子」充斥於系統，開發工具很先進，但設計程式卻有種空虛感，不自覺就遇到來自底層的問題，甚至發生許多效能瓶頸，卻只能無助發呆... 該如何提昇寫程式的「樂趣」，是我一直想做的，進而，如何也對 System Programming 產生濃厚的興趣，則是另一個想探討的方向。以前玩電腦，都是偷偷的玩，趁大人不在家，努力的敲程式碼並反覆測試，住在鄉下也難以接觸電腦資訊，更別說花錢買軟體了，升國中的暑假，很想學習 C 語言，也在 K&R 的教材看到 "Hello World" 的程式，可是我沒有 C compiler，所以我決定要寫一個 compiler，想想，那時候多好笑，只要 COPY 一下就有了，何苦要折磨自己呢？最後，我用 QuickBASIC 寫了簡單的 C interpreter，外加一個不能動的 C compiler，但這過程卻讓我成長了。換做是今日，看到自己小孩晚上偷偷爬起床，抱著一堆電腦書籍，努力敲著鍵盤，盡寫些奇奇怪怪的程式，然後看到孩子因為螢幕上出現幾行文字，高興得蹦蹦跳跳，然後問了為什麼事情高興，只答覆了一堆不知所云的術語，該作何感想？<br>
+<br>
+過去，一直把「玩電腦」、「寫程式」當作興趣，接觸的軟硬體環境也很單純，直到上了大學，我才將家中那台古董 80386 電腦收起來。在二十世紀末，目睹了軟硬體工業技術的巨變，不得不對心態作調適，過了好多年才發現，「玩電腦」、「寫程式」對我來說，已經偏離興趣很久了，特別是成為我謀生的工具後，常常陷入一種迷思：興趣與工作能兼顧嗎？「深入淺出 Hello World -- 理解 Linux 上運作 Hello World 的種種機制」這場演講中，會由一個簡單不過的 "Hello World" 程式開始，逐步揭開重重布幕，我不會談如何為了執行 C 語言撰寫的 "Hello World" 程式，去設計一個 C compiler 的過程，相反地，我們會看到一個設計良好的系統如 Linux 者，本身就是多大的「黑盒子」，運作 "Hello World" 的過程中，底層與上層有多少微妙的互動，以及一些 system programming 的演化，對於系統掌握度的衝擊。<br>
+<br>
+昨天打了一天的簡報，一邊準備一邊想，不自覺又陷入思考，而今天早上跟某個廠商開會後，談論到某個深奧的技術，而我們能做的，除了涉獵厚重的文件外，大概只能無力地呼叫 API 了，或許，這才是完成專案的態度，請接受種種「假設」與「黑盒子」，因為我們身處於「先進科技的時代」。哎呀，我又借題發揮，並抒發牢騷，又淪為一篇沒意義的文字集合了，罪過、罪過。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001756.html">03:58 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1756" onclick="OpenComments(this.href); return false">迴響 (5)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">July 10, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001755"></a>
+<h3 class="title">軟體之「超英趕美」</h3>
+
+剛剛看到一篇大陸網友的轉載文章 [<a href="http://charleyz.spaces.msn.com/blog/cns!723730EE06F119C2!240.entry?_c11_blogpart_blogpart=blogview&_c=blogpart#permalink">中國人奇強：十大最成功國產軟件排行</a>]，並未標注原始出處，不過我想原作者應該很樂見「國產軟件」遍及四海吧。我欣賞對岸眾多才華洋溢的開發者，而且他們的確生產了許多高品質的軟體，不過瞥見文章中的兩份圖片：<br>
+<center><img src="http://jserv.sayya.org/misc/support-china-1.jpg"><br>(一)<br><img src="http://jserv.sayya.org/misc/support-china-2.jpg"><br>(＝)</center><br>
+竟然令我無心詳讀文章，整個心思頓時被「三面紅旗」、「超英趕美」，以及「土法煉鋼」等口號所佔據，想當年，毛主席在 1957 年公開提出「超英趕美」，希望新中國在十五年間，鋼鐵和重要工業產品產量方面趕上英國，稍後由劉少奇在該年十二月所召開的中共八大全會上，宣布此口號，然而民粹性的「大躍進」在當時並未收到預期效果，反而因土法煉鋼，農地破壞造不堪，短短幾年間，中國人文史地課本所描述的景觀頓時改寫，並且造成連續三年大饑荒，付出的慘痛代價，實難以言語。有意思的是，半個世紀後的「新中國」在去年 (2005 年) GDP (國內生產總值) 增長 9.9%，經濟規模達到二點二兆美元，換言之，大陸已超越英國 GDP 二點一八18兆美元，躍居全球第四大經濟體。<br>
+<br>
+不過，「三面紅旗」、「超英趕美」，以及「土法煉鋼」時代並非一無可取，歷史學家黃仁宇指出，人民公社與大鍋飯的勞動累積是日後改革的基礎，今日的中國大陸已經不是過去樹立「超英趕美」高標準，苦苦直追的模樣，相反地，躋身於四大經濟體的中國，在許多領域蟄居領導地位，而中國軟體業更不容小覷，然而，IT 產業是否能個掛個「三面紅旗」，抱持「人多好辦事」的心態，以民族主義跟「列強」搏鬥呢？<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001755.html">01:24 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1755" onclick="OpenComments(this.href); return false">迴響 (8)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">July 09, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001754"></a>
+<h3 class="title">書目 - 2006 年第二季</h3>
+
+2006 年第二季的書單：<ul>
+<li><img src="http://addons.books.com.tw/G/0/0010273180.jpg" width="130" height="183">《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010273180">大歷史不會萎縮</a>》 - 黃仁宇</li>
+<li><img src="http://addons.books.com.tw/G/6/0010287346.jpg" width="130" height="183">《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010287346">深夜小狗神祕習題</a>》 - Mark Haddon</li>
+<li><img src="http://addons.books.com.tw/G/001/0/0010315980.jpg" width="130" height="183">《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010315980">質數魔力（上）─橫跨兩世紀的狂熱</a>》 - John Derbyshire</li>
+<li><img src="http://addons.books.com.tw/G/001/1/0010315981.jpg" width="130" height="183">《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010315981">質數魔力（下）─百萬美元大挑戰</a>》 - John Derbyshire</li>
+<li><img src="http://addons.books.com.tw/G/3/0010278123.jpg" width="130" height="183">《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010278123">天真是一種動力</a>》 - 柏楊</li>
+<li><img src="http://addons.books.com.tw/G/001/0/0010323100.jpg" width="130" height="183">《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010323100">大崩壞</a>》 -Jared Diamond </li>
+<li><img src="http://addons.books.com.tw/G/001/3/0010306143.jpg" width="130" height="183">《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010306143">易學與生態環境</a>》 - 楊文衡</li>
+<li><img src="http://addons.books.com.tw/G/001/4/0010303094.jpg" width="130" height="183">《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010303094">數學的智慧之光</a>》 - 吳讓泉等/著</li>
+<li><img src="http://addons.books.com.tw/G/001/4/0010326904.jpg" width="130" height="183">《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010326904">就在木棉花開時公館－溫羅汀的那個年代</a>》 - 石計生</li>
+<li><img src="http://addons.books.com.tw/G/001/3/0010330933.jpg" width="130" height="183">《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010330933">皇帝與語言學家</a>》 - Daniel Meyerson</li>
+<li><img src="http://addons.books.com.tw/G/001/9/0010326229.jpg" width="130" height="183">《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010326229">黃金迷城迦太基：一個通商之國的致富密碼</a>》 - 森本哲郎</li>
+</ul>
+Almost done. Keep reading!<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001754.html">10:47 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1754" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">July 08, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001753"></a>
+<h3 class="title">FreeStyle 研討會系列 - UBoot</h3>
+
+[<a href="http://sogyang.blogspot.com/">SoG</a>] 學長明天要舉辦 [<a href="http://sogyang.blogspot.com/2006/06/kaffe-freestyle-uboot.html">FreeStyle 研討會系列</a>] 的第一場「免費 JavaOS 與 U-Boot 研討會」，時間訂於 July 9，地點在 [<a href="http://www.coffeelab.com.tw/">CoffeeLab / 咖啡實驗室</a>] (台北市忠孝東路二段64巷6號)，相關討論可參考 [<a href="http://www.armlabs.com/phpBB2/viewtopic.php?t=4882">大鳥的實驗室 » 技術討論 » ARM » 7/9日12:00~14:00-免費JavaOS與U-Boot研討會於Coffe Lab</a>]，可免費參加 (記得有最低消費)，但限定是 [<a href="http://www.armlabs.com/">大鳥的實驗室</a>] 會員。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001753.html">05:28 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1753" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001752"></a>
+<h3 class="title">Trolltech 完成 IPO</h3>
+
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001678.html">Trolltech 於挪威奧斯陸股市掛牌上市</a>] 提到成立 12 年的 Trolltech 從兩個人的小公司逐漸成長，邁入新紀元，不過那一篇 blog 打字太快，沒有清楚標示「即將上市」。前幾天，Trolltech 完成 IPO (Initial Public Offerings, 首次公開募股)，透過證券交易所首次公開向投資者增發股票，詳情可參考新聞稿 [<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=190300259">Mobile Linux developer hails successful IPO</a>]，而 Trolltech 共同創辦人 Havaard Nord 也在 IPO 後接受 LinuxDevices.com 專訪 [<a href="http://linuxdevices.com/articles/AT3980891782.html">CEO Interview: Havaard Nord, co-CEO of Trolltech</a>]，他談到 Trolltech 最近營收的成長、新設立於亞洲 (北京) 的研發與服務據點、Qtopia Phone Edition 的客戶群與 Microsoft 在 SmartPhone 領域的衝突，以及更具競爭力的 Qtopia 4.0 等。<br>
+<br>
+為 Trolltech 的鴻圖大展喝采 :-)<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001752.html">10:13 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1752" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">July 07, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001751"></a>
+<h3 class="title">IRCConf - Xorg 嶄新的硬體加速與效能提昇機制 - 資料上線</h3>
+
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001713.html">Debian@Taiwan IRC 與線上研討會</a>] 提過今年七月 5 日的 [<a href="http://ircconf.debian.org.tw/">Debian@Taiwan IRC Conference</a>]，主題為「Xorg 嶄新的硬體加速與效能提昇機制」，日前已經落幕，相關的資訊可參考 [<a href="http://ircconf.debian.org.tw/log/2006-07-05.html">會議記錄</a>] 與 wiki [<a href="http://wiki.debian.org.tw/IRCConf">IRCConf</a>]。<br>
+<br>
+因為考量到時間的安排，該主題只有提到上半部 (「X Window System 的 Transport 效能與改善議題」與「2D Rendering 的突破」)，至於跟 3D 與硬體加速相關的議題，將會擇期繼續探討，這大概是這一系列的演講中，最枯燥的部份，非常感謝與會朋友的捧場，有挫折感是正常的，而且這些部份的文件相當少，甚至得反覆修改 source code 並且多作實驗，才能體會箇中的奧妙，該如何以最簡短的文字表示，實在是高難度，顯然還有很大的改進空間。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001751.html">05:58 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1751" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">July 06, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001750"></a>
+<h3 class="title">分析 GCC 對 Hello World 的重重布幕</h3>
+
+最近花了些時間準備 [<a href="http://blog.linux.org.tw/~jserv/archives/001728.html">演講：深入淺出 Hello World -- 理解 Linux 上運作 Hello World 的種種機制 (台中場次)</a>]，"Hello World" 可以用許多程式語言撰寫，可參考 [<a href="http://www.ntecs.de/old-hp/uu9r/lang/html/lang.en.html">433 Examples in 132 (or 162*) programming languages</a>]，編譯系統在這幾十年沒有太大的流程改變，但是應用類型與平台環境卻相當多元。<br>
+<br>
+過去在 16-bit x86/DOS 的環境中，用 Turbo C 或 Turbo Pascal 撰寫一個 "Hello World"，執行檔不需要 C runtime，並且也不到 1 kb 的大小，而事隔多年，在 32-bit x86/Win32 或 32-bit x86/Linux 上，隨便用 Microsoft C compiler 或 GNU GCC 編譯，卻有十幾 kb 之譜，重點是，這些執行檔都需要 C runtime 或者類似的 Dynamic Linking，這是怎麼一回事？16-bit 到 32-bit 的變遷中，對 code density 與 expansion 差異竟然如此大？而編譯技術反而退步了？非也、非也。<br>
+<br>
+其實思維的角度已經改變，像 DWARF/ELF 執行檔格式之所以被提出，就是希望能增加一個系統的彈性，以及提昇動態偵錯的能力，面對這些重重布幕，不僅 Embedded System 的開發者需要留意，任何可能會接觸到 System Programming 的環節，也必定會遇到，甚至，許多安全性議題，就是深藏於這些布幕。準備演講內容的同時，試著修改一些工具，並加強輸出與報表的功能，以下是分析一個 C 語言撰寫的 Hello World 的畫面：(click to enlarge)<br>
+<center><a href="http://jserv.sayya.org/helloworld/pix/hello-world-analysis.png"><img src="http://jserv.sayya.org/helloworld/pix/hello-world-analysis.png" width="431" height="335"></a></center><br>
+這是尋幽訪勝的一個方式，再來，我會試著用修改過的 [<a href="http://user-mode-linux.sourceforge.net/">User-Mode-Linux</a>] 搭配 GNU GDB，探索 kernel-space 與 user-space 的互動情況，順便介紹工具的使用。<br>
+<br>
+先提到這邊，另外我想強調的是「處處留心皆學問，落花水面皆文章」，其實 geek 與一般的 user / programmer 的分野並不大，只是專注的範疇與態度有異罷了 :-)<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001750.html">03:33 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1750" onclick="OpenComments(this.href); return false">迴響 (5)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">July 01, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001748"></a>
+<h3 class="title">Mr.6 的趨勢創投 blog</h3>
+
+在提到這個 blog 前，先看看 [<a href="http://mr65210.wordpress.com/about/">Mr. 6 的簡介</a>]：<ul>
+三十年前出生於台北，十五年前開始旅居異鄉，十二年前以Ｃ語言自製圖面軟體，十年前推出個人第一個商業網站，六年前自美國史丹佛取得此生最高學位，五年前開始寫商業專欄，四年前開始出書，三年前開始接觸創投（VC），兩年前回台灣定居，一年前結婚…，著有《別學北極熊》、《在Ｃ點佈局》等八本作品
+</ul>
+Mr. 6 最近整理一些見聞與觀察，整理在 blog [<a href="http://mr65210.wordpress.com/">Mr. 6 - 趨勢 創投 軟體 策進</a>] 中，到目前為止，每一篇都很生動特別，值得一看。其中有句話很吸引我：<ul>
+自從 Blogger 的母公司「<a href="http://en.wikipedia.org/wiki/Pyra_Labs">Pyra Labs</a>」創業成功後，網路創意家紛紛把自己公司叫做「某某lab」，這些創意實驗室，可能會出現未來十年最被叫好的創業典範。 ... 我們住台灣的也有一顆聰明的大腦，為何要拿著難得的青春埋身股票市場呢？ 
+</ul>
+心有戚戚焉，想想，我也有個 [jserv's lab]，一些兼職或顧問的工作就是從這邊開始的，創業對我來說不是新鮮事，至少我幾年前就試過了，但是「創意」倒是需要更進一步的腦力激盪。<br>
+<br>
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001393.html">王安電腦的興衰</a>] 提到王安博士 (Dr. Wang An) 憑一己之力成立王安實驗室 (Wang Laboratories) 與王安電腦，在八零年代崛起，長期是公司的獨大股東，並領導企業在全球建立當時最成功的文字處理機公司，使我當時對成立一個 Laboratory 有高度憧憬，雖然如今徒留唏噓。至今，一直沒有建立 [jserv's lab] 的網頁，因為還不知道該如何表達我的理念，以及目前對某些關鍵技術的掌握仍陷入泥淖，而如何在科技趨勢中充分發揮創意，予以實現並經營，是我需要思索的。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001748.html">07:14 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1748" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001747"></a>
+<h3 class="title">後 RISC 時代的炙熱化：由 Intel 與 AMD 退出行動通訊晶片市場談起</h3>
+
+最近 IT 產業相當熱門的新聞就是，Intel 出售其虧損多年的行動通訊晶片部門，連同 Intel XScale application / baseband processor 賣給 [<a href="http://www.marvell.com/">Marvell</a>]，不過事實上，早在半年前，Intel 高層決策單位就對行動通訊晶片部門的連年虧損，頗有微詞。正如 [<a href="http://www.linuxdevices.com/articles/AT5912222748.html">Intel, AMD drop out of mobile handset chipset game</a>] 新聞稿的分析，世界兩大的微處理器供應商雖然早已踩穩龍頭寶座，然而先後黯然退出行動通訊晶片市場，無論是 Intel ARM-based Xscale 或 AMD MIPS-based Au1xxx 系列，都已出售，巧合是都在六月份發生，前後兩週的間隔 (前者在 27，後者於 15 日出售予 [<a href="http://www.razamicroelectronics.com/">Raza Microelectronics, Inc.</a>] (RMI)，與 AMD 締結策略合作關係，RMI 原來就與 AMD 擁有密切的關係，該公司創辦人、現任總裁兼執行長 Atiq Raza，曾擔任 AMD 的總裁兼營運長，並推出過 AMD-K6 等處理器)，這些新聞稿的背後，除了令人詫異連連外，也宣示著後 RISC 時代的炙熱化：春秋時代業已結束，轉而進入群雄爭霸的戰國時期。<br>
+<br>
+Intel 4004、TI 的 TMS 1000，以及 Garrett AiResearch 工業部的 CADC (Central Air Data Computer) 在同一時期成為微處理器產業的先鋒，爾後 1980 年代 RISC architecture 嶄露頭角，經過一番廝殺，ARM、MIPS，還有 PowerPC 佔據市場的主流，不過在 Embedded Systems 的世界中，仍有許多特製或 VLIW 概念架構的系統。相較於 RISC，就是傳統的 CISC，取其 R (Reduced) 與 C (Complex) 的對比，不過呢，現在的設計都是「外面看很簡單，裡面看複雜無比」，CISC 紛紛引入 ILP (Instruction-Level Parallelism) 與 pipeline，以及內部 RISC core 的設計，然而，CISC 與 RISC 微處理器在發展的過程中，都從對方陣營參考許多概念與設計技術，兩者在組織結構的分野逐漸模糊，「後 RISC 時代」(post-RISC era) 這個新名詞於是生焉。<br>
+<br>
+跟許多名詞一般，「後 RISC 時代」並無顯著的分水嶺，但表示當今開發技術的新里程碑。RISC 微處理器在進入後RISC 時代後，要獲得進一步的效能提昇，並非僅僅是系統架構的突破與創新能滿足的，相反地，必須訴諸高複雜度的設計，以及更大幅度的軟體工具與編譯技術的整合開發，才得以因應日益上升的效能與功能要求。舉例來說，2001 年 Intel 發佈 Itanium 就是一個代表性的設計，過去 super-scale 的 RISC 可達 4 instructions / per clock，而 Itanium 透過硬體設計與 compiler parallelism 的改良，躍進到 20 instructions / per clock，但付出的技術成本相當可觀，早已跳脫單一架構 (RISC vs. CISC) 或單一設計的侷限，轉而是平行處理的實現。又，Apple Computer 所採用 G3 與 G4，雖然屬於 RISC 架構，其 instructions 數量比 Pentium II 還多，電晶體數量更是超越 Pentium II，這就是為了功能與效能的嚴苛要求，因應的變化。桌面系統與伺服器市場的技術變化如此，多變的行動通訊產業更是琳瑯滿目、五花八門，特別在「後 RISC 時代」的今日，戰局也進入火熱。<br>
+<br>
+依據 Strategy Analytics 所作的報告指出：<br>
+<center><img src="http://www.linuxdevices.com/files/misc/StrategyAnalytics-mobilephone-segments.jpg"></center><br>
+Feature phone 與 Smartphones 將會分食全球 handset 市場的多數，也成為主要標的，這塊大餅自然有無限商機，不過相關報導都寫得很清楚了，這裡略過。值得一看的報導是 Embedded.com 的 [<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=189602286">Analysis: Why Intel's cellular phone effort was a huge failure</a>]，光看標題就怵目驚心，[<a href="http://www.fwdconcepts.com/">Forward Concepts</a>] 的分析師 Will Strauss 表示：<ul>
+The applications processor market for cellphones totaled $839 million last year, and TI controlled 69% of the market, followed by Qualcomm at 17%. Intel for all its investment and effort had total revenue of $57 million to give it a 7% market share. In the baseband processor market for cellphones, which totals $6.5 billion, the story was even worse. Last year Intel managed less than 1% market share.
+</ul>
+「數字會說話」，2005 年行動通訊裝置處理器市場總計達 8.39 億美元，TI 掌握 69%，Qualcomm 佔 17%，鉅額投入這個產業的 Intel 卻只獲得 7%，也落後第三名的 Renesas，在 baseband processor 就不用說了，Intel 的黯然退出，伴隨著令人扼腕的成績單。就技術的角度來說，Intel Xscale 系列，特別是 PXA27x，是個相當高檔且完整的 SoC 設計，其 application / baseband processor 也有完整的軟體支援，光是 Intel 自行開發的項目就很充分了，更別說協力廠商。至於 Intel 失敗的原因，其實相當複雜，上個世紀末，Intel 觀察到 TI 供應當時半數以上手機的 processor 時，決定於 1998 年收購 Digital Equipment Corp. 半導體業務因而獲得的 StrongARM 核心技術，以授權的 ARMv4 與 ARMv5 core 切入這個市場，儘管當時也有觀察家指出手機行動通訊市場與 Intel 熟悉的 PC 產業並無共通處，但 Intel 仍投入巨資，如今，Intel 遍體鱗傷退出戰局，也給予我們許多反思。<br>
+<br>
+已經買下 Intel Xscale 的 [<a href="http://www.marvell.com/">Marvell</a>]，首先會面臨的問題就是 Intel 獨特的製程技術，目前 Xscale core 都是如此製造的，要將設計移轉到台積電或聯電，勢必是種挑戰。就 Xscale core 的應用來說，涵蓋有線與無線網路通訊產品，包含 Hermone cell-processor 與 IXP network processor，背後的 IP 議題也是待處理的項目，也因此，Marvell 在這過度的半年內，相關的作為值得觀察。但，無論如何，在「後 RISC 時代」中，昔日只存在學術研究的 multi-core 或 mixin design 也成為不可或缺的設計，電子工程專輯 [<a href="http://www.eettaiwan.com/STATIC/SITE/ONLINE_TOPIC_20060501.HTM">線上專題──告別單核　CPU開始多心</a>] 整理一系列值得參考的資料，《微處理器報告》主編 Kevin Krewell 就表示：「多核心設計是高性能運算領域的主流概念，從伺服器、筆記型電腦到遊戲平台，以及高性能嵌入式應用等領域都可以看到」，之間的軟體設計與整合變成關鍵，就如 [<a href="http://www.eettaiwan.com/ART_8800401064_628626_5d3844da200512.HTM">多核心處理器面臨軟體設計和記憶體頻寬瓶頸</a>] 報導所指出的種種複雜的問題。之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001555.html">Tensilica 六款新的 RISC core</a>] 提到 [<a href="http://www.tensilica.com/">Tensilica</a>] 的 configurable processor，這也被視為 "post-RISC-style" architecture，關鍵就是其 Xtensa" instructure set 允許透過高階的軟體開發工具，取代 ASIC 及 SoC 中 hand-coded 的 RTL 設計，雖然還存在許多應用上的限制，但是也已締造許多成功的案例。為滿足多媒體處理的需求，為了將 MMP (Multimedia Processor) 的功能融入 GPP (General -Purpose Processor)，SIMD 紛紛成為基本特徵，諸如 Intel 的 MMX / SSE / SSE2、IBM / Motorola 的 AltiVec、Sun Microsystems 的 VIS，以及 Compaq / Digital 的 MVI 等等，都是在 GPP 實現了 vector processing，取代 DSP 的額外需求，但以功能導向的 multi-core 設計卻仍風行於電子通訊裝置。<br>
+(待續)<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001747.html">06:21 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1747" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001746"></a>
+<h3 class="title">工讀生放暑假了</h3>
+
+終於，等到這一日。<br>
+<br>
+距離去年十月休假，已經有一段時間，今年七月整個月，我將暫時放下所有正職、兼職，以及顧問的工作，轉而作些在規劃內但尚未完成的項目，暫時鬆了一口氣。之前曾經困於正職工作的進度落後，兼職的項目又沒有起色，更慘的是顧問的工作還追著打... 之所以做了這些，其實不是為了金錢報酬，對我來說，每月只留給自己新台幣六千七百元 (這是去年用了三個月實驗，得到在台北生活的最低消費水準) 乘以 K (一個調整性常數)，剩下的 bonus 我就捐出來，反正我都活到這把年紀，錢財留在身邊，只是增加風險，如果挪作社會救助，救一個算一個，這樣，我覺得我的存在稍微會有價值些。馬克思曾說：「哲學家們只是用不同的方式解釋世界，而問題在於改變世界」，我用一己之力，儘管只能作些螳螂擋車的小舉動，不過，就微觀的角度來說，的確還是有機會改變世界的，我天真地認為，旁人要嘲諷就大聲點，反正我從小就在冷嘲熱諷中長大，這樣我反而比較習慣。<br>
+<br>
+無論如何，即使我已經在 IT 產業打滾了幾年，不過仍只是一個小小工讀生，我認為，唯有成功且優秀的工程人員，才有資格掛上「工程師」的頭銜，工程技術是科學之美與工藝之執著兩者的結合，不容許有半調子的表現，也因此，「工程師」本身是個具備神聖使命的工作。試看，多少意外的發生，就是因為工程技術運用的缺失與產品設計之不良，輕則讓人作無謂的消費，重則致人於死地，說「工程師殺人」一點也不為過，所以，即使我已經有不錯的工作，仍然會逼自己多學習實務經驗，於是乎，兼職與顧問工作就成為成長的驅力。至今，多少有些長進，不過真的感覺很疲憊，精神上的壓力也長期困擾著我...<br>
+<br>
+只求貪婪活著的我，沒有崇高的理想，只想作點事情，讓自己日後不要後悔，也希望自己能在這短暫的暑期，作些突破，祝我好運！<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001746.html">10:28 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1746" onclick="OpenComments(this.href); return false">迴響 (5)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+
+</body>
+</html>

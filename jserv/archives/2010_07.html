@@ -1,0 +1,275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: July 2010 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2010_06.html" title="June 2010" />
+
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2010_08.html" title="August 2010" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2010_06.html">« June 2010</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+| <a href="http://blog.linux.org.tw/~jserv/archives/2010_08.html">August 2010 »</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+
+
+<h2 class="date">July 29, 2010</h2>
+
+
+<div class="blogbody">
+<a name="002154"></a>
+<h3 class="title">GCC 的 nested function 與 trampoline</h3>
+
+GCC 提供特有的 C 語言 extension，允許像 Pascal 一般，定義 nested function，詳情可參考 GCC 手冊 [<a href="http://gcc.gnu.org/onlinedocs/gcc/Nested-Functions.html">Nested Functions</a>]，注意，由於程式語言設計的一致性考量，此機制不在 GNU C++ 支援。nested function 的形式很明顯，就是在定義於另一個函式內部的函式，以下引用 GCC 手冊的範例：<br />
+<script src="http://pastebin.com/embed_js.php?i=qYqgF44B"></script>
+由上可見，函式 bar() 的程式碼實做中有個 nested functon -- accss()，後者可存取到前者的變數 offset，符合 lexical scoping 的規範。乍看 nested function 只是一種語法上的 syntax sugar？非也，事實上，可在 nested funtion 的 scope 外，將其位址傳遞給其他函式來呼叫。我們可以撰寫以下的程式碼： (nested.c)<br />
+<script src="http://pastebin.com/embed_js.php?i=N6kdKC4t"></script>
+嘗試編譯並執行：<pre class="code" style="margin: 6px;">
+$ gcc -g -o nested{,.c} && ./nested
+447
+427
+447
+</pre>
+筆者定義了一個名為 f 的函式，其返回值是一個指向 nested function -- nested 的位址，需要留意到，這裡的 nested 函式實做，相當於每次執行時，都動態產生一個實體。於是，一旦搭配 typedef，就可用 "func_t g = f(0x1ab)" 這類的語法，去從 f 函式「合成」一個新函式 g，而呼叫 g(20) 的輸出，就是 427 (即 0x1ab 的十進位表示) + 20 = 447。同理，寫成 "f(f(400)(27))(20)"，可理解為，先產生函式 "(*f(400))(int)"，再用數值 27 帶入，這時得到一個數值 400 + 27，之後再帶入函式 f 中，得到「合成」的函式，再將數值 20 帶入，這時候就是 400 + 27 + 20。<br />
+<br />
+由上可見，引入 nested function 後，讓我們進行 C 語言程式開發時，有了形式上的轉變，這表示可實現 closure in C 一類的高階技巧。可是，函式 nested 既然存在於函式 f 中，到底如何在執行時期取得位址？又，這個動態「生成」的函式，顯然有獨立的 context，否則上述一連串的函式呼叫組合，會使運算結果不同。<br />
+<br />
+筆者的環境是 Ubuntu Linux 10.10 (pre-release) 32-bit + lenovo X200 + gcc-4.5.0，咱們用 GDB 來觀察剛剛的 nested.c：<pre class="code" style="margin: 6px;">
+$ gdb ./nested 
+GNU gdb (GDB) 7.1-ubuntu
+...
+(gdb) b main
+Breakpoint 1 at 0x8048484: file nested.c, line 13.
+(gdb) r
+Starting program: /home/jserv/tmp/nested 
+
+Breakpoint 1, main () at nested.c:13
+13			func_t g = f(0x1ab);
+</pre>
+將中斷點設定在 main() 函式後，很快就看到取得 nested function 位址並「合成」新函式的操作，我們先印列該位址並將機械碼寫到檔案，以利後續分析：<pre class="code" style="margin: 6px;">
+(gdb) n
+14			printf("%d\n", (*g)(20));
+(gdb) print g
+$1 = (func_t) 0xbfffec40
+(gdb) dump memory out.bin 0xbfffec40 0xbfffec4a
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 31464] will be killed.
+
+Quit anyway? (y or n) y
+</pre>
+我們從位址 0xbfffec40 寫入長度為 0xa，也就是 10 bytes 的機械碼到檔案 out.bin，那直接反組譯看看：<pre class="code" style="margin: 6px;">
+$ objdump -m i386 -b binary -D out.bin
+...
+Disassembly of section .data:
+
+00000000 &lt;.data&gt;:
+   0:	b9 3c ec ff bf       	mov    $0xbfffec3c,%ecx
+   5:	e9 ca 97 04 48       	jmp    0x480497d4
+</pre>
+等等，這跟我們預期的函式實做有很大的差異，看起來不像是對應的機械碼，至少對應於 "return (arg + nested_arg)" 的加法指令才是。這段程式碼到底作什麼？依據 GCC 手冊 [<a href="http://gcc.gnu.org/onlinedocs/gccint/Trampolines.html">Trampolines for Nested Functions</a>]：<ul class="code" style="margin: 6px;">
+"A trampoline is a small piece of code that is created at run time when the address of a nested function is taken. It normally resides on the stack, in the stack frame of the containing function. These macros tell GCC how to generate code to allocate and initialize a trampoline."
+</ul>
+也就是說，前面這兩道指令，就是用以實現 trampoline 技巧的機械碼，存在於 stack 中。翻閱 GCC 文件，會見到以下文字：<ul class="code" style="margin: 6px;">
+"On CISC machines such as the m68k, this requires two instructions, a move immediate and a jump. Then the two addresses exist in the trampoline as word-long immediate operands."
+</ul>
+在 IA32 上，就是 mov + jmp 這兩道指令，那麼作用呢？繼續看下去：<ul class="code" style="margin: 6px;">
+"The code generated to initialize the trampoline must store the variable parts--the static chain value and the function address--into the immediate operands of the instructions. On a CISC machine, this is simply a matter of copying each address to a memory reference at the proper offset from the start of the trampoline."
+</ul>
+讓我們思考看看，為什麼要如此規劃？在 IA32 上，考慮到前面程式列表的函式 f，若這樣一個函式要向外部函式傳遞其 nested function (可視為「子函式」) 的 function pointer，GCC 無法直接傳遞該子函式的實際進入點位址，是考慮到 trampoline 位於 stack 中，這表示你無法傳回一個 trampoline ，並期望可在稍候使用。試想如此的狀況：當 nested function 一旦返回到前一 frame，只要呼叫任何其它的函式，都有破壞 trampoline 和 local variable 內容的可能性。而，當 trampoline 被更深層的 frame 呼叫時，%ecx (應當指向「父函式」的 stack frame) 可能已被過程中其他操作所修改，因而需透過 trampoline 來還原 %ecx 的內含值。基於上述考量，GCC 對於 C 語言的 nested function 支援，得引入 trampoline 技術。<br />
+<br />
+有了這些背景知識後，繼續研究對位址 0xbfffec40 的反組譯結果：(之所以要先寫入檔案，再用 objdump 反組譯，也是考量到這段程式碼是動態生成的，GDB 欠缺該 stack 的資訊)<pre class="code" style="margin: 6px;">
+   0:	b9 3c ec ff bf       	mov    $0xbfffec3c,%ecx
+   5:	e9 ca 97 04 48       	jmp    0x480497d4
+</pre>
+對應到記憶體的布局，就類似以下的示意圖：<pre class="code" style="margin: 6px;">
+|        | 
++--------+
+| local  | &lt;- mov ???, %ecx   (欲放入 %ecx 的值)
++--------+
+| local  |
++--------+
+| local  |
++--------+
+|  ...   |
+.        .
++--------+    ---------------------------\
+| mov    | &lt;- mov $0xbfffec3c, %ecx      |
++        +                               |
+|  0x3c  |                               |
++        +                               |
+|  0xec  |                               |
++        +                               |
+|  0xff  |                               |
++        +                      (trampoline 實做)
+|  0xbf  |                               |
++--------+                               |
+| jmp    | &lt;- jmp 0x480497d4             |
++        +                               |
+|  0xca  |                               |
++        +                               |
+|  0x97  |                               |
++        +                               |
+|  0x04  |                               |
++        +                               |
+|  0x48  |                               |
++--------+    ---------------------------/
+.  ...   .
+|  ...   | &lt;- %ebp
++--------+
+</pre>
+為了驗證這個想法，筆者做了一個小實驗，嘗試從 nested function 去複製 trampoline，進而生成新的 function，這就有幾分 closure 的意味，請參考以下程式碼： (closure.c)<br />
+<script src="http://pastebin.com/embed_js.php?i=GgKxSVna"></script>
+首先，筆者在結構體 trampoline_code 中，定義 trampoline code 的呈現，而在函式 create_closure() 中寫入 mov ecx 與 jmp 的 IA32 opcode，接著逐一帶入參數去驗證。<br />
+<br />
+另外，GCC 的 nested function 還允許使用 goto 敘述，也就是說，若「父函式」定義一個 label，那麼「子函式」(也就是 nested function) 就能透過 goto，跳躍到從「父函式」所繼承來的 label，需要留意到，一旦使用 goto，nested function 將立刻返回到「父函式」。以下引用 GCC 手冊的範例：<br />
+<script src="http://pastebin.com/embed_js.php?i=1Yb44b16"></script>
+想必看倌仍意猶未竟，不妨參考 Vidar Hokstad 的文章 [<a href="http://www.hokstad.com/how-to-implement-closures.html">How to implement closures</a>]，同樣也採用 C 語言搭配 nested function 的技巧，額外還提到 thunk 的技術，用以實現 closure。<br />
+<br />
+後記，感謝 Thinker 指正若干觀念錯誤，已修正於本文，特此感謝。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2010/07/gcc_nested_func.html"> 5:54 PM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2154" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<h2 class="date">July 26, 2010</h2>
+
+
+<div class="blogbody">
+<a name="002153"></a>
+<h3 class="title">爸，我想寫軟體程式</h3>
+
+之前身體狀況不佳，回苗栗老家休息一段時間，除了家務事外，談了台灣的資訊產業，本應興致勃勃，但家母道出的一席話後，頓時陷入無議無論的噤聲：「寫程式這麼累，就別做了吧」。捫心自問，從業數年，除了偶爾聽聞他人基於禮貌給予的讚揚外，的確是一事無成的狀態，儘管我的工作內容之一，就是說服他人採用敝單位的資訊系統，但我卻沒辦法說服家人，同意我繼續寫程式。<br />
+<br />
+因緣際會，能在國小三、四年級時，就動手寫電腦程式，其動機僅是怕放在客廳的 80386 個人電腦受潮而無法再開機 (靠海的通霄，常吹濕氣頗重的南風，電腦購入不消四年，扣除硬碟的週邊，幾乎都更換過)。至今回憶，那 MS-DOS 命令列提示與 BASIC 直譯器的畫面，仍是最美麗的景緻之一，得以透過螢光幕，瞥見當時工藝的極致，何其幸運？直到高中畢業前夕，從未想過以資訊技術作為己志，畢竟僅是興趣，雖然中學時代，頗受 Bill Gates 的激勵，但家人總冷冷地說，軟體隨便 copy 就拿走了，怎麼賣錢？而且，將興趣轉換為工作，註定要大打折扣的。中學時，自小即相當照顧我的姑姑，因急性白血症病逝，走的那日正是 [<a href="http://blog.linux.org.tw/~jserv/archives/001700.html">六月六日斷腸時</a>]，對此，下了心願要考醫科，試著為醫療科技貢獻一份力量... 但最後，我的意志動搖，雖然成績不惡的我，分數能考上醫科，但始終沒有就讀的勇氣。在通霄國小就學時期，有幸作為知名雕塑家朱銘的學弟，在台灣最有藝術氣息的小學，觀賞著這些由朱銘捐贈的大作，無論是太極系統，抑或人間造型，都反映從自然生命中所領悟出的創作態度，一股自由無拘束的壯闊氣概，最愛徜徉在虎頭山腰，靜靜凝視雕塑與遠方的鐵路，那時，曾不只一次的幻想自己是融合藝術與工程的土木技師。小時過年跟隨母親回娘家，常見到抱著厚重設計圖、不時潛心作設計的舅舅，雖不甚理解土木工程，但那娟麗的字跡穿越著密密麻麻的線條，深深吸引著我，後來我才知道，北二高有一大段工程就是出於舅舅之手，曾有一度想追隨任教於台大土木系的舅舅，用雙手牽起人與人的關聯。<br />
+<br />
+可惜，浪漫的幻想，總是極易戳破，高一的工藝課，無論如何嘗試，就是無法徒手繪出筆直的線條，而三視圖總是充滿瑕疵，「我可能不是作土木建築的料」，默默地承認這個事實。高二選擇第三類組後，則在生物解剖課，徹底粉碎擔任醫療人員的念頭。我還記得，暑假為了提高膽量，逼迫自己切魚的往事，只見雙手的血跡與淚水融為一體，「我真的不是唸醫科的料」，再次接受了真相。當這些選擇一一從志願表刪去時，「資訊工程系」這個倒數第二個選項就浮現了 (最後一個志願是電機系，因為與家父賭氣，不想唸電子電機科系)，在沒有選擇餘地的情況下，懵懵懂懂做出選擇。記得三年前應邀去中正大學演講時，資訊系的老師說：「這裡的學生不像你很早就決定自己的志業，請你就業界從業人員的角度，跟學生分享經驗...」，真不知該如何回應，老實說，我的處境跟該校的學生沒太大的分野，也是先考進資訊工程學系，才開始規劃人生的，只是遇到貴人的時間早了些，挑了些較易有成效的項目來作。<br />
+<br />
+魯迅說過：「哪裡有天才，我是把別人喝咖啡的工夫都用在了工作上了」，堅信此道的我，每每保持同樣是魯迅的名言，人生的旅途上遲緩地踏出步伐：「人類總不會寂寞，以為生命是進步的，是天生的」，雖然，至今仍打零工度日，有什麼立場說自己在實踐志業呢？記得 Romain Rolland 說過：<ul class="code" style="margin: 6px;">
+「一個人的性格決定他的際遇。如果你喜歡保持你的性格，那麼，你就無權拒絕你的際遇」
+</ul>
+大概是當初太短視，唯有在跌跌撞撞幾年後，才能體會這句話。決定離開成功大學時 (家中永遠都有重考唸醫科或其他科系的聲音，也因此，沒能把資訊系唸完，可能也是註定的事)，找當時的導師蘇文鈺教授談過，老師說，只要想清楚, 自己做了選擇, 就不要後悔, 還要注意身體健康。事隔多年，老師來信提到：<ul class="code" style="margin: 6px;">
+「也許你不相信，我時常跟現在的學生提到你，一年至少一次, 我回憶起你的程式功力與執著，當然還有比賽前被送進醫院那件事，我一直相信走自己的路與願意走人煙稀少的路的人，成就的機會比較大」
+</ul>
+這番話，讓我在讀信的當下，控制不住情緒，就在辦公室啜泣起來，是想到這幾年受到的委屈與不平的待遇，無論肇因於學歷、經歷，或者所謂的「大環境」... 只能怪說自己太叛逆，又狂妄地想做些改變現狀的事，這包含在台灣繼續寫作軟體。<br />
+<br />
+<ul class="code" style="margin: 6px;">
+「寫作對於我而言，是在漫長旅程上有一個溫暖的春夢做著，路寬夢窄，並且一直大夢未醒。一個人在世上，總得找一個屬於自己的夢做著，不然，這黑夜就顯得太長。」
+</ul>
+這是大陸作家馮傑的話語，用來描寫此刻我的心境，也相當契合，儘管兩者所謂的「寫作」，還要視真實的「讀者」而定。作家馮傑用「文字還願」，寫作給一塊無言的土地，對那些逝去的親人；愚昧的我用「程式碼許願」，寫給這塊立足的土地，對那些相信臺灣軟體發展機會的人。就這個角度來說，我的寫作才剛開始。不期望能在商業行為之外，說服任何人，只願能堅持下去。「爸，我想寫軟體程式」這句，語出於升國小四年級的暑假，當時家父指向書櫃裡頭的技術書籍，而，近二十年後，抱著滿滿電腦資訊圖書的我，又說了一聲。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2010/07/post_281.html"> 9:06 PM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2153" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<h2 class="date">July  5, 2010</h2>
+
+
+<div class="blogbody">
+<a name="002152"></a>
+<h3 class="title">dissy -- 好用的 objdump 圖形前端工具</h3>
+
+最近利用閒暇的時間，準備新的系列課程，目標就是嘗試體驗 "Eat Our Own Dog Food"，實現資訊人多少會有的浪漫夢想：用自己撰寫的編譯器，編譯自己設計的作業系統，跑在自己設計的 CPU 與硬體上。雖然自己恰好作過前述三者，不過要連貫起來，並改成系列的課程，仍是新挑戰。這過程要涉及到許多工具程式的開發，特別是視覺化的處理，才能讓學員更快進入狀況，而 [<a href="http://code.google.com/p/dissy/">dissy</a>] 就是個非常優秀的 objdump 圖形前端工具。<br />
+<br />
+用 objdump / readelf，可窺探 ELF 格式執行檔案的許多細節，也能靜態分析，但往往得在大量的輸出打轉，著實不方便，[<a href="http://code.google.com/p/dissy/">dissy</a>] 這個工具可帶來頗大的便利，直接看底下的執行時期的圖片吧：<br />
+<center><img src="http://jserv.sayya.org/misc/dissy.png" width="600" height="420" /></center><br />
+上方視窗為 ELF 執行檔中的符號 (symbol) 列表，一旦點選進去後，會得到下方的兩個視窗：左側是反組譯的輸出 (含原始程式碼除錯訊息)，右側是點選的機械碼指令的解釋。這也表示說，dissy 需要 non-stripped ELF 執行檔的輸入，否則無法符合預期的運作。另外，dissy 也能作簡單的流程分析，比方說上圖左下方的紅色箭頭，就表示有 branch (跳躍) 的動作，搭配原始程式碼的列表，一目了然編譯器與組譯器所進行的操作。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2010/07/dissy_--_objdum.html">11:40 PM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2152" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+
+</body>
+</html>

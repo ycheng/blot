@@ -1,0 +1,285 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: ptrace / SIGTRAP / int3 的關聯</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2010/07/gcc_nested_func.html" title="GCC 的 nested function 與 trampoline" />
+
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2010/08/_android_toolch.html" title="演講：打造特製的 Android Toolchain" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2010/07/gcc_nested_func.html">« GCC 的 nested function 與 trampoline</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+| <a href="http://blog.linux.org.tw/~jserv/archives/2010/08/_android_toolch.html">演講：打造特製的 Android Toolchain »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">August  2, 2010</h2>
+
+<div class="blogbody">
+
+<h3 class="title">ptrace / SIGTRAP / int3 的關聯</h3>
+
+最近的時間大部分投入於某個產品的研發，自然得考慮到一些議題，其中包含了 anti-hacking，順便就複習 ptrace 一類的操作，本文可視為 [<a href="http://blog.linux.org.tw/~jserv/archives/002027.html">以 ptrace 系統呼叫來追蹤/修改行程</a>] 的補充，以實驗方式，觀察這些底層機制。<br />
+<br />
+在 UNIX 的世界裡，作業系統提供 ptrace 系統呼叫，允許我們優雅地進行「攔截」或「追蹤」其他行程的動作，這也是 gdb 與 strace 一類系統工具背後的原理，比方說 Evan Teran 就依據如此的機制，撰寫一個 [<a href="http://blog.linux.org.tw/~jserv/archives/001851.html">Qt4/ptrace-based Binary Debugger</a>]。無論是如何操作，大抵依循以下三個步驟：<ul>
+    <li>調用 ptrace 系統呼叫</li>
+    <li>判斷 SIGTRAP 是否為監看的程式 (如 GDB) 所攔截</li>
+    <li>透過硬體平台的指令，去觸發 breakpoint / SIGTRAP，進而執行特定的追蹤動作。以 x86 為例，就是 "int3" 指令</li>
+</ul>
+在 GNU/Linux + IA32 環境下，筆者撰寫一個小程式，試圖觸發 breakpoint，來觀察在 gdb 底下與否，有什麼變化： [<a href="http://jserv.sayya.org/tmp/hello-int3.c">hello-int3.c</a>]<br />
+<pre class="code" id="codemain"><span class="keyword">#include</span> &lt;stdio.h>
+<span class="keyword">int</span> main()
+{
+	puts(<span class="literal">"Hello"</span>);
+	__asm__ __volatile__(<span class="literal">"int3"</span>);
+	puts(<span class="literal">"World"</span>);
+	<span class="keyword">return</span> 0;
+}</pre>
+試著編譯並執行：<pre class="code" style="margin: 6px;">
+$ gcc -o hello-int3{,.c} -g && ./hello-int3
+Hello
+Trace/breakpoint trap (core dumped)
+</pre>
+顯然，在 x86 上，這個 "int3" 的組合語言指令，觸發了 breakpoint / SIGTRAP，依據 Linux Process 預設的 signal handler，就是終止程式的執行。那麼，在 gdb 下呢？繼續作實驗：<pre class="code" style="margin: 6px;">
+$ gdb ./hello-int3
+GNU gdb (GDB) 7.1-ubuntu
+...
+(gdb) r
+Starting program: /home/jserv/tmp/hello-int3 
+Hello
+
+Program received signal SIGTRAP, Trace/breakpoint trap.
+main () at hello-int3.c:6
+6		puts("World");
+(gdb) 
+</pre>
+看來 gdb 註冊了 SIGTRAP handler，才會得知 hello-int3 執行的 Process 具體的資訊，
+並依據 DWARF，查詢到停留在 C 程式的第六行 (尚未執行)。Francis Bacon 說過，最好的證明，就是練習，對資訊科技更是如此，根據稍早的觀察，我們可推論出，若要讓 Linux Process 免於被 gdb 所「騷擾」(anti-hacking 的基礎)，必須在程式內適時註冊 SIGTRAP handler。筆者準備以下的驗證程式碼： [<a href="http://jserv.sayya.org/tmp/dbg-int3.c">dbg-int3.c</a>]<br />
+<pre class="code" id="codemain"><span class="keyword">#include</span> &lt;stdio.h><span class="keyword"> 
+#include</span> &lt;signal.h>
+
+<span class="keyword">static</span> <span class="keyword">volatile</span> sig_atomic_t being_debugged = 1;
+<span class="keyword">static</span> <span class="keyword">void</span> int3_handler(<span class="keyword">int</span> signo) { being_debugged = 0; }
+
+<span class="keyword">int</span> main()
+{
+        signal(SIGTRAP, int3_handler);
+        __asm__ __volatile__(<span class="literal">"int3"</span>);
+        <span class="keyword">if</span> (being_debugged) {
+		puts(<span class="literal">"No, I don't want to serve you."</span>);
+                <span class="keyword">while</span> (1) {
+			<span class="comment">/* endless loop */</span> ;
+		}
+        }
+        puts(<span class="literal">"Yes, real routines go here."</span>);
+        <span class="keyword">return</span> 0;
+}</pre>
+試著編譯並執行：<pre class="code" style="margin: 6px;">
+$ gcc -o dbg-int3{,.c} -g && ./dbg-int3
+Yes, real routines go here.
+</pre>
+這是平常的執行結果，因為先註冊專屬的 SIGTRAP handler，當執行 "int3" 指令，自然會去觸發，設定「此時不被 debugger 追蹤」的狀態。那在 gdb 底下執行呢？比較看看：<pre class="code" style="margin: 6px;">
+$ gdb ./dbg-int3 
+GNU gdb (GDB) 7.1-ubuntu
+...
+(gdb) r
+Starting program: /home/jserv/tmp/dbg-int3 
+
+Program received signal SIGTRAP, Trace/breakpoint trap.
+0x08048421 in main ()
+(gdb) 
+</pre>
+GDB 告訴我們 SIGTRAP 被觸發了，這時候我們就要思考，到底 SIGTRAP handler 是不是被 GDB 給「攔截」或「改寫」過，繼續看下去：<pre class="code" style="margin: 6px;">
+(gdb) c
+Continuing.
+No, I don't want to serve you.
+</pre>
+顯示 "No, I don't want to serve you." 一段文字後，就陷入無窮迴圈，可反推，GDB 的確會對 attached process 作 SIGTRAP handler 的攔截處理，而我們的程式則反將一軍，非暴力不合作。<br />
+<br />
+另外，若不想使用 SIGTRAP handler 的機制，可直接用 ptrace 系統呼叫來檢查，改寫上述程式碼如下： [<a href="http://jserv.sayya.org/tmp/ptraceme.c">ptraceme.c</a>]<br />
+<script src="http://pastebin.com/embed_js.php?i=UpeZ34pP"></script>
+編譯並直接在 gdb 裡面執行：<pre class="code" style="margin: 6px;">
+$ gcc -o ptraceme{,.c} -g && gdb ptraceme
+GNU gdb (GDB) 7.1-ubuntu
+...
+(gdb) r
+Starting program: /home/jserv/tmp/ptraceme 
+No, I don't want to serve you.
+</pre>
+同樣達成目的。需要留意的是，有一些特別的 Linux 系統，如 Google Chrome OS，也是透過上述這些常見的 anti-hacking 技倆，實現作業系統層級的 sandbox 機制。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 August  2, 2010  2:30 AM
+
+<br /></span>
+
+</div>
+
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2155" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

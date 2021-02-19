@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: X-Input-Method Proposal</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001166.html" title="本 Blog 新網址" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001168.html" title="透過 MIT roofnet Project 快速架設社區無線網路" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001166.html">« 本 Blog 新網址</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001168.html">透過 MIT roofnet Project 快速架設社區無線網路 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">June 04, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">X-Input-Method Proposal</h3>
+
+昨天在 #debian-zh 上遇到 pnt，他說正在參與日本的 CodeFest 盛會，也遇到很多前輩，比方說 Anthy 的作者，在這討論的過程中，pnt 給了一個相當有趣的提案資訊：[<a href="http://kmuto.jp/open.cgi?x-input-method&l=en">x-input-method proposal</a>]，這是由 Kenshi Muto、Akira TAGOH，以及 Masanori GOTO 共同發起的計畫，主要是從既有的輸入法架構，去探討如何跨越種整籓籬。一般來說，在 X Window System 下，我們有兩種途徑可以進行輸入法操作：<ul>
+  <li>XIM</li>
+  <li>UI Toolkit IM Module</li>
+</ul>
+前者的問題相當惡名昭彰，連 XIM 的架構設計人 Hideki Hiura 都不得不為此提出新的 IIIMF 架構。後者是從 GTK+ 2.0 IM module 開啟的濫觴，提供更大的彈性。然而，現實可不是提出一個完美的架構就夠了，我們還是需要一堆 legacy 的 IM，所以這三位前輩先從 Fedora 移植 im-switch 到 Debian 上，然後制定一系列的規範，以避免輸入法衝突的議題，詳情可參閱本提案。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 June  4, 2005 11:41 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>其实im-switch并不是一个新的输入法架构。他是让用户自由选择scim/uim/iiimf等输入法。所以只是一个配置和启动legacy IM的工具。你的担心是多余的啦。</p>
+
+<p>更多信息可以参考 http://kmuto.jp/open.cgi?x-input-method&l=jp</p>
+
+<p>以上</p>
+<span class="comments-post">由 <a href="mailto&#58;debianhacker&#64;gmail&#46;com">pnt</a> 發表於</MTIfNonEmpty> June  4, 2005 03:48 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

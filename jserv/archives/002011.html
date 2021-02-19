@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: SynthOS : 合成專屬的 RTOS</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002010.html" title="「許我們一個 Keroro 的桌面」簡報上線" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002012.html" title="WebKit/Clutter 快速入門" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002010.html">« 「許我們一個 Keroro 的桌面」簡報上線</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002012.html">WebKit/Clutter 快速入門 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">April 17, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">SynthOS : 合成專屬的 RTOS</h3>
+
+拜讀 Embedded.com 的 [<a href="http://www.embedded.com/columns/technicalinsights/206900628?printable=true">Software and RTOS synthesis: The next step in software development?</a>] 一文，讓我知曉 Zeidman Technologies 的產品 [<a href="http://www.zeidman.biz/synthos.htm">SynthOS</a>]，其產品訴求就是 "Synthesize Your Own Operating System"，乍看一頭霧水，仔細閱讀才發現，這是克服目前中低端嵌入式系統的新途徑。<br />
+<br />
+設計中低端嵌入式系統如 micro controller 者，我們不免會遇到一個問題：<ul class="code" style="margin: 6px;">
+是否需要 RTOS？若需要，該如何評估？
+</ul>
+為了解答這個疑惑，二十多年來，無數廠商投入這個領域，提出琳瑯滿目的解決方案，但開發者需要處理的，不外乎系統的可靠性、效能，與正確性，但這卻是一條漫漫長路，過去的經驗是，沒有 RTOS、全部自行開發系統，曠日費時且難以預估時程；有 RTOS 的話，整體開發變得順暢，但其潛在的系統設計缺陷，卻難以除錯。反觀硬體設計，很早就允許高階的方式來設計系統 (如 Verilog 或 VHDL)，透過數位訊號合成 (synthesize) 的途徑，輸出為硬體的單元，經過反覆的模擬測試後，導入最終硬體設計，近年來，甚至允許透過 UML 工具來對 SystemC 作 modeling 動作，相關的開發工具更是齊全。那麼，系統軟體呢？一般來說，系統軟體不能像高階軟體一般導入 OOA/D 或者高層次的開發，因其仍陷入種種設計上的難題，諸如同步處理、低階 I/O 操作等議題，為此，Zeidman Technologies 提出新的途徑，試圖將硬體設計的概念，導入系統軟體。<br />
+<br />
+SynthOS 本身以 Java 撰寫，與其說是個 "OS"，不如說是個 OS Generator，其輸入為 C/C++, Java, assembly 的程式，描述一個系統設計中的基本要素，不過，我們沒有必須知曉 RTOS 的設計原理，只需維護必要之 state machine，稍後可在系統模擬得知其運作的模式，最終，會輸出 kernel source code，經編譯後，可佈署於我們期望的硬體平台中。聽起來相當誘人，在如此的開發流程中，我們只需知曉 "SynthOS primitives"，也就是高階的系統特性操作，如下：<ul>
+  <li>SynthOS_call(task)</li>
+  <li>SynthOS_start(task)</li>
+  <li>SynthOS_check(task)</li>
+  <li>SynthOS_sleep()</li>
+  <li>SynthOS_wait(condition)</li>
+  <li>SynthOS_wait(task)</li>
+</ul>
+貌似每個 multi-tasking kernel 都會提供類似上述列表的 API，何其之有呢？重點是，SynthOS 允許用其支援的高階語言描述方式，將如此的系統在設計前期，予以充分表示，經過「合成」後，才會得到最終的 kernel source，而當我們作系統偵錯時，其實是對高階的表示作處理。與典型的 RTOS 設計相仿，SynthOS 的 task 運作模型如下圖：<br />
+<center><img src="http://jserv.sayya.org/kernel/rtos-02.gif" width="413" height="269" /></center><br />
+在執行的 Loop 中，可在 SynthOS Project Configuration (SOP) 選用合適的排程演算法。當然，也少不了 task 的呼叫 (call)，SynthOS 在合成後，會輸出對應的 scheduler 程式或 TCB (task control block) 處理等細節。以下是作為 SynthOS「合成」處理前後的範例對照：<br />
+<center><img src="http://i.cmpnet.com/pldesignline/2008/02/rtos-03-tab.gif" width="419" height="254" /></center><br />
+至於效能的部份，根據文中後半指出：<ul class="code" style="margin: 6px;">
+For reference, the MCF5206e features, on average, 50 MIPS performance at 54 MHz. The test was performed with the on-chip I-cache enabled and we measured an average task switch time of 15 microseconds. While commercial, hand-crafted RTOS measurements would probably yield better numbers, these results are quite adequate for many real-time embedded applications. 
+</ul>
+看來有相當不錯的效能表現。所以，簡單來說，SynthOS 開啟了新的、引入自硬體訊號合成的概念，將整個 RTOS 開發予以高階化，對於系統軟體元件的外包或切割，也可得到更佳的支援度，相信是個值得關注的技術途徑。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 April 17, 2008 09:15 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>贊 SynthOS ~~</p>
+<span class="comments-post">由 <a href="mailto&#58;jhuangjiahua&#64;gmail&#46;com">華華</a> 發表於</MTIfNonEmpty> April 17, 2008 04:07 PM</span>
+</div>
+<div class="comments-body">
+<p>這初初看起來好像之前看過的一個solution - eSIM. 它是用state machine 來做 MMI 的framework. 但generate 出來的code不好除錯 而且把所有logic都用state machine表達 也不易理解 這是它的缺點</p>
+<span class="comments-post">由 <a href="mailto&#58;junhua&#64;ms23&#46;url&#46;com&#46;tw">Jun</a> 發表於</MTIfNonEmpty> April 18, 2008 04:44 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2011" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

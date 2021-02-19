@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Xorg & File System Hierarchy Standard (FHS)</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/000829.html" title="使用 XML 技術建構網頁" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/000831.html" title="自由日" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/000829.html">« 使用 XML 技術建構網頁</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/000831.html">自由日 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 22, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Xorg & File System Hierarchy Standard (FHS)</h3>
+
+<p>剛剛看 Gentoo Developers 之一的 Donnie Berkholz 前天撰寫的 blog: [<a href="http://www.livejournal.com/users/spyderous/8428.html">6.8.2 RC2</a>]，提到以下敘述：<br />
+The next step of the migration will probably be /usr/X11R6/bin -> /usr/bin and /usr/X11R6/include -> /usr/include/X11 to finish things off, but I don't expect it will happen until 6.8.2. It will definitely be nice to just have /usr/X11R6 -> /usr. First, however, I need to fix my highly specific migration function to be more robust and generalizable to anything. Actually, 6.8.1.90x's might be a good opportunity to work on this, so 6.8.2 could also signify the lack of anything in /usr/X11R6.</p>
+
+<p>這個議題事實上已經討論多時，比方說 [<a href="http://lists.freedesktop.org/pipermail/x-packagers/2004-February/000005.html">Installing XFree86 to FHS/better locations</a>] 裡頭的描述中，我們可以發現 X11 許多 packaging 的方式與 FHS (File System Hierarchy Standard) 的原則部分抵觸，而 SuSE 的文件 [<a href="http://www.bb-zone.com/SLGFG/chapter2.html">SuSE and the File System Hierarchy Standard (FHS) </a>] 在 [2.2.1 /usr/X11R6: X Window System, version 11, release 6] 一節則指出：<br />
+Host-specific data is in /usr/X11R6/lib/X11. The FHS intends this directory to be used for demonstration files only. Because SuSE doesn't use /etc/X11, the configuration files for window managers, applications, and so on are still in this directory. <br />
+就與前面引述的資料說法不一致，這點實在是非常的麻煩。</p>
+
+<p>Gentoo 是個勇於創新的 Linux Distribution，可以想見，Donnie Berkholz 很快就會在 Gentoo portage 中落實上述的規劃，而 Debian X Window System 的 maintainer，Daniel Stone，也多次表示將不再使用 /usr/X11R6 這樣的 directory entries。</p>
+
+<p>在 Xorg 最近的發展中，[<a href="http://lists.freedesktop.org/pipermail/xorg/2005-January/005679.html">dlloader is now the default</a>] 讓 Xorg 的許多 modules 得以符合 LSB (Linux Standard Base) 作包裝，不過，這又引來許多討論，有興趣的朋友可以 follow up 上述的 thread。</p>
+
+<p>Xorg rules!</p>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 22, 2005 10:03 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

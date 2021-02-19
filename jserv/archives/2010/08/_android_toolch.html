@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: 演講：打造特製的 Android Toolchain</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2010/08/ptrace_sigtrap.html" title="ptrace / SIGTRAP / int3 的關聯" />
+
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2010/08/_--.html" title="演講：沒有政府補助，照樣寫自己的作業系統 -- 如何善用開放原始碼工具，加速作業系統的開發" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2010/08/ptrace_sigtrap.html">« ptrace / SIGTRAP / int3 的關聯</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+| <a href="http://blog.linux.org.tw/~jserv/archives/2010/08/_--.html">演講：沒有政府補助，照樣寫自己的作業系統 -- 如何善用開放原始碼工具，加速作業系統的開發 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">August  4, 2010</h2>
+
+<div class="blogbody">
+
+<h3 class="title">演講：打造特製的 Android Toolchain</h3>
+
+很榮幸能連續五年，在台灣的年度盛會 [<a href="http://coscup.org/2010/">COSCUP</a>] 研討會上，作心得分享。今年的演講議程，題目定為「打造特製的 Android Toolchain」，主要分享小弟在 [<a href="http://0xlab.org/">0xlab</a>] 所作的實驗，從修改 Android 的 GNU Toolchain 到提供 source-to-source compiler，提出若干基於特定需求，從而發展的編譯器技術的新應用。時間是 Aug 15 (週日) 下午，詳細議程資訊，請參考 COSCUP 網站。<br />
+<br />
+我們可發現，ARM 陣營籌組了 [<a href="http://www.linaro.org/">Linaro</a>] 組織，不僅有系統整合層面的 Ubuntu / Canonical，還包含像是 CodeSourcery 這樣專精於編譯器技術領域的公司投入。近期內，已建構於開放原始碼的技術上，由 CodeSourcery 與 ARM 工程師主導，由 GCC 搭配 CodeSourcery G++ 的基礎，搭建 Linaro 的 GNU Toolchain，在 Toolchain working group 有相當活躍的進展，而這些基礎建設，也讓廣大的 Ubuntu ARM 使用者受益。一直採用「半開放」開發模式的 Google Android 團隊，這半年以來，逐漸有改觀，不僅提供完整的 GIT commit log，還開放一系列 Android Toolchain 的資源。這些變化都發生在 2010 年，現在 Embedded 與 Mobile 的系統軟體開發，悄悄地引入新的模式，就如日前筆者應邀參與的 [<a href="http://www.socsummit.com/">SoC Summit</a>] 研討會標語所說：<ul>
+"Building Compelling User Experiences in Silicon"
+</ul>
+連編譯器技術，這種與使用者體驗，看似八竿子打不著的項目，其實也已經為我們所處的資訊生活，帶來了頗大建樹。在 COSCUP 的「打造特製的 Android Toolchain」議程中，筆者會先探討 GNU Toolchain 相關的發展，像是 gold, GCC Plugin, LTO 等等 (僅有高階的描述)，再來會提及 LLVM 相關技術的應用，甚至隱藏在 Android 系統中，也有諸多與編譯器技術的項目。只要我們能掌握資訊技術的原理，往往能讓許多創新，融合到最終的產品，這也是 [<a href="http://0xlab.org/">0xlab</a>] 試圖追求的目標。<br />
+<br />
+依據慣例，屆時我們也會發布最近的成果，請留意 [<a href="http://0xlab.org/">0xlab</a>] 開發者的動態，期待您的蒞臨指教，謝謝！<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 August  4, 2010 10:24 PM
+
+<br /></span>
+
+</div>
+
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2156" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

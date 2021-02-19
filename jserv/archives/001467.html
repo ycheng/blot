@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: ToyWM : 體驗 ICCCM 與 EWMH 規格的練習</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001466.html" title="農曆新年" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001468.html" title="真空管專利長長99" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001466.html">« 農曆新年</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001468.html">真空管專利長長99 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 29, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">ToyWM : 體驗 ICCCM 與 EWMH 規格的練習</h3>
+
+或許已經有些朋友知道，我最近在寫個小型的 Window Manager，為什麼要再寫一個呢？新書《揭開 X Window System 神秘面紗》將會用一定的篇幅介紹 ICCCM 與 EWMH，而我覺得，沒有創作過 Window Manager、沒有在開發的過程中遇到挫折，進而改進之，就不算理解這些 spec (同樣的，書中探討 X Input Method 的部份，也會實做一個 XIM server from scratch，老實說，書什麼時候會寫完，我根本不知道 *笑*)。是此，ToyWM 就誕生了，運作畫面如下圖：<br>
+<img src="http://jserv.sayya.org/misc/toywm.png"><br>
+重點會落在 Window Management，探討 Substructure Redirection (如 Xlib 的 XLowerWindow() / XMoveResizeWindow() / XMoveWindow() / XRaiseWindow() / XResizeWindow() 等 API)、Reparenting，以及重點 Window Manager Hints。並且會從 winman 的分析與修改作出發，探討 ToyWM 建構的過程，希望近期內可以完成。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 29, 2006 10:04 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>《揭開 X Window System 神秘面紗》先寫個overview就好，然後針對不同主題再出一系列的hacking guide，如何？ :P</p>
+<span class="comments-post">由 <a href="mailto&#58;reborn&#64;so-net&#46;net&#46;tw">reborn2266</a> 發表於</MTIfNonEmpty> February  7, 2006 03:34 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

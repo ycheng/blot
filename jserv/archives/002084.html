@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: libsslwrap : 通透地對網路傳輸加上 SSL 保護</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002083.html" title="OSDC.TW 2009 徵稿" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002085.html" title="Qt 4.5 將允許增列 LGPL 2.1 條款發行" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002083.html">« OSDC.TW 2009 徵稿</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002085.html">Qt 4.5 將允許增列 LGPL 2.1 條款發行 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 13, 2009</h2>
+
+<div class="blogbody">
+
+<h3 class="title">libsslwrap : 通透地對網路傳輸加上 SSL 保護</h3>
+
+最近研究網路傳輸的機制時，想到 Kenichi Kourai 教授在 2001 年設計過一個相當精巧的函式庫 [<a href="http://www.ksl.ci.kyutech.ac.jp/~kourai/research/libsslwrap/libsslwrap.html">libsslwrap</a>]，可通透地 (transparently) 對 TCP/IP 網路傳輸過程中，加上 SSL 安全連線的保護，更重要的是，不需要對原本的網路應用程式作原始程式碼修改、重新編譯等處理。libsslwrap 運用 UNIX/ELF 執行檔的動態連結機制，透過設定 LD_PRELOAD 環境變數，預先載入 libsslwrap 提供的函式庫，將原本的 connect, accept, write, read, send, recv 等系統呼叫，予以攔截轉包到支援 SSL 的實做，如此一來，即可達到通透處理的目標。<br />
+<br />
+實務上，仍有一些限制，詳情可參閱原始程式套件中的 "README" 檔案，不過就一般的操作，應已足夠。本文將以 telnet 連線為例，說明 libsslwrap 的使用。首先，當然是編譯 libsslwrap，不過，要注意的是，原本的程式無法在 gcc-4.3 下編譯，所以筆者準備一個修正 [<a href="http://jserv.sayya.org/misc/libsslwrap-gcc43-build.patch">libsslwrap-gcc43-build.patch</a>]，編譯的環境應該要有 OpenSSL 的開發套件，比方說 Debian/Ubuntu 的 libssl-dev 套件。為了方便後續的說明，給定筆者偏好的 PREFIX：<pre class="code" style="margin: 6px;">
+make PREFIX=/tmp/libsslwrap
+make install
+</pre>
+建構過程，程式會提醒您建立 SSL certification 資訊，依序填入即可。<br />
+<br />
+既然要探討 telnet 連線，我們就該準備必要的套件，像是 telnet 與 telnetd，很容易地安裝：<pre class="code" style="margin: 6px;">
+# apt-get install telnet telnetd
+</pre>
+透過 Wireshark 可視覺化地觀察網路封包的傳輸狀況，因為筆者的實做環境都在本地端 (localhost)，所以僅觀察 lo interface，如下圖所示：<br />
+<center><img src="http://jserv.sayya.org/misc/sslwrap-1.jpg" width="640" height="392" /></center><br />
+在 "lo" 那一列按下 "Start" 按鈕，即可監控本地端的網路封包。telnetd (telnet daemon) 可透過 inetd 執行，假設系統啟動時已有 telnetd 服務，那麼我們直接透過 telnet 連線：<pre class="code" style="margin: 6px;">
+# telnet localhost
+</pre>
+參考的終端機執行畫面如下：<pre class="code" style="margin: 6px;">
+telnet localhost
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+Ubuntu jaunty (development branch)
+</pre>
+後面就是要求登入的訊息，這裡忽略。上面的訊息中，"Ubuntu jaunty" 也就是筆者使用的環境 Ubuntu 9.04 的開發版本，代號為 "jaunty"。因為是明碼傳輸，所以我們可在 Wireshark 觀察往返的網路封包內容，如下圖所示：<br />
+<center><img src="http://jserv.sayya.org/misc/sslwrap-2.jpg" width="640" height="492" /></center><br />
+上圖的下方視窗中，可見到 "Ubuntu jaunty" 的字樣出現於 Telnet Data，當然啦，繼續等待的話，還能見到登入的帳號與密碼內文，對於其他的網路傳輸協定，如 FTP，也有類似的情況，網路封包的內容一目了然。若系統無法更動為 SSH 或 SFTP (FTP over SSH) 的話，libsslwrap 就能派上用場。<br />
+咱們回頭看 libsslwrap。編譯 libsslwrap 後，應該可在 src/ 目錄見到 libsslwrap.so 這個動態函式庫被建立，並且在 make install 後，/tmp/libsslwrap/bin/ 目錄下多了一個名為 sslwrap 的 script，其內容相當單純，就是在執行程式前，透過 LD_PRELOAD 環境變數的設定，預先載入 libsslwrap.so。為了作比較，筆者在稍候即將啟動的 telnetd，要求透過不同的 port (預設 port number 為 22)，比方說 port 10023，這可透過 "-debug" 參數達成，也就是說，我們可以這樣啟動 telnet daemon：<br />
+<pre class="code" style="margin: 6px;">
+# /tmp/libsslwrap/bin/sslwrap /usr/sbin/in.telnetd -debug 10023
+</pre>
+當此行指令被執行後，終端機會輸出一個簡短的訊息："preload"，表示 libsslwrap.so 已成功將原本的 connect, accept, write, read, send, recv 等系統呼叫，予以攔截轉包到支援 SSL 的實做，一旦筆者嘗試連線，即可見其端倪。當然，既然 server 端透過 sslwrap 去執行，client 端也要，所以連線指令如下：<pre class="code" style="margin: 6px;">
+# /tmp/libsslwrap/bin/sslwrap telnet localhost 10023
+</pre>
+表示欲透過 telnet 連線到 localhost 的 port 10023，此時，Wireshark 的封包就大異於之前純粹的 telnet 連線狀況，參考的輸出如下圖：<br />
+<center><img src="http://jserv.sayya.org/misc/sslwrap-3.jpg" width="640" height="495" /></center><br />
+這過程包含了 SSL 的 cert 與通訊，以及 (轉包的) telnet 資料傳輸等動作，而封包內容也不再是人眼可識別的明碼了。這表示，libsslwrap 通透地對網路傳輸加上 SSL 保護，不失為一個解決方案。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 13, 2009 02:28 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>现在的回复好多了！<br />
+这个东西真诱人，mark</p>
+<span class="comments-post">由 <a href="http://qiukun.is-programmer.com">邱焜</a> 發表於</MTIfNonEmpty> January 13, 2009 04:08 PM</span>
+</div>
+<div class="comments-body">
+<p>用途似乎類似 stunnel</p>
+
+<p>但 implement 方式差異很大</p>
+<span class="comments-post">由 <a href="http://blog.outian.net/">OuTian</a> 發表於</MTIfNonEmpty> January 13, 2009 10:02 PM</span>
+</div>
+<div class="comments-body">
+<p>如果只是為了傳輸安全, 我個人比較偏好用 OpenSSH 轉 port, 一來不用額外安裝套件, 二來也可以轉到同區段的其他伺服器.</p>
+<span class="comments-post">由 <a href="mailto&#58;jye_lu&#64;yahoo&#46;com">Lu, Jye</a> 發表於</MTIfNonEmpty> January 14, 2009 11:22 AM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2084" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 在 Linux kernel 外應用 GIT，兼談分散式版本控制系統</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001250.html" title="開放的數位攝影影像技術" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001252.html" title="Excelsior" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001250.html">« 開放的數位攝影影像技術</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001252.html">Excelsior »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">August 21, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">在 Linux kernel 外應用 GIT，兼談分散式版本控制系統</h3>
+
+如果要探討版本控制系統，Linux kernel 是非常特別的案例，拜網際網路所賜，獲得快速的發展，每天都有數十個 patch 被提交，而且有難以計數的學術與業界的研究計畫以 Linux kernel 為主軸，不用幾天，這些 patch 修改的幅度就大得驚人，所以許多工具相繼被提出以降低工作量。<br />
+<br />
+之前在 [<a href="http://blog.linux.org.tw/~jserv/archives/001232.html">兩個大姑寫的〈Hacking the Linux 2.6 kernel〉</a>] 一文提到廣為使用的 [<a href="http://www.kernel.org/pub/software/scm/cogito/README">cogitod</a>] 工具，可管理為數眾多的 patch(set)。而原本 Linus 推薦使用的 BitKeeper 因為授權的議題，鬧得不愉快，所以 Linus 就自己搞一個，在 KernelTrap 上的專文 [<a href="http://kerneltrap.org/node/5533">Linux: Git Homepage</a>] 介紹到 Git 這個新的 BitKeeper killer 已經有獨立的 [<a href="http://git.or.cz/">專案網頁</a>]，以及其概略的發展背景：<ul class="code" style="margin: 6px;">
+"GIT falls into the category of distributed source code management tools, similar to Arch or Darcs (or, in the commercial world, BitKeeper). Every GIT working directory is a full-fledged repository with full revision tracking capabilities, not dependent on network access to a central server."
+</ul>
+稍後，KernelTrap 又有一篇新文章 [<a href="http://kerneltrap.org/node/5557">Linux: Using Git For More Than The Kernel</a>]，既然 git 已經逐漸勝任 Linux kernel 這種嚴苛且特別的 VCS 需求，是不是有機會應用到其他專案去呢？後面的評論中，erikharrison 提到：<ul class="code" style="margin: 6px;">
+<b>SVN versus Git</b><br />
+<br />
+Subversion is in my mind the best of the classic centralized version control systems.<br />
+<br />
+Bitkeeper is the best of the new model of distributed version control systems.<br />
+<br />
+Git is a fast userspace, versioning, content addressable file system, which can be used to implement many of the things that Bitkeeper does.<br />
+<br />
+Linus really has a different philosophy of version control than that of the last 20 years. BK is very close to his vision, but not quite there. The centralized model, to Linus's mind (and I think he's right) is fundamentally broken, and SVN's on disk formats are pitifully slow for a project of the kernel's size. As such, the facts that<ul>
+  <li>Git is not a complete version control tool</li>
+  <li>Git is relatively featureless</li>
+  <li>Git has very little in terms of a supporting toolset</li>
+</ul>
+don't matter to Linus. Git meets his needs better.
+</ul>
+實際的應用方式可以參考 XMMS2 hackers 的說法：<ul class="code" style="margin: 6px;">
+<b>We already use it.</b><br />
+Comment posted by tru, August 16, 2005 - 05:12<br />
+<br />
+XMMS2 developement has been done in GIT for more then 3 months now. We are very happy about it and it works really well since we came from the free version of bk before.<br />
+<br />
+Our gitweb is here: <a href="http://git.xmms.se/">http://git.xmms.se/</a>
+</ul>
+同時其他評論也相當精彩，Linux Kernel 配合高度分散式版本控制系統似乎是很值得探討的議題。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 August 21, 2005 06:05 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

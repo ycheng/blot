@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Web Browser for Embedded Systems</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001146.html" title="Debian rules!" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001148.html" title="淺談版本控制系統" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001146.html">« Debian rules!</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001148.html">淺談版本控制系統 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">May 22, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Web Browser for Embedded Systems</h3>
+
+<p>在今年二月八日，[<a href="http://jserv.sayya.org/">jserv's lab</a>] 正式開張，我選定幾個發展與研究的方向 (詳情可參考 blog [<a href="http://blog.linux.org.tw/~jserv/archives/000912.html">最近的研究方向</a>])，其中 Web Browser 算是我很有興趣，也已經是 ready 的項目。</p>
+
+<p>很多人誤以為 Web Browser 只是系統中的一個應用程式，事實上沒這麼簡單，特別在 Embedded Systems 中，Web Browser 往往能夠反應底層系統的特性，又如果應用在 small screen 的話，renderer 真的是很大的挑戰。[<a href="http://jserv.sayya.org/">jserv's lab</a>] 的 kBrowser 以 open source 的 Konqueror 與 Mozilla 核心元件為基礎，降低了 footprint，更適合用於 Embedded Systems，同時也加強了 Accessibility，所以就算用在 Handheld devices 也能很順手，最重要的是，支援多種現有的 Graphics Toolkit，如：Qt/Embedded、GTK+、DirectFB，以及 Xlib。</p>
+
+<p>以下是一些運作的畫面：<br />
+- kBrowser for SmartPhone<br />
+<center><img src="http://jserv.sayya.org/khtml/screenshots/konqueror-phone.png"></center><br />
+- kBrowser for PDA<br />
+<center><img src="http://jserv.sayya.org/khtml/screenshots/liquid-qtopia3.png"></center><br />
+- kBrowser for Desktop (Qt, GTK+, Xlib versions available)<br />
+<center><img src="http://jserv.sayya.org/khtml/screenshots/konqe3.png"></center><br />
+- kBrowser for DirectFB<br />
+<img src="http://jserv.sayya.org/misc/kbrowser-scim.png"><br />
+整體來說，kBrowsr 是 royalty-free 的解決方案，基於 open source 的發展模式與技術，但是提供特定的 customization。比較特別的是可以支援多個 profiles，這樣就可以作些組合：<br />
+- HTML Standards: 3.2, 3.2+, 4.0.1 (三種選擇)<br />
+- DOM (Document Object Model) with Microsoft IE compatibility<br />
+- CSS1, CSS2, CSS3 (partial)<br />
+- Java Applet (使用 <a href="http://www.kaffe.org">Kaffe</a> 作為 runtime)<br />
+- Bidirection support (中東語文)</p>
+
+<p>有興趣者可以與 [<a href="http://jserv.sayya.org/">jserv's lab</a>] 聯繫，討論合作的細節，謝謝！</p>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 May 22, 2005 01:15 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>恭喜Jserv走出商业第一步。</p>
+<span class="comments-post">由 <a href="mailto&#58;gtkdict&#64;yahoo&#46;com&#46;cn">jacky</a> 發表於</MTIfNonEmpty> May 23, 2005 09:09 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: freestanding</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001719.html" title="Cairo 1.1.8 的突破" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001722.html" title="EZFB/LaserBoy 以及美妙的 Linux 多媒體" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001719.html">« Cairo 1.1.8 的突破</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001722.html">EZFB/LaserBoy 以及美妙的 Linux 多媒體 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">June 15, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">freestanding</h3>
+
+* 速記，所以可能沒有條理 *<br>
+<br>
+傳統的 C compiler 設計中，很明確的區分 function call 與 C preprocessor 影響層面的分野，不過，隨著編譯系統最佳化的多樣性，在實做層面都得引入新的機制，比方說之前 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001399.html">C99 的 offsetof macro</a>] 就提到這方面的語意是透過 GCC builtins 來實現，blog [<a href="http://blog.linux.org.tw/~jserv/archives/001544.html">善用 GCC builtins 實現 Vectorization</a>] 則提到 GCC 針對 SIMD 設計與 vectorized instructions 的支援，Linux Kernel mailing-list 的討論 [<a href="http://linux.derkeiler.com/Mailing-Lists/Kernel/2004-12/0303.html">compile with -ffreestanding</a>] 中，Andi Kleen 提到新版的 GCC 會透過 builtins 來達到最佳化的處理，在 GCC flag -funit-at-a-time 指定時 (-O3 implies)，原本的：<ul>
+sprintf(buf,"%s",str) 
+</ul>
+在 front-end 會被改寫為：<ul>
+strcpy(buf,str)
+</ul>
+printf 本身就是一個小型的 interpreter，所以 GCC 的作法就是簡化複雜度，這對一般情況下是
+正面的，不過涉及 function rewriting 的議題，對 Linux kernel 或設計一個作業系統核心來說，就是一個潛在的問題。是此，GCC 提供一個 flag -ffreestanding，該 flag implies flag -fno-builtin，並且對於 main 作為 entry point 沒有特別的限制要求，這是 GCC Manual 的說法，看起來的確抽象至極。之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001692.html">Orz Microkernel</a>] 提到我今年七月份會有場演講，題目暫定為「深入淺出 Hello World -- 理解 Linux 上運作 Hello World 的種種機制」，細節稍後會公佈，主要就是探討人人會寫的 "Hello World" 程式，在 Linux 的 kernel-space 與 user-space 運作的交互作用，即便是這麼簡單的應用程式，背後都有很大的學問，而剛剛提到的 flag -ffreestanding 就是其中經典的細節。預設情況下，hosted environment 之下所有的 Standard Library 都可使用，C Programming Language 的 main function 作為邏輯上的 entry point (之所以說「邏輯上」，因為真實情況下，LD scripts 造成的影響是很大的) 其 symbol signature 以 nm 觀察：<ul><pre class="code" style="margin: 6px;">
+$ nm -f posix helloworld  | grep main 
+__libc_start_main@@GLIBC_2.0 U         
+main T 0804b26c 00000153
+</pre></ul>
+其 prototype 為接受兩或三個 argument 的 int 傳回型態，然而，在相對的 freestanding environment 中，並沒有 Standard Library，而且沒有特定的 entry point，這種特別的情況對 kernel 或 firmware 設計來說，是必要的，一般我們會在 C 語言實做的 kernel 或 firmware 中實做簡化的 C Standard Library，其語意與 C89 / C99 的規範可能會有出入。至於如何區分 hosted 或 freestanding environment 呢？前者，也就是預設的組態下，會定義 __STDC_HOSTED__ 的 macro， 在講求可攜性的 NetBSD 中，其 kernel 很明確指定該 flag，不過這也抑制一些可能出現的警告 (TODO: details)，此外，可參考 lkml 的討論 "[PATCH] C undefined behavior fix" [<a href="http://www.cs.helsinki.fi/linux/linux-kernel/2002-00/0484.html">by jtv</a>]、[<a href="http://www.cs.helsinki.fi/linux/linux-kernel/2002-00/0448.html">by Tom Rini</a>]，以及 [<a href="http://www.cs.helsinki.fi/linux/linux-kernel/2002-00/0449.html">by Joe Buck</a>]。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 June 15, 2006 04:08 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>C99中，Freestanding environment不規範library，甚至進入點也不一定得叫main()，因此不存在語意上的出入問題。見ISO/IEC  C99 Specification, section 5.1.2, 茲節錄如下:</p>
+
+<p>In a freestanding environment (in which C program execution may take place without any<br />
+benefit of an operating system), the name and type of the function called at program<br />
+startup are implementation-defined. Any library facilities available to a freestanding<br />
+program, other than the minimal set required by clause 4, are implementation-defined.<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;ijsung&#64;gmail&#46;com">I-Jui Sung</a> 發表於</MTIfNonEmpty> June 15, 2006 07:21 PM</span>
+</div>
+<div class="comments-body">
+<p>補充，前述的clause 4規範的"minimal set"應該只包含, , , , , , 這幾個header (如果我沒有誤解C99 spec的話)。</p>
+<span class="comments-post">由 <a href="mailto&#58;ijsung&#64;gmail&#46;com">I-Jui Sung</a> 發表於</MTIfNonEmpty> June 15, 2006 07:28 PM</span>
+</div>
+<div class="comments-body">
+<p>角括號似乎被濾掉了。前文提及的header如下:<br />
+float.h, iso646.h, limits.h, stdarg.h, stdbool.h, stddef.h, and stdint.h</p>
+<span class="comments-post">由 <a href="mailto&#58;ijsung&#64;gmail&#46;com">I-Jui Sung</a> 發表於</MTIfNonEmpty> June 15, 2006 07:29 PM</span>
+</div>
+<div class="comments-body">
+<p>To 學長，</p>
+
+<p>之前我的紀錄實在簡陋不全，感謝學長指教與補充 :-)</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> June 15, 2006 07:38 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

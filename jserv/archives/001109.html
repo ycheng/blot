@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 新酷音進度報告3</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001108.html" title="GNOME 發展提案" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001110.html" title="版本控制系統滿天飛" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001108.html">« GNOME 發展提案</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001110.html">版本控制系統滿天飛 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">April 18, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">新酷音進度報告3</h3>
+
+<p>又來更新 [<a href="http://chewing.csie.net/">新酷音計畫</a>] 的進度報告 :-)</p>
+
+<p>首先是 Kanru Chen 實驗性的分支 libchewing/branches/kanru-0.3 已經在 UTF-8 support 有了很大的突破，詳情可參考他的 blog [<a href="http://csie.isa-geek.org/~kanru/blog/archives/000085.html">Chewing UTF8!</a>]，就目前 svn 的版本來說，built-in testsuite 已經可以在 UTF-8 編碼作絕大多數的操作，的確是相當不錯的進展。</p>
+
+<p>上個月又多了一名生力軍，Jeff Chen (wiz) 在 svn commit 了些基於 0.2.6 漢語拼音的架構改革，雖然這不是標準的漢語拼音，但是卻可以視為一個可擴充的設計，所以理論上可以把台灣現有五花八門的拼音系統，透過表格與內定 automata 的方式處理。此外，我修正了 libchewing/trunk 中 debugging 支援的議題，並加入 terminate services，這樣內部的實做就可以確保註冊輸入法終結的服務，比方說關閉資料庫等等。</p>
+
+<p>在非 Linux 與 MacOS X 平台上，FreeBSD 上的新酷音使用者也不少。Leeym 學長 (世界真奇妙阿，我算是他大學的學弟) 更新 [<a href="http://www.freshports.org/chinese/scim-chewing/">ports 中的 SCIM/Chewing</a>]，而 clkao 隨後發現在 FreeBSD 5.x 上無法正常運作，後來發現是 ports 中 C++ definitions 有所出入，追蹤的過程相當有趣，可參考我之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001060.html">C++ sucks!</a>]，所以現在應該沒有大問題了。</p>
+
+<p>估計在這個月會釋出 libchewing 的新 RC，希望能將 0.2.x production branch 劃下句點，等 kanru-0.3 branch 穩定後，就會成為新的 svn trunk。至於版本命名將會採用類似 Linux kernel 的方式，0.3.x branch 會破壞原有的 API/ABI，幾個需要完成的目標有：<br />
+* Migrate to Unicode<br />
+* Abstract the I/O layer<br />
+* Consistent API naming<br />
+* Compact storage<br />
+* Database support</p>
+
+<p>對了，Kanru Chen 還花了一點時間創作 chewing-utils，在 che 這隻程式可以處理使用者自訂的詞庫，現在也能處理 UTF-8 的 hast.dat，運作的快照如下：<br />
+<center><img src="http://jserv.sayya.org/misc/chewing-utils.png" /></center></p>
+
+<p>先提到這裡，後續的進度報告呢？請多送些 patch 來 (簡單的示意可參考我的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001072.html">募 patch</a>])，就可以創造新的發展，謝謝！</p>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 April 18, 2005 04:31 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

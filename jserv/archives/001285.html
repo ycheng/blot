@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 颱風假 -- WirelessMMX 與手寫辨識輸入</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001284.html" title="夢幻軟體計畫 2005 八月份進度" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001286.html" title="早安！台北" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001284.html">« 夢幻軟體計畫 2005 八月份進度</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001286.html">早安！台北 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">September 02, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">颱風假 -- WirelessMMX 與手寫辨識輸入</h3>
+
+<p>乍看標題很突兀，所以要說明。<br /></p>
+
+<p>週四放了一天颱風假，難得有時間可以作自己的計畫，所以我研讀了 [<a href="http://www.rz.uni-karlsruhe.de/rz/docs/VTune/reference/CDP_RES.htm"><span class="caps">WMMX </span>Data Processing Result Penalty/Warning</a>]，Intel <span class="caps">PCA </span>(其實就是 XScale 或 <span class="caps">PX</span>A2xx Family) 的 WirelessMMX instructions 應用相當廣泛，但是文件與 sample code 不太多，深入的分析就更少了，這篇文件對我來說很重要，儘管兩個月前就開始閱讀了，不過某些 pipeline 的機制我是最近才體會的，也終於理解許多微妙的效能落差。<br /></p>
+
+<p>下午開始作 XScale/WirelessMMX target 的 <span class="caps">JIT</span> compiler，修改 asmpart.S disass.c md-asm.h 這三個檔案，這是 <span class="caps">ARM</span> core 使用上的一個陷阱，雖然比較流行的 <span class="caps">ARM</span> core 基本上都是 <span class="caps">ARM9</span>/MMU 的架構，多數的指令集是一致的，但 trampolines (invoke arbitrary functions) 還是會有微妙的差異。以 Kaffe 來說，[<a href="http://www.kaffe.org/cgi-bin/viewcvs.cgi/kaffe/config/arm/threads.h">kaffe/config/arm/threads.h</a>] 就因為處理 XScale 的 <span class="caps">SP</span> offset，需要多加一個判斷，再者，這兩個 <span class="caps">ARM</span> instructions 也要謹慎使用，特別在開發 <span class="caps">JIT</span> compiler  的時候： stmfd / ldmfd，通常分別作為 save/restore argument register，但 register allocation 會因為前述的議題而有出入。<br /></p>
+
+<p>傍晚跟 jie 聊天後，繼續思考 XScale optimizations，竟然不小心睡著，午夜才醒來，這樣生活實在太安逸了 :(<br /></p>
+
+<p>剛剛瞥見 [<a href="http://palatis.blogspot.com/">Palatis</a>] 對 [<a href="http://wiki.debian.org.tw/WishList2005">夢幻軟體計畫</a>] 做了新提案，想在 OpenEmbedded 發展輸入法 (OPIE/GPE)，他提到兩個項目：libchewing 與手寫辨識輸入。前者的確是需要考慮的議題，為了釐清授權議題，所以捨棄龔律全與 [<a href="https://webspace.utexas.edu/jkchen/www/">陳康本</a>] 兩位前輩之前 training 過的辭典，改用 [<a href="http://libtabe.sourceforge.net">libtabe</a>] 的 tsi.src，雖然有修正過一些，但是還是太多冗字，詞頻也錯誤百出。手寫辨識輸入就更複雜了，所以我順便更新 Debian@Taiwan wiki [<a href="http://wiki.debian.org.tw/ChineseInformationProcessing">ChineseInformationProcessing</a>] 的 [<a href="http://wiki.debian.org.tw/index.php/ChineseInformationProcessing#.E6.89.8B.E5.AF.AB.E8.BC.B8.E5.85.A5">手寫輸入</a>] 這部份，加入 rabit 兄 (SayYa <span class="caps">BBS </span>上的 rabit，元智大學博士候選人) 的見解，他分析了現有 open source'd 實做的缺陷，以及這部份所面臨的挑戰。<br /></p>
+
+<p>於是，打完這一篇的同時，颱風假就這麼結束了。<br /></p>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 September  2, 2005 01:32 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1285" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

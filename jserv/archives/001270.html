@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 幾篇介紹 GPU 發展的中文文件</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001269.html" title="用 ImageMagick 實現 Lomography" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001271.html" title="Vectorization 的呈現" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001269.html">« 用 ImageMagick 實現 Lomography</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001271.html">Vectorization 的呈現 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">August 25, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">幾篇介紹 GPU 發展的中文文件</h3>
+
+[<a href="http://www.eettaiwan.com/">電子工程專輯</a>] 有許多一流的技術文件可以參考，而且大部分有中文翻譯，讀起來輕鬆許多，早上讀了幾篇 GPU (Graphics Processing Unit) 的文章與論文，不過有點枯燥，所以從 [<a href="http://www.eettaiwan.com/">電子工程專輯</a>] 找了幾篇中文報導：<ul>
+<li>[<a href="http://www.eettaiwan.com/ARTP_8800368668_681521.HTM">現代GPU開始向通用運算領域發展</a>]</li>
+<li>[<a href="http://www.eettaiwan.com/ARTP_8800368669_681521.HTM">用於通用運算任務的可編程GPU</a>]</li>
+<li>[<a href="http://www.eettaiwan.com/ARTP_8800368670_681521.HTM">現代繪圖處理器開始具備平行數據處理能力</a>]</li>
+</ul>
+第二與第三篇顯然比較符合我的胃口，特別是我最近碰了 SIMD/DSP Programming。Stanford 大學繪圖實驗室的 Ian Buck 用淺顯的文字介紹了 SIMD 與 DSP 的差異：<ul>
+GPU在幾個主要方面有別於DSP架構。其所有運算均使用浮點演算法，而且目前還沒有位元或整數運算指令。此外，由於GPU專為影像處理設計，因此儲存系統實際上是一個二維的分段儲存空間，包括一個區段號(從中讀取影像)和二維地址(影像中的X、Y座標)。<br>
+<br>
+此外，沒有任何間接寫指令。輸出寫地址由光柵處理器確定，而且不能由程式改變。這對於自然分佈在記憶體之中的演算法而言是極大的挑戰。最後一點，不同片段的處理過程間不允許通訊。實際上，片段處理器是一個SIMD數據平行執行單元，在所有片段中獨立執行程式碼。<br>
+<br>
+儘管有上述約束，但是GPU還是可以有效地執行多種運算，從線性代數和訊號處理到數值模擬。雖然概念簡單，但新用戶在使用GPU運算時還是會感到迷惑，因為GPU需要專有的繪圖知識。
+</ul>
+同時這篇文章也介紹到 Stanford 大學自行開發的 [<a href="http://graphics.stanford.edu/projects/brookgpu/">BrookGPU</a>] 計畫，作為包裝繪圖技術的高級語言，引述網頁的介紹：<ul>
+<li>Demonstrate general purpose programing on GPUs.</li>
+<li>Provide a useful tool for developers who want to run applications on GPUs.</li>
+<li>Research the stream language programing model, streaming applications, and system implementations.</li>
+</ul>
+文章的結論往往是最值得思考的地方，引述如下：<ul>
+對GPU運算感興趣的用戶努力將演算法映射到繪圖基本元素。類似Brook這樣的高級編程語言的問世使編程新手也能夠很容易就掌握GPU的性能優勢。存取GPU運算功能的便利性也使得GPU的演變將繼續下去，不僅僅作為繪製引擎，而是會成為個人電腦的主要運算引擎。
+</ul>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 August 25, 2005 11:27 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>Hi, guys<br />
+I am a graduate student of huazhong univ. of sci. and Tech. in mainland. I am very interested in GPU computation , today I am compiling BrookGPU of stanford and meet some problems , so I google the BrookGPU and find your site. Hope we can collaborate together . </p>
+<span class="comments-post">由 <a href="mailto&#58;berry_hust&#64;hotmail&#46;com">berry</a> 發表於</MTIfNonEmpty> August 31, 2005 10:31 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 下一代的 SCIM 設計</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001454.html" title="Device Driver 開發者的告白" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001456.html" title="GuarantorTo_be_Killed Toolkit" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001454.html">« Device Driver 開發者的告白</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001456.html">GuarantorTo_be_Killed Toolkit »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 25, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">下一代的 SCIM 設計</h3>
+
+蘇哲在 SCIM mailing-list 張貼了下一代的 SCIM (version 2.0) 的架構設計，可參考 [<a href="http://sourceforge.net/mailarchive/forum.php?thread_id=9556850&forum_id=43684">Some thought of the future of scim.</a>]，韓國開發者 krisna 在他的 blog [<a href="http://people.kldp.org/~krisna/blog/entry.php?blogid=412">SCIM 2.0 design</a>] 將 mailing-list 的 dia 轉換成圖檔： (click to enlarge)<br>
+<a href="http://people.kldp.org/~krisna/imgs/scim-2.0-new-design.png"><img  width="500" height="336" src="http://people.kldp.org/~krisna/imgs/scim-2.0-new-design.png"></a><br>
+在新的設計中，Message BUS 是相當重要的元件，摘錄蘇哲文字的重點：<ul class="code" style="margin: 6px;">
+<li>Message BUS will be a separated process acting as a central message transfer hub. It'll be a socket server, lisening on a local unix socket.</li>
+<li>IMEngine Provider is a special client of Message BUS, which loads all IMEngine modules and real Config module, and exports the services to Message BUS through socket.</li>
+<li>Helper Module are also clients of Message BUS, which can communicate with applications and IMEngines through Message BUS.</li>
+<li>All applications are also clients of Message BUS, which get input method services from Message BUS by a small wrapper (similar to Socket IMEngine).</li>
+<li>All clients of Message BUS are reloadable, for example, IMEngine Provider can be reloaded without breaking any applications.</li>
+<li>Message BUS is a process which has no binary dependency to any other modules or libraries, except c, c++ and scim core library. And it has very small footprint, so that it can be very stable.<li>
+<li>All GUI components are independent Helper modules which run in separated processes. So that they are all reloadable and replaceable.</li>
+<li>GUI Setup module will also be Helper modules, so that they can be implemented with any widget libraries.</li>
+</ul>
+乍看之下，有些 IIIMF 中 IIIM Protocol Resource/Transaction management 的意味，不過應該更為輕量級，或許，直接支援 D-Bus 來作為 message bus 也是個途徑？不過，我好像有點安於現狀，無暇去關心 IM Framework，現在我的問題都來自酷音輸入法本身 :(<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 25, 2006 10:04 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>Comparing to IIIMSF, Message BUS runs on client side, actually all processes on the diagram run on client side. And Message BUS itself doesn't load and external module nor links to any external libraries.</p>
+
+<p>While IIIMSF runs on server side and loads all LEIF modules directly.</p>
+<span class="comments-post">由 <a href="http://www.scim-im.org">James Su</a> 發表於</MTIfNonEmpty> January 26, 2006 09:39 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 即將成為 SMPTE VC-2 標準的 Dirac 視訊壓縮技術</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001995.html" title="解放你的桌面：LxDE 重裝上陣" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001997.html" title="「100% 開源手機與法律議題」簡報上線" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001995.html">« 解放你的桌面：LxDE 重裝上陣</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001997.html">「100% 開源手機與法律議題」簡報上線 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 24, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">即將成為 SMPTE VC-2 標準的 Dirac 視訊壓縮技術</h3>
+
+<center><img src="http://dirac.sourceforge.net/images/dirac_banner.jpg" width="401" height="91" /></center><br />
+在消費性電子領域，離不開視訊壓縮技術，不僅其數學原理令人腸枯思竭、咬斷筆桿仍不得要領，蘊藏於中的專利議題，更是聯篇累牘。兩年前的文章 [<a href="http://blog.linux.org.tw/~jserv/archives/001609.html">VC-1 標準確立</a>] 提及 [<a href="http://www.smpte.org/">SMPTE</a>] (The Society of Motion Picture and Television Engineers，電影電視工程師協會) 於 2006 年三月認可由 Microsoft 以 WMV 9 (Windows Media Video 9) 為主體的申請提案，批准為 SMPTE 421M，自此，也被稱為 VC-1 的 SMPTE 421M 就成為羅列於 SMPTE 的獨立標準，並由十六家企業共同擁有該專利。<br />
+<br />
+相當明顯，Microsoft 提交 VC-1 標準的意圖就是踏入 HDTV 領域，除去可能的技術荊棘，在這之前，HDTV 視訊壓縮技術幾乎由 MPEG-4 寡佔了歐美市場，不僅在數位影音廣播 (DVB) 如此，在藍光或 HD-DVD 亦然，現在 VC-1 標準則成為對等的競爭規格。不過，2008 年一開始，這個局面即將有所改觀，來自 [<a href="http://www.bbc.co.uk/rd/">BBC Research</a>] (英國廣播研究中心) 企圖以高品質視訊壓縮技術 [<a href="http://dirac.sourceforge.net/">Dirac</a>] 申請 SMPTE 提案，也就是 VC-2 的候選技術。(注意：實際上申請的項目名稱為 Dirac Pro)<br />
+<br />
+大異於 MPEG-4 諸多技術與 VC-1，Dirac 視訊壓縮技術野心相當大，並採取異常地開放態度，先在 2004 年一月公佈其演算法與相關技術，並在 SourceForge.net 上註冊 [<a href="http://dirac.sourceforge.net/">Dirac</a>] 專案，以 MPL / GNU GPL / GNU LGPL 三重開放原始碼授權釋出參考實做 (ANSI C 版本)，現已有多項世界知名的多媒體專案支援該視訊壓縮技術及開放實做。Dirac 的命名是紀念英國物理學家 [<a href="http://en.wikipedia.org/wiki/Paul_Dirac">Paul Adrien Maurice Dirac</a>] (1902-1984，曾獲 1933 年諾貝爾獎)。專利部份來說，BBC 擁有 Dirac 視訊壓縮技術中若干專利，但開放予公眾使用，同時，BBC Research 也確認，並包含無第三方的專利技術，依據 [<a href="http://dirac.sourceforge.net/faq.html">Dirac 專案的 FAQ</a>]：<ul class="code" style="margin: 6px;">
+<b>Do you infringe any patents?</b><br />
+<p>
+The short answer is that we don't know for certain, but we don't think so.</p>
+<p>
+We haven't employed armies of lawyers to trawl through the tens of thousands of video compression techniques. That's not the way to invent a successful algorithm. Instead we've tried to use techniques of long standing in novel ways.</p>
+<p>
+There are some areas that are more heavily patented than others. Arithmetic coding is one such, even though the technique itself has been around for 30 years. We're keeping an eye on the situation, and we'll adopt alternative techniques if we have to. Some of the recent changes in the algorithm have centred on the arithmetic coding - taking it away from some of the minefields of prior art that we have uncovered.</p>
+</ul>
+當然，在視訊壓縮技術領域，不免會有模糊地帶，除了諸多常見的 public domain 技術外，交叉的專利技術事實上是可能存在的，但 Dirac 試圖避開這些「地雷」，目前專注於實做 Dirac video codec 的 [<a href="http://schrodinger.sourceforge.net/">Schrödinger</a>] 專案正邁向 1.0 版，同時依據 VC-2 提案的硬體設計也即將最終定案。可預見的未來，Dirac/VC-2 很可能廣泛地應用，並且對自由軟體為基礎的資訊系統來說，具備極高的誘因，同時終端消費者才得以有合理的使用範圍。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March 24, 2008 12:44 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1996" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

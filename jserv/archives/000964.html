@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: XFCE 手寫辨識支援</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/000963.html" title="XFCE -- 婀娜多姿的小姑娘" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/000966.html" title="Kaffe 1.1.5 內幕消息" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/000963.html">« XFCE -- 婀娜多姿的小姑娘</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/000966.html">Kaffe 1.1.5 內幕消息 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February 21, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">XFCE 手寫辨識支援</h3>
+
+<p>著名的 [<a href="http://gpe.handhelds.org/">GPE 計畫</a>] 有個名為 Rosetta 的手寫辨識引擎，雖然已經很久沒有維護，但是其 source code 還頗直覺，介面也不差，或許沒有牽涉太多理論，但是實測的效果還不錯。剛剛在玩 [<a href="http://blog.linux.org.tw/~jserv/archives/000963.html">XFCE -- 婀娜多姿的小姑娘</a>] 時，一邊跟 Kanru Chen 討論，一邊動手移植 Rosetta，去掉一些 GPE Widget，改成 XFCE UI，於是第一版的手寫辨識 for XFCE 就完成了，請參閱以下快照：<br />
+[Training 畫面]<br />
+<img src="http://jserv.sayya.org/xfce/screenshot/roseta.png" /></p>
+
+<p>[手寫辨識使用實例]<br />
+<img src="http://jserv.sayya.org/xfce/screenshot/roseta2.png" /></p>
+
+<p>剛剛也在 IRC 上跟 Kanru Chen 聊到這個成果的下個方向，或許是搭配許氏注音鍵盤排列，因為恰好將注音符號對應成 25 個英文，所以理論上只要有辦法 training 注音符號成為這 25 個英文字母即可 ("Q" 沒有使用)，這麼說來，手寫注音辨識或許會比較簡單，說不定就可以把 [<a href="http://chewing.csie.net/">新酷音</a>] 放到 PDA 或者手機上面使用了。</p>
+
+<p>就算不用在 PDA 等 handheld devices，XFCE 的手寫支援還是有其價值在，比方說用在 Kiosk 或者是公用電腦，旁邊放個手寫版，就可以輕鬆的搭配手寫辨識來使用了。完整的手寫筆跡辨識很難，更別說要拿出 Free/Open-Source 的解決方案，但是像是「手寫酷音」或許是個很好的方向，畢竟很多台灣人也寫不出所有的常用字了，寫注音符號輕鬆多了 :-)</p>
+
+<p>我對手寫辨識沒有太大的概念，不過作這種沒有技術的 hacking 倒是還挺在行的，希望有機會能接觸到從事這方面辨識的先進指點一番。</p>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 February 21, 2005 11:27 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>如果可以這樣<br />
+平常使用完整的手寫辨識<br />
+忘記某個字怎麼寫時可以馬上切到手寫注音<br />
+一定很好玩 :D</p>
+<span class="comments-post">由 <a href="http://stu.csie.ncnu.edu.tw/~kanru.96/">Kanru</a> 發表於</MTIfNonEmpty> February 22, 2005 11:02 AM</span>
+</div>
+<div class="comments-body">
+<p>其實技術上可行的話，還是用純手寫注音符號的形式會比較好。</p>
+
+<p>畢竟要背起 KB_HSU -> 注音符號 也是有學習曲線的。就算做出來也沒有實質意義。</p>
+
+<p>更何況，我比較支持 ET26. XD</p>
+
+<p>說個小故事，遠見的電子字典原本是用et26當成鍵盤排列。後來還是因為習慣性的問題被迫修改了。那時候我為了要買一台哈電族，去光華試了一下，不能雙手輸入的et26根本就是廢柴。</p>
+<span class="comments-post">由 <a href="http://jouston.no-ip.com">Jouston Huang</a> 發表於</MTIfNonEmpty> March 21, 2005 01:08 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: LD_PRELOAD 的應用</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/000780.html" title="xrdp -- Open Source RDP server in UNIX" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/000783.html" title="XDirectFB + XFree86 cvs (20050117)" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/000780.html">« xrdp -- Open Source RDP server in UNIX</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/000783.html">XDirectFB + XFree86 cvs (20050117) »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 17, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">LD_PRELOAD 的應用</h3>
+
+Linux Kernel Hackers 之一的 Greg Kroah-Hartman 曾經在 LinuxJournal 上寫過一篇名為 [<a href="http://jserv.sayya.org/kernel/ld_preload-usage.html">Modifying a Dynamic Library Without Changing the Source Code</a>] 的文章，簡單扼要的解釋 LD_PRELOAD 環境變數的使用，並且提供一個實用的範例，我剛剛將該文翻譯成繁體中文，請見 [<a href="http://jserv.sayya.org/kernel/ld_preload-usage.html">在不更動原始程式碼的前提下，修改動態程式庫</a>]。
+
+除了這個範例外，我之前在對 Access 公司出品的 <a href="http://www.access.co.jp/products/nf.html">NetFront 瀏覽器</a>增加繁體中文支援時，發現 NetFront v3.1 Linux SDK 是用 GTK+ 1.2 打造的，而字型資訊是寫死在程式碼中，Access 也未放出原始程式碼，於是我透過 LD_PRELOAD 的機制，動態調整中文字形的處理，如此一來，NetFrontGTK 就能顯示繁體中文 (使用台北字形)，並且，參考原本的訊息檔稍做繁體中文翻譯，執行的快照可以參考：
+<img src="http://jserv.sayya.org/netfront/nf-zh.png" />
+<img src="http://jserv.sayya.org/netfront/nf-zh2.png" />
+<img src="http://jserv.sayya.org/netfront/nf-zh3.png" />
+至於這個改過的 tarball 可以<a href="http://jserv.sayya.org/netfront/">在此下載</a>
+接下來，我就提及修改的細節。NetFrontGTK 之所以無法顯示中文的原因是，當呼叫 gdk_fontset_load() 時，只載入了日文字型，所以只能顯示日文網頁。所以，如果能攔截 gdk_fontset_load() 的進入點，動態加入中文字型名稱，不就迎刃而解了？以前 XCIN 架構還不是很完備前，有個 XA (Xcin Anywhere) 的輔助程式，他的動作正是攔截特定的 X 呼叫，強迫採用 XA 內部可與 XCIN 溝通的動作。於是，我搬出 XA 的程式碼作為參考，主體的流程大致是：
+<pre>
+/* Wrapped functions */
+
+/*
+ * PROTOTYPE:
+ *   GdkFont* gdk_fontset_load   (const gchar    *fontset_name);
+ * real_gdk_fontset_load 就是真正的 gdk_fontset_load() 進入點
+ */
+static GdkFont* (* real_gdk_fontset_load)(const gchar *fontset_name);
+
+void load_all_syms(void *handle)
+{
+  real_gdk_fontset_load = dlsym(handle, "gdk_fontset_load" );
+}
+
+#define XA_LIBX11 "libgdk-1.2.so.0"
+void wrap_init()
+{
+  static void *handle = dlopen(lib_path, RTLD_LAZY);
+  load_all_syms(handle);
+}
+
+/*
+ * 我們的 gdk_fontset_load() 實作
+ * 看到包含 "jisx0208" 的字型名稱，自動加入台北字型
+ */
+GdkFont* gdk_fontset_load(const gchar *fontset_name)
+{
+  gchar new_fontset_name[BUF_SIZE];
+  wrap_init();
+  if (strstr(fontset_name, "jisx0208") != 0) {
+    sprintf(new_fontset_name,
+            "-taipei-ming-medium-r-normal-*-*-160-*-*-c-*-big5-0,"
+            "%s", fontset_name);
+    return real_gdk_fontset_load(new_fontset_name);
+  }
+  return real_gdk_fontset_load(fontset_name);
+}
+</pre>
+
+Happy Hacking!
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 17, 2005 07:06 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>我在tw.bbs.comp.linux也提過一個用到LD_PRELOAD的例子,標題是<br />
+[心得]用transconnect穿過防火牆</p>
+
+<p>我還在同一家公司,不過我們現在不擋telnet了,所以沒在用了.<br />
+==<br />
+咦,突然想到我們好像有擋irc ^^;</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/~ystuan/">PowerOp</a> 發表於</MTIfNonEmpty> January 19, 2005 01:18 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

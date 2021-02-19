@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 會哭的小孩有糖吃 -- FOSS 開發小插曲</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001183.html" title="如何成為優秀的工程師" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001185.html" title="使用 Gmail Notifier for Firefox 的朋友請更新" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001183.html">« 如何成為優秀的工程師</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001185.html">使用 Gmail Notifier for Firefox 的朋友請更新 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">June 21, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">會哭的小孩有糖吃 -- FOSS 開發小插曲</h3>
+
+常常有朋友問，參與 Free and Open Source Software 開發有什麼樂趣呢？我一時說不上來，但是常常有許多驚喜，特別是對於人際關係的建立有良好的助益，還有，「會哭的小孩有糖吃」這個準則挺好用的，怎麼說呢？這就要提到昨天發生的小插曲。<br />
+<br />
+昨天下班後，我一時興起拿 FreeDesktop 的 fdclock 出來把玩，可是發現 linkage errors，才赫然發現 Ubuntu breezy 裡面已經全面升級到 Cairo 0.5 了，而這個版本跟舊版有 API incompatible 的議題，所以 fdclock 這隻依賴 cairo 0.3 API 的程式就無法執行了。記得之前在 mailing-list 上讀過 [<a href="http://lists.freedesktop.org/archives/cairo-announce/2005-May/000015.html">Cairo 0.5 porting guide</a>]，所以就試著修改，不過我弄個三十秒就興趣缺缺，實在麻煩，所以我就跑去 #freedesktop 上面鬧：<ul class="code" style="margin: 6px;">
+23:02 jserv2: hi all<br />
+23:02 jserv2: I found fdclock can't get built with cairo 0.5.<br />
+23:02 jserv2: Any idea?<br />
+23:09 dooky: Why don't you build cairo .5 and call it a day?
+</ul>
+喔，好吧，我卯起來改一下，不過看起來不能動：<ul class="code" style="margin: 6px;">
+23:18 jserv2: I hacked fdclock: jserv.sayya.org/misc/j-fdclock.diff<br />
+23:18 jserv2: it should be compiled, but still not working with Cairo 0.5. :(<br />
+23:19 dooky: lol<br />
+23:19 jserv2: anyone could review my changes?
+</ul>
+沒多久，Cairo 的作者 Carl Worth (IRC nickname: cworth) 真的幫我 review，並且做出回應：<ul class="code" style="margin: 6px;">
+00:10 cworth: jserv2: This part's broken:<br />
+00:10 cworth: cairo_t *cr = (cairo_t *) malloc(sizeof(cairo_t *)); // = cairo_create();<br />
+00:14 cworth: As is the replacement for cairo_set_alpha; cairo_show_surface; which should be cairo_set_source_surface (0,0); cairo_paint_with_alpha;<br />
+00:15 jserv2: cworth: ohhh, thanks for pointing me!<br />
+00:15  * jserv2 is shocked to get the messages from the Cairo guys!
+</ul>
+真是好開心阿，Cairo 的作者做了 review，看來很快這個 API porting 就要完成了，所以我準備盥洗睡覺去。早上醒來，看看 IRC log，發現 cworth 已經改好了：<ul class="code" style="margin: 6px;"> 
+00:42 cworth: jserv2: I've got something now that seems to draw the right things.<br />
+00:42 cworth: jserv2: But it's awfully slow on my X server right now, and it would be good to know that I hadn't jusst introduced a bad performance bug.<br />
+00:42 cworth: jserv2: Care to try it?<br />
+00:44 cworth: <a href="http://cairographics.org/~cworth/tmp/fdclock_cairo_0_5_0.patch">http://cairographics.org/~cworth/tmp/fdclock_cairo_0_5_0.patch</a>
+</ul>
+帥呆了，咱們來欣賞 fdclock with Cairo 0.5 呈現的效果：<br />
+<center><img src="http://jserv.sayya.org/misc/fdclock-cairo-0_5.png" width="150" height="150" /></center><br />
+類似的情況，在 FOSS 常常發生，軟體有很多改進的地方，而不相容的問題也時常發生，但是沒關係，我們可以透過 mailing-list 甚至 IRC 作通訊，彼此交流，而且成果是可以累積的，儘管我的 patch 無法正常運作，但是我可以直接請 Cairo 的作者來協助修改，省去很多 try and error 的歷程，這是很美妙的經驗，而我也由 Carl Worth 的 patch 中學習整個 API porting 的項目，非常感謝 :-)<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 June 21, 2005 11:59 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>要不要把這篇弄一個英文版，讓Cairo的作者知道一下妳的謝意？</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/~ystuan/">PowerOp</a> 發表於</MTIfNonEmpty> June 22, 2005 05:48 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1184" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

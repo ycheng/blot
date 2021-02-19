@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 中文簡繁轉換的複雜性</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001224.html" title="台灣區 Debian 十二週年慶祝活動" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001226.html" title="PCMan X 的新發展 (5)" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001224.html">« 台灣區 Debian 十二週年慶祝活動</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001226.html">PCMan X 的新發展 (5) »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">August 06, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">中文簡繁轉換的複雜性</h3>
+
+中文繁簡體轉換的議題，原本在我的觀點來說，應該是很多現成的軟體元件可以應用，而在查閱了一些資料後才發現，問題遠比想像中的複雜。稍早的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/000942.html">漢字走向全球化的挑戰</a>] 與 [<a href="http://blog.linux.org.tw/~jserv/archives/000990.html">繁簡轉換的議題</a>] 有提到過去的一些發現，而我也是在認識 jie 之後，才開始正視這個議題的，同時，我也在今年的 Debian@Taiwan 社群計畫的 [<a href="http://wiki.debian.org.tw/WishList2005">WishList2005 / 夢幻軟體計畫</a>] 提交了一個提案 [<a href="http://jserv.sayya.org/tscc/tscc-proposal.pdf">TSCC</a>]，主要就是著眼二岸三地辭語對照與轉換，規範繁簡體中文用語轉換系統的基礎框架，昨天利用晚上的時間實做了一部分。<br>
+<br>
+但是我總是發現困難重重，不僅難以擴充，更不知道該如何整合現有的中文輸出機制，而剛剛查閱 CJK.org 後，發現一篇論文 [<a href="http://www.cjk.org/cjk/c2c/c2cbasis.htm">The Pitfalls and Complexities of Chinese to Chinese Conversion</a>] ，我將原本的中文版 [<a href="http://jserv.sayya.org/tscc/c2cchin.pdf">轉換成 PDF 文件</a>]。不難發現，即便使用 Unicode 後，簡體與繁體中文可以並行使用，但衍生的問題才要開始。Unicode 的 CJK 表意文字區域規範了多數的 glyph，而不少應用程式，比方說 [<a href="http://www.openvanilla.org/">OpenVanilla</a>] 與 [<a href="http://www.scim-im.org/">SCIM</a>] 著手提供了表格式的轉換，但還是只能針對單一 Unicode 漢字，但就實用的角度來說，至少我們還需要類似 [<a href="http://tongwen.mozdev.org/">同文堂</a>] 的詞語導向的轉換設計。<br>
+<br>
+在這篇論文裡頭我們可以看到序言提到：<ul lass="code" style="margin: 6px;">
+In 1996, the CJK Dictionary Institute (CJKI) launched a project to investigate these issues in-depth, and to build a comprehensive SC↔TC database (now at three million SC and TC entries) whose goal is to enable conversion software to achieve near 100% accuracy.</ul>
+這樣的資料庫已經衝到上萬個詞條，就目前開放的實做來說，「新同文堂」(URL實在太分歧了，以至於我不知道該列出哪個) 還不到兩千條。就算今天我們能夠聚集網路上熱心朋友的貢獻，將對照詞彙表的數量累積到同樣的等級，就效率來說，是否能夠迎接拔山倒海的轉換資料量呢？我很好奇。<br>
+<br>
+為了務實，我打算先將上述的議題擱置，改來寫 [<a href="http://gaim.sourceforge.net/">gaim</a>] 的一個 plugin，作為一個 testbed 來驗證 TSCC，初期已經有最簡單的表格式轉換，可以處理 in-coming/out-going messages 的轉換，稍後我會放到公開的 svn repository。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 August  6, 2005 08:52 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>你可以參考中文維基的繁簡轉換表：<br />
+http://zh.wikipedia.org/wiki/Help:%E4%B8%AD%E6%96%87%E7%BB%B4%E5%9F%BA%E7%99%BE%E7%A7%91%E7%9A%84%E7%B9%81%E7%AE%80%E5%A4%84%E7%90%86</p>
+<span class="comments-post">由 <a href="http://william.cswiz.org/blog/">william</a> 發表於</MTIfNonEmpty> August  8, 2005 11:46 AM</span>
+</div>
+<div class="comments-body">
+<p>没错，我一直推荐同文堂、维基的资源能够整合起来；如果SCIM的转换功能也能用上维基的转换表，那就太好了。</p>
+<span class="comments-post">由 <a href="http://xyb.8800.org">xyb</a> 發表於</MTIfNonEmpty> August  8, 2005 06:54 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

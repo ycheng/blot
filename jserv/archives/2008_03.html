@@ -1,0 +1,1337 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: March 2008 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2008_02.html" title="February 2008" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2008_04.html" title="April 2008" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/2008_02.html">« February 2008</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/2008_04.html">April 2008 »</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">March 31, 2008</h2>
+
+
+<div class="blogbody">
+<a name="002003"></a>
+<h3 class="title">QtWebKit: 將 Web 2.0 技術帶入行動通訊的系統設計</h3>
+
+稍早提過 [<a href="http://blog.linux.org.tw/~jserv/archives/001985.html">Qtopia Core 更名為 Qt for Embedded Linux</a>] 的新聞，這是 Nokia 入主 Trolltech 後，對產品定位概念做了釐清，強調 Qt 的跨平台能力與針對底層系統軟體整合的訴求，同時，我們也可以發現 Trolltech 的新聞稿如 [<a href="http://trolltech.com/webkit/webkit-announce">Announcing the Qt WebKit Integration</a>]，就下了名為 "Trolltech’s Qt WebKit Integration brings Web 2.0 services to mobile phones" 的副標題，這是很值得玩味的市場資訊。<br />
+<br />
+活躍且嚴謹發展的 [<a href="http://webkit.org/">WebKit</a>] 專案為資訊技術應用，帶來許多新的可能，不同於以「平台」概念延展的 Mozilla/Firefox，WebKit 從其前身 KHTML 開始，就定位於結構優雅、設計洗練的 Web rendering toolkit，這也是 Apple 相中 KDE 團隊 KHTML engine 的原因。經過一番波折與分分合合的開發歷程，WebKit 的開發在 KDE KHTML 團隊成員 Lars Knoll, Simon Hausmann, George Staikos, Zack Rusin 等人的努力，又重新加入 Qt 的支援，有別於已成熟的 KHTML，WebKit 的 Qt 實做部份稱為 "QtWebKit"。與其他 WebKit 既有的平台相依移植如 Gtk+、WxWidgets 或 MS-Windows 相較，QtWebKit 的角色更超越了「平台移植」，實際上，QtWebKit 能與 Qt Framework 作無接縫 (seamless) 的整合，而 Trolltech 也宣示 Qt 4.4 系列內建 Qt WebKit Integration (這是市場行銷術語，其實就是 "QtWebKit")，下圖是概念呈現：<br />
+<center><img src="http://jserv.sayya.org/khtml/qtwebkit/webkit-architecture.png" width="480" height="300" /></center><br />
+我們可發現，QtWebKit 之於 Qt Framework，地位等同於 Qt4 其他模組，實做上則透過 Qt Core Module (C++ application framework，包含 WebKit 模擬的 Qt API，在 QtWebKit 是直接對應到 native)、Qt Network Module，與 Qt GUI Module 等予以實現 HTML4/5 的規格與具體描繪/編輯動作，詳情可參考 Trolltech 的白皮書 [<a href="http://www.trolltech.com/pdf/qt-webkit-mar-2008-whitepaper-a4.pdf">WebKit in Qt and Qtopia</a>] (PDF 文件)。如此一來，Qt/Qtopia 應用程式得以直接透過 QtWebKit 嵌入 Web 畫面，而時尚的 Web 2.0 技術也得以悄悄融入行動通訊平台的呈現中，在新聞稿中提供三份展示動畫，很值得一看，我們可發現，連 Qt Designer 這種原本靜態的版面編輯工具，也被擴充為允許嵌入動態網頁，在設計階段即可作前期評估與設計調整等動作，在以往幾乎是設計師企求而無法達成的美夢。<br />
+<br />
+技術面探討 QtWebKit，可參閱資深 KDE 開發者 Simon Hausmann 在去年 foss.in 的研討會議程 [<a href="http://foss.in/2007/register/speakers/talkdetailspub.php?talkid=414">QtWebKit</a>]。概念上來說，QtWebKit 基本上是 "QT wrapper around the WebKit rendering engine"，但實做面透過 Qt Framework，包含 text handling, painting, networking，並提供簡單易用的 Qt 風格 API，其設計簡潔卻功能強大，有以下元件：<ul>
+  <li>qWebView - browser widget</li>
+  <li>qWebSettings - 允許細部調整行為模式</li>
+  <li>qWebPageHistory/qWebHistoryItem - 完整的頁面歷史追蹤處理</li>
+</ul>
+提到這，不禁要談談 Qt/KDE 開發者對於 design patterns 的執著，即使是「處理瀏覽器歷史頁面紀錄」這種看似微不足道的項目，深入思索後，仍可以 Qt 的 Model/View 來改良設計，詳情參考 [<a href="http://labs.trolltech.com/blogs/2008/03/25/advanced-example-of-modelview/">Advanced example of Model/View</a>]。當然，Web 技術不若想像中 "rendering" 如此單純，WebKit 花了很大的心力去改善 ECMAScript/JavaScript 執行環境，QtWebKit 則進一步針對運算資源做了調整，並充分整合到 Qt Framework，說得很玄，看看以下例子：<ul>
+  <li>在 Qt/C++ 應用程式中執行 frame-&gt;evaluatejavascript( " ... " ) 即可在頁面動態植入一段 JavaScript</li>
+  <li>透過 frame-&gt;addToJSWindowObject(myObject) 一類的陳述句，可在 Qt/C++ 應用程式中直接獲得特定 JavaScript 的 QObject, signals-slots, properties 等資訊，換言之，我們可用 Qt 一貫的方次來更動 Web 2.0 Ajax 的執行模式</li>
+</ul>
+此外，談談 QtWebKit 的國際化支援。在 Gtk+ WebKit 的實做中，儘管 Gtk+ 有傲人的國際化支援能力 (君不見偉大的 Pango 令多少廠商噤若寒蟬？)，但文字處理的部份仍依賴 IBM 的 [<a href="http://www-306.ibm.com/software/globalization/icu/">International Component for Unicode</a>] (ICU)，這點與其他 WebKit 雷同，但是 QtWebKit 不這麼作，因為 Qt Framework 本身就有足夠的多國語文支援能力，而且可依據需求去調整組態環境的使用 (footprint)，所以 QtWebKit 將部份 WebKit 的文字處理引擎轉以 Qt 內部實做，並且可以一致的 QConfig 作統籌調整。在上個月份開始，QtWebKit 也支援 X11 與 Embedded Linux 平台的輸入法支援，而且，總是將效能列入重要考量。<br />
+<br />
+兩年前遇到一個案子，需要在 20 Mb 的 NAND Flash 空間中運作完整的 Linux 與 Web browser，除了基本的中文處理、無線網路能力、基礎的 PIM 之外，而且指明要支援 Google Maps 一類嶄新的 Web 2.0 服務，這是一個嚴苛的挑戰，還好我們有 Qtopia。如今，我再次透過 QtWebKit 來重新檢視過去的設計，拿 qt snapshots 來作開刀對象，這裡以 "qt-x11-opensource-src-4.4.1-snapshot-20080328" 為主。方法是建構足以運作 QtWebKit 的 Qt core/network/gui 等模組，然後儘量去降低資源使用量，以下是在 Linux/X11 的實驗畫面：<br />
+<center><img src="http://jserv.sayya.org/khtml/screenshots/qtwebkit-browsing.jpg" width="512" height="404" /></center><br />
+畫面呈現了 QtWebKit 開啟 Google Maps，顯示效果與效能都很不錯，而且整個 Qt + QtWebKit 的程式空間還控制在 5 Mb 以內。關於此實驗，[<a href="http://jserv.sayya.org/khtml/qtwebkit/">在此</a>] 可取得 config, patch, prebuilt pkg 等檔案，QtWebKit 的成熟度令人驚艷！<br />
+<br />
+Qtopia 4 儼然是 Linux 史上最完整的 free software application framework for mobile computing，如今納入 QtWebKit 的整合，更加確定其地位，現在 Trolltech 火力全開地宣示：<ul class="code" style="margin: 6px;">
+「我準備好了」                                                                             
+</ul>
+此舉為行動通訊運算平台注入了強心針，各位架構設計者與工程人員，思考好未來的系統了嗎？<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002003.html">03:24 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2003" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">March 30, 2008</h2>
+
+
+<div class="blogbody">
+<a name="002002"></a>
+<h3 class="title">Xenomai/SOLO 開始進行 pSOS API 模擬</h3>
+
+之前在 [<a href="http://blog.linux.org.tw/~jserv/archives/001994.html">Xenomai/SOLO：提供 Linux 使用者層級的 RTOS 模擬</a>] 提過 Linux realtime framework 專案 [<a href="http://www.xenomai.org/">Xenomai</a>] 透過 PREEMPT_RT 與 NPTL 等 Kernel 2.6 嶄新的 Realtime 能力提昇機制，提供 user-space 的 RTOS API 模擬，當時進行的項目是 [<a href="http://www.windriver.com">WindRiver</a>] 的 VxWorks/WIND，現在 GIT repository 中也展開 pSOS 的模擬工作。<br />
+<br />
+VxWorks 與 pSOS 都是 WindRiver 公司的 RTOS，在 Xenomai 2.x 的 RTOS skins 中也有對應的支援。Embedded RTOS 領域有別於其他系統軟體開發，主要因為多半是透過交叉發展的方式，依據需求而調整目標端 BSP，所以移植能力與彈性就是很重要的訴求，WindRiver 的這兩套 RTOS 解決方案正是如此的產品，兩者定位稍有不同，大抵來說，VxWorks 的開發難度較高，但允許較精細的操控，而 pSOS 則允許較直覺的開發模式，後者在手機領域應用頗廣泛，前者則在電信服務領域見長。致力於商業 Linux 應用的 MontaVista 從 1999 年即以強化 Linux 在 realtime 能力，訴求將過去採用 VxWorks 一類的電信領域系統，改以電信等級的 Linux，根據該公司 CTO 的說法，其考量點就在於，典型 RTOS 的應用考量到許多因素，比方說 programming model、API、效能，而日漸彰顯的項目則是軟體開發環境，這也是 Xenomai 一類專案的機會。<br />
+<center><img src="http://jserv.sayya.org/embedded/rtos2linux.gif" width="368" height="186" /></center>
+<br />
+經歷多年的發展，Linux 對於 POSIX 支援度提昇相當顯著，而 IEEE 1003 一類 Realtime 標準也逐漸透過 kernel 本質的修改，慢慢有機會達到接近成熟的表現，也因此，"Legacy to Linux" 就是重要的考量點。這裡的 "Legacy" 就是說發展封閉的 VxWorks、pSOS、VRTX和 uItron 一類的 RTOS，過去有太多 RTOS 的解決方案，其成長的緣故，就是對於資訊技術的急迫需求，相較於 Linux 蓬勃的發展、活躍於引入新技術，該如何將此類 "legacy" 技術對應於 Linux 開發環境呢？Xenomai 引入 skin/personality 的概念，實做對這些 "legacy" RTOS API 的模擬，對應到 Xenomai nanokernel API (稱為 nucleus)，最後再以 i-pipe 來搶佔 Linux kernel 的 interrupt 資源處理。上圖即簡要呈現 "Legacy to Linux" 的概念。<br />
+<br />
+從 Xenomai 2 邁入 Xenomai 3，有相當多 [<a href="http://www.xenomai.org/index.php/TaskMarket">待作事項</a>]，其中，念茲在茲的就是：<ul class="code" style="margin: 6px;">
+"Keep in mind: How to map on robust futexes for PREEMPT_RT support?"
+</ul>
+Xenomai-SOLO 可說是技術的里程碑，也相當於 Xenomai 3 關鍵技術的「試金石」，Philippe Gerum 對此 [<a href="https://mail.gna.org/public/xenomai-core/2008-03/msg00101.html">表示</a>]：<ul class="code" style="margin: 6px;">
+"Xenomai 3 is a matter of months, given that a significant part of the job will be directly available from the SOLO effort (i.e. have the RTOS emulators run in user-space natively).
+</ul>
+現在，我們有 VxWorks 與 pSOS 等 RTOS API 支援，而且開發也相當活躍，儘管基於本質上的落差，對於相容性，實做上會有相當程度的分歧 (詳見 vxworks/README 與 psos/README 這兩個檔案)，但大抵來說，醞釀許久的基礎建設，終於要邁入成熟了。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002002.html">11:23 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2002" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="002001"></a>
+<h3 class="title">LatencyTop：分析系統延遲的工具</h3>
+
+當 Linux 走入桌面環境、企業應用，或者消費性電子產品時，過去我們認為的優點如快速的社群開發模式，反而成為間接的阻礙。如今，世界上幾乎沒有人可以完美地解釋 Linux kernel 每一行的功能與指出潛在的問題，更何況尚有一系列的系統軟體等著我們去處理，所以，如何以工具協助我們釐清問題，就是刻不容緩的議題。由 Intel 工程師 Arjan van de Ven (也是 powertop 的作者) 開發的 [<a href="http://latencytop.org/">LatencyTop</a>] 工具，透過對 kernel 小量的修改，讓我們得以從 user-space 得知 latency (系統延遲)，並以 latencytop 來統計分析這些數據。考慮到 realtime audio/streaming video 一類的應用，偵測分析 latency 是相當高難度的動作，過去並無有效的途徑，往往得多次參照多項系統呼叫與程式輸出表現，予以交叉條整，現在 LatencyTOP 得以透過互動的方式，清楚呈現系統延遲的來源，進而消弭之，詳細資訊可參考 [<a href="http://lwn.net/Articles/266153/">Finding system latency with LatencyTOP</a>] 一文。<br />
+<br />
+在 kernel 端的修改稱為 [<a href="http://lwn.net/Articles/266246/">LatencyTOP infrastructure patch</a>]，提供名為 CONFIG_LATENCYTOP 的編譯選項，開啟後會由 kernel 開出 /proc/latency_stats 的資訊，在 2.6.24 以後的核心即整合此修改。LatencyTop 的執行畫面如下圖：<br />
+<center><img src="http://jserv.sayya.org/embedded/latencytop.png" width="550" height="368" /></center><br />
+LatencyTop 的分析屬於 process-level 的，而圖中可見前九個 latency 來源，並可由此分析 Process "X" 在單位時間內的行為。作為 X server，其所需要與系統互動的行為是相當多元的，LatencyTop 舉出 buffer I/O、Page fault，與一些低階操作，同時，也可以發現圖中的 "Unknown reason"，這表示尚有未明之處，需等待動作完成才能分析。<br />
+<br />
+隨著 Linux kernel 的支援度提昇，LatencyTop 一類的工具紛紛發展完善後，也終將以更清楚的面貌，讓我們得以接近此等龐然大物並克服嚴峻的技術挑戰。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002001.html">09:57 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2001" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="002000"></a>
+<h3 class="title">Eee PC 改造計畫：活潑化的桌面</h3>
+
+本月初實驗了 [<a href="http://blog.linux.org.tw/~jserv/archives/001969.html">模擬 Eee PC 運作 Keroro 桌面系統</a>]，這幾天完成一些基本的分析，就著手進行整個軟體的翻修，不過在我打算重灌為 Debian/Ubuntu 時，想暫時保留 Xandros 與 Asus 的軟體。作法很單純，直接將 ubuntu hardy (8.04) 加入 apt sources.list，然後暴力地 upgrade 即可。現在若干更新如下：<ul>
+<li>glibc - 2.7</li>
+<li>xserver-xorg-core - 1.4.1</li>
+<li>libX11 - 1.1.3 (with XCB)</li>
+<li>gtk+ - 2.12.9</li>
+<li>qt4 - 4.3.3</li>
+<li>qt3 - 3.3.8</li>
+<li>cairo - 1.5.14</li>
+<li>DRI/DRM/Mesa - 7.0.3</li>
+<li>kernel - 2.6.24 (尚有許多細節待處理)</li>
+</ul>
+Eee PC 雖然價格低廉，但是硬體規格卻不馬虎，內建的整合顯示卡是 Intel Mobile 915 chipset，依據 OpenGL 實測結果顯示，800x480 (fullscreen) 下可達到 18 FPS，就這類裝置來說，算是相當不錯。把環境弄好後，就將 cairo / clutter / webkit / OpenVG 等架構作些微調，而原有 Xandros 與 Asus 的軟體仍愉快地運作，以下是現在改造後的畫面：<br />
+<center><img src="http://jserv.sayya.org/misc/eeepc-improved.jpg" width="512" height="384" /></center><br />
+畫面可見，原本 Eee PC 引以為傲的 "Easy Mode" 仍存在，但下方的 panel 則整個換掉，至於原本電池、網路、輸入法等狀態顯示欄位，則可活潑地浮動顯示，這是對於既有的 Application Launcher 做了視覺補強的處理。<br />
+<br />
+既然我們有這麼好的 OpenGL 硬體，當然不可以糟蹋，之前提過的 [<a href="http://blog.linux.org.tw/~jserv/archives/001989.html">WebKit + Clutter：以 3D 技術給予網頁瀏覽的新體驗</a>] 也移植到 Eee PC 環境上，給予網頁瀏覽更舒服的體驗，可快速切換視角與多個頁面，最重要的是，縮放相當快速。另外，原本 EeePC/Xandros 使用的 icewm 也被完全換掉，被我改以 [<a href="http://www.compiz-fusion.org/">Compiz Fusion</a>]，拜 i915 硬體的威力，運作效果相當不錯，正在思考是否要將過去用 Cairo 開發的 effects 移植上去。倘若大項目處理好後，下一步就需要改善 Look-n-Feel，整合稍早進行的 [<a href="http://blog.linux.org.tw/~jserv/archives/001988.html">桌面程式質感改造：Qt4 應用程式部份</a>]，儘管我們已有許多高品質的 artwork/theme engine，這些也多半為自由軟體，但考量到 Eee PC 一類的硬體配置，需要將 OpenVG/Cairo/[<a href="http://freedesktop.org/wiki/Software/glitz">glitz</a>] 的硬體加速能力列入系統設計的考量。<br />
+<br />
+截至目前為止，這些改進或新引入的元件，在 Eee PC 上仍是很流暢的運作，OSDC.tw 上也會一併作展示與介紹。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002000.html">06:28 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2000" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">March 28, 2008</h2>
+
+
+<div class="blogbody">
+<a name="001999"></a>
+<h3 class="title">Bug Labs：創造個人專屬的移動裝置</h3>
+
+<center><img src="http://people.debian.org.tw/~jserv/buglabs-model.jpg" width="350" height="427" /></center><br />
+什麼是您期望的移動裝置？心目中 PDA/GPS 裝置又是什麼樣貌？一家位於紐約的新創公司 [<a href="http://www.buglabs.net/">Bug Labs</a>] 企圖以樂高玩具般組裝的概念，顛覆我們傳統的認知。小弟做了上方的示意圖，作為對這家公司產品概念的呈現，「組裝」分為兩個部份：BUGbase 與 BUGmodules，依據 Bug Labs 的定義，這類電子組件都稱為 "BUG" (大寫，以別於軟體的 "bug")。BUGbase 顧名思義，就是基本的迷你電腦，此外提供了特別的擴充槽，允許螢幕、鍵盤、GPS 等擴充的組件以「組合」成個人專屬的移動裝置，後者就稱為 BUGmodules。<br />
+<br />
+風靡全球的樂高玩具，允許玩家依據想法透過積木的組合，去塑造期望中的玩具樣貌，因而百玩不膩，同樣地，Bug Labs 的夢想就是讓電腦系統的 DIY 變得簡單趣味，並以開放的途徑去實現，所以他們也採用 Linux 2.6，考慮到移動裝置的需求，硬體採用 ARM SoC，內建諸多標準介面，所以選購的組件可讓玩家充分支配與組裝。有意思的是，據官方的聲明表示，相當倚重 open source software 的使用，不僅裝置的韌體部份採用 Linux (與一系列自由軟體)，個人電腦端作設計與控制的部份，也採用 Eclipse 開源的發展架構。下圖是更詳細的呈現：<br />
+<center><img src="http://people.debian.org.tw/~jserv/buglabs_BUG.jpg" width="425" height="232" /></center><br />
+這是其中一種模組間組合的形式，在這「疊疊樂」中間的部份就是 BUGbase，內嵌小塊的 LCD 顯示螢幕與豐富的插槽，其他當然就是 BUGmodules。去年 LinuxDevices.com 的新聞 [<a href="http://www.linuxdevices.com/news/NS3871478989.html">Open source, Lego-like computer modules run Linux</a>] 介紹過 Bug Labs 這家公司的新產品，而依據該公司的 [<a href="http://www.bugblogger.com/">官方 blog</a>] 表示，本月份正展開銷售，伴隨若干 Hacking 的節目，似乎頗有意思。進一步來看 BUGbase 的硬體組成：<ul>
+  <li>CPU: ARM1136JF-S</li>
+  <li>RAM: 128MB Flash/DDR SDRAM</li>
+  <li>USB: 1 x USB 2.0 HS host interface; 1 x USB OTG HS interface</li>
+  <li>Serial: 4 UART</li>
+  <li>Interfaces: 4 channel SPI; I2Cm 400kbits (4 channels); I2S (2 channels); smart LCD; camera sensor; micro memory card</li>
+  <li>Video/graphics: MPEG4 hardware encoding/decoding; hardware graphic acceleration</li>
+  <li>Communications: 10/100 Ethernet MAC; 802.11b/g</li>
+</ul>
+軟體的部份可參考 BUG Wiki 的 [<a href="http://bugcommunity.com/wiki/index.php/FAQ">FAQ</a>]，依據內容可知，Dragonfly SDK / Virtual BUG 的原始程式碼已經公開，而 Bug Labs 也會以此參與今年的國際 Eclipse 開發者大會，細節可參考 [<a href="http://www.bugblogger.com/2008/03/oh-hai-from-ecl.html">Oh Hai from EclipseCON</a>]。稍早 engadget 有一份「開箱文」[<a href="http://chinese.engadget.com/2007/11/25/working-bug-labs-hardware-hands-on/">Bug Labs 硬體動手玩</a>]，可由眾多圖片窺見預設的軟體組態就是 Linux 2.6 + Qtopia PDA edition (依據 Look-n-Feel，相當明顯是 Qtopia 2.2)，但 Bug Labs 當然不只如此，事實上，由 wiki 的內容可知，整個應用程式的組成，相當重視 Java 技術，採用 Java CDC/Personal Basis (銜接底層的 qt2)，同時，也透過 OSGi 提供 SOAP/web service 存取，看來有很大的想像空間。<br />
+<br />
+Bug Labs 重視應用程式的開發，投入頗多資源在 Eclipse / Java 上，提供 BMI (bug module interface) 的整合性開發，特別的是，不僅是 Java 應用程式的開發可進行，還能以圖形化的方式調整 BUGmodules 的呈現，可參考執行中的畫面： (click to enlarge)<br />
+<center><a href="http://www.linuxdevices.com/files/misc/buglabs_SDK_1.jpg"><img src="http://www.linuxdevices.com/files/misc/buglabs_SDK_1-sm.jpg" width="450" height="331" /></a></center><br />
+我們可以看出，Bug Labs 企圖從「樂高式移動裝置」，點出這種將「服務 + 裝置」的高度個人化應用趨勢，相信這是可見的未來，嶄新的使用者體驗，稍早的 "Device 2.0" 一詞頗有此意，可進一步參考 r-echos 的 [<a href="http://r-echos.net/2007/12/04/first-look-at-bug-labs-modular-system/">First look at Bug Labs’ modular system</a>] 一文，獲得更多的展示與概念呈現。倘若可成功建立使用者 / 開發者社群，發揮開放移動裝置的願景，影響應該頗為可觀<br />
+<br />
+另外，在官方網頁 [<a href="http://buglabs.net/about">What is Bug Labs?</a>] 提到：<ul>
+"Bug Labs is a new kind of technology company, enabling a new generation of engineers to tap their creativity and build any type of device they want, without having to solder, learn solid state electronics, or go to China."
+</ul>
+這個 "go to China" 似乎變成生產製造的代名詞了，看來這些繁瑣的量產細節，都成為老外的夢魘，有意思。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001999.html">12:08 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1999" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">March 27, 2008</h2>
+
+
+<div class="blogbody">
+<a name="001998"></a>
+<h3 class="title">治裝</h3>
+
+這個標題有點學問，因為很多媒體常常誤植為「置裝」，正確寫法該是「治裝」，需留意的是「治」作為動詞的使用方式。不過雖然懂這詞，我卻很少行使這個動作，白話來說，就是「很少買衣服」。活到這把年紀，真正主動為自己買衣服，只有兩次，一次是高中為了要辦營隊，拉了同學帶我去買一條牛仔褲，另一次則是為了談生意，而買了一套西裝。那我其他的衣服怎麼來的？小時候穿表哥、表姐、母親、妹妹的衣服 (女生發育比較快，一下子就穿不下，正好給我)，入學後則穿制服，偶爾家母會挑幾件 (也有用縫改的方式) 給我。中學以後，參加活動、社團會拿到若干件 T-shirt 或外套，雙親任職的單位也常有公會致贈紀念服飾的機會，而我就湊合著穿。跟我交往過的女生，雖然不見得會送我 [<a href="http://blog.linux.org.tw/~jserv/archives/001992.html">期待的禮物</a>]，但多半會看不下去，幫我買新衣服回來，是的，這就是我所有的衣服了。我很珍惜必須穿制服的場合，舉凡中學、服兵役等，一直覺得制服很好看，而且跟旁人就沒有太大的落差，心頭也因此踏實，相反地，遇到便服日，我真的不知道該如何閃避他人的質問。<br />
+<br />
+其實家境不差，只是我很討厭穿新衣服，總覺得掛在身上的東西，應該要更有感情些。我跟許多女生一樣，到國中一年級後就不再長高 (沒打錯，就算日後天天去打球、跳高都沒有用)，所以，一套衣服可以從 13 歲一直穿到現在，比方說國中時代的運動長褲與上衣，就穿了十幾年、高中買的牛仔褲也穿到現在 (補了很多次)，有的內衣甚至穿了快十年 (有可能超過，以前的質料真好)。從小力行每日換洗衣物的習慣，所以往往相同一套衣褲的組合可以連續數周、數月不換，即使成為上班族後，若無交際應酬或演講，我總是穿著同一套襯衫與牛仔褲 / 西裝褲，在辦公室的空調下則披上外套，這往往是教師公會的紀念服 (來自家母) 或電信局 / 中華電信的操作服 (來自家父)。Purple 說她的同事如果上班不著西裝，會全身不自在而無法寫程式，我是恰好相反，若不穿同一套衣服加上這種公務員的操作服，則會覺得彆扭，反而無法專心設計系統架構、修正問題，所以，下次請避免在小弟穿西裝演講完，請我去 debug，那樣我連敲打指令都會覺得不舒服。我很喜歡家父的操作服，很好穿，而且不會因為寫程式過度而磨破手肘與桌面接觸的部份 (過去已經磨破兩件外套，都是前女友的愛心，真愧對她/它)，我也嚮往技術人員為了搶修線路，焚膏繼晷趕工的拼命態度與專業，穿在身上，讓我深以技術人員為榮。<br />
+<br />
+不過，人總會改變的。我突然覺得人生是如此有限，將自己壓迫成此等模樣，儘管自己不高不帥也不上鏡，但想到這輩子似乎沒有花時間治裝過 (買西裝從量尺寸到取件，只花十餘分鐘，生平第一也唯一條自己買的牛仔褲，只試了一次就付款)，而且總是一成不變，只要衣服沒穿破，就鮮少換新的；總是太在意過去的記憶，比方說前女友沒帶走的舊牛仔褲，稍微縫補後，我就拿來穿了，或許陷入感傷的情緒，根本就是咎由自取。所以，決定去買一套像樣的衣服。早上，百貨公司一開門，就在店員張羅店面與擺設的同時，徵詢他們的意見，老實說，與其說我在意當下的眼光，不如說只想給他人日後有好的記憶，可能是連自己都說服不了治裝的念頭，打量了幾套服裝後，默默離開門市。<br />
+<br />
+這輩子第三次治裝，雖還沒成功，但適度作點改變應該也不錯。對於自己的期許，希望外貌不揚的我能如莊子〈德充符〉中面貌醜陋無比的哀駘它一般，不表現有某種卓越的才華或技能，但有一種緩和的凝聚力，這才是真正的力量，治裝大概是避免傷害他人視覺感受罷了。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001998.html">05:39 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1998" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">March 26, 2008</h2>
+
+
+<div class="blogbody">
+<a name="001997"></a>
+<h3 class="title">「100% 開源手機與法律議題」簡報上線</h3>
+
+昨天應中研院資訊所之邀，給予一場主題為 [<a href="http://blog.linux.org.tw/~jserv/archives/001964.html">100% 開源手機與法律議題</a>] 的演講，在自由軟體法律研討會上分享與探討建構 100% open source mobile phone 的過程中，除了單純的技術本體外，還面臨哪些實務上的挑戰，特別是這背後都牽涉到法律議題。簡報已上線，請參閱 [<a href="http://jserv.sayya.org/writing/open-source-phone-and-laws.pdf">open-source-phone-and-laws.pdf</a>]，謝謝指教！<br />
+<br />
+Embedded Linux 與一系列自由軟體走入嵌入式系統，已是大勢所趨，但是「融入」到消費性電子產品設計時，就不得不正視種種嚴肅的議題，而且不光是 mobile phone，其實任何具備電磁輻射或居家應用的系統，都該在全體研發與法務人員都知悉潛在疑慮的情況下，妥善地予以考量並提出因應之道。當我們越接近大眾消費者，更走入廣泛的應用時，所需留意的議題就更棘手且繁複，這次的演講應該只是個起頭，未來還需要面對種種新挑戰。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001997.html">08:20 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1997" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">March 24, 2008</h2>
+
+
+<div class="blogbody">
+<a name="001996"></a>
+<h3 class="title">即將成為 SMPTE VC-2 標準的 Dirac 視訊壓縮技術</h3>
+
+<center><img src="http://dirac.sourceforge.net/images/dirac_banner.jpg" width="401" height="91" /></center><br />
+在消費性電子領域，離不開視訊壓縮技術，不僅其數學原理令人腸枯思竭、咬斷筆桿仍不得要領，蘊藏於中的專利議題，更是聯篇累牘。兩年前的文章 [<a href="http://blog.linux.org.tw/~jserv/archives/001609.html">VC-1 標準確立</a>] 提及 [<a href="http://www.smpte.org/">SMPTE</a>] (The Society of Motion Picture and Television Engineers，電影電視工程師協會) 於 2006 年三月認可由 Microsoft 以 WMV 9 (Windows Media Video 9) 為主體的申請提案，批准為 SMPTE 421M，自此，也被稱為 VC-1 的 SMPTE 421M 就成為羅列於 SMPTE 的獨立標準，並由十六家企業共同擁有該專利。<br />
+<br />
+相當明顯，Microsoft 提交 VC-1 標準的意圖就是踏入 HDTV 領域，除去可能的技術荊棘，在這之前，HDTV 視訊壓縮技術幾乎由 MPEG-4 寡佔了歐美市場，不僅在數位影音廣播 (DVB) 如此，在藍光或 HD-DVD 亦然，現在 VC-1 標準則成為對等的競爭規格。不過，2008 年一開始，這個局面即將有所改觀，來自 [<a href="http://www.bbc.co.uk/rd/">BBC Research</a>] (英國廣播研究中心) 企圖以高品質視訊壓縮技術 [<a href="http://dirac.sourceforge.net/">Dirac</a>] 申請 SMPTE 提案，也就是 VC-2 的候選技術。(注意：實際上申請的項目名稱為 Dirac Pro)<br />
+<br />
+大異於 MPEG-4 諸多技術與 VC-1，Dirac 視訊壓縮技術野心相當大，並採取異常地開放態度，先在 2004 年一月公佈其演算法與相關技術，並在 SourceForge.net 上註冊 [<a href="http://dirac.sourceforge.net/">Dirac</a>] 專案，以 MPL / GNU GPL / GNU LGPL 三重開放原始碼授權釋出參考實做 (ANSI C 版本)，現已有多項世界知名的多媒體專案支援該視訊壓縮技術及開放實做。Dirac 的命名是紀念英國物理學家 [<a href="http://en.wikipedia.org/wiki/Paul_Dirac">Paul Adrien Maurice Dirac</a>] (1902-1984，曾獲 1933 年諾貝爾獎)。專利部份來說，BBC 擁有 Dirac 視訊壓縮技術中若干專利，但開放予公眾使用，同時，BBC Research 也確認，並包含無第三方的專利技術，依據 [<a href="http://dirac.sourceforge.net/faq.html">Dirac 專案的 FAQ</a>]：<ul class="code" style="margin: 6px;">
+<b>Do you infringe any patents?</b><br />
+<p>
+The short answer is that we don't know for certain, but we don't think so.</p>
+<p>
+We haven't employed armies of lawyers to trawl through the tens of thousands of video compression techniques. That's not the way to invent a successful algorithm. Instead we've tried to use techniques of long standing in novel ways.</p>
+<p>
+There are some areas that are more heavily patented than others. Arithmetic coding is one such, even though the technique itself has been around for 30 years. We're keeping an eye on the situation, and we'll adopt alternative techniques if we have to. Some of the recent changes in the algorithm have centred on the arithmetic coding - taking it away from some of the minefields of prior art that we have uncovered.</p>
+</ul>
+當然，在視訊壓縮技術領域，不免會有模糊地帶，除了諸多常見的 public domain 技術外，交叉的專利技術事實上是可能存在的，但 Dirac 試圖避開這些「地雷」，目前專注於實做 Dirac video codec 的 [<a href="http://schrodinger.sourceforge.net/">Schrödinger</a>] 專案正邁向 1.0 版，同時依據 VC-2 提案的硬體設計也即將最終定案。可預見的未來，Dirac/VC-2 很可能廣泛地應用，並且對自由軟體為基礎的資訊系統來說，具備極高的誘因，同時終端消費者才得以有合理的使用範圍。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001996.html">12:44 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1996" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">March 23, 2008</h2>
+
+
+<div class="blogbody">
+<a name="001995"></a>
+<h3 class="title">解放你的桌面：LxDE 重裝上陣</h3>
+
+<center><img src="http://jserv.sayya.org/misc/lxde-desire.jpg" width="358" height="269" /></center><br />
+一年半前，[<a href="http://pcman.sayya.org/">PCMan</a>] 與我在 COSCUP 研討會分享了 [<a href="http://blog.linux.org.tw/~jserv/archives/001827.html">羽量級桌面</a>] 的議程，並公開了 [<a href="http://lxde.sourceforge.net/">Lightweight X11 Desktops Environment</a>] (LxDE) 專案，作為我們對於 [<a href="http://jerrylovesrebol.blogspot.com/2008/03/blog-post_13.html">日漸癡肥的諸多軟體</a>] 的回應，解救電腦硬體免於來自軟體的荼毒。經過一段時間的沈寂，[<a href="http://fred-zone.blogspot.com/">Fred</a>] 的加入為這個專案注入蓬勃的熱血，現在，LxDE 又回來了，伴隨許多重大翻修，兼具功能與效能至上，依然是最高的指導原則。<br />
+<center><img src="http://lxde.sourceforge.net/images/banner.jpg" width="638" height="354" /></center>
+<br />
+遠遠拋開 KDE 與 GNOME 這兩個癡肥的大怪物，LxDE 甚至比老字號的 [<a href="http://www.xfce.org/">Xfce</a>] 有更好的系統資源使用率，在 Subversion 上的發展中版本包含以下軟體元件：<ul>
+<li>LxPanel - 提供桌面選單、圖示，以及若干桌面應用程式</li>
+<li>[<a href="http://pcmanfm.sourceforge.net/">PCManFM</a>] - 快速輕巧、整合性的檔案管理程式與桌面管理器</li>
+<li>LxSession - 桌面行程管理，紀錄執行狀態</li>
+<li>LxNM - 輕量級的網路管理程式</li>
+<li>LxAppearance - 佈景主題更換程式</li>
+<li>GPicView - 輕巧的圖片瀏覽器</li>
+<li>LXine / LxMusic - 輕巧的媒體播放程式</li>
+<li>LxDE-common - 包含 window manager 設定檔、Icon Theme，與桌布等若干檔案</li>
+</ul>
+稍早 Fred 撰寫短文 [<a href="http://fred-zone.blogspot.com/2008/03/lxde.html">LXDE 近期動態</a>] 對於發展狀況做了簡要的介紹，可大概得知上述核心元件的進展。日前，包含小弟在內的 LxDE 開發者獲得華碩贊助 Eee PC 實體機器，而 LxDE 的開發過程中也 Eee PC 作為參考的硬體環境，引入新功能、視覺效果的同時，謹記在心的仍是對效能與資源使用的考量。由於 LxDE 的軟體設計謹守「可任意抽換」的獨立原則，所以個別項目均是「小而美、小而省」，可很容易整合到既有的桌面應用中，甚至，下個月將在 OSDC.tw 發表的 [<a href="http://blog.linux.org.tw/~jserv/archives/001963.html">Keroro 桌面環境</a>] 也共用了若干軟體元件。<br />
+<br />
+解放你的桌面！[<a href="http://lxde.sourceforge.net/">LxDE</a>] 回來了。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001995.html">04:31 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1995" onclick="OpenComments(this.href); return false">迴響 (5)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001994"></a>
+<h3 class="title">Xenomai/SOLO：提供 Linux 使用者層級的 RTOS 模擬</h3>
+
+<center><img src="http://jserv.sayya.org/embedded/xenomai_logo.jpg" /></center><br />
+Linux realtime framework 專案 [<a href="http://www.xenomai.org/">Xenomai</a>] 維護者 Philippe Gerum (rpm) 日前展開了名為 "Xenomai/SOLO" 的新實做，目標是在 Linux kernel 2.6 新的 NPTL 與 glibc POSIX realtime support 機制下，對既有的 RTOS 進行模擬，新聞稿可參考 [<a href="http://linuxdevices.com/news/NS8393438079.html">Linux gains native RTOS emulation layer</a>]，可透過 Denx 的 GIT repository 存取。<br />
+<br />
+對於 Linux realtime 處理來說，Xenomai/SOLO 的出現象徵了新的里程碑。以往 [<a href="http://www.xenomai.org/">Xenomai</a>] 或 [<a href="https://www.rtai.org/">RTAI</a>] 在 Linux kernel 尚缺乏有效的 realtime 機制時，引入類似 RTLinux 的 dual-kernel 途徑，架空 Linux，並在底層實做一個 RTOS (具體來說，是透過虛擬的執行單元來實現，以避開 FSMlabs / WindRiver 的專利)，[<a href="http://www.xenomai.org/">Xenomai</a>] 很成功地在這個機制上提供若干 RTOS skins 以相容於 WxWorks / pSOS 一類商業 RTOS，不過，畢竟這個途徑維護相當複雜，也很難追趕 Linux kernel 的發展，而 Linux kernel 2.6 以來，引入相當多 NPTL 與 PREEMPT_RT 相關的技術突破，kernel 2.6.23 (搭配 preempt-rt) 可算是具備商業等級的 soft realtime 環境，所以，Xenomai/SOLO 就直接建構於此，不對 kernel 作修改，完全於 user-space 上實現 RTOS emulation，現有的實做支援 VxWorks/WIND，在某種層面來說，概念類似 Philippe Gerum 在七年前進行的專案 [<a href="https://gna.org/projects/carbonkernel/">CarbonKernel</a>]，但是 Xenomai/SOLO 則是大幅支援 POSIX 與 NPTL。<br />
+<br />
+Xenomai/SOLO 對於日後的 Xenomai 3 有相當大的影響，至少在系統架構與介面設計來說，很可能會延續發展。就目前的實做來說，Xenomai/SOLO 需要新的 Linux kernel + glibc/NPTL，包含對 mutex 的 priority inheritance 支援，也就是 PTHREAD_PRIO_INHERIT，新版的 glibc 已包含此項 Robust Futex 實做，至於 PREEMPT_RT 雖不是必要，但要發揮完整的功能，需在 kernel 中支援此一系列的修改。Linus Torvalds  在 LKML 中對 realtime 作以下表示：<ul class="code" style="margin: 6px;">
+"Controlling a laser with Linux is crazy, but everyone in this room is crazy in his own way. So if you want to use Linux to control an industrial welding laser, I have no problem with your using PREEMPT_RT."
+</ul>
+經過許多年的艱苦奮鬥，現在 PREEMPT_RT 為 Linux realtime 鋪上充分的基礎建設，而 Xenomai/SOLO 則帶來商業等級 RTOS 模擬的機制，透過 Linux 作雷射控制一類的應用，其實已可實現，現在引領的就是更全面的整合，而 RedHat 與 Novell 等大廠也紛紛提出商業化 Linux Realtime 的發行版本與技術支援，最近的技術突破真令人振奮。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001994.html">10:16 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1994" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">March 21, 2008</h2>
+
+
+<div class="blogbody">
+<a name="001993"></a>
+<h3 class="title">「從『看不見的電腦』到『看不見的自由軟體』」簡報上線</h3>
+
+昨天到高雄應用科技大學進行一場演講 [<a href="http://blog.linux.org.tw/~jserv/archives/001984.html">從「看不見的電腦」到「看不見的自由軟體」</a>]，介紹蓬勃發展的自由軟體，如何以全新的面貌走入我們的生活之中，也分享若干成功的案例，簡報檔已上線，請參考 [<a href="http://jserv.sayya.org/embedded/invisible-foss.pdf">invisible-foss.pdf</a>]。其實真正花時間講的頁面，應該是倒數第二頁「我們的機會」，畢竟，處於資訊科技文化巨變轉捩點的我們，的確有必要深入去思考並參與。<br />
+<br />
+雖然以輕鬆的口吻切入，不過在會後的討論，讓我不禁嚴肅打量若干議題，或許回去後，應著手進一步整理。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001993.html">08:09 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1993" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">March 20, 2008</h2>
+
+
+<div class="blogbody">
+<a name="001992"></a>
+<h3 class="title">行行好，施捨點：談贈禮</h3>
+
+忘了從什麼時候開始，認識幾位很特別的朋友，雖然不熟識，但堅持要贈送些物品，而我也很自然地領情，不過，我期盼的贈物其實很單純，原則上是越「薄」越好。<br />
+<br />
+通常這種機緣發生於網友來函討論技術問題，恰好我協助解決問題，或者釐清了一些細節，對我來說，此類的技術交流是很好的事情，有時還因此激發靈感，進行 [<a href="http://blog.linux.org.tw/~jserv/archives/001692.html">Orz Microkernel</a>] 一類的創作。若我行有餘力回覆信件，應該是出於自願，本來就不該期盼回報，那既然要禮尚往來，我就依據偏好列出期望的「禮物」： (高寡順序排列)<ul>
+<li><b>patch</b><ul>
+  是的，就是軟體的 patch，為避免爭議，最好是針對 [<a href="http://jserv.sayya.org/">小弟所參與專案</a>] 的 patch。恰好整整兩年前在 [<a href="http://blog.linux.org.tw/~jserv/archives/001072.html">募 patch</a>] 一文提過，對我來說，真的就是「天上掉下來的禮物」，看似「輕於鴻毛」(話說，patch 的重量該怎麼秤呢？)，但意義卻「重如泰山」。維護自由軟體專案，需要很大的動力，比方說輸入法，永遠有一堆 bug report，還有如雪花般飄來的 feature request，隨便打開 issue tracker 就了無動力，若有實際的 patch，對開發有莫大的助益。<br />
+經營自由軟體專案，多少得有些企業管理的概念，需要思考永續經營的議題，這也是我為何願意免費作程式設計或軟體開發的一類的演講，既然有人說「很想協助開發，但是不知如何下手」，那麼，我就分享所學，嗯，先提到這，還是用圖片說明我的心境：<br />
+<center><img src="http://jserv.sayya.org/misc/need-more-patches.jpg" width="459" height="293" /></center></ul></li>
+<li>明信片<ul>
+  如果不碰電腦，這應該是我最期盼的禮物了。正面或是百花爭艷，或是壯麗的風景，或是小橋流水，或是樸素的農村姑娘，而背面則是寄件者的筆跡，飄洋過海遞送予我，在這個電子化的時代，著實令人珍惜。也因此，我常常寡顏鮮恥地要求出門在外的友人，寄送一張明信片，看似很單純的動作，卻如詩詞歌賦一般，在記憶中留下深刻的痕跡。</ul></li>
+<li>書籤、卡片<ul>
+  對於書籤，我有股奇特的愛好。通常購書時，不免會順道取得書籤，而別出心裁的書籤，甚至勝於書籍本身。以前友人詢問我期望的生日禮物，回覆這個答案，往往只換來一陣訕笑，但對一個愛書成癡的人來說，書籤不正是最佳的開卷伴友嗎？或典雅，或細緻，或繁複的紋路，烙印在這小小的紙片上，隨著閱讀進度而推前，多麼奇妙呀。卡片當然好，只不過這年頭似乎很難要求他人寄送卡片，就不多談了。</ul></li>
+<li>酒類飲品<ul>
+  小弟只是個低俗的鄙夫，也愛飲酒作樂，或許因為只會驢飲，似乎還沒有不能喝的酒類，只不過還是沒有喝出心得，所以也不用致贈太高級的酒，簡單的台灣啤酒就讓我回味無窮了。曾有善心人士說要資助我作研究或者作軟體專案，很感謝這等美意，不過不是商業夥伴或者客戶的關係下，平白拿錢實在不恰當，後來想到，換個名目如「買酒讓我找靈感」，這樣小弟就可以 [<a href="http://blog.linux.org.tw/~jserv/archives/001364.html">醉 coding</a>]，不失美事一樁，所以我也樂得在 [<a href="http://blog.linux.org.tw/jserv">blog 首頁</a>] 加上捐贈「買酒基金」：<br />
+<center><img src="http://jserv.sayya.org/misc/donate-beer.png" width="603" height="347" /></center><br />
+可透過 PayPal 提供一元美金的贈與。不過，如果能夠親自提取還是更好，即便不品味，抱著酒瓶都有種難以言喻的幸福滋味呀。(陶醉)</ul></li>
+<li>其他：就當驚喜吧</li>
+</ul>
+謝謝所有贈與物品給小弟的長輩與友人，反觀自己吝於付出，實感羞赧，日後應當更身體力行才是。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001992.html">03:07 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1992" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">March 19, 2008</h2>
+
+
+<div class="blogbody">
+<a name="001991"></a>
+<h3 class="title">「貓也會的 CMake」簡報上線</h3>
+
+<center><img src="http://jserv.sayya.org/cmake/cmake-preface.png" /></center></br>
+周二去 TOSSUG 去分享新的講題 [<a href="http://blog.linux.org.tw/~jserv/archives/001987.html">貓也會的 CMake</a>]，感謝許多朋友冒著大雨仍前來捧場。雖然 [<a href="http://www.cmake.org/">CMake</a>] 已行之有年，但真正成熟並導入大規模應用，是這幾年的事情，而我在分享中強調 CMake 核心的概念，並對 Automake / Autoconf / libtool 等一干 "autotool" 作了比較，深受後者困擾的我們，不自覺就成為 "autofool" (被操弄的愚人)。CMake 與其搭配的工具給予轉機，讓我們得以更專注於開發本身，而非種種繁複的細節。<br />
+<br />
+本議程的資料已上線，請見：<ul>
+<li>簡報：[<a href="http://jserv.sayya.org/cmake/cmake-overview.pdf">cmake-overview.pdf</a>]</li>
+<li>議程用到的範例程式碼：[<a href="http://jserv.sayya.org/cmake/cmake-samples-20080318.tar.bz2">cmake-samples-20080318.tar.bz2</a>]</li>
+</ul>
+除了探討概念外，我舉了三個範例，一是改寫既有的 autotool-based 專案 (fdclock)，二是 在 KDE/Qt 中整合 CMake/CTest 作自動建構與測試，最後是嵌入式系統開發中，以 CMake 簡化繁瑣的流程。以上，請多指教，謝謝！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001991.html">12:08 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1991" onclick="OpenComments(this.href); return false">迴響 (4)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">March 15, 2008</h2>
+
+
+<div class="blogbody">
+<a name="001990"></a>
+<h3 class="title">GNU/Linux 癡情證</h3>
+
+在 funp.com 瞥見 [<a href="http://id.igogo8.com/">網路身份產生器</a>]，覺得很有意思，就拿生成的圖片稍加修改為如下的「癡情證」：<br />
+<center><img src="http://jserv.sayya.org/misc/jserv-lover.png" width="490" height="305" /></center><br />
+僅以此證表達本人對 Debian GNU/Linux 的熱愛。雖然從去年下半年開始，我著手研究/修改 NetBSD kernel，不過開發平台都還在 Linux 上，一旦習慣 Debian 的嚴謹又完整，就很難不為 Debian 癡情沈迷呀。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001990.html">11:45 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1990" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001989"></a>
+<h3 class="title">WebKit + Clutter：以 3D 技術給予網頁瀏覽的新體驗</h3>
+
+3D 桌面系統技術變化相當快，現今的硬體運算能力也相當夠，連一隻小小的手機，都有 133 MHz 的處理速度，更遑論進步神速的 GPU，但除了展現華麗精湛的特效外，到底還能作什麼呢？兩年前的 OSDC.tw 曾提及 [<a href="http://blog.linux.org.tw/~jserv/archives/001547.html">從 Web Browser 與 3D 技術發展看未來桌面系統的挑戰</a>]，做了一些整理，這幾年觀察了若干提案，自己也試著做了 prototype 3D desktop，在驚訝於技術變化一日千里的同時，也在思考此等對人機介面的助益。<br />
+<br />
+發展十餘年的網頁瀏覽器，儼然成為嶄新的平台，就如開啟潘朵拉的盒子一般，為這個世界帶來無數的變化，自此，無論是工作環境、居家、3G 手機等等，都不乏有網頁瀏覽器的蹤跡。不同領域的交會更是給我們無限的想像空間，網頁也不再是死板板的模樣，不過，畢竟網頁往往受限於圖形桌面環境的設計思維，即便進入所謂 "Web 2.0" 的紀元，網頁瀏覽仍是線性的操作，這對於強調人機互動的手持式裝置或移動運算環境，顯得格格不入。我對於「網頁」一詞，抱持著很大的想像，感覺就該如紀錄若干資訊的紙張一般，而 WWW 就扮演串連這些頁面的角色，如此一來，我們可在辦公室看這些頁面，通勤的過程中，也能取出觀看並作些像是分類、疊合、對比的處理。頁面的表面積不應該是限制，重點是紀錄於此的資訊，以及我們如何去看待。若能妥善整合 3D 技術，應可帶來更直覺的互動效果，也同時提昇思考的維度：<ul>
+  <li>網頁何嘗不能就如我們熟悉不過的紙張一般呢？</li>
+  <li>網頁何嘗不能如紙張一般收藏剪裁呢？</li>
+  <li>動態網頁何嘗不能想像為顯微鏡載玻片底下的生氣蓬勃微生物呢？ </li>
+</ul>
+這幾年經歷過不同環境的瀏覽器發展，從 UNIX 工作站、Kiosk，到 PDA 與手機，螢幕尺寸不但是種限制，也扼殺許多應用的可能性，我想，或許是因為我們過度拘泥於表現的形式，卻沒有掌握其本質。活躍發展、跨越許多軟硬體環境的 [<a href="http://www.webkit.org/">WebKit</a>] 提供了質量俱佳的瀏覽器發展平台，並實做了 [<a href="http://en.wikipedia.org/wiki/HTML_5">HTML5</a>] 中絕大部分嶄新的規格，RIA (Rich Internet Application) 的應用更是藉此得到強而有力的基礎。優雅的 [<a href="http://www.clutter-project.org/">Clutter</a>] toolkit 建構於 OpenGL 之上，提供兼顧效能與彈性的豐富視覺呈現，而今年一月份開始，WebKit 與 Clutter 彼此擦出了令人炫目的火花，前述的 3D 網頁呈現與互動，也是指日可待。<br />
+<br />
+與 Firefox 3 (以 Gecko 1.9+ 為基礎) 一樣，WebKit 開始借重 [<a href="http://cairographics.org/">Cairo</a>] 向量繪圖處理，透過其實驗性的 [<a href="http://www.khronos.org/openvg/">OpenVG</a>] backend，得以有效發揮硬體加速能力，但本身仍保持架構的簡潔，Clutter 有個 Cairo binding，所以可以很巧妙的透過 OpenVG + Cairo + Clutter，實現高效能的精湛視覺呈現。對手持裝置來說，中高階的產品紛紛整合 3D/OpenGL GPU，若能充分使用硬體加速，不僅能給予更好的使用體驗，還能讓能源管理作出更好的優化處理，裝置的可用性也可望提昇。在圖形處理的基礎建設趨於完備後，整合 WebKit 就更有趣了。<br />
+<center><img src="http://jserv.sayya.org/misc/webkit-on-opengl.png" width="525" height="314" /></center><br />
+上圖是 WebKit + Clutter 運作的情況，展示了不同視角下，「網頁」的視覺變化，Zoom In/Out (或稱 pinch and expand) 操作對 OpenGL 來說，再也自然不過，如此一來，網頁的「收納」型態可有更多的方式，我錄製了影片以闡述這個想法：<ul>
+<li>[<a href="http://jserv.sayya.org/tmp/webkit-on-opengl.avi">webkit-on-opengl.avi</a>] (MPEG-4, 2.7Mb)</li>
+<li>[<a href="http://jserv.sayya.org/tmp/webkit-on-opengl.ogg">webkit-on-opengl.ogg</a>] (Theora video, 12Mb)</li>
+</ul>
+整合好的 WebKit + Clutter 展示程式可自 [<a href="http://jserv.sayya.org/misc/webkit-opengl-bin.tar.bz2">webkit-opengl-bin.tar.bz2</a>] (i686-linux) 取得，在 Debian/Ubuntu 執行需要 [<a href="http://www.icu-project.org/">ICU</a>] (International Components for Unicode) 與 [<a href="http://curl.haxx.se/">libcurl</a>] (處理 network protocol)，取得如下：<pre 
+class="code" style="margin: 6px;">
+# apt-get install libicu36 libcurl4-openssl
+</pre>
+事實上，libcurl 也有 GnuTLS 的支援 (libcurl4-gnutls)，不過我已經寫死在程式中。解開後直接執行目錄中的 RUN.sh 即可。當然，這只是開端，顯然有許多可改進的空間，唯一的限制，應該是我們的想像力罷了。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001989.html">09:43 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1989" onclick="OpenComments(this.href); return false">迴響 (8)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">March 14, 2008</h2>
+
+
+<div class="blogbody">
+<a name="001988"></a>
+<h3 class="title">桌面程式質感改造：Qt4 應用程式部份</h3>
+
+延續昨天的 [<a href="http://blog.linux.org.tw/~jserv/archives/001986.html">援助 Qt4 style 小記</a>]，今天仍然賦閒在家，而且還是病厭厭的，沒辦法作太多需要認真思考的項目，不過作些 eye candy 不失為很好的嘗試。今天的進度如下圖： (click to enlarge)<br />
+<center><a href="http://jserv.sayya.org/misc/qt4-native-style.png"><img src="http://jserv.sayya.org/misc/qt4-native-style-small.png" /></a></center><br />
+經過多年的努力，Gtk+/GNOME 與 Qt/KDE 陣營得以合作並分享桌面技術的成果，但視覺與操作可用性的部份，依舊是令人困擾的障礙。圖片左邊是 QtWebKit，中間是 Robot Simulator，右邊是 Skype，這幾個 Qt4 應用程式成為開刀的對象，捨棄了內建的 Cleanlooks style，改以修改過的 Qt style engine，也透過 XRender extension 做了一些視覺效果的處理，目前看起來不惡，但效能方面還需要改進。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001988.html">11:39 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1988" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001987"></a>
+<h3 class="title">演講：貓也會的 CMake</h3>
+
+下週二 (Mar 18) 小弟將會在 [<a href="http://wiki.tossug.org/">TOSSUG</a>] 的例行性心得分享介紹 [<a href="http://www.cmake.org/">CMake</a>]，這是一個功能強大又極有彈性與效率的新一代跨平台建構系統。CMake 相當簡潔漂亮，所以我就題目命名為「貓也會的 CMake」，以下是 TOSSUG wiki [<a href="http://wiki.tossug.org/%E5%BF%83%E5%BE%97%E5%88%86%E4%BA%AB2008">2008 年的心得分享</a>] 的資訊：<ul class="code" style="margin: 6px;">
+<li>內容簡介：<ul>
+GNU make、BSD make、automake、imake、qmake、... 等一系列在自由軟體界的套件建構環境，常常令我們昏頭轉向，以惡名昭彰的 automake/autoconf 為例，上萬行的 configure script 大概就嚇跑許多入門學習者，而平台相容性與適應異質性環境在自由軟體又是迫切的需求，那如何兼顧易用、效能與功能呢？KDE 4 大膽捨棄了使用十年的 automake/autoconf 建構環境，在數週的工作後，即成功移轉到 CMake 系統上，經過這幾年的協同開發，CMake 的完成度已經相當好，本次分享即探討如何快速上手，並體驗跨平台專案開發。</ul></li>
+<li>預定提綱：<ul>
+  <li>"make love" - 如何愛上 make？</li>
+  <li>CMake 入門與觀念</li>
+  <li>案例探討：CMake 與 KDE4</li>
+  <li>案例探討：嵌入式系統與 CMake</li></ul>
+</ul>
+地點在伯朗咖啡館南京二店，位於南京東路一段與新生高架道路交叉口右上角，晚間 7:00pm - 8:30pm，歡迎指教，謝謝！<br />
+<br />
+註：關於 CMake 的簡介，可參考 Wikipedia 中文詞目 [<a href="http://zh.wikipedia.org/wiki/CMake">CMake</a>]。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001987.html">02:02 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1987" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">March 13, 2008</h2>
+
+
+<div class="blogbody">
+<a name="001986"></a>
+<h3 class="title">援助 Qt4 style 小記</h3>
+
+這幾天都在家養病，實在很悶，之前就有打算研究 Qt4 的 [<a href="http://doc.trolltech.com/4.0/qt4-styles.html">Style API</a>]，不過一直沒動力。昨晚打開 Skype (版本 1.4 / 2.0 Beta)，想來分析在 Linux 上的運作，而也已經移植到 Qt4，所以能玩的東西更多了，不過，正當要動手的時候，就遇到跳出來的聊天視窗：<ul>
+「要約嗎？」
+</ul>
+後面就是一些「援助」訊息，大家都知道是怎麼一回事，而我竟然跟那個人聊起來了，也順便思考背後的架構設計，果然如長輩云：「作壞事是最大的原動力」，其言不假。Skype 採用 Qt4，無論環境設定如何，優先使用 Cleanlooks style，詳情可參考 [<a href="https://developer.skype.com/jira/browse/SCL-111">skype 1.4 beta has hardcoded qt style</a>]，但有命令列選項可作修改，比方說我們實做了一個名為 qTunes 的 Qt4 Style，那麼可指定如下：<pre class="code" style="margin: 6px;">
+skype --disable-cleanlooks -style qTunes
+</pre>
+當然，要確定在 /usr/lib/qt4/plugins/styles 目錄下有安裝此一 qTunes 的 plugin。早上試著實做仿 iTunes 佈景主題的 style 如下： (click to enlarge)<br />
+<center><a href="http://jserv.sayya.org/misc/skype-with-qt-style.png"><img src="http://jserv.sayya.org/misc/skype-with-qt-style-small.png" /></a></center><br />
+果然賞心悅目許多，不過真正想做的，還是如何讓 Qt4 的應用程式如 Opera 與 Skype，能夠保持與 Gtk+ 一致的 Look-n-Feel，在沒有辦法修改原始程式碼的前提下，其實我們能對 Qt4 runtime 作一些處理，而且 Skype 這樣的操作情境其實是很單純的，但問題就在於 Qt 的 theme engine 並不是以 pixmap 作為操作的單元，這使得很難在執行時期取得 Gtk+ 的樣貌。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001986.html">01:43 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1986" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">March 12, 2008</h2>
+
+
+<div class="blogbody">
+<a name="001985"></a>
+<h3 class="title">Qtopia Core 更名為 Qt for Embedded Linux</h3>
+
+通常產品更名，多少反映一些變化。兩年前提過 [<a href="http://blog.linux.org.tw/~jserv/archives/001442.html">新版本的 Qt/Embedded 將改名為 Qtopia Core</a>]，現在再度從 Qtopia core 更名為 [<a href="http://trolltech.com/products/qt/qt-embedded/qt-for-embedded-linux-1">Qt for Embedded Linux</a>]，詳細的報導可參考 LinuxDevices.com 的 [<a href="http://www.linuxdevices.com/news/NS5155471599.html">Re-named graphics framework tapped for media streamer</a>]。<br />
+<br />
+這個更動其實是 Nokia 買下 Trolltech 後的宣示："Qt Everywhere"，要加強跨平台發展的訴求，我們也可以在 Qt4 的原始程式碼見到，若干較少見的圖形環境 / 硬體支援，也悄悄被 drop 掉，取而代之的，就是新的平台相依支援。我們也可以從更名的訊息得知，Qt for Windows CE 與 Qt for Embedded Linux 可說是相當鮮明的對比，而 Trolltech 對於跨平台的發展策略也希望讓這兩者處於 framework 層面，彌補原始環境的不足，並強化多媒體處理 (現在 gstreamer 與 helix framework 也充分整合進來)，而其上的 Qtopia application suite 則引入既有的軟體元件與開放原始碼合作模式。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001985.html">01:51 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1985" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">March 10, 2008</h2>
+
+
+<div class="blogbody">
+<a name="001984"></a>
+<h3 class="title">演講：從「看不見的電腦」到「看不見的自由軟體」</h3>
+
+三月 20 日，將應 [<a href="http://www.kuas.edu.tw/">國立高雄應用科技大學</a>] 之邀，給予一場演講，講題是：從「看不見的電腦」到「看不見的自由軟體」，以下摘錄該校 CCNA 的 [<a href="http://ccna.kuas.edu.tw/xoops/modules/news/article.php?storyid=10">公告網頁</a>] 資訊：<ul class="code" style="margin: 6px;">
+<li>簡介：Donald Norman 在其經典著作《看不見的電腦》(Invisible Computer)
+揭櫫資訊系統重大的突破：電腦系統極其複雜，卻是以無形的姿態走入我們的生活，舉凡各種家電到通訊裝置皆然。自由軟體運動可說是對軟體設計與實做，做了文藝復興一般的突破，而自 1985 年自由軟體基金會 (FSF) 到處奔走與開創新局面以來，自由軟體也悄悄走入到「看不見的電腦」領域中，本議程即探討自由軟體本質在無所不在的電腦資訊系統的獨特價值。</li>
+<li>時間：三月 20 日  晚上 6:30 起</li>
+<li>地點：國立高雄應用科技大學行政大樓國際會議廳 (高雄市三民區建工路415號)</li>
+</ul>
+歡迎蒞臨指教，謝謝！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001984.html">09:37 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1984" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">March 08, 2008</h2>
+
+
+<div class="blogbody">
+<a name="001983"></a>
+<h3 class="title">聽雨</h3>
+
+愁雨驟然不止，意志消沉而驢飲半打啤酒，縱使略有飄飄然，但卻是何其清醒，回顧大起大落的人生，面對一事無成的自己，夜雨，點綴著淒涼。打在書房外頭的雨水，直叫人想起張先〈青門引〉的開頭兩句：「乍暖還輕冷，風雨晚來方定」，又是台北典型溼冷的氣候，忽冷忽暖、風雨時至，烘托著離鄉者如我，此際心緒的不安寧。<br />
+<br />
+輕擲青春，而今年華老去，卻無限感傷與悔恨，曾幾何時，我只能藉由酒精在體內的竄動，慰藉自身的存在？《虞美人·聽雨》恰如其分地浮現腦海：
+<ul class="code" style="margin: 6px;">
+少年聽雨歌樓上，紅燭昏羅帳。<br />
+壯年聽雨客舟中，江闊雲低，斷雁叫西風。<br />
+而今聽雨僧廬下，鬢已星星也，<br />
+悲歡離合總無情，一任階前，點滴到天明。 
+</ul>
+此闕出自南宋的蔣捷之手，訴說年少的風光、中年的漂泊，以至人生盡頭嘗盡悲、歡、離、合後的心境變遷。雨聲使人回憶往事，心情再度起伏不定，但種種感觸又何從表達呢？姿態更是從上、中，到下驟降，寥寥數語道盡了人生，而，聽雨，不啻就是聆聽自我？歌樓笙歌、客船聲嚷不絕，而今，徒留階前的雨聲，「悲歡離合總無情」一句低盪良久，此刻的我，最後什麼也抓不著，聲聲入耳者又豈是暮雨，點滴皆是離人淚呀！<br />
+<br />
+半醉半醒，人生不過就是一場虛空的夢，韶華白首，轉瞬不過如此，且讓我飲著如雨滴般的淒苦，輾轉聽雨到天明吧。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001983.html">02:50 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1983" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">March 07, 2008</h2>
+
+
+<div class="blogbody">
+<a name="001982"></a>
+<h3 class="title">Visual LDD : 視覺化動態函式庫呈現</h3>
+
+傍晚慢慢自酒醉中甦醒，又繼續 hack Eclipse CDT，在分析 dynamic linker 時，發現電腦裡頭的 Gtk+ 程式都 linked 到 libstdc++，啊？！GNOME/Gtk+ 開發不是一直 [<a href="http://blog.linux.org.tw/~jserv/archives/001965.html">強烈支持慣C</a>] 嗎？先用 ldd 分析 gedit：<pre class="code" style="margin: 6px;">
+$ ldd /usr/bin/gedit | grep libstdc++
+	<b>libstdc++.so.6</b> =&gt; /usr/lib/libstdc++.so.6 (0xb6f3a000)
+$
+</pre>
+真是太詭異了，可是 gedit 又連結到一堆函式庫：<pre class="code" style="margin: 6px;">
+$ ldd /usr/bin/gedit | wc -l
+<b>80</b>
+</pre>
+八十個！該如何觀察分析呢？還好 [<a href="http://www.autopackage.org/">Autopackage</a>] 專案有個好用的工具 visual-ldd，直接將 gedit 塞進去可得以下圖形輸出：<br />
+<center><img src="http://jserv.sayya.org/misc/visual-ldd.png" /></center><br />
+由上往下看，gedit 是 Gtk+ 程式，Gtk+ 程式依賴 cairo 程式庫，而 cairo 程式庫依賴 libstdc++ (?!)，我們終於抓到兇手了，當然，這跟系統組態有些關聯 (Ubuntu hardy)，先不細究。visual-ldd 可以解讀 ELF 執行檔格式，分析動態函式庫的解析，並建立階層式表現，上圖的 [+] 即可進一步被展開。自 SVN 取得最新的 visual-ldd 並建構：<pre class="code" style="margin: 6px;">
+$ svn co svn://plan99.net/visual-ldd/trunk visual-ldd
+$ cd visual-ldd
+$ qmake-qt3
+$ make
+</pre>
+直接執行即可，不需安裝動作。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001982.html">07:54 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1982" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001981"></a>
+<h3 class="title">不想讓你知道</h3>
+
+不常聽流行音樂，與其說不喜歡，不如說是不敢聽，好似扎著心頭的細針一般。<br />
+<br />
+中午到辦公室附近的餐廳用餐，本來今天是相當平靜的，往常的上午唸書、下午就寫程式或寫書，可是一首歌曲卻打破原有的節奏。在即將用畢時，店內播放周蕙的歌曲〈不想讓你知道〉：<ul class="code" style="margin: 6px;">
+忽然不想讓你知道　在我心中　你多重要<br />
+既然你要自由　你就得到　讓你永遠都記得我好<br />
+忽然不想讓你知道　你的愛我已經戒不掉<br />
+就讓思念淹沒我不想逃　反正你將永遠不知道<br />
+今夜星光多美好　適合用寂寞去憑弔<br />
+我們曾用愛互相依靠　付出多少不用計較<br />
+想一個人多美好　就算只剩記憶可參考<br />
+被愛放逐到天涯海角　我的思念你不用都知道<br />
+直到有天你我年老　回憶隨著白髮風中閃耀<br />
+至少我清清楚楚知道　你若想起我會微笑
+</ul>
+習慣了自欺欺人、用外務來麻醉自己的生活型態，應該可鍊就一身冷血，但實際上卻讓我變得異常敏感。淚水低落在餐盤上，滑過僅剩的那幾顆米粒，就彷彿訴說著，已被歲月巨浪吞噬殆盡，殘餘的回憶終將飄零。每年，我都會挪出時間，去台南府城，循著昔日走過的路徑，下意識的回顧，從成大總圖書館廣場，遙望著星空，是多麼美妙之事？穿越我倆瞳孔的星光，是幾年前自遙遠恆星傳遞的訊息，美得讓人誤以為天長地久不過如此，但，我太天真了。<br />
+<br />
+隨手將百元鈔票壓在餐盤下即離席，怕無法控制情緒，走到附近的便利商店，買了三罐啤酒，立刻就往下灌，試圖澆熄心頭那股寂寞之火，妄想以酒精麻痺情感... 喝得太急，讓我根本無法集中注意力，索性就在一旁的國小圍牆邊休息，而，旋律與歌詞竟不斷在已恍惚的意識，迴繞著、持續加強其振幅，耳膜就像受了擠壓一般。霎時間，台北天空竟然飄起雨，頓時自幻境中驚醒，那目光可及之處，彷彿有妳的身影。妳說過，不要緬懷過往，要去找尋新的人生，我做了，但卻是陷入更深的失落。<br />
+<br />
+曾經為日後的婚姻存了一筆錢，隨著這段關係的遠去，我竟認為自己能夠廣泛地愛著人群，所以這筆金額就散落於若干社會救助機構中，曾有一度，我就認定自己獲得救贖，彷彿層次提昇後，不需受情感奴役，實際上，卻內心仍偏愛著妳，那個幾乎不復存在的個體。無論金額有多少，其實真的只是形式，只是我一廂情願假惺惺的作法罷了，多可笑呀？<br />
+<br />
+妳說，要試著與其他人交往，我一直惦記著，也嚐試過好多次，無論是跟妳一樣聰明的女生、跟妳一樣身材姣好漂亮的、跟妳一樣有良好家世、跟妳一樣執著於理工技術、跟妳一樣熱愛思考與文藝的、跟妳一樣愛好體育活動、... ，妳甚至還介紹女性朋友予我，只是，每次約會前，我都得說服自己，催眠自己，才得以抑制內心病態的想法。這樣仍是徒有形式，好似貶抑其他個體為近似物化的同質品，更是對其他人造成嚴重的傷害，每次念及此，就憎恨著這種經強化過、尼采筆下「超獸」的模樣。實際上，我的內心與妳一樣，充滿強烈的自卑、恐懼，與對整個世界的存在感到迷惘。<br />
+<br />
+不想讓你知道，那些更負面的事情，不希望你為我再留下眼淚。我選擇過這樣的生活，除了有幾分孤寂外，倒也安然存在著，正如妳有自己獨到的選擇一般，雖然不贊同，但我仍願以能力可及之力，為妳作點事，其他，就讓時代巨輪碾碎吧。打字自此，已漸從酒酣中重返現實，外頭下雨了，細細的雨簾佈滿台北每個角落，春雨敲打著樹葉與蔽體，聲聲入耳，這時候的台北，最有靈性了。<br />
+<br />
+抱著筆記型電腦，指尖落於鍵盤上，思念有如水，淡淡的傷愁從心底掠過，此際，妳的身影又在半清醒的狀態下，飄然而至。妳喜歡雨後洗滌萬物的感覺，我則讓思念淹沒，宿醉於情感回憶中，只是，這場雨，何時停歇呢？<br />
+<br />
+群 於台北內湖<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001981.html">05:17 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1981" onclick="OpenComments(this.href); return false">迴響 (6)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001980"></a>
+<h3 class="title">原來 DDD 也有 Gtk+ 移植</h3>
+
+是的，雖然這個移植來得太晚，而且問題一大堆，但是 [<a href="http://www.gnu.org/software/ddd/">GNU DDD</a>] 有個實驗性的分支，就提供 Motif 與 Gtk 介面的替換。<br />
+<br />
+這幾天 hack Eclipse CDT 搞得很不愉快，只是想把 gdb/mi (machine interface) 弄好，沒想到影響的層面是如此大，許多技術問題也得藉由大量閱讀其他專案程式碼，才有些眉目。而我就因此發現，幾年沒有發佈新版本的 GNU DDD，存在著神秘的 branch - [<a href="http://ddd.svn.sourceforge.net/viewvc/ddd/branches/gddd/">gddd</a>]，依據 SVN repository 上的說明是 "Working towards unified abstract GUI"，上一次更動是三週前。不過，問題真得很多，光是讓這個 branch 要在沒有 Motif/Lesstif 的環境上建構，就搞了好久，總之，做了一些修改後，終於開始運作了，畫面如下：<br />
+<center><img src="http://jserv.sayya.org/misc/ddd-gtk2.png" /></center><br />
+為了避免無止盡的錯誤，我將部份功能取消，但還是可看出 DDD 風格的 Debugger UI。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001980.html">03:49 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1980" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">March 06, 2008</h2>
+
+
+<div class="blogbody">
+<a name="001979"></a>
+<h3 class="title">關於演講邀約</h3>
+
+首先，非常感謝若干單位或團體不嫌棄小弟，讓我有分享經驗的機會，不過這邊要提一下原則性的聲明，以避免日後的誤解。在 2004 年起，我試著將所見所聞，特別是技術領域，以公開的形式分享予公眾，對我個人，也是極為重要的學習機會，畢竟，真正理解一個領域，是得要有足夠的能力去重新闡述並詮釋。特別是電腦技術領域，常常可見教育訓練或專業演講，不僅所費不貲，題材更是無法跟上技術變遷的速度，試想，我們每天所用的中文輸入法，大家都知其然，卻又能知其所以然嗎？對於嵌入式系統來說，更是如此，太多標榜 Embedded Linux 的課程，幾萬塊花下去，好像還是只有模糊的走馬看花概念，那麼，真正該有的認知呢？<br />
+<br />
+個人對所謂「大方向」一類的議題沒有太大的興趣，但是琢磨技術細節，一向是極為熱衷，恰好有若干跟分享的機會，所以也藉著演講邀約，分享並傳達出我的認知，可參考 [<a href="http://wiki.debian.org.tw/User:jserv">過去的發表</a>] (截至目前為止，紀錄了大約三分之一的簡報與文件，其餘受限於合約或時間因素，尚未整理)。胡適說：「發表是最好的記憶」，在分享了幾年後，深深認同，在休假的這幾個月，也接受了若干演講邀約，以下是需要事先聲明的項目：<ul>
+<li>個人所學有限，期盼分享的內容對貴單位有助益，而且是能夠導入專案、產品，或者解決現在的疑慮，所以請斟酌題材並給予詳細的指導</li>
+<li>只要題材對本人有意義，台灣本島北中南東地區，我都可以前往，但請協助處理交通問題，好幾次，迷路的時間就比演講本身還長。不方便的話，那請提供足夠的交通費，某人連搭乘計程車都會迷路</li>
+<li>收費方式很難有一致的標準，畢竟技術變遷極快，常常昨是今非，也會影響演講主題，不過以下情況下，基本上免費 (而且我也拒收費用)：<ul>
+  <li>在台灣地區的自由軟體社群 / 非營利組織舉辦的活動</li>
+  <li>未發表過的新題材 (畢竟聽眾是白老鼠，不應該收費)，但若重複發表，就斟酌收費</li>
+  <li>冷門或瘋狂的題材，比方說「在 16-bit MCP 上面從零到有開發一整套作業系統」或「唯物史觀與軟體工程的關聯」這一類的題目</li>
+</ul></li>
+<li>與其他領域一般，電腦技術也注重基本功夫，要在短短一兩個小時，獲得很大的進步，基本上是不可能的，充其量是獲得啟發，並建立堪用的觀念基礎</li>
+<li>請給予回應或討論，這樣才能共同成長</li>
+</ul>
+至於題材，大略可參考之前提過的 [<a href="http://blog.linux.org.tw/~jserv/archives/001937.html">jserv's lab 概況與合作機會</a>]，我很願意分享一個消費性電子裝置背後的設計理念、系統設計、軟硬體設計考量，與潛在的改進途徑等議題，或者像是資訊系統的國際化、效能改善、授權爭議等。某些議題需要提供硬體，像是開發板、示波器一類的設備，也請提供，真的沒有的話，小弟可以自己帶去，但那就得收額外的費用。最後，個人希望演講或教育訓練過程中，所用到的簡報檔案與示範程式，都能公開分享 (像是放在 blog 或 wiki 上)，若貴單位不願如此的話，請事先告知，而且我也將斟酌加收費用。<br />
+<br />
+囉唆了很多，其實也只是原則性的提醒罷了，還是很歡迎各方的交流與腦力激盪，分享這些心得，可更深刻地反省自己對技術領域的認知。若有任何想法，直接發信給小弟即可：&lt;<b>jserv.tw</b> @gmail.com&gt;，謝謝！<br />
+<br />
+PS: 某些敏感議題，像是「如何唸好大學」或「資工系學生如何有效學習」，就請別提出了 (曾收到兩次以上的邀約，實在為難)，我可沒受過高等教育呀。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001979.html">06:28 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1979" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001978"></a>
+<h3 class="title">當整合開發環境遇上系統模擬</h3>
+
+去年在 blog 提過 [<a href="http://orzlab.blogspot.com/2007/03/blog-post_15.html">視覺化系統模擬與偵錯</a>] 的想法，並透過 [<a href="http://orzlab.blogspot.com/2007/06/tablet-webpad.html">親手打造Tablet / WebPad</a>] 驗證了這個概念，現在 o-hand 進一步整合到既有的自由軟體系統中。o-hand 日前推出針對 Embedded Linux 的整合環境 [<a href="http://www.pokylinux.org/">Poky Platform Builder</a>] ，允許使用 100% open source software 來建構 mobile device 的軟體環境，同時，也透過 [<a href="http://anjuta.sourceforge.net/">Anjuta DevStudio</a>] 與 qemu，提供完整的系統整合開發。<br />
+<center><img src="http://www.robster.org.uk/files/anjuta-plugin-screencast-thumbnail.png" /></center><br />
+上方的圖片就展示了 [<a href="http://anjuta.sourceforge.net/">Anjuta DevStudio</a>] 整合環境中 "Poky SDK" plugin，操作可見官方的 [<a href="http://pokylinux.org/screencasts/poky-anjuta-screencast.html">使用展示</a>]，我重新用 MPEG-4 壓縮了影片，可參考 [<a href="http://people.debian.org.tw/~jserv/poky-anjuta-screencast.mp4">poky-anjuta-screencast.mp4</a>] (14 Mb)。展示中，我們可清楚見到，Anjuta 允許讓我們快速開發 Gtk+ 應用程式，先在桌面環境開發測試，然後選定 cross build 後，產生了目標的機械碼，這是現有工具提供的，但所謂的 "Platform Builder" 不可能只有這樣，所以，我們還可見到，提供呼叫 qemu 作 poky-linux 的系統模擬 (完整性當然比 M$ Platform Builder 強)，然後還可 "Deploy" 剛剛的跨平台產生的程式套件 (以 ARM 為例)，到虛擬環境下，所以 Launcher 就多了一個項目，當然我們就可以執行並驗證其運作情況，更棒的是，隨時可以作 Remote debugging，整合環境也提供必要的支援。<br />
+<br />
+當整合開發環境遇上系統模擬，充分發揮了自由軟體的價值與強化可見度！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001978.html">04:53 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1978" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001977"></a>
+<h3 class="title">MemProf - memory profiling 與 leaks 偵測</h3>
+
+GNOME 專案有個精巧的工具 [<a href="http://www.gnome.org/projects/memprof/">MemProf</a>]，可用來對記憶體作 profiling 與 leaks 的偵測，其原理是在目標執行程式前，預先掛載 (LD_PRELOAD) 特別的函式庫，藉由其中改寫的 memory functions 來作統計與分析，詳細可參考之前的文章 [<a href="http://blog.linux.org.tw/~jserv/archives/000782.html">LD_PRELOAD 的應用</a>]。以 [<a href="http://pcmanfm.sourceforge.net/">PCManFM</a>] 為例，以下是 MemProf 執行的畫面： (click to enlarge)<br />
+<center><a href="http://jserv.sayya.org/misc/memprof-pcmanfm.png"><img src="http://jserv.sayya.org/misc/memprof-pcmanfm-small.png" /></a></center><br />
+可參考圖形化的表示，來得知實際運作的記憶體配置情況，同時，也能追蹤細部的 function call。不過，原本的 [<a href="http://www.gnome.org/projects/memprof/">MemProf</a>] 其實已無維護，所以 Cristi Magherusan 則做了一份 fork，聲明為 [<a href="http://mail.gnome.org/archives/memprof-list/2008-January/msg00001.html">memprof-revived</a>] 專案，加入若干修正，取得原始程式碼如下：<pre class="code" style="margin: 6px;">
+hg clone http://hg.atheme.org/memprof-revived
+</pre>
+因為用到 BFD，要記得安裝 binutils-dev。雖然 MemProf 功能很受限，但不失為最簡單的記憶體分析工具。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001977.html">01:16 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1977" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">March 05, 2008</h2>
+
+
+<div class="blogbody">
+<a name="001976"></a>
+<h3 class="title">克服文盲的數位建設：Literacy Bridge 的「Talking Book」 </h3>
+
+LinuxDevices.com 刊載一則新聞 [<a href="http://www.linuxdevices.com/news/NS6250449424.html">"$5 iPod" follows in $100 laptop tradition</a>]，乍看令人匪夷所思：五美金的 iPod？然後又與 OLPC 何涉？先談談 Cliff Schmidt，[<a href="http://literacybridge.org/">Literacy Bridge</a>] 非營利組織的靈魂人物，過去是 Apache Software Foundation 的法務副總裁，並於 Eclipse Foundation 擔任要職，對開放標準的推動，不遺餘力。當 Cliff Schmidt 注意到 [<a href="http://laptop.org/">OLPC 計畫</a>] 時，令他認真思考第三世界國家的人民。去年，他去非洲考察六個月，深深地被當地的環境所震驚，在這麼惡劣的環境，甚至無法有效使用 LCD 螢幕，而「文盲」的比例之高，則是阻礙發展的巨石。<br />
+<br />
+OLPC 提供的低價電腦是很好的切入點，但是眼前「如何除去文盲？」的議題，更是需要解決。聽覺在人類發展的進程，是相當重要的，過去直立人長期處於山洞，就是靠著敏銳的聽覺與群居生活，Cliff Schmidt 於是反思：「能否透過成熟的音效媒體，來改進普遍的文盲困境？」，是此，他建立了 [<a href="http://literacybridge.org/">Literacy Bridge</a>] 這個非營利組織，以 MP3 Audio player 一類的裝置作為切入，企圖建構稱為 [<a href="http://literacybridge.org/talkingbook.html">Talking Book</a>] 的機制，讓知識得以透過此種高度可攜又直覺的途徑，不斷被傳承與發展，背後的動機與理念可參考他在 Google 的演講 [<a href="http://www.youtube.com/watch?v=M8tln5Ym3t4">Using Audio Technology to Reduce Global Illiteracy, Poverty</a>]。<br />
+<br />
+在業界的朋友，大概都知道一個 MP3 player 的 BOM (材料費用)，其實就差不多是這個價碼，[<a href="http://literacybridge.org/talkingbook.html">Talking Books</a>]  所需的硬體裝置訴求可參考下圖：<br />
+<center><img src="http://www.linuxdevices.com/files/misc/literacy_bridge_five_dollar_ipod_buttons.jpg" /> <img src="http://www.linuxdevices.com/files/misc/literacy_bridge_five_dollar_ipod_usb.jpg" /> <img src="http://www.linuxdevices.com/files/misc/literacy_bridge_five_dollar_ipod_batteries.jpg" /> </center><br />
+這個目標價為美金五元的硬體，其實只是「載具」，最重要的還是文化資產，也就是在裝置間流通的音訊檔案，目前的規劃是採用無專利保護的格式，透過 USB 裝置進行存取，不受 DRM 保護限制，說到這，眼尖的人大概會發現，今年 [<a href="http://www.linux.org.au/LCA">linux.au.conf</a>] (於澳洲舉辦的專業 Linux 大型研討會) 就有 Ogg Vorbis codec 的項目，其著眼點就是不受專利制約且夠好的視訊、音訊壓縮技術。另外，也希望能找到一個夠好的平台，能夠運作 Embedded Linux，目前這還需要多一點功夫。<br />
+<br />
+[<a href="http://literacybridge.org/">Literacy Bridge</a>] 非營利組織致力克服第三世界國家普遍的文盲現象，是令人敬佩的，並且以開放的軟硬體設計作為有效的「載具」，也是很高明的作法，但實做面還需要更多資源投入，個人相當期待這個專案。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001976.html">11:29 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1976" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001975"></a>
+<h3 class="title">演講：快快樂樂學 GNU Debugger (gdb) Part I + II [台北]</h3>
+
+之前提過的演講 [<a href="http://blog.linux.org.tw/~jserv/archives/001967.html">快快樂樂學 GNU Debugger (gdb) Part II</a>] 議程是台南的場次，引來不少網友詢問在台北的議程資訊，現在終於定案，詳情可參考討論區文章 [<a href="http://phorum.study-area.org/index.php/topic,50689.0.html">2008 三月份的SA@Taipei -快快樂樂學 GNU Debugger (gdb) Part I+II (03/22)</a>]，這裡摘錄時間、地點與報名資訊：<ul class="code" style="margin: 6px;">
+<li>時間：2008年03月 22 日 (星期六)<ul>
+  <li>Part I 回顧 : 10:30-12:00</li>
+  <li>Part II  : 14:00-17:00</li>
+</ul></li>
+<li>地點：台灣科技大學-國際大樓(IB) 401 教室<ul>
+基隆路大門進來右手邊第一棟大樓，台北市基隆路4段43號</ul></li>
+<li>地理位置/交通路線:<ul>
+  <li>http://www3.ntust.edu.tw/front/bin/ptlist.phtml?Category=16</li>
+  <li>http://140.118.31.155/campus_guide/welcome.aspx</li>
+</ul></li>
+<li>活動報名網址：<a href="http://registrano.com/events/sataipei200803">http://registrano.com/events/sataipei200803</a></li>
+</ul>
+其餘資訊因為在台南場次已提過，不再贅述。以上，請多指教，謝謝！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001975.html">07:43 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1975" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001974"></a>
+<h3 class="title">願上天眷顧丁少校</h3>
+
+對於空軍，我一直有種特別的情感，或許因為是台灣國防少數有戰力的單位 (空優十五分鐘，所以若中共來襲，至少可以撐幾分鐘，其他單位大概不戰而降，就不指望了)。在之前的文章 [<a href="http://blog.linux.org.tw/~jserv/archives/001740.html">服兵役，作為一個轉折點</a>] 憑弔過飛官周中校後，今天則在報紙反覆看到熟悉的名字。新聞稿大同小異，像是 [<a href="http://udn.com/NEWS/NATIONAL/NATS4/4244154.shtml">F16失聯 搜救少校飛官</a>]，文中提及服務於空軍 401 聯隊的楊上校的大名，在我服役的夜班，都會在戰板上謄寫，他是戰管中心的老長官，而今再見大名，卻是悲劇場合。<br />
+<br />
+新聞指出，疑似失事的 F-16 戰機昨晚六點 50 分自花蓮佳山基地起飛，進行夜間攔截訓練科目 (四架次)，稍後飛官丁世寶少校的座機，就從雷達銀幕上消失，至今尚未尋獲，這是表現良好的 F-16 戰機在八年來新的失事紀錄。短短的文字，彷彿將我拉回五年前，尚在花蓮佳山空管中心服役的時空，目光盯著雷達螢幕，報讀著方格座標，並於任務派遣單上作紀錄，追蹤著馳騁於偌大東部空域的 F-16 戰機。在那半自動化的雷達陣地，螢幕的綠色光點緩緩推進著，隨訓練科目，戰鬥機作分批、纏鬥的動作，多少能在光點的挪移與變化中，想像其英姿。而霎時，平均十一秒更新一次的軌跡紀錄就中斷了，beacon (光點指標) 不復出現，戰管此時陷入令人窒息的氣氛，僚機無法呼喚丁少校的座機，空中無線電也沒有任何新跡象，隨後，空軍與海巡署出動 S-70C 進行搜救任務... 光在五年前，我就在作戰管制中心目睹了兩起 (有公開報導)，而今，沉陷於茫茫太平洋的 F-16 戰機與丁少校，杳無音訊。<br />
+<br />
+在作結論之前，應該都還有一絲希望，而且若有順利跳傘，丁少校身上的救生衣，可讓他平安在海上漂浮數日，以等待救援，願上天眷顧他。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001974.html">07:18 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1974" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001973"></a>
+<h3 class="title">jserv.is-programmer.com</h3>
+
+我好喜歡這個 domain name，這是逛對岸網頁發現的 [<a href="http://www.is-programmer.com/">快樂程序員</a>]，其網域就是 is-programmer.com，更有意思的是，為了彰顯站長對於 Ruby on Rails 的熱愛，左上角的簡介就用了 Ruby 程式碼：<pre class="code" style="margin: 6px;">
+if self.is_Programmer?
+        register && enjoy
+end
+</pre>
+外加一個 ASCII art 的笑臉圖樣：<br />
+<center><img src="http://www.is-programmer.com/themes/is-Programmer/images/ishappy.png" /></center><br />
+所以我就情不自禁 register 並 enjoy 其中，幾分鐘就順利建立 [<a href="http://jserv.is-programmer.com/">jserv.is-programmer.com</a>]，因為系統支援 RSS import，所以很快就 clone 了本 blog 部份內容，操作真是簡單，連我這種「Web 2.0 白痴」都能上手。<br />
+<br />
+Thinker 在 blog 文章 [<a href="http://heaven.branda.to/~thinker/GinGin_CGI.py/show_id_doc/314">望文生義</a>] 提到一段很棒的文字：<ul class="code" style="margin: 6px;">
+從第一行程式到現在，算一算也快 20 年了。想一想，也覺得不可思議，一種興趣可以維持 20 年。然而，近 20 年的期間，寫程式這件事對我而言，有了幾番改變。不變的只有一件事，「有趣」。
+</ul>
+是的，程式設計就是如此迷人，陪伴 Thinker 度過二十個寒暑，這番有趣、快樂的過程，總是能將我們腦中的靈感，予以具體呈現。<br />
+<br />
+Jserv Is a Programmer!<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001973.html">09:34 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1973" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001972"></a>
+<h3 class="title">早餐吃 GDB，GDB 吃早餐</h3>
+
+這個標題有點詭異，待我娓娓道來。準備本週六的演講 [<a href="http://blog.linux.org.tw/~jserv/archives/001967.html">快快樂樂學 gdb - Part II</a>] 時，在網路上找了許多資料，意外瞥見一篇與 GNU gdb 完全無關的 blog 文章 [<a href="http://www.wretch.cc/blog/szwaymi&article_id=25716285">吉得堡 - 鮪魚蛋餅不加蛋黃</a>]，格主介紹了一家位於大直的早餐店「吉得堡」，英文簡稱就是 GDB，就在即將關閉瀏覽器視窗時，有幾個關鍵字吸引我：<ul>
+「如果你問我這家店還有什麼特色，我想就目前來講就是便宜，一個鮪魚蛋餅加中冰奶只要四十，這樣的價格可是在台北市不太容易找到的。」
+</ul>
+真心動呀，一向吃早餐得花上五十元的我，沒想到還有這個檔次，店名又吸引人，所以，二話不說，就拿著筆記本與筆，騎淑女車過去品嚐。六點多抵達，氣氛感覺也不錯，於是一邊在 GDB 早餐店品嚐那位格主推薦的「鮪魚蛋餅不加蛋黃」， 一面思考 MIT 的論文 [<a href="http://web.mit.edu/rabbah/www/docs/zhao-cc-2008.pdf"> How to do a million watchpoints: Efficient Debugging using Dynamic Instrumentation</a>] (PDF 格式)，構思對 GNU gdb 的架構調整。<br />
+<br />
+雖然 GNU gdb 經過多年的發展，無論是架構與功能，其實都相當完備，但是若干應用的系統偵錯，卻面臨難題，諸如在資源受限或高流量網路的環境設定 breakpoint，基本上是不可行的，所以 watchpoint 被提出，但是軟體在這樣的環境，真是極其飄渺難定，所以如何正確、有效，且直覺的偵錯，就是急需克服的難題。MIT 這篇論文以 DynamicRIO 搭配 GNU gdb 做了技術突破，相當驚人，而我，也期盼著如此的技術能獲得擴展並整合到 GNU gdb 中。嗯，如果能達到的話，那麼，這個設計可說是 break-fast (快速處理 breakpoint)，恰好 "breakfast" 就是「早餐」一詞，真是太有意思了，我就在筆記本用力描繪對架構的認知，與待作事項。<br />
+<br />
+早餐到 GDB 早餐店吃，GNU gdb 也要「吃」break-fast 才能更廣泛使用。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001972.html">08:20 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1972" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001971"></a>
+<h3 class="title">不只要解放手機軟體，還要徹底改外觀</h3>
+
+多次提及的 [<a href="http://www.openmoko.org/">openmoko</a>] 專案/公司在整整一年前，履行 100% open source mobile phone 的承諾，公開原始程式碼的存取 (svn.openmoko.org)，並開始銷售第一世代的手機，而今，連同外觀、機構設計也開放了，詳情可參考 LinuxDevices.com 的新聞 [<a href="http://www.linuxdevices.com/news/NS2435596283.html">Linux phone mechanicals published</a>]。<br />
+<center><img src="http://www.linuxdevices.com/files/misc/openmoko_exploded_neophone-sm.jpg" /></center><br />
+<br />
+此次開放的機構設計 CAD 以 Creative Commons Attribution ShareAlike 3.0 授權發行，可在官方網站上取得，並以 [<a href="http://www.ptc.com/appserver/mkt/products/home.jsp?k=403">Pro/ENGINEER</a>] 軟體處理。所以，只要保持機構完整性，就可以徹底大改整個外觀，現在 mailing-list 上的討論此起彼落呢 :-)<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001971.html">05:40 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1971" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">March 04, 2008</h2>
+
+
+<div class="blogbody">
+<a name="001970"></a>
+<h3 class="title">純真的愛</h3>
+
+人的成長過程中，大概都有這麼一段，收藏在內心的純真之愛。<br />
+<br />
+讀 walkingice 的文章 [<a href="http://walkingice.twbbs.org/blog/?p=323">朱立為什麼是朱立</a>]，詼諧談論著懵懵懂懂的情愛世界，感到莞爾之際，卻也想到自身的經驗。四年前，我們走在豐原的景觀步道上，她說：<ul>
+「男女之間，像我們一樣認識這樣久，又保持純真的友誼，是不是很難？」
+</ul>
+我傻笑不答，下午斜陽灑了一地，在她身上髮絲間穿越，隱隱的暈光，隨著淡淡的香水味，漫散開來。一旁的灌木林，揮灑著斑駁，而我，用手指輕輕撥開她額前的頭髮，問題的答案或許不是這麼重要，沈浸於這一片富饒的金黃，沐浴於一縷日光，不就如我們一般自然嗎？<br />
+<br />
+初次相會，在於升高三的暑假，高中學生宿舍辦了「幹部訓練」的營隊，作為一中宿舍自治幹部副大隊長的我，很自然就跟擔任女中學生宿舍副舍長的她做了搭檔，一同籌備著大大小小的雜務。辦好一個營隊，真不是一件容易的事情，特別是要跟完全不認識的女校幹部在極短的時間合作，對我而言，實在彆扭，不過我們竟然達成這個目標，而且效果不惡。籌備期間，多次練習行動劇、團康活動、舞步、... 等等，培養了一些默契，不過因為行程匆促，幾乎沒有駐足交談的時間。忘不了那一夜，營隊活動的第一日，來自四個學校的學弟妹紛紛報到，當天行程也順利進行，晚間排了分組的 BBQ 烤肉，她與我因為沒有帶小組，所以落得清閒，終於可以坐下來休息片刻，生火並拾起食材烤肉。<br />
+<br />
+人與人的交流是如此微妙，青澀的年華，或許是那個時代的最佳詮釋。微弱的火光，在我倆的眼鏡表面成像，好似彼此心中都有股浪漫的火苗，就這麼化開來了。本來在我們對話的時候，烤肉架周圍尚有其他一中、女中的幹部，不過一會時間，就剩下她與我。不巧又遇上學校照明燈出問題，在學生宿舍後方空地烤肉的我們，不得不快速奔向宿舍，拿取緊急照明燈保持活動進行，好的設備通常要留給小隊員，所以我們這邊只有微弱照明的燈光，伴隨那飄散的火光。很難估計正值發育時期小隊員的食量，所以食材超買，她與我面對剩下許多未用，感覺浪費，堅持要一一烘烤，吃得很累，但卻又如此愉快。口無遮攔的我，大方談論政治、科學、人文等議題，她總是在對角看著我、回應對話內容、不時翻動著食材，有時猛然抬頭，可瞥見她的神情，發現彼此的目光，就趕緊躲避，只見照明燈幾乎無法使用，感覺就好像在電影院中，彼此交頭接耳對話一般，嗯，烤肉大概是門票吧。<br />
+<br />
+至於說那日到底烤了多少食材呢？大概也說不上來，只記得我們一邊抱怨：「好可惜」，一邊大快朵頤，有趣的是，我們這對搭檔在各自的學校，好像也是因節儉出名的。近十年後的今天回想，不自覺就聯想起愛因斯坦為了用淺顯的文字解釋相對論，所舉的「美女與熱火爐」的比喻：<ul class="code" style="margin: 6px;">
+"When you are courting a nice girl an hour seems like a second.<br />
+When you sit on a red-hot cinder a second seems like an hour.<br />
+That's relatinity."
+</ul>
+「相對」決定我們的觀感，說那微弱的炭火是「熱火爐」、對面的女中學生是個「美女」，何嘗不可呢？此等天南地北的對話，讓時間飄逝極快，竟然，就到了小隊員該盥洗休息的時間，而我們還浸淫在烤肉的樂趣中，才開始有了些體驗。<br />
+<br />
+小隊員拖著疲憊身軀休息時，營隊籌備人員開了檢討會議，並熬夜張羅第二日行程的細節，隔日又在半夢半醒時，跑流程、趕著處理瑣事。負責拍照與出納的我，雖然不是很重要，似乎也閒不下，終於在結訓日前一夜的舞會中，稍微可以休息。跌破許多人眼鏡，平日充斥油膩的學生餐廳，竟然在我們這群學生幹部奮力的清理下，佈置成美侖美奐的舞廳，光彩奪目的霓虹，至今難忘。沒什麼運動細胞的我，自然對舞蹈興趣缺缺，不過還是得豁出去，找落單或羞怯的高中小男生、小女生跳舞，用一貫雅稱「簡化版的華爾茲」舞步，其實就是「方塊舞」，整晚就靠著這一招半式度過。嗯，我也邀了我的搭檔，慢舞的節奏是如此平緩，忽近忽遠的舞步，彷彿訴說這偶然的緣份，相逢何其匆匆呢？<br />
+<br />
+習慣作於接受者的我，在結訓日的最後一個活動，也就是工作人員真情流露的時間，難以控制情緒，我到那個時候才發現，「付出」竟是如此的美好，儘管我們對於這過程是如此的羞澀，「施比受有福」，其言不假，那時，她遞上面紙，看著我、聆聽著我，淚光中閃爍著，那靈性的真情，或許，這開啟了純真的愛。<br />
+<br />
+營隊結束後，結交了許多新朋友，一中學生宿舍幹部的感情也更融洽，但嚴峻的考驗正等著我們。那時候中一中的學生宿舍寢室僅有不太會動的風扇，又得在狹小的空間擠上四到六個學生，中部悶熱的空氣可見一斑。而，向來在榮譽榜上都可見名的我，竟然也開始嚐到苦頭，以前絕對不是我程度好，而是學校太多謙沖的同學禮讓，所以才僥倖有不惡的成績，現在，這些同學都覺醒了，挑燈夜戰在所難免。或許是心境無法調適，我總在夜讀的寂靜中，感到幾分惶恐，每每這種壓迫襲身時，我拿書信紙，訴諸於紙上，封口，寄給遠方的她，那時她搬回位於豐原的家。魚雁往返的信件，很快就塞滿了抽屜，而學生宿舍的信件領取櫃台總會有我的信件，結束一日煩悶的課程，走回宿舍領取信件的我，嘴角則洋溢著幸福的微笑。<br />
+<br />
+高中的住校生涯，幾乎一日 22 小時都待在學校，而宿舍、圖書館、教室、網球場、操場，這些我常走過的地方，保留著我的汗水與淚水。每日明亮的曙光映入寢室，睡眼惺忪的我，下意識捲縮身軀，著衣到樓下點名廣場進行早點名，仿軍事化的管理，身為室長，喊了一聲：「二樓七室全到」。走回寢室補眠，稍後在宿舍關大門前，收拾個人物品，走向教室。買早餐，準備早自習，身為班長，見老師進教室喊了一聲：「起立」，然後就過了八小時。下課，走到外頭買便當，不然就去學生餐廳，用餐後盥洗或者打球，稍後在宿舍晚自習，讀累了就睡、睡醒了就唸書，覺得寢室不安靜的話，就爬到宿舍頂樓唸書，念煩了就跟同學打牌、聊天... 這種機械性的生活，一直佔了很大的比重，不過她的出現，給予了新的轉機。<br />
+<br />
+從某個時間點開始，我不再規律寫日記，但透過信紙，間接紀錄了自己的許多事，諸如思念初次見面的悸動、對考試的得失心、參加校際競賽、討論彼此的家庭背景等等，有時候還會用英文書寫，洋洋灑灑幾張信紙，順便要求自己對英文寫作的能力。吝惜購買信紙，也不知道信紙款式是否合宜的我，總是直接拿筆記紙書寫，而筆記紙又很方便夾在參考書籍中。長夜中，搖著筆桿，隨著季節的更迭，信紙竟成了見證這過程的年輪，一日復一日地累積著。我們談及著生涯規劃、讀書心得、畢業旅行、升學壓力，也相互勉勵，就如之前的 blog 文章 [<a href="http://blog.linux.org.tw/~jserv/archives/001758.html">生活就像洋蔥</a>] 提過寄予我的信件中，裡面包含她自己做的軟木卡片，隨身攜帶多年，至今字跡可識的寫著：<ul class="code" style="margin: 6px;">
+人生一定要有理想，為了追求目標，受點苦算什麼？<br />
+當然你必需要有強大的決心及今生非完成不可的慾望，<br />
+才有接受沮喪的能力。
+</ul>
+卡片下方的「共勉之」字樣，好多次浮現於心，好似大腦皮質中無法抑制的呼喊。就這樣，看似平淡無奇的高中生涯，卻蘊藏著酸甜苦澀的記憶，入夢前反覆閱讀她捎來的訊息與祝福，簡陋的寢室與充滿坑坑洞洞的老舊床板無法阻止我對於這華樣歲月的幸福感受，而當漣漪般蕩漾的夢逐漸收攏，外頭炫目的光暈，則讓我精神抖擻的起床，每一日都是嶄新的，滿心歡喜的迎接。<br />
+<br />
+莎士比亞的十四行詩有一則：<ul class="code" style="margin: 6px;">
+<b>Sonnet CXLVIII</b><br />
+<br />
+O me! what eyes hath love put in my head,<br />
+Which hath no correspondence with true sight!<br />
+Or, if they have, where is my judgment fled,<br />
+That censures falsely what they see aright?<br />
+If that be fair whereon my false eyes dote,<br />
+What means the world to say it is not so?<br />
+If it be not, then love doth well denote<br />
+Love's eye is not so true as all men's: no,<br />
+How can it be? O how can Love's eye be true,<br />
+That is so vexed with watching and with tears?<br />
+No marvel then though I mistake my view;<br />
+The sun itself sees not till heaven clears.<br />
+O cunning Love! with tears thou keep'st me blind,<br />
+Lest eyes well-seeing thy foul faults should find.
+</ul>
+顯然，「王子與公主從此過著幸福快樂的日子」這種型態不適合我們，而且那也是種悲哀，喪失對抗環境的本能，作為動物界的「高等品種」，卻沒有這個動物生來即具有的能力，對造物者來說，豈非開了最好的玩笑？佩脫拉克說：「我自己是凡人，我只求凡人的幸福」，具體的詮釋就是在意志與親情、友情的支持下，克服接踵而來的困難，最終，享受褪去苦澀外皮的甜美果實，那才是真的幸福，不是嗎？莎士比亞的詩作是這樣沈重的刻劃呀。<br />
+<br />
+思念一個人，心頭總有種感覺，希冀將每個細節、縈繞於心的觸動，都轉化為呢喃細語，在耳畔繚繞不止，又是多麼想譜成詩篇，轉換為雋永的歌曲旋律，無論置身何處，就旁若無人低吟著、品味著，甚至，緊緊抓住這瞬間的悸動，祈求成為永恆，感覺是如此強烈，以至於擔憂筆桿無法負荷。中間歷經許多變化，逐漸往心靈深處沉澱，隨著年歲著增長，醞釀為彼此更高層次的祝福與關愛。<br />
+<br />
+難以表達這種心境的轉變，或許就用莎士比亞的話來解釋：<ul class="code" style="margin: 6px;">
+"Then must you speak<br />
+ Of One that lov'd not wisely but too well."<br />
+<br />
+–From Othello (V, ii, 343-344)
+</ul>
+唉，好個「愛的不智但又愛得太深」，或許，不是我們愛孤獨，而是更愛翱翔，此等不智的愛，也可能成為羈絆。孤獨總是悄悄地走入我們的生命，或渴望擁有自我，或企盼溫暖，《咆哮山莊》女主角愛蜜莉．勃朗特就說：「愛情未必總是幸福的，相愛的人也未必總會彼此善待」，過度的情緒化與愛戀，是一柄雙刃劍，每當刺傷對方時，其實就深深刺痛自我，而且難以抽身，這純真的愛避開了窘境，讓我亙古彌新地珍惜，保有愛的純粹，又免去了那些枷鎖與遷就，或者就如 Purple 所說：<ul class="code" style="margin: 6px;">
+「這世界上的人們，其實都很孤單。這無關身邊有沒有另一個人，而是你心裡，有沒有這樣愛著一個人，有沒有存著希望。大部分的時間裡，似乎所有人都活在不被別人所瞭解的孤獨裡，就像我看過的一個廣告，大家都坐在自己的透明泡泡裡，在這世界上飄呀飄。愛與被愛，就像童話世界一樣，遙不可及。」
+</ul>
+多數時間，彼此是遙不可及，卻往往能在若干日子相會，形同邂逅，每個終結，又將會是另一個值得期待的開始，我天真地幻想，兩條線會在瞬間有所交集，這也就夠了。<br />
+<br />
+去年年底，她被診斷罹患某種慢性病，心頭彷彿有股被撕碎的感覺，這麼好的女生，為何三番兩次受命運的擺佈呢？脈脈溫情無從寄託，好似宋．陸游《卜算子》所及：「零落成泥輾作塵，只有相如故」，遠在他方的我，在寒冬中曝露出人性的脆弱，我，期待著溫暖，眷顧著她。今年暑期，就是我們相識的十週年了，謹此感念這美好的一切，也誠摯祝福她，友誼與純真的愛將得長存。<br />
+<br />
+群 於台北內湖<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001970.html">11:54 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1970" onclick="OpenComments(this.href); return false">迴響 (5)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001969"></a>
+<h3 class="title">模擬 Eee PC 上運作 Keroro 桌面系統</h3>
+
+上週拜訪了華碩 (ASUS) 總部，獲贈一台 [<a href="http://eeepc.asus.com/">Eee PC</a>] 作為自由軟體開發的用途，非常感謝華碩的慷慨捐贈。不過，把玩手上這台 Eee PC 時，遇到若干技術性的問題，頗有微詞 (稍早曾在 IRC 提過，找時間整理一下)，又耳聞 Eee PC 的 SDK 可能僅是 VMware Image (僅是傳言，在此不做任何擔保)，失落感也因此加重。不過，自由軟體世界美妙之處，就是開發者生氣時，往往會有新作品出現，所以，我定了以下幾個工作項目：<ul>
+<li>Eee PC 裝置模擬</li>
+<li>移植 Keroro 桌面系統</li>
+<li>全面採用 Debian/Ubuntu</li>
+</ul>
+目前的重心是前兩項，並暫時先處理圖形相關基礎建設的部份。我們可很容易透過 [<a href="http://labs.o-hand.com/xoo/">Xoo</a>] (GTK+ based graphical wrapper around a ‘windowed’ X Server) 來「包裝」一整個 X 桌面環境，以下是目前的進度： (click to enlarge)<br />
+<center><a href="http://jserv.sayya.org/misc/eeepc-xoo-glhacks.jpg"><img src="http://jserv.sayya.org/misc/eeepc-xoo-glhacks-small.jpg" /></a></center><br />
+以 Xoo 提供視覺上的「包裝」，覆蓋以 Eee PC 的 skin 與對應的 Power key (限於螢幕尺寸限制，未顯示)，其中就是 Xephyr 了。前一篇 [<a href="http://blog.linux.org.tw/~jserv/archives/001968.html">Xephyr 的 XVideo 與 OpenGL 支援</a>] 解決了 OpenGL/3D 模擬的技術議題，這意味著以合理速度執行 clutter 是可行的，上圖即展示 Keroro 桌面系統中，那些頑皮的小青蛙跳動的狀況，鏡射與倒影特效對 OpenGL 來說，都是輕而易舉的操作。<br />
+<br />
+當然這只是其中一部份，在 [<a href="http://osdc.tw/">OSDC.tw</a>] 上會探討更多 Keroro 桌面系統的細節，而且 Eee PC 看來是很優秀的參考硬體平台 :-)<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001969.html">03:08 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1969" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">March 03, 2008</h2>
+
+
+<div class="blogbody">
+<a name="001968"></a>
+<h3 class="title">Xephyr 的 XVideo 與 OpenGL 支援</h3>
+
+準備下個月的演講 [<a href="http://blog.linux.org.tw/~jserv/archives/001963.html">許我們一個 Keroro 的桌面</a>] 時，大量用到的兩個 toolkit 分別是 [<a href="http://cairographics.org/">cairo</a>] 與 [<a href="http://clutter-project.org/">clutter</a>]，背後都與 OpenGL 有關，為了不影響開發環境，通常我們會透過 Xnest 或 Xephyr 一類的 nested X server 來建立虛擬的 X Display/Screen。考量到新的 X extension 支援，Xephyr 無疑是最好的選擇，而且 [<a href="http://www.advogato.org/person/sdodji/">Dodji Seketeli</a>] 最近也實做了 XVideo 與 OpenGL 的支援。<br />
+<br />
+這些修改已經整合到 git repository 中，以下是建構的方式，筆者的平台是 Pentium4 + Ubuntu hardy (8.04)，需要先安裝好必要的套件：
+<pre class="code" style="margin: 6px;">
+$ sudo apt-get build-dep xserver-xephyr
+$ sudo apt-get install libpciaccess-dev libxv-dev
+</pre>
+接著，就取得程式碼並編譯：
+<pre class="code" style="margin: 6px;">
+$ mkdir -p /tmp/xephyr-hacks
+$ cd /tmp/xephyr-hacks/
+$ git clone git://anongit.freedesktop.org/git/mesa/mesa mesa.git
+$ cd mesa.git
+$ autoreconf -fis
+$ CFLAGS="-Os -mcpu=pentium4 -mtune=pentium4" \
+sh configure \
+  --prefix=/tmp/xephyr-hacks \
+  --with-driver=xlib \
+  --disable-shared \
+  --enable-static \
+  --with-demos=samples
+$ make
+$ cd ..
+$ git clone git://anongit.freedesktop.org/git/xorg/xserver xserver.git
+$ cd xserver.git
+$ wget http://jserv.sayya.org/freedesktop/optional-xkb.patch
+$ patch -p1 < optional-xkb.patch
+$ autoreconf -fis
+$ CFLAGS="-Os -mcpu=pentium4 -mtune=pentium4 -g" \
+sh configure \
+  --prefix=/tmp/xephyr-hacks \
+  --enable-debug \
+  --enable-kdrive \
+  --enable-xephyr \
+  --disable-xorg \
+  --disable-xnest \
+  --disable-xvfb \
+  --disable-dmx \
+  --disable-xorgcfg \
+  --disable-xcalibrate \
+  --disable-xsdl \
+  --disable-xfake \
+  --disable-xfbdev \
+  --disable-kdrive-vesa \
+  --enable-dri \
+  --with-dri-driver-path=/usr/lib/dri \
+  --enable-glx \
+  --with-mesa-source=/tmp/xephyr-hacks/mesa.git \
+  --disable-xprint \
+  --enable-builtin-fonts \
+  --disable-tslib \
+  --disable-config-hal \
+  --disable-xinerama \
+  --disable-xace \
+  --disable-mfb \
+  --disable-cfb \
+  --disable-afb \
+  --disable-xf86bigfont \
+  --disable-dpms \
+  --disable-xdmcp \
+  --disable-xkb \
+  --disable-xevie \
+  --with-fontdir=/usr/share/fonts/X11
+$ make
+</pre>
+過程中，施加筆者的 patch 以避開沒必要的 Xkb，編譯完成後，應該會得到 hw/kdrive/ephyr/Xephyr 這個執行檔，執行方式如下：(在 X11 環境下，一般使用者權限)
+<pre class="code" style="margin: 6px;">
+$ hw/kdrive/ephyr/Xephyr -host-cursor -ac :2
+</pre>
+這時候在另一個終端機跑以下指令： (bash 為例)
+<pre class="code" style="margin: 6px;">
+$ export DISPLAY=:2
+$ metacity &
+$ glxgears
+</pre>
+當然，"metacity" 可換成任何典型的 window manager。此時，應該會見到類似以下的畫面：<br />
+<center><img src="http://jserv.sayya.org/misc/xephyr-dri.png" /></center><br />
+我們可以看到 Xephyr 視窗 (X client)，並且運作在 Xephyr 裡頭 (X server) 的 X clients，也就是 glxgears 與 metacity。實際上，在 Xephyr 裡面的 GL 程式是透過 DRI 轉交給原始的 GLX 作為輸出。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001968.html">02:24 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1968" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+
+</body>
+</html>

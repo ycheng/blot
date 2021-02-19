@@ -1,0 +1,1526 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>damon's notepad: FreeBSD 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~damon/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~damon/index.rdf" />
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~damon/" accesskey="1">damon's notepad</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+
+<h2 class="date">December 25, 2003</h2>
+
+
+<div class="blogbody">
+
+<a name="000550"></a>
+<h3 class="title">FreeBSD 5.2 RC2 now available</h3>
+
+<p>FreeBSD 5.2 RC2 now available<br />
+衝吧!!!</p>
+
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000550.html">03:23 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=550" onclick="OpenComments(this.href); return false">迴響 (535)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+
+<a name="000549"></a>
+<h3 class="title">domain name移轉完成</h3>
+
+<p>花了一些時間，終於弄好了FreeBSD dns server，一波三折...<br />
+原本以為很簡單的，結果也是真的很簡單，不過因為我自己的疏忽，所以讓他變的很難<br />
+起先以為直接把設定檔從別台copy過來改一改就完工了<br />
+後來發現我copy的bind9用的named.conf給內建的用會有點問題<br />
+在改用內建的直接改，一切看起來都很順利，但查詢的時候卻有問題了...<br />
+完全查不到我寫的設定<br />
+發覺原來是我自己豬頭，用內建的範例直接改，卻沒有把註解符號拿掉，難怪怎麼改都查詢不到XD<br />
+新的domain name是damon.idv.tw</p>
+
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000549.html">01:28 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=549" onclick="OpenComments(this.href); return false">迴響 (229)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">December 17, 2003</h2>
+
+
+<div class="blogbody">
+
+<a name="000539"></a>
+<h3 class="title">FreeBSD 5.2 rc1</h3>
+
+<p>FreeBSD 5.2 rc1推出了，有勇起的的使用者衝吧</p>
+
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000539.html">05:18 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=539" onclick="OpenComments(this.href); return false">迴響 (389)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">December 11, 2003</h2>
+
+
+<div class="blogbody">
+
+<a name="000537"></a>
+<h3 class="title">Tuning FreeBSD for different applications</h3>
+
+<p>A guide to server and workstation optimization, by Avleen Vig</p>
+
+<p>Server and workstation tuning is an ongoing process.<br />
+Believing that you are done only means that you don't know what else can be tuned.</p>
+
+<p>This article should apply equally to FreeBSD 4.x and 5.x</p>
+
+<p>The method of tuning your system is heavily dependent on its function:</p>
+
+<p>    * Will the system perform a lot of small network transactions?<br />
+    * Or a small number of large transactions?<br />
+    * How will disk operations factor in?</p>
+
+<p>How you answer these and other questions determines what you need to do to improve the performance of your system.<br />
+There are several steps you can take before you need to start changing sysctls or re-arranging your partitions. How your applications are compiled plays a major role too. Beyond application compilation we will look at tuning the various other parts of our system including the network, disks, and other system control functions. I have tried not to duplicate the data in the tuning(7) man page, which already contains a wealth of good information on the basics of system performance tuning.<br />
+Optimizing software compiling</p>
+
+<p>When source code is compiled, your compiler makes assumptions about your hardware in order to create compatible binaries. If you have an x86-complient CPU for example, your compiler will by default create binaries which can be run on any CPU from a 386 onwards. While this allows portability, any new abilities your CPU advantage of (MMX, SSE, SSE2, 3DNow!, etc) will not be used. So portability creates inefficiency. This is also why using pre-compiled binaies on your system is a sure fire way to reduce your overall performance!</p>
+
+<p>System tuning is best performed on a new system, before many packages are installed. The steps you take here will also effect any new software you install. We assume that your packages are installed from the ports collection (/usr/ports). These steps should be applicable to any other software compiles and we will cover that later in this paper.</p>
+
+<p>The first step to making sure your ports software will be compiled effeciently is to have good compiler flags set up. These are defined in /etc/make.conf. This file does not exist on new systems, but you can copy /etc/defaults/make.conf to /etc/make.conf.<br />
+Edit the file, and look for the line starting: #CPUTYPE=<br />
+Valid options for the CPUTYPE are listed in the file, in the paragraph above this line. My server is a P233/MMX, and my CPUTYPE line looks like: CPUTYPE=i586/mmx<br />
+What this does: The CPUTYPE option notifies the compiler of any special features your CPU has. The compiler will then, where possible, compile code to take advantage of these features. The disadvantage to this is that your compiled binaries may not run on different CPU types. As long as you aren't copying binaries from one server to another, this should not be a problem.</p>
+
+<p>Also in the file, look for the line: #CFLAGS= -O -pipe<br />
+Uncomment this line, and change it to: CFLAGS= -O2 -pipe -funroll-loops<br />
+What this does: The '-O2' flag sets the optimization level. GCC has the following possible optimization levels:</p>
+
+<p>    * -O: Some opimizations are enabled such as '-fthread-jumps' and '-fdefer-pop'<br />
+    * -O2: All optimizations which do not cause the size of the resulting executable to increase are turned on. This is useful for a speed/space tradeoff<br />
+    * -O3: Optimize even more. This option may cause the size of your bianries to increase<br />
+    * -Os: Optimize for size. Perform most of the optimizations in -O2 and some which reduce the code size</p>
+
+<p>The '-pipe' option decreases the amount of time taken to compile software. When two compiler processes need to communicate data between each other, they can use files on the disk or pipes. As pipes do not require writing anything to disk they can significantly decrease the amount of time taken here.<br />
+Finally, '-funroll-loops' causes finite loops to be "unrolled". When a binary compiled with this option is run, the CPU does not have to run through every possible itteration of the loop to get its result. Instead, loops are replaces with with their equivilent non-looping code. This saves one CPU register which would otherwise be tied up in tracking the itteration of the loop.<br />
+The gcc man page (man gcc) is a good resource for this.</p>
+
+<p>Warning: It has been noted that for some users on FreeBSD 4.8 and 4.9, the -funroll-loops causes SSHv2 with the base OpenSSH to break. Installing the OpenSSH-portable port to overwrite the base install fixes this problem quickly and easily, and provides a newer version of OpenSSH:</p>
+
+<p>    * cd /usr/ports/security/openssh-portable && \<br />
+      make install -DOPENSSH_OVERWRITE_BASE</p>
+
+<p>The make.conf file also contains a line for CXXFLAGS. These options are similar to our CFLAGS options but are used for C++ code. If you are going to compile C++ code, you should take a look at this also.<br />
+Optimizing kernel compiling</p>
+
+<p>Efficient kernel compiling is covered in my Kernel Tuning paper at: http://silverwraith.com/papers/freebsd-kernel.php<br />
+Optimizing network performance</p>
+
+<p>How you optimize your system for networking depends on what your system will be doing. Below we will take a look at two common applications for servers, Mail and File serving.<br />
+Network throughput:</p>
+
+<p>There are a number of steps which can be applied to all installations to improve network performance, and should be done by everyone.</p>
+
+<p>Most modern network cards and switches, support the ability to auto-negotiate the speed to communicate at. While this reduces administration is, it comes at the cost of network throughput. If your switch, server or workstation is set to use auto-negotiation, every few moments it stops transferring network traffic in order to renegotiate its speed. On low-bandwidth use networks this performance degradation might be hard to spot, but on high-bandwidth use networks it become very obvious: You have packet loss, you cannot achieve your full line speed, and your CPU usage is low. I would recommend that everyone read the man page on their network driver and manually define the network speed. This should if possible, also be done on the network switch. Some simple $10 switches do not have interfaces to which you can log in to set this, but fortunately they usually do not renegotiate the network speed after the cable is plugged in, unless the network link is lost.<br />
+The network speed can either be set with ifconfig at run time, or in /etc/rc.conf for boot time. Here are two examples for /etc/rc.conf for the rl(4) and fxp(4) network drivers:</p>
+
+<p>    * ifconfig_rl0="inet x.x.x.x netmask x.x.x.x media 100baseTX mediaopt full-duplex"<br />
+    * ifconfig_fxp0="inet x.x.x.x netmask x.x.x.x media 100BaseTX mediaopt full-duplex"</p>
+
+<p>If you are fortunate enough to have one of the following network cards:</p>
+
+<p>    * dc -- DEC/Intel 21143 and clone 10/100 ethernet driver<br />
+    * fxp -- Intel EtherExpress Pro/100B ethernet device driver<br />
+    * rl -- RealTek 8129/8139 fast ethernet device driver<br />
+    * sis -- SiS 900, SiS 7016 and NS DP83815 fast ethernet device driver</p>
+
+<p>Note: If your card isn't listed here, do not give up hope! More drivers are being converted as demand comes in and you should look at the documentation for your driver to see if it is supported. If you're still unsure, join the freebsd-questions@freebsd.org mailing list from http://lists.freebsd.org/mailman/listinfo and ask there.</p>
+
+<p>You can enable DEVICE_POLLING in your kernel. DEVICE_POLLING changes the method through which data gets from your network card to the kernel. Traditionally, each time the network card needs attention (for example when it receives a packet), it generates an interrupt request. The request causes a context switch and a call to an interrupt handler. A context switch is when the CPU and kernel have to switch from user land (the user's programs or daemons), and kernel land (dealing with device drivers, hardware, and other kernel-bound tasks). The last few years have seen significant improvements in the efficiency of context switching but it is still an extremely expensive operation. Furthermore, the amount of time the system can have to spend when dealing with an interrupt can be almost limitless. It is completely possible for an interrupt to never free the kernel, leaving your machine unresponsive. Those of us unfortunate enough to be on the wrong side of certain Denial of Service attacks will know about this.</p>
+
+<p>The DEVICE_POLLING option changes this behavior. It causes the kernel to poll the network card itself at certain predefined times: at defined intervals, during idle loops, or on clock interrupts. This allows the kernel to decide when it is most efficient to poll a device for updates and for how long, and ultimately results in a significant increase in performance.</p>
+
+<p>If you want to take advantage of DEVICE_POLLING, you need to compile two options in to your kernel:</p>
+
+<p>    * options DEVICE_POLLING<br />
+    * options HZ=1000</p>
+
+<p>The first line enables DEVICE_POLLING and the second device slows the clock interrupts to 1000 times per second. The need to apply the second, because in the worst case your network card will be polled on clock ticks. If the clock ticks very fast, you would spend a lot of time polling devices which defeats the purpose here.</p>
+
+<p>Finally we need to change one sysctl to actually enable this feature. You can either enable polling at runtime or at boot. If you want to enable it at boot, add this line to the end of your /etc/sysctl.conf:</p>
+
+<p>    * kern.polling.enable=1</p>
+
+<p>The DEVICE_POLLING option by default does not work with SMP enabled kernels. When the author of the DEVICE_POLLING code initially commited it he admits he was unsure of the benefits of the feature in a multiple-CPU environment, as only one CPU would be doing the polling. Since that time many administrators have found that there is a significant advantage to DEVICE_POLLING even in SMP enabled kernels and that it works with no problems at all. If you are compiling an SMP kernel with DEVICE_POLLING, edit the file: /usr/src/sys/kern/kern_poll.c and remove the following lines:</p>
+
+<p>      #ifdef SMP<br />
+      #include "opt_lint.h"<br />
+      #ifndef COMPILING_LINT<br />
+      #error DEVICE_POLLING is not compatible with SMP<br />
+      #endif<br />
+      #endif<br />
+    </p>
+
+<p>Mail servers:</p>
+
+<p>Mail servers typically have a very large number of network connections, which transfer a small amount of data for a short period of time, before closing the connection. Here is it useful for us to have a large number of small network buffers.<br />
+Network buffer clusters are assigned two per connection, one for sending and one for receiving. The size of the buffer dictates how fast data will be able to funnel through the network, and in the event of a network delay how much data will be able to backlog on the server for that connection before there is a problem. Having a network buffer too small means data will be backlogged at the CPU waiting for the network to clear. This causes greater CPU overhead. Having a network buffer too large means that memory is wasted as the buffer will not be used efficiently. Finding this balance is key to tuning.</p>
+
+<p>When we discuss simultaneous network connections, we refer to connections in any network state: SYN_SENT, SYN_RECV, ESTABLISHED, TIME_WAIT, CLOSING, FIN_WAIT, FIN_WAIT_2, etc. Even if the network connection is in an ESTABLISHED state for only a few seconds, it can end up in any of the other states for a long time. I generally find that multiplying the number of ESTABLISHED connections by 8 leaves me with room to breath in the event that I see an abnormally high surge of traffic inbound or outbound. I've come to this number over time through trial and error. So if you expect to have a peak of 128 servers sending you mail, having 2048 network buffer clusters would be good (128 * 2 per connection * 8). Also remember that connections can take up to two full minutes or more to close completely. So if you expect more than 128 mails in any given two minute period, you also need to increase the number to accomodate that.</p>
+
+<p>Another important value to control is the maximum number of sockets. One socket is created per network connection, and one per unix domain socket connection. While remote servers and clients will connect to you on the network, more and more local applications are taking advantage of using unix domain sockets for inter-process communication. There is far less overhead as full TCP packets don't have to be constructed. The speed of unix domain socket communication is also much faster as data does not have to go over the network stack but can instead go almost directly to the application. The number of sockets you'll need depends on what applications will be running. I would recommend start with with same number of network buffers, and then tuning it as appropriate.</p>
+
+<p>You can find out how many network buffer clusters in use with the command netstat -m</p>
+
+<p>You can specify the values you want, at the end of your /boot/loader.conf file as:</p>
+
+<p>    * kern.ipc.nmbclusters=2048<br />
+    * kern.ipc.maxsockets=2048</p>
+
+<p>Note: With any performance tuning, it is important to monitor your system after you make your changes. Did you go overboard, or underestimate what you would need? Always check and adjust accordingly. The numbers here might not be the exact ones that you need!<br />
+File servers:</p>
+
+<p>Tuning the network for file servers is not unlike tuning mail servers. The main differences are:</p>
+
+<p>    * File servers generally have longer-lived network connections<br />
+    * File servers usually transfer larger files than mail servers<br />
+    * File servers mostly perform less transfers than mail servers</p>
+
+<p>Again we come back to network buffer clusters. How many clients do you have? With file servers the chances of a spike in the number of connections is small, as the number of clients is fixed. Therefore we do not need to set aside large numbers of buffers to accommodate spikes. Multiplying the number of network buffers by two is good practice, and some admins prefer to multiply by four to accommodate multiple file transfers.</p>
+
+<p>So if we have 128 clients connecting to the file server, we would set the number of network buffer clusters to 1024 (128 * 2 per connection * 4) in /boot/loader.conf:</p>
+
+<p>    * kern.ipc.nmbclusters=1024<br />
+    * kern.ipc.maxsockets=1024</p>
+
+<p>Note: With any performance tuning, it is important to monitor your system after you make your changes. Did you go overboard, or underestimate what you would need? Always check and adjust accordingly. The numbers here might not be the exact ones that you need!<br />
+Web servers:</p>
+
+<p>Web servers are not unlike mail servers. Unless you are doing a lot of file serving over the Internet, you will have clients connecting to you for short periods of time. If you have more than one element on your web page, for example multiple images or frames, you can expect that the web browsers of clients will make multiple connections to you. Up to four connections per page served are certainly not uncommon. Also if your web pages use server-side scripting to connect to databases or other servers, you need to add a network connection for each of those.</p>
+
+<p>Web servers again like mail servers, go through periods of highs and lows. While on average you might servers 100 pages a minute, at your low you might server 10 pages a minute and at peak over 1000 pages a minute. Whether you have 128Mb RAM, or 1Gb RAM, you should try and be as liberal as possible in allocating memory to your network stack. Using the above example, at a peak of 1000 pages per minute, your clusters and sockets should be around 16384 (1000 pages * 2 per connection * 4 connections * 2 for growth) in /boot/loader.conf:</p>
+
+<p>    * kern.ipc.nmbclusters=16384<br />
+    * kern.ipc.maxsockets=16384</p>
+
+<p>Tuning your Apache or other web servers is slightly outside the scope of this paper, as there is already a ton of excellent data availible on the internet which I could never hope to do justice in this paper. A starting point I would recommend is Aleksey Tsalolikhin's notes from his Nov 2001 presentation to the Unix Users Association of Sothern California on web server performance tuning: http://www.bolthole.com/uuala/webtuning.txt, it should lead you on to more wonderful things.</p>
+
+<p>Note: With any performance tuning, it is important to monitor your system after you make your changes. Did you go overboard, or underestimate what you would need? Always check and adjust accordingly. The numbers here might not be the exact ones that you need!<br />
+Optimizing disk usage and throughput</p>
+
+<p>Optimizing the the disk subsystem on FreeBSD also depends on what you want to do with your system. It is very much installation dependent, so what I've done below is list the various factors and what they do. You can decide what is best for you.</p>
+
+<p>   1. RAID:<br />
+      RAID is a method of spreading your data over multiple disks. There two reasons why you might use RAID; for redundancy to prevent data loss, and for speed. The three most common types of RAID in use on small system installations are RAID0, RAID1 and RAID1+0 (sometimes referred to as RAID10).<br />
+      With RAID1 (also called mirroring), you use only two disks per partition, and keep the data on both disks identical. In the event that one disk is lost, you have your data on another disk. The speed advantage from RAID1 comes when reading. Your system can send multiple read requests to the disks, which will be performed in parallel. The disk whose heads are closest to the requested space will get the request to fetch the data. Writes are no faster than on a single disk. When a write request is sent, both disks must acknowledge that the write has completed before the write is finished.<br />
+      RAID0 (also called stripping) spreads the data evenly over two or more disks. Data on one disk is not replicated on the others, so there is no redundancy to prevent data loss. But reads and writes are significantly faster as they happen on multiple disks at the same time. This increases your throughput and your maximum disk operations relative to the number of disks you have. For example, 4 disks would give a 400% increase.<br />
+      RAID10 offers the best of both worlds and requires at least 4 disks. Half of the disks are stripped with RAID0, and then both are replicated as a mirror on the remaining disks.<br />
+   2. Queue splitting:<br />
+      Is you are running a mail server and feel that your system is being slowed because of the speed of your disks, an alternative to RAID could be to split your queues. Most modern mail transfer agents (MTA's) have the ability to break up their large single queue directory into multiple smaller directories. These multiple directories can then be placed on different disks. There are several advantages to this:<br />
+          * A disk failure will only take out a half or less of your queue<br />
+          * Your throughput on mail will not be disk bound<br />
+          * Opening 20 small directories is significantly faster than opening one huge directory<br />
+   3. Partitioning:<br />
+      Having separate partitions on separate disks can help a lot. For example, your system will always be performing different tasks at any one given time: writing log files, serving out data, and so on. The Unix directory structure is built around using different directories for partitions for different purposes. /usr is traditionally used for user data, /var is used for log and mail spools, etc. Arrange these on different disks to best suit your needs. If you have disks of varying speeds on your system, place the most frequently used partitions on the faster disks.<br />
+   4. IDE vs SCSI:<br />
+      Back in days of yore (in the early 1990's) when disk performance was crucial, the choice was quite obviously to go for SCSI disks. SCSI provided faster throughput, and less bottle-necking. SCSI disk sizes were significantly larger and more disks could fit in a single system. Times have changed and so have the requirements of most users, and the much sought after disk sizes and faster throughput's are now available on IDE disks. SCSI disk sizes have also grown but not as fast. SCSI disks still offer faster throughput's however. At the time of writing, the fastest IDE disks could push 133Mbyte/s, whereas the fastest SCSI disks could push 320Mbyte/s. </p>
+
+<p>References:</p>
+
+<p>This is a list of references I found when writing this paper. Most of them contain much more detail on their particular subject than I have provided here. Hopefully they will be as useful to you as they were to me.</p>
+
+<p>    * The FreeBSD handbook. A great source on information about FreeBSD. Have a read here if you want to learn something new on FreeBSD<br />
+    * Google Groups. I used this extensively to search USENET for articles others may have posted in the past. You should too!<br />
+    * htmlhelp.com is made by the Web Design Group to "promote the creation of non-browser specific, non-resolution specific, creative and informative sites that are accessible to all users worldwide." It was valuable in the creation of this site.<br />
+</p>
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000537.html">10:44 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=537" onclick="OpenComments(this.href); return false">迴響 (591)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+
+<a name="000536"></a>
+<h3 class="title">Optimising FreeBSD and it's kernel</h3>
+
+<p>A simple step by step guide, by Avleen Vig</p>
+
+<p>This is a very simple step by step guide on optimising your FreeBSD server or workstation. It doesn't go into a great amount of detail, but after spending several months searching for one source of simple optimisation information and failing, I wrote this paper. All the suggestions listed here are known optimisations available to you if you know where to find them and have the time to do so. There is nothing secret, or special or amazing in this paper, just information on how you can optimise your system.<br />
+It can mostly be applied to the other BSDs too, but not Linux. There are plenty of Linux documents out there, so go find one of those. I'm sure there are several HOWTO's. This document is true as of the release of FreeBSD 4.8. Some parts of it, such as optimising your kernel, can also be applied to some previous releases.</p>
+
+<p>Before we proceed any further you should know that as with any system tuning, we have to accept the possibility that something will break. If you're going to recompile the kernel, please read the following URL first. If possible print a copy of the page and keep it with you. It'll help you if your new kernel doesn't boot:<br />
+http://www.freebsd.org/handbook/kernelconfig-trouble.html</p>
+
+<p>First we need to make sure we have the right source files downloaded. The best place to start, is the original source files that were intended for the release of FreeBSD you are using. We assume you have a fairly recent release - not more than 2 revisions (approx 6 to 8 months) old. Execute the following command and follow the steps to get the sources needed to recompile a kernel:</p>
+
+<p>    * # /stand/sysinstall<br />
+    * Choose 'Configure'<br />
+    * Choose 'Distributions'<br />
+    * Choose 'src'<br />
+    * Choose 'sys' and then choose 'OK', and 'OK' again.<br />
+    * Choose an FTP site to download the sources from. If you're prompted to 'skip over the network configuration now', choose 'Yes'. After the install is complete, choose the 'Exit' options until you exit sysinstall.</p>
+
+<p>Congratulations, you now have a know working kernel source tree installed in /usr/src/sys!<br />
+Now, cd /usr/src/sys/i386/conf and follow the next steps.</p>
+
+<p>You should see two files in this directory, GENERIC and LINT. These are both kernel configuration files and contain all the data the kernel needs from the user, to compile. They are very easy to read and edit.<br />
+GENERIC is the Generic kernel configuration which should work with every system. LINT contains a list of all possible kernel configuration file directives. We won't worry about LINT just yet. First lets trim the GENERIC kernel down and get comfortable with that. Follow these steps to success:</p>
+
+<p>    * Copy the GENERIC file to a new file. Traditionally, this new file has the same name as the hostname of your machine.<br />
+    * Edit this new file in your favourite text editor. I prefer vi and have written a cheat sheet for new vi users at:<br />
+      http://www.silverwraith.com/papers/vi-quickref.txt<br />
+    * There are only a few pitfalls and special cases to watch out for in this file. As you can see it just a plain text file and any line starting with a # is considered a comment and ignored by the compiler.<br />
+          o The word 'GENERIC' in the line 'ident GENERIC' is the name of your kernel. This can be any single alphanumeric word with no spaces or punctuation. I recommend you keep it short. Again, it is traditional to name this to be the same as your machine hostname and kernel configuration file name but it is not required. It is informational only.<br />
+          o The maxusers line does not actually limit the maximum number of users. It is used internally with an algorithm in the param.c file to determine the sizes and numbers of certain tables. This can remain at the default. As of FreeBSD 4.7 this is set to '0' by default, which causes the actual value to be auto-sized depending on the amount of memory that you have.<br />
+          o Most, if not all items in your kernel config will have a comment toward the end of the line. Anything labelled with '[KEEP THIS!]' should not be removed. FreeBSD needs these things! Anything labelled '(required!)' should also be kept if you're going to use that type of device. For example, if you're going to use SCSI devices, don't comment out 'scbus'. If you're not using any SCSI devices, then you should comment this out. Some PCI network cards require the inclusion of 'device miibus'. These are noted in your kernel configuration file. If you don't use these NICs you can also comment this out.<br />
+          o Now go through the entire file and comment out anything you don't think you'll need. Effectively every line contains a driver. Commenting it out will mean that particular piece of hardware will not work your system, even though it may be recognised as present in the system. Thus it is bad to comment out your own network card, but good to comment out any cards you don't have. Don't worry if you comment out something you will need later. You can always recompile fairly quickly and simply.<br />
+    * After you've finished editing the configuration file, save it and exit from the editor.<br />
+    * Issue the command: config <filename> , where <filename> is your configuration file. This only takes a moment and it will tell you which directory is your compile directory. That is where we will compile the kernel. The config command creates the directory structure and files which the next steps use in compiling the kernel.<br />
+    * cd to the directory that config gave and issue these commands in turn, each after the previous has finished:<br />
+          o # make depend<br />
+          o # make<br />
+          o # make install<br />
+          o Hopefully the above will all work without producing an error. If you get an error, see your local FreeBSD Guru. If you got no error, consider the installation of the new kernel a success!</p>
+
+<p>That is it. Really! If something breaks and your new kernel will not boot, DON'T PANIC! Read the 'Kernel Does Not Boot' section of the URL at the top of the page.<br />
+Optimising compiling of code, the kernel<br />
+and debugging kernels</p>
+
+<p>This section is for the slightly more advanced compilation of code and kernels. We will also briefly mention how to compile a kernel with the debugging symbols built in. The debugging kernel can be useful when your server or workstation is kernel panicing frequently and you want to find out why. There is a great article from OnLamp.com on how to debug a kernel, available at:<br />
+http://www.onlamp.com/pub/a/bsd/2002/04/04/Big_Scary_Daemons.html<br />
+Optimising code and kernel compilation</p>
+
+<p>First lets look at optimising the compilation of C code itself. One of the key tasks when doing this is to start with as simple a configuration as possible. Hopefully if you've read everything above you'll be at this stage already :-)</p>
+
+<p>You should set a few specific options in /etc/make.conf that will optimise the compilation of new code on your machine. This means all code will be compiled with these options. If you set the right ones, they can significantly improve the speed and efficiency with which code is compiled and executed. They will also help to reduce memory consumption. If you have installed the portupgrade package from /usr/ports/sysutils/portupgrade, you should execute this command after setting these options and updating your ports collection. It will cause every port you have installed, to have it's latest version downloaded and recompiled with the optimisations. I think it is worth it:</p>
+
+<p>portupgrade -ra</p>
+
+<p>Updating your ports collection en masse can have other consequences which are worth realising. If the current installed version of your port has undergone a major update (eg exim3 to exim4), a straight upgrade in this way could break your configuration. Use with care! The compilation process can take a while, depending on the speed of your CPU, the amount of memory you have, your internet connection and so on, so if you're on a slow link and wish to download the distfiles for each package first and do the updating offline, you can issue this command to download the distfiles for each port first:</p>
+
+<p>portupgrade -Fra</p>
+
+<p>So without further ado, the list of optimisations follows. Initially you won't have an /etc/make.conf, you can just start editing a file with that name (if you want to see every possible option to put in the file, reference /etc/defaults/make.conf):</p>
+
+<p>CPUTYPE=cpu_type<br />
+    where cpu_type is one of i386, i486, i586, i586/mmx i686, p2, p3, p4, k6, k6-2, or k7.<br />
+    gcc v2, which comes with FreeBSD doesn't yet support the latest Athlon optimisations, so if you<br />
+    have a Thunderbird or other such CPU, just set k7 for now. gcc v3 has better support and this<br />
+    will be available in FreeBSD 5 when it is released toward the end of 2002.<br />
+    NOTE: An important point to remember: Most CPU's of the same family are backward compatible.<br />
+    That is, the K7 is backward compatible with K6 code. Also, Intel-CPU code is mostly universally<br />
+    compatible across CPU families. However, if you compile code for a non-Intel family CPU type and<br />
+    later upgrade to a newer Intel CPU, there is a good chance you may encounter problems unless you<br />
+    recompile your code.</p>
+
+<p>CFLAGS= -O3 -pipe -funroll-loops -ffast-math<br />
+    -O3 sets optimisation level 3 where the largest number of practical optimisations can be made<br />
+    to your code (everything except the kernel). It also does sacrifice binary size for speed.<br />
+    -pipe causes code to be passed between processes using pipes during compilation rather than<br />
+    using temporary files, which has obvious I/O advantages.<br />
+    -funroll-loops causes iterating loops with a known number of iterations to be unrolled into<br />
+    faster executions.<br />
+    -ffast-math breaks IEEE/ANSI strict math rules. One way it does this is by assuming that the<br />
+    square root of numbers are non-negative. This shouldn't be used if you're compiling code that<br />
+    relies on the exact implementation of IEEE or ANSI rules for math functions. Unless you're<br />
+    writing your own code that does just this you shouldn't have a problem with setting this. It<br />
+    should help reduce your compile times.</p>
+
+<p>COPTFLAGS= -O2 -pipe -funroll-loops -ffast-math<br />
+    This is the same as the "CFLAGS" statement, except it's used on the kernel when you compile it.<br />
+    We choose -O2 instead of -O3, because -O3 is known to produce broken kernels. Officially, only<br />
+    -O is supported, but I have never had a problem with -O2. It should be noted at this point that<br />
+    one difference between -O2 and -O3 is that -O3 produces slightly larger code during its<br />
+    optimising. In normal situations this is OK, but we want to compact the kernel down it is<br />
+    another reason to stick with -O2. This also has the same effect as adding the 'makeoptions<br />
+    COPTFLAGS' lines to the kernel config as discussed below.</p>
+
+<p>kernel optimisation</p>
+
+<p>In you kernel configuration, add the following line after the 'machine' (i386, i486, etc) types near the top:</p>
+
+<p>makeoptions    COPTFLAGS="-O2 -pipe -funroll-loops -ffast-math"</p>
+
+<p>This does two things. First the -O2 switch tells the compiler to optimise the compilation. This takes advantage of internal compiler tricks to do this. You could use -O3 to implement even more optimisation tricks, but these aren't supported and -O3 is known to cause many stability issues. -O2 may or may not work for you depending on how many things you have compiled into the kernel and how non-standard your hardware is.</p>
+
+<p>TOP_TABLE_SIZE=number<br />
+    where number is a prime number, at least twice the number of lines in /etc/passwd.<br />
+    This statement sets the size of the hash that the top(1) uses for usernames when it<br />
+    runs.</p>
+
+<p>options         CPU_WT_ALLOC</p>
+
+<p>should be set if you have an AMD K5/K6/K6-2 or Cyrix 6x86 chip. It provides for the kernel to enable cache Write Allocation for the L1 cache, which was disabled by default on these chips.</p>
+
+<p>options        NFS_NOSERVER</p>
+
+<p>If you are running a workstation or server when you know that you will not be acting as an NFS server, you can add the above line to your kernel configuration to disable NFS server code. NFS servers allow other servers and workstations to mount parts of their filesystems using the Network FileSystem protocol.</p>
+
+<p>options         NSWAPDEV=number</p>
+
+<p>Another way of saving kernel memory is to define the maximum number of swap devices. Your kernel needs to allocate a fixed amount of bit-mapped memory so that it can interleave swap devices. I set the preceding parameter to 1 on my workstation and 2 on my servers. I rarely run out of swap space on a workstation but if I need to add more to a server, I can easily create another partition<br />
+Building a debugging kernel</p>
+
+<p>Another option you have when compiling your kernel is to build with the debugging symbols. This can be fundamental in determining the reason your kernel panics, if it does. Be warned though - compilation time can increase slightly when doing this. To make a debug kernel, add the following line to your kernel configuration:</p>
+
+<p>makeoptions     DEBUG=-g</p>
+
+<p>This doesn't actually install a kernel with full debugging symbols as /kernel. The /kernel that gets installed is the stripped down regular kernel, but a separate kernel.debug file is in /usr/src/sys/compile/Your_Kernel_Name/kernel.debug. If your kernel panics and leaves behind a core file, the kernel.debug file is used to get the debugging symbols when you actually do the debug. See the OnLamp article for more on this.<br />
+One final thing you need to do if you're going to be building a debug kernel, is to have your system actually dump the memory to the swap partition. You can do this by adding the following like to /etc/rc.conf and rebooting:</p>
+
+<p>dumpdev="/dev/ad0s1b"</p>
+
+<p>Where "/dev/ad0s1b" is your swap partition as defined in /etc/fstab.<br />
+NOTE: Your swap partition needs to be at least 1Mb (1024Kb) bigger than your total amount of memory. When your system crashes, the memory will get dumped to your swap partition. When your system returns, your swap partition will be enabled and your disks will be fsck'd before they are mounted. During this process, fsck uses a small amount of swap space. It would be preferable if you had twice as much swap space as memory in this situation.<br />
+References:</p>
+
+<p>This is a list of references I found when writing this paper. Most of them contain much more detail on their particular subject than I have provided here. Hopefully they will be as useful to you as they were to me.</p>
+
+<p>    * OnLamp.com article on debugging FreeBSD kernels. It helped me debug and fix my first kernel.<br />
+    * The FreeBSD handbook. A great source on information about FreeBSD. Have a read here if you want to learn something new on FreeBSD<br />
+    * Google Groups. I used this extensively to search USENET for articles others may have posted in the past. You should too!<br />
+    * htmlhelp.com is made by the Web Design Group to "promote the creation of non-browser specific, non-resolution specific, creative and informative sites that are accessible to all users worldwide." It was valuable in the creation of this site.</p>
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000536.html">10:42 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=536" onclick="OpenComments(this.href); return false">迴響 (2313)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">December 07, 2003</h2>
+
+
+<div class="blogbody">
+
+<a name="000528"></a>
+<h3 class="title">FreeBSD 5.2 beta available</h3>
+
+<p>經過了長時間的等待，FreeBSD 5.2 release終於快要release了，您可以在這邊找到大約會有那些新功能<br />
+http://www.freebsd.org/releases/5.2R/todo.html<br />
+至於那時候會出release，您可以到這邊參考看看，不過通常都是會delay，delay多久大概只有天知道XD<br />
+http://www.freebsd.org/releases/5.2R/schedule.html<br />
+不怕死的FreeBSD愛用者，衝阿<br />
+</p>
+
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000528.html">07:39 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=528" onclick="OpenComments(this.href); return false">迴響 (2187)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">October 18, 2003</h2>
+
+
+<div class="blogbody">
+
+<a name="000453"></a>
+<h3 class="title">個人網站升級</h3>
+
+<p>花了一些時間把個人網站升級到apache 2上面，順便用一些很dirty的方法來做到ssl support</p>
+
+<p>自從把mysql,php support拿掉之後，覺得系統裡面裝太多雜七雜八的東西，又沒用到，例如ports裡面的ssl，因為原本裝的是apache13-ssl這種的，不知道為甚麼一定要安裝新版的openssl而不用系統本身內建的?<br />
+這幾天就把所有沒用到的東西都砍了，改用apache2，port maintainer一開始就已經把ssl support加入了，只是要自己手動製作crt , key</p>
+
+<p>懶得portupgrade了，全部用ports裡面的新版本，反正沒有甚麼資料</p>
+
+<p>至於做到ssl support的方法滿dirty的，有去看apache.org上的ssl faq真長，懶得看了XD</p>
+
+<p>直接用debian unstable這台apt-get install libapache-mod-ssl在把/etc/apache/裡面的ssl相關的檔案tar起來直接丟到server上，只要留下ssl.crt跟ssl.key就好了，在把ssl.crt裡面的snakeoil-dsa.crt跟ssl.key裡面的snakeoil-dsa.key直接cp成server.crt , server.key在/usr/local/etc/rc.d/apache2.sh stop;/usr/local/etc/rc.d/apache2.sh start<br />
+sockstat | grep 443有在listen就收工了</p>
+
+<p>當然，日後還是要花一些時間來確實了解openssl的運作跟如何製作自己的CA<br />
+</p>
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000453.html">12:36 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=453" onclick="OpenComments(this.href); return false">迴響 (380)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">October 01, 2003</h2>
+
+
+<div class="blogbody">
+
+<a name="000439"></a>
+<h3 class="title">another dirty way for gdm2 on FreeBSD</h3>
+
+<p>發信到freebsd-gnome mail list問了一下怎麼在gdm2新增一個session給kde用</p>
+
+<p>今天自己嚐試了一下，在看了gdm的說明網頁(打開gnome2y在選說明找gdm，有說在那裡)<br />
+新版的gdm 2.4已經把這些session設定檔改放在/usr/X11R6/etc/dm/，不過這邊還是沒有定義給gnome2用的session，我猜可能寫死在code裡面，不過也可能不是<br />
+好吧，既然maintainer都說了怎麼作，那就自己手動編輯/usr/X11R6/etc/dm/default.desktop吧，用一點dirty的手段來騙過gdm2<br />
+打開這個檔案會看到<br />
+[Desktop Entry]<br />
+Encoding=UTF-8<br />
+# The names/descriptions should really be better<br />
+Name=Default System Session<br />
+Comment=This is the default system session<br />
+Exec=default<br />
+# The "default" Exec is a very special one and is handled specially in<br />
+# the Xsession script, you could also have "custom" which would just run<br />
+# "~/.xsession" directly<br />
+Icon=<br />
+Type=Application<br />
+長的像這樣的東西<br />
+Name=xxxxx定義了這個session在選單上出現的名字，底下是當使用者選擇某個語系時用那個語系來顯示這個名字<br />
+Comment=xxxxx定義了這個session當滑鼠游標移過去時顯示的文字，底下的那一大串功能更上面講的一樣<br />
+清楚了這些之後，因為我只用gnome2 , kde兩種，所以我也不管他原本這邊定義的default要作些甚麼，直接改成<br />
+[Desktop Entry]<br />
+Encoding=UTF-8<br />
+# The names/descriptions should really be better<br />
+Name=KDE<br />
+Comment=KDE<br />
+Exec=startkde<br />
+# The "default" Exec is a very special one and is handled specially in<br />
+# the Xsession script, you could also have "custom" which would just run<br />
+# "~/.xsession" directly<br />
+Icon=<br />
+Type=Application<br />
+值得注意的是，重跑gdm要用gdm安裝時安裝的指令，不能用kill -HUP or /usr/X11R6/etc/rc.d/gdm.sh來重跑，我這樣用的話有時候會連console都變成停止回應<br />
+指令改用/usr/X11R6/sbin/gdm開頭的那些<br />
+我這樣讓KDE跑起來之後，發覺有一些怪怪的，抓不到系統安裝的true type字型，自己手動在寫一個.xinitrc用startx來啟動kde，改好字型設定之後在重新啟動gdm，這樣選擇kde登入之後就可以正常使用true type字型了</p>
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000439.html">11:40 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=439" onclick="OpenComments(this.href); return false">迴響 (211)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">September 28, 2003</h2>
+
+
+<div class="blogbody">
+
+<a name="000418"></a>
+<h3 class="title">FreeBSD完全探索</h3>
+
+<p><img alt="EB207_72_4x5.jpg" src="http://blog.linux.org.tw/~damon/archives/EB207_72_4x5.jpg" width="114" height="155" border="0" /><br />
+</p>
+
+<p>今天下午在外面閒晃時買的，稍微翻了一下，翻譯的不錯，雖然是以4.5為基礎，不過大部份在5.X上還是通用的重點是比原文版的便宜滿多的XD<br />
+原文的大概要一千多，中文版只要六百多還可以打折<br />
+一些基礎觀念的部份解釋的滿詳細的，雖然我沒看過原文版的<br />
+有興趣踏入FreeBSD的朋友可以買來看看，翻這本時旁邊有另外一本我當初一開始的時候買的另外一本的更新版本，比較一下的感覺是真的有那麼點差距，價格上也差不多，雖然那本現在被我丟在角落，很久沒去動他了<br />
+書上compile kernel的部份有點老舊了，對於5.X來說作法上有一些不太一樣，不過觀念上大致上是一樣的<br />
+</p>
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000418.html">05:40 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=418" onclick="OpenComments(this.href); return false">迴響 (77)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">September 25, 2003</h2>
+
+
+<div class="blogbody">
+
+<a name="000399"></a>
+<h3 class="title">FreeBSD 5.1 p6 arp sa patch problem</h3>
+
+<p>今天看到每天跑的cvsup RELENG_5_1有更新，就給他放下去更新，不過下班回到家發現家中nat service掛了@_@</p>
+
+<p>將螢幕接過去server發現console上有錯誤訊息說/etc/hosts裡面有一筆192.168.1.2的記錄，但卻無法透過arp找到這個ip<br />
+Sep 25 19:08:40 damon kernel: arplookup 192.168.1.2 failed: host is not on local network<br />
+登入之後直接編輯/etc/hosts把除了本機nic所用的ip之外都移除，並重新開機終於一切恢復正常，可能是這個patch的bug也可能不是<br />
+詭異的是kernel怎麼會去做arplookup？<br />
+我也不知道，別問我XD</p>
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000399.html">08:16 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=399" onclick="OpenComments(this.href); return false">迴響 (475)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">September 17, 2003</h2>
+
+
+<div class="blogbody">
+
+<a name="000317"></a>
+<h3 class="title">New FreeBSD, NetBSD security advisories</h3>
+
+<p>FreeBSD has formally announced a security advisory entitled "OpenSSH buffer management error" for the now famous OpenSSH advisory (OpenSSH has released a new version 3.7.1 to address this). Everyone is urged to patch their OS, details provided below. NetBSD has issued a similar advisory and fix for this issue (see NetBSD emails below). NetBSD has released two additional security advisories entitled "Kernel memory disclosure via ibcs2" and "Insufficient argument checking in sysctl(2)".</p>
+
+<p>From "FreeBSD Security Advisories" <security-advisories@freebsd.org> <br />
+Subject [FreeBSD-Announce] FreeBSD Security Advisory FreeBSD-SA-03:12.openssh<br />
+Date Tue, September 16, 2003 12:17 pm <br />
+To "FreeBSD Security Advisories" <security-advisories@freebsd.org> </p>
+
+<p>--------------------------------------------------------------------------------</p>
+
+<p><br />
+-----BEGIN PGP SIGNED MESSAGE-----<br />
+Hash: SHA1</p>
+
+<p>==================================================<br />
+===========================<br />
+FreeBSD-SA-03:12 Security Advisory<br />
+FreeBSD, Inc.</p>
+
+<p>Topic: OpenSSH buffer management error</p>
+
+<p>Category: core, ports<br />
+Module: openssh, ports_openssh, openssh-portable<br />
+Announced: 2003-09-16<br />
+Credits: The OpenSSH Project <openssh@openssh.org><br />
+Affects: All FreeBSD releases after 4.0-RELEASE<br />
+FreeBSD 4-STABLE prior to the correction date<br />
+openssh port prior to openssh-3.6.1_1<br />
+openssh-portable port prior to openssh-portable-3.6.1p2_1<br />
+Corrected: 2003-09-16 16:24:02 UTC (RELENG_4)<br />
+2003-09-16 16:27:57 UTC (RELENG_5_1)<br />
+2003-09-16 17:34:32 UTC (RELENG_5_0)<br />
+2003-09-16 16:24:02 UTC (RELENG_4_8)<br />
+2003-09-16 16:45:16 UTC (RELENG_4_7)<br />
+2003-09-16 17:44:15 UTC (RELENG_4_6)<br />
+2003-09-16 17:45:23 UTC (RELENG_4_5)<br />
+2003-09-16 17:46:02 UTC (RELENG_4_4)<br />
+2003-09-16 17:46:37 UTC (RELENG_4_3)<br />
+2003-09-16 12:43:09 UTC (ports/security/openssh)<br />
+2003-09-16 12:43:10 UTC (ports/security/openssh-portable)<br />
+CVE: CAN-2003-0693<br />
+FreeBSD only: NO</p>
+
+<p>I. Background</p>
+
+<p>OpenSSH is a free version of the SSH protocol suite of network<br />
+connectivity tools. OpenSSH encrypts all traffic (including<br />
+passwords) to effectively eliminate eavesdropping, connection<br />
+hijacking, and other network-level attacks. Additionally, OpenSSH<br />
+provides a myriad of secure tunneling capabilities, as well as a<br />
+variety of authentication methods. `ssh' is the client application,<br />
+while `sshd' is the server.</p>
+
+<p>II. Problem Description</p>
+
+<p>When a packet is received that is larger than the space remaining in<br />
+the currently allocated buffer, OpenSSH's buffer management attempts<br />
+to reallocate a larger buffer. During this process, the recorded size<br />
+of the buffer is increased. The new size is then range checked. If<br />
+the range check fails, then fatal() is called to cleanup and exit.<br />
+In some cases, the cleanup code will attempt to zero and free the<br />
+buffer that just had its recorded size (but not actual allocation)<br />
+increased. As a result, memory outside of the allocated buffer will<br />
+be overwritten with NUL bytes.</p>
+
+<p>III. Impact</p>
+
+<p>A remote attacker can cause OpenSSH to crash. The bug is not believed<br />
+to be exploitable for code execution on FreeBSD.</p>
+
+<p>IV. Workaround</p>
+
+<p>Do one of the following:</p>
+
+<p>1) Disable the base system sshd by executing the following command as<br />
+root:</p>
+
+<p># kill `cat /var/run/sshd.pid`</p>
+
+<p>Be sure that sshd is not restarted when the system is restarted<br />
+by adding the following line to the end of /etc/rc.conf:</p>
+
+<p>sshd_enable="NO"</p>
+
+<p>AND</p>
+
+<p>Deinstall the openssh or openssh-portable ports if you have one of<br />
+them installed.</p>
+
+<p>V. Solution</p>
+
+<p>Do one of the following:</p>
+
+<p>[For OpenSSH included in the base system]</p>
+
+<p>1) Upgrade your vulnerable system to 4-STABLE or to the RELENG_5_1,<br />
+RELENG_4_8, or RELENG_4_7 security branch dated after<br />
+the correction date (5.1-RELEASE-p3, 4.8-RELEASE-p5, or<br />
+4.7-RELEASE-p15, respectively).</p>
+
+<p>2) FreeBSD systems prior to the correction date:</p>
+
+<p>The following patches have been verified to apply to FreeBSD 4.x and<br />
+FreeBSD 5.x systems prior to the correction date.</p>
+
+<p>Download the appropriate patch and detached PGP signature from the following<br />
+locations, and verify the signature using your PGP utility.</p>
+
+<p>[FreeBSD 4.3 through 4.5]<br />
+# fetch ftp://ftp.FreeBSD.org/pub/FreeBSD/C.../buffer45.patch<br />
+# fetch ftp://ftp.FreeBSD.org/pub/FreeBSD/C...fer45.patch.asc</p>
+
+<p>[FreeBSD 4.6 and later, FreeBSD 5.0 and later]<br />
+# fetch ftp://ftp.FreeBSD.org/pub/FreeBSD/C.../buffer46.patch<br />
+# fetch ftp://ftp.FreeBSD.org/pub/FreeBSD/C...fer46.patch.asc</p>
+
+<p>Execute the following commands as root:</p>
+
+<p># cd /usr/src<br />
+# patch < /path/to/sshd.patch<br />
+# cd /usr/src/secure/lib/libssh<br />
+# make depend && make all install<br />
+# cd /usr/src/secure/usr.sbin/sshd<br />
+# make depend && make all install<br />
+# cd /usr/src/secure/usr.bin/ssh<br />
+# make depend && make all install</p>
+
+<p>Be sure to restart `sshd' after updating.</p>
+
+<p># kill `cat /var/run/sshd.pid`<br />
+# (. /etc/rc.conf && ${sshd_program:-/usr/bin/sshd} ${sshd_flags})</p>
+
+<p>[For the OpenSSH ports]</p>
+
+<p>One of the following:</p>
+
+<p>1) Upgrade your entire ports collection and rebuild the OpenSSH port.</p>
+
+<p>2) Deinstall the old package and install a new package obtained from<br />
+the following directory:</p>
+
+<p>[i386]<br />
+ftp://ftp.FreeBSD.org/pub/FreeBSD/p...table/security/</p>
+
+<p>[other platforms]<br />
+Packages are not automatically generated for other platforms at this<br />
+time due to lack of build resources.</p>
+
+<p>3) Download a new port skeleton for the openssh or openssh-portable<br />
+port from:</p>
+
+<p>http://www.freebsd.org/ports/</p>
+
+<p>and use it to rebuild the port.</p>
+
+<p>4) Use the portcheckout utility to automate option (3) above. The<br />
+portcheckout port is available in /usr/ports/devel/portcheckout or the<br />
+package can be obtained from:</p>
+
+<p>ftp://ftp.FreeBSD.org/pub/FreeBSD/p...ortcheckout.tgz<br />
+ftp://ftp.FreeBSD.org/pub/FreeBSD/p...ortcheckout.tgz</p>
+
+<p>Be sure to restart `sshd' after updating.</p>
+
+<p># kill `cat /var/run/sshd.pid`<br />
+# test -x /usr/local/etc/rc.d/sshd.sh && sh /usr/local/etc/rc.d/sshd.sh start</p>
+
+<p>VI. Correction details</p>
+
+<p>The following list contains the revision numbers of each file that was<br />
+corrected in the FreeBSD base system and ports collection.</p>
+
+<p>Branch Revision<br />
+Path<br />
+- -------------------------------------------------------------------------<br />
+[Base system]<br />
+RELENG_4<br />
+src/crypto/openssh/buffer.c 1.1.1.1.2.5<br />
+src/crypto/openssh/version.h 1.1.1.1.2.11<br />
+RELENG_5_1<br />
+src/UPDATING 1.251.2.4<br />
+src/crypto/openssh/buffer.c 1.1.1.6.4.1<br />
+src/crypto/openssh/version.h 1.20.2.1<br />
+src/sys/conf/newvers.sh 1.50.2.5<br />
+RELENG_5_0<br />
+src/UPDATING 1.229.2.18<br />
+src/crypto/openssh/buffer.c 1.1.1.6.2.1<br />
+src/crypto/openssh/version.h 1.18.2.1<br />
+src/sys/conf/newvers.sh 1.48.2.13<br />
+RELENG_4_8<br />
+src/UPDATING 1.73.2.80.2.7<br />
+src/crypto/openssh/buffer.c 1.1.1.1.2.4.4.1<br />
+src/crypto/openssh/version.h 1.1.1.1.2.10.2.1<br />
+src/sys/conf/newvers.sh 1.44.2.29.2.6<br />
+RELENG_4_7<br />
+src/UPDATING 1.73.2.74.2.18<br />
+src/crypto/openssh/buffer.c 1.1.1.1.2.4.2.1<br />
+src/crypto/openssh/version.h 1.1.1.1.2.9.2.1<br />
+src/sys/conf/newvers.sh 1.44.2.26.2.17<br />
+RELENG_4_6<br />
+src/UPDATING 1.73.2.68.2.46<br />
+src/crypto/openssh/buffer.c 1.1.1.1.2.3.4.2<br />
+src/crypto/openssh/version.h 1.1.1.1.2.8.2.2<br />
+src/sys/conf/newvers.sh 1.44.2.23.2.35<br />
+RELENG_4_5<br />
+src/UPDATING 1.73.2.50.2.47<br />
+src/crypto/openssh/buffer.c 1.1.1.1.2.3.2.1<br />
+src/crypto/openssh/version.h 1.1.1.1.2.7.2.2<br />
+src/sys/conf/newvers.sh 1.44.2.20.2.31<br />
+RELENG_4_4<br />
+src/UPDATING 1.73.2.43.2.48<br />
+src/crypto/openssh/buffer.c 1.1.1.1.2.2.4.1<br />
+src/crypto/openssh/version.h 1.1.1.1.2.5.2.3<br />
+src/sys/conf/newvers.sh 1.44.2.17.2.39<br />
+RELENG_4_3<br />
+src/UPDATING 1.73.2.28.2.35<br />
+src/crypto/openssh/buffer.c 1.1.1.1.2.2.2.1<br />
+src/crypto/openssh/version.h 1.1.1.1.2.4.2.3<br />
+src/sys/conf/newvers.sh 1.44.2.14.2.25<br />
+[Ports]<br />
+ports/security/openssh-portable/Makefile 1.73<br />
+ports/security/openssh-portable/files/patch-buffer.c 1.1<br />
+ports/security/openssh/Makefile 1.120<br />
+ports/security/openssh/files/patch-buffer.c 1.1<br />
+- -------------------------------------------------------------------------</p>
+
+<p>Branch Version string<br />
+- -------------------------------------------------------------------------<br />
+HEAD OpenSSH_3.6.1p1 FreeBSD-20030916<br />
+RELENG_4 OpenSSH_3.5p1 FreeBSD-20030916<br />
+RELENG_5_1 OpenSSH_3.6.1p1 FreeBSD-20030916<br />
+RELENG_4_8 OpenSSH_3.5p1 FreeBSD-20030916<br />
+RELENG_4_7 OpenSSH_3.4p1 FreeBSD-20030916<br />
+RELENG_4_6 OpenSSH_3.4p1 FreeBSD-20030916<br />
+RELENG_4_5 OpenSSH_2.9 FreeBSD localisations 20030916<br />
+RELENG_4_4 OpenSSH_2.3.0 FreeBSD localisations 20030916<br />
+RELENG_4_3 OpenSSH_2.3.0 green@FreeBSD.org 20030916<br />
+- -------------------------------------------------------------------------</p>
+
+<p>To view the version string of the OpenSSH server, execute the<br />
+following command:</p>
+
+<p>% /usr/sbin/sshd -\?</p>
+
+<p>The version string is also displayed when a client connects to the<br />
+server.</p>
+
+<p>To view the version string of the OpenSSH client, execute the<br />
+following command:</p>
+
+<p>% /usr/bin/ssh -V</p>
+
+<p>VII. References</p>
+
+<p><URL:http://www.mindrot.org/pipermail/op...ber/000063.html></p>
+
+<p>The Common Vulnerabilities and Exposures project (cve.mitre.org) has<br />
+assigned the name CAN-2003-0693 to this issue.<br />
+<URL:http://cve.mitre.org/cgi-bin/cvenam...e=CAN-2003-0693><br />
+-----BEGIN PGP SIGNATURE-----<br />
+Version: GnuPG v1.2.3 (FreeBSD)</p>
+
+<p>iD8DBQE/ Z1MtFdaIBMps37IRApcyAKCIjophc4e8UGhAlTTiNCunVJSlfg<br />
+CffMgQ<br />
+PW0VvEnS7MMUYyekHuz49ro=<br />
+=vcm1<br />
+-----END PGP SIGNATURE-----<br />
+_______________________________________________<br />
+freebsd-announce@freebsd.org mailing list<br />
+http://lists.freebsd.org/mailman/li...reebsd-announce<br />
+To unsubscribe, send any mail to "freebsd-announce-unsubscribe@freebsd.org"</p>
+
+<p>==========================<br />
+-----BEGIN PGP SIGNED MESSAGE-----</p>
+
+<p><br />
+NetBSD Security Advisory 2003-012<br />
+=================================</p>
+
+<p>Topic: Out of bounds memset(0) in sshd</p>
+
+<p>Version: NetBSD-current: source prior to September 17, 2003<br />
+NetBSD 1.6.1: affected<br />
+NetBSD 1.6: affected<br />
+NetBSD-1.5.3: affected<br />
+NetBSD-1.5.2: affected<br />
+NetBSD-1.5.1: affected<br />
+NetBSD-1.5: affected<br />
+pkgsrc: packages prior to 3.7.1</p>
+
+<p>Severity: Unknown - Rumours speculate remote root exploitability</p>
+
+<p>Fixed: NetBSD-current: September 17, 2003<br />
+NetBSD-1.6 branch: September 17, 2003 (1.6.2 will include the fix)<br />
+NetBSD-1.5 branch: September 17, 2003 (1.5.4 will include the fix)<br />
+pkgsrc: openssh-3.7.1 corrects this issue</p>
+
+<p><br />
+Abstract<br />
+========</p>
+
+<p>A buffer overwrite with unknown consequences has been found in OpenSSH.</p>
+
+<p>No evidence to support remote root exploitability has been provided by<br />
+any source.</p>
+
+<p>The ssh daemon does not run by default in a NetBSD installation, but is<br />
+often enabled by administrators for convenience of remote<br />
+administration.</p>
+
+<p>Changes are still being committed to the OpenSSH source distribution. We<br />
+will continue to update this advisory as new information becomes<br />
+available. Currently, we expect that more patches are likely, so if you<br />
+are maintaining a large number of machines, use the workarounds<br />
+discussed below if appropriate, and be prepared for further updates.</p>
+
+<p>The NetBSD Project will make binary patchsets available when builds have<br />
+completed. This advisory will be updated with details when they are<br />
+available.</p>
+
+<p><br />
+Technical Details<br />
+=================</p>
+
+<p>In NetBSD installations where OpenSSH 3.2.1 and later are used -<br />
+including the base system installations of NetBSD-1.6 and later, the<br />
+privilege separation feature of OpenSSH is enabled by default. In the<br />
+case of this buffer issue, privilege separation may prevent exploitation<br />
+of these buffer problems, and this advisory will be updated once any<br />
+exploits are demonstrated, whether successfully or not.</p>
+
+<p>Regardless of privilege separation being enabled, this buffer issue<br />
+occurs in the child process of sshd, and so any over-zero'd buffer will<br />
+not crash the parent service, and will not deny ssh connectivity to the<br />
+machine. If the over-zeroing is exploitable, the attacker could of<br />
+course shut down the ssh daemon manually.</p>
+
+<p>There is a lot of commotion over this buffer issue. Individuals have<br />
+mentioned an increased occurrence of port scans searching for open sshd<br />
+services. Since hard facts are not available yet, individuals<br />
+will have to decide whether to believe the rumours, and apply patches to<br />
+protect against this possible issue, or to use workarounds provided<br />
+below, where appropriate, and await further information.</p>
+
+<p><br />
+http://www.openssh.com/txt/buffer.adv</p>
+
+<p>http://xforce.iss.net/xforce/alerts/id/144</p>
+
+<p><br />
+Solutions and Workarounds<br />
+=========================</p>
+
+<p>Workaround: Disable sshd.</p>
+
+<p>If not required, and alternate means of administration, such as consoles<br />
+or serial consoles are available, disabling sshd may be acceptable.</p>
+
+<p>Confirm that sshd is running. It is usually configured to start by the<br />
+presence of a line in /etc/rc.conf, such as:</p>
+
+<p>sshd=YES</p>
+
+<p>Stop any currently running daemon, with</p>
+
+<p>/etc/rc.d/sshd stop</p>
+
+<p>OR - for a pkgsrc installation:</p>
+
+<p>/usr/pkg/etc/rc.d/sshd stop</p>
+
+<p>Change YES to NO in /etc/rc.conf</p>
+
+<p><br />
+Workaround: Constrain hosts which can connect to sshd.</p>
+
+<p>In order to overflow this buffer, a client must be able to connect to<br />
+the sshd in question. As a workaround, the tcp wrapper functionality<br />
+included in all NetBSD installations of OpenSSH can be used to restrict<br />
+connections to a limited list of source IPs.</p>
+
+<p>As an example, populating /etc/hosts.allow with:</p>
+
+<p>sshd : 192.168.1.1</p>
+
+<p>And /etc/hosts.deny with:</p>
+
+<p>sshd : ALL</p>
+
+<p>Will result in only allowing connections from the (RFC 1918, private<br />
+network) IP address 192.168.1.1.</p>
+
+<p>Host names may also be used in the hosts.allow file. Lists are comma<br />
+separated, as explained in the hosts_access(5) manpage. Review the<br />
+manpage hosts_access(5) for further details. If you use hostnames, it<br />
+may also be desirable to specify hosts.deny as 'sshd : ALL, PARANOID',<br />
+to require the forward and reverse DNS lookups to correspond. This<br />
+provides protection in cases where the host you are allowing access from<br />
+is on a remote network outside your control, and you wish to protect<br />
+against hijacked nameservers.</p>
+
+<p>Another workaround is to prevent network access to only trusted<br />
+systems via a perimeter router or firewall, or using IPFilter on the<br />
+host itself.</p>
+
+<p>Solution:</p>
+
+<p>The following instructions describe how to upgrade your OpenSSH<br />
+binaries by updating your source tree and rebuilding and<br />
+installing a new version.</p>
+
+<p>* NetBSD-current:</p>
+
+<p>Systems running NetBSD-current dated from before 2003-09-16<br />
+should be upgraded to NetBSD-current dated 2003-09-17 or later.</p>
+
+<p>The following directories need to be updated from the<br />
+netbsd-current CVS branch (aka HEAD):<br />
+src/crypto/dist/ssh</p>
+
+<p>To update from CVS, re-build, and re-install ssh related<br />
+binaries:</p>
+
+<p># cd src<br />
+# cvs update -d -P crypto/dist/ssh<br />
+# cd usr.bin/ssh</p>
+
+<p># make USETOOLS=no cleandir dependall<br />
+# make USETOOLS=no install</p>
+
+<p><br />
+* NetBSD 1.6, 1.6.1:</p>
+
+<p>The binary distribution of NetBSD 1.6 and 1.6.1 are vulnerable.</p>
+
+<p>Systems running NetBSD 1.6 sources dated from before 2003-09-16<br />
+should be upgraded from NetBSD 1.6 sources dated 2003-09-17 or<br />
+later.</p>
+
+<p>NetBSD 1.6.2 will include the fix.</p>
+
+<p>The following directories need to be updated from the<br />
+netbsd-1-6 CVS branch:<br />
+src/crypto/dist/ssh</p>
+
+<p>To update from CVS, re-build, and re-install ssh related<br />
+binaries:</p>
+
+<p># cd src<br />
+# cvs update -d -P -r netbsd-1-6 crypto/dist/ssh<br />
+# cd usr.bin/ssh</p>
+
+<p># make USETOOLS=no cleandir dependall<br />
+# make USETOOLS=no install</p>
+
+<p><br />
+* NetBSD 1.5, 1.5.1, 1.5.2, 1.5.3:</p>
+
+<p>The binary distribution of NetBSD 1.5 to 1.5.3 are vulnerable. </p>
+
+<p>Systems running NetBSD 1.5, 1.5.1, 1.5.2, or 1.5.3 sources dated<br />
+from before 2003-09-16 should be upgraded from NetBSD 1.5.*<br />
+sources dated 2003-09-17 or later.</p>
+
+<p>The following directories need to be updated from the<br />
+netbsd-1-5 CVS branch:<br />
+src/crypto/dist/ssh</p>
+
+<p>To update from CVS, re-build, and re-install ssh related<br />
+binaries:</p>
+
+<p># cd src<br />
+# cvs update -d -P -r netbsd-1-5 crypto/dist/ssh<br />
+# cd usr.bin/ssh</p>
+
+<p># make cleandir dependall<br />
+# make install</p>
+
+<p><br />
+Thanks To<br />
+=========</p>
+
+<p>Christos Zoulas for the fix to NetBSD-current, Grant Beattie for<br />
+pullups to NetBSD release branches.</p>
+
+<p>The Full-Disclosure rumour mill.</p>
+
+<p><br />
+Revision History<br />
+================</p>
+
+<p>2003-09-17 Initial release</p>
+
+<p><br />
+More Information<br />
+================</p>
+
+<p>Advisories may be updated as new information becomes available.<br />
+The most recent version of this advisory (PGP signed) can be found at <br />
+ftp://ftp.NetBSD.org/pub/NetBSD/sec...003-012.txt.asc</p>
+
+<p>Information about NetBSD and NetBSD security can be found at<br />
+http://www.NetBSD.org/ and http://www.NetBSD.org/Security/.</p>
+
+<p><br />
+Copyright 2003, The NetBSD Foundation, Inc. All Rights Reserved.<br />
+Redistribution permitted only in full, unmodified form.</p>
+
+<p>$NetBSD: NetBSD-SA2003-012.txt,v 1.9 2003/09/17 03:26:25 david Exp $</p>
+
+<p>-----BEGIN PGP SIGNATURE-----<br />
+Version: GnuPG v1.0.6 (NetBSD)<br />
+Comment: For info see http://www.gnupg.org</p>
+
+<p>iQCVAwUBP2fWHz5Ru2/4N2IFAQHffAP+NgV72mh+qW6208lsAEx3R2+VrFkQtGkm<br />
+FSQnMLZR9GmAl95+me3oVuVtQo/qM9aeXJuQi6zREw/oJ2I04dWvG56axss52DAW<br />
+r6s9uyGBUmIsU6krImSdTpWXEMAPmQsthpRRY/QKtUp2swJLCZeQWEsOndMnewI8<br />
+uI7g0ynBcwM=<br />
+=D3tA<br />
+-----END PGP SIGNATURE-----</p>
+
+<p>===============</p>
+
+<p>-----BEGIN PGP SIGNED MESSAGE-----</p>
+
+<p><br />
+NetBSD Security Advisory 2003-013<br />
+=================================</p>
+
+<p>Topic: Kernel memory disclosure via ibcs2</p>
+
+<p>Version: NetBSD-current: source prior to August 7, 2002<br />
+NetBSD 1.6.1: not affected<br />
+NetBSD 1.6: not affected<br />
+NetBSD-1.5.3: affected<br />
+NetBSD-1.5.2: affected<br />
+NetBSD-1.5.1: affected<br />
+NetBSD-1.5: affected</p>
+
+<p>Severity: </p>
+
+<p>Fixed: NetBSD-current: August 7, 2002<br />
+NetBSD-1.6 branch: not affected<br />
+NetBSD-1.5 branch: August 28, 2002</p>
+
+<p><br />
+Abstract<br />
+========</p>
+
+<p>The iBCS2 system call translator for statfs(2) erroneously used the<br />
+user-supplied length parameter when copying a kernel data structure<br />
+into userland. If the length parameter were larger than required,<br />
+then instead of copying only the statfs-related data structure,<br />
+additional kernel memory would also be made available to the user.</p>
+
+<p><br />
+Technical Details<br />
+=================</p>
+
+<p>If iBCS2 support were enabled, a malicious user could call the iBCS2<br />
+version of statfs(2) with an arbitrarily large length parameter,<br />
+causing the kernel to return a large portion of kernel memory. Such<br />
+memory might contain sensitive information, such as portions of the<br />
+file cache or terminal buffers. This information might be directly<br />
+useful, or it might be leveraged to obtain elevated privileges in some<br />
+way. For example, a terminal buffer might include a user-entered<br />
+password.</p>
+
+<p>iBCS2 support is only present on i386/vax GENERIC kernel.</p>
+
+<p><br />
+Solutions and Workarounds<br />
+=========================</p>
+
+<p>If your kernel configuration file does not contain COMPAT_IBCS2, <br />
+your system is not affected.</p>
+
+<p>The following instructions describe how to upgrade your kernel<br />
+binaries by updating your source tree and rebuilding and<br />
+installing a new version of kernel.</p>
+
+<p>* NetBSD-current:</p>
+
+<p>Systems running NetBSD-current dated from before 2002-08-06<br />
+should be upgraded to NetBSD-current dated 2002-08-07 or later.</p>
+
+<p>The following directories need to be updated from the<br />
+netbsd-current CVS branch (aka HEAD):<br />
+src/sys/compat/ibcs2/ibcs2_stat.c<br />
+However, because the date of the point fix is way too old, we'd suggest<br />
+you to update the whole kernel. The following instruction is for<br />
+updating the whole kernel.</p>
+
+<p>To update from CVS, re-build, and re-install the kernel and reboot:<br />
+# cd src<br />
+# cvs update -d -P sys</p>
+
+<p># cd sys/ARCH/conf<br />
+# config KERNELCONF<br />
+# cd ../../compile/KERNELCONF<br />
+# make depend; make</p>
+
+<p># cp netbsd /<br />
+# reboot</p>
+
+<p><br />
+* NetBSD 1.6, 1.6.1:</p>
+
+<p>The binary distribution of NetBSD 1.6 and 1.6.1 are NOT vulnerable.</p>
+
+<p><br />
+* NetBSD 1.5, 1.5.1, 1.5.2, 1.5.3:</p>
+
+<p>The binary distribution of NetBSD 1.5 to 1.5.3 are vulnerable. </p>
+
+<p>Systems running NetBSD 1.5, 1.5.1, 1.5.2, or 1.5.3 sources dated<br />
+from before 2003-08-27 should be upgraded from NetBSD 1.5.*<br />
+sources dated 2003-08-28 or later.</p>
+
+<p>The following directories need to be updated from the<br />
+netbsd-1-5 CVS branch:<br />
+src/sys/compat/ibcs2/ibcs2_stat.c</p>
+
+<p>To update from CVS, re-build, and re-install the kernel and reboot:</p>
+
+<p># cd src<br />
+# cvs update -d -P -r netbsd-1-5 sys/compat/ibcs2/ibcs2_stat.c</p>
+
+<p># cd sys/ARCH/conf<br />
+# config KERNELCONF<br />
+# cd ../../compile/KERNELCONF<br />
+# make depend; make</p>
+
+<p># cp netbsd /<br />
+# reboot</p>
+
+<p><br />
+Alternatively, apply the following patch (with potential offset<br />
+differences):<br />
+ftp://ftp.NetBSD.org/pub/NetBSD/sec...013-ibcs2.patch</p>
+
+<p>To patch, re-build and re-install re-install the kernel and reboot:</p>
+
+<p># cd src/sys/compat/ibcs2<br />
+# patch < /path/to/SA2003-013-ibcs2.patch</p>
+
+<p># make cleandir dependall<br />
+# make install</p>
+
+<p><br />
+Thanks To<br />
+=========</p>
+
+<p>Some of the text are derived from FreeBSD security advisory<br />
+FreeBSD-SA-03:10.ibcs2.</p>
+
+<p>The problem in ibcs2_stat.c was pointed out by silvio@qualys.com.</p>
+
+<p><br />
+Revision History<br />
+================</p>
+
+<p>2003-09-17 Initial release</p>
+
+<p><br />
+More Information<br />
+================</p>
+
+<p>Advisories may be updated as new information becomes available.<br />
+The most recent version of this advisory (PGP signed) can be found at <br />
+ftp://ftp.NetBSD.org/pub/NetBSD/sec...003-013.txt.asc</p>
+
+<p>Information about NetBSD and NetBSD security can be found at<br />
+http://www.NetBSD.org/ and http://www.NetBSD.org/Security/.</p>
+
+<p><br />
+Copyright 2003, The NetBSD Foundation, Inc. All Rights Reserved.<br />
+Redistribution permitted only in full, unmodified form.</p>
+
+<p>$NetBSD: NetBSD-SA2003-013.txt,v 1.4 2003/09/17 02:47:19 david Exp $</p>
+
+<p>-----BEGIN PGP SIGNATURE-----<br />
+Version: GnuPG v1.0.6 (NetBSD)<br />
+Comment: For info see http://www.gnupg.org</p>
+
+<p>iQCVAwUBP2fWJj5Ru2/4N2IFAQE9wAP/TGHBn/CeZwH3XnVRmc3ef46Za7mKv4Q2<br />
+xut0DVEwoVBNadCdBjsBmjivRC48U7fTDu5G/tv2c9innL34Uwt0hwh0skybyKQg<br />
+BtrPUJv8ytf9VhkiuHZBc+Vl/VCLS1RhbGelyHje3JcXJRkgB3i3B6WsomzS8YSQ<br />
+bJrlaSxPHc4=<br />
+=XK3L<br />
+-----END PGP SIGNATURE-----</p>
+
+<p>=============</p>
+
+<p>-----BEGIN PGP SIGNED MESSAGE-----</p>
+
+<p><br />
+NetBSD Security Advisory 2003-014<br />
+=================================</p>
+
+<p>Topic: Insufficient argument checking in sysctl(2)</p>
+
+<p>Version: NetBSD-current: source prior to August 25, 2003<br />
+NetBSD 1.6.1: affected<br />
+NetBSD 1.6: affected<br />
+NetBSD-1.5.3: affected<br />
+NetBSD-1.5.2: affected<br />
+NetBSD-1.5.1: affected<br />
+NetBSD-1.5: affected</p>
+
+<p>Severity: local DOS, read protected kernel memory</p>
+
+<p>Fixed: NetBSD-current: August 25, 2003<br />
+NetBSD-1.6 branch: August 28, 2003 (1.6.2 will include the fix)<br />
+NetBSD-1.5 branch: August 28, 2003</p>
+
+<p><br />
+Abstract<br />
+========</p>
+
+<p>Three unrelated problems with inappropriate argument handling were<br />
+found in the kernel sysctl(2) code, which could be exploited by<br />
+malicious local user:</p>
+
+<p>Some sysctl nodes could cause the kernel to dereference a NULL<br />
+pointer, resulting in a panic.</p>
+
+<p>Passing the process id of a zombie process could cause the kernel to<br />
+dereference invalid process data, and panic.</p>
+
+<p>Other sysctl nodes had an insufficient range check, which could be<br />
+abused to read arbitrary locations in kernel memory space.</p>
+
+<p><br />
+Technical Details<br />
+=================</p>
+
+<p>There are three unrelated problems, found during an effort to rewrite<br />
+the present sysctl(2) infrastructure.</p>
+
+<p>1) A pointer variable was used both for pointing user-level address<br />
+(sysctl(2) argument) and kernel address, and there was a chance for<br />
+a local user to set NULL pointer to the variable.</p>
+
+<p>2) The proc.* sysctl tree could be invoked on a zombie process, but<br />
+made assumptions that the processes were in a valid state, and so<br />
+could attempt to reference process information that is invalid or<br />
+non-existent for zombies. This is no longer possible.</p>
+
+<p>3) Under the proc.curproc.rlimit subtree are a number of nodes<br />
+representing the process resource limits, soft and hard. The sysctl<br />
+helper used to manipulate these values had an insufficient range<br />
+check, and could be used to read values outside of the working copy<br />
+of the rlimit structure. Writes were checked more thoroughly, and<br />
+could not abuse this problem.</p>
+
+<p><br />
+Solutions and Workarounds<br />
+=========================</p>
+
+<p>To correct this problem, upgrade of the kernel (and reboot) is<br />
+required. There is no practical work-around for systems running the<br />
+vulnerable code in the kernel.</p>
+
+<p>The fixes for all of these issues are contained in the one file,<br />
+sys/kern/kern_sysctl.c. The following table lists the fixed revisions<br />
+and dates of this file for each branch:</p>
+
+<p>CVS branch revision date<br />
+------------- ----------- ----------------<br />
+HEAD 1.143 2003/08/24<br />
+netbsd-1-6 1.108.4.3 2003/08/27<br />
+netbsd-1-5 1.73.2.7 2003/08/27</p>
+
+<p>The following instructions describe how to upgrade your kernel<br />
+binaries by updating your source tree and rebuilding and installing a<br />
+new version of the kernel. In these instructions, replace: </p>
+
+<p>BRANCH with the appropriate CVS branch (from the above table)<br />
+ARCH with your architecture (from uname -m), and<br />
+KERNCONF with the name of your kernel configuration file.</p>
+
+<p>To update from CVS, re-build, and re-install the kernel:</p>
+
+<p># cd src<br />
+# cvs update -d -P -r BRANCH sys/kern/kern_sysctl.c<br />
+# cd sys/ARCH/conf<br />
+# config KERNCONF<br />
+# cd ../compile/KERNCONF<br />
+# make depend;make<br />
+# mv /netbsd /netbsd.old<br />
+# cp netbsd /<br />
+# reboot</p>
+
+<p><br />
+Thanks To<br />
+=========</p>
+
+<p>Andrew Brown</p>
+
+<p><br />
+Revision History<br />
+================</p>
+
+<p>2003-09-17 Initial release</p>
+
+<p><br />
+More Information<br />
+================</p>
+
+<p>Advisories may be updated as new information becomes available.<br />
+The most recent version of this advisory (PGP signed) can be found at <br />
+ftp://ftp.NetBSD.org/pub/NetBSD/sec...003-014.txt.asc</p>
+
+<p>Information about NetBSD and NetBSD security can be found at<br />
+http://www.NetBSD.org/ and http://www.NetBSD.org/Security/.</p>
+
+<p><br />
+Copyright 2003, The NetBSD Foundation, Inc. All Rights Reserved.<br />
+Redistribution permitted only in full, unmodified form.</p>
+
+<p>$NetBSD: NetBSD-SA2003-014.txt,v 1.12 2003/09/17 02:49:00 david Exp $</p>
+
+<p>-----BEGIN PGP SIGNATURE-----<br />
+Version: GnuPG v1.0.6 (NetBSD)<br />
+Comment: For info see http://www.gnupg.org</p>
+
+<p>iQCVAwUBP2fWKz5Ru2/4N2IFAQGEnAQAw5QkAzSr6lTP3wH3e8pvrSVWb9jhMxCi<br />
++P96ZYsxkDJNqkU33xtCIIN72GKom2uFOeswNX1qK8QEhfplX0<br />
+3/peOjqRZ4L4Kk<br />
+f0ECf0xIIr54Kn1JYp/PeUsOPyAAT+I6CCRplB7ZtvPjQ7l7YtYid5smO6szAQjG<br />
+I92V/aNY/fs=<br />
+=Ch3/<br />
+-----END PGP SIGNATURE-----<br />
+</p>
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000317.html">11:29 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=317" onclick="OpenComments(this.href); return false">迴響 (7136)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">August 20, 2003</h2>
+
+
+<div class="blogbody">
+
+<a name="000061"></a>
+<h3 class="title">FreeBSD current kernel panic</h3>
+
+<p>最近在try FreeBSD 5 current，享受一下每天更新系統的刺激，不過主要的server還是沒去動，沒有去更新到current，畢竟機器等級不夠，每天編譯實在很花時間</p>
+
+<p>也許是夏天到了，天氣熱沒開冷氣給他吹，也許是前天的kernel不穩，昨天晚上在cvsup current時，同時更新ports tree</p>
+
+<p>嘿嘿，問題發生了，就在我愉快的輸入完指令，切換到另一台跟大家聊天時，不知不覺的，他已經在kernel debug畫面了!!<br />
+等我切過去看時已經來不及了，kernel panic</p>
+
+<p>不過重新開機之後，同樣的工作在從來一次，不過這次把job分開來執行，而不是同時，在把冷氣打開給他吹一下，amd的cpu散熱還真不好，終於順利的完成了昨天的更新</p>
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000061.html">03:14 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=61" onclick="OpenComments(this.href); return false">迴響 (1817)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 演講：尋幽訪勝話系統--以 Linux 探索軟硬體整合設計</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002020.html" title="QGtkStyle : 讓 Qt 應用程式模擬 GtK+ 的外觀" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002022.html" title="自製 Keroro PC" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002020.html">« QGtkStyle : 讓 Qt 應用程式模擬 GtK+ 的外觀</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002022.html">自製 Keroro PC »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">May 17, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">演講：尋幽訪勝話系統--以 Linux 探索軟硬體整合設計</h3>
+
+應南台科技大學之邀，小弟將於本月份 29 日 (週四) 於該校分享名為「尋幽訪勝話系統--以 Linux 探索軟硬體整合設計」的演講，以下引述 [<a href="http://www.csie.stut.edu.tw/news.aspx?id=386">系上公告</a>] 的內容：<ul class="code" style="margin: 6px;">
+<li>日期：5 /29 (四) 下午1:50</li>
+<li>地點：南台科技大學 資訊工程系 S706 教室</li>
+<li>題目：「尋幽訪勝話系統：以 Linux 探索軟硬體整合設計」</li>
+<li>簡介：Linux 作為開放原始碼的作業系統核心專案，在十幾年全球無數開發者投入下，帶來空前的成功，在諸多電腦主機、手機，機器人，都有其蹤跡。著名電腦技術作家侯捷嘗言：「源碼之前了無秘密」，的確，Linux的意義不僅在於程式碼完全公開，更在於揭露軟硬體設計的細節，進而讓技術得以藝術般走向我們。本議程試圖勾勒 Linux核心的經典設計，並佐以由軟體的觀點，尋訪電子電機系統的奧秘與其資訊處理之道。</li>
+<li>建議之聽者背景：C 程式語言設計、單晶片控制概念、微處理機課程</li>
+<li>議程大綱：<ul>
+  <li>源碼之前了無秘密：Linux 對工程資訊領域的意義</li>
+  <li>重返 Linux 核心設計概念</li>
+  <li>羅塞達碑石 (Rosetta Stone)：Linux 如何建立軟硬體關聯</li>
+  <li>Linux 驅動程式架構與發展</li>
+</ul></li>
+</ul>
+隨著製程的進步，我們幾乎難以理解充分理解系統設計的奧秘，當拿到一台 iPhone 時，當下會認同這是「美」精湛的呈現，卻不易聯想到背後無數的電晶體與邏輯電路，更別提其微妙的運作機制。而，作為與硬體溝通的軟體，更是隱藏這神秘的資訊，使我們對如此的系統設計更加惶恐，好似身處於數位資訊時代的我們，只如蘇格拉底所言：「我唯一所知的，是我一無所知」。<br />
+<br />
+好在，Linux 一類開源的作業系統給予劃時代的突破，承諾將這些奧秘揭露於世人面前，本議程可說是從軟體的觀點，靠著自己尋幽訪勝，感受如何探索軟硬體，進而思索工程資訊領域。也因此，預計聽者可在議程中獲得軟硬體整合設計的概念、Linux 核心與硬體介面之典型設計等項目。歡迎前來指教，謝謝！<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 May 17, 2008 04:09 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2021" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 演講：快快樂樂學 GNU Debugger (gdb)</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001950.html" title="展望 2008" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001952.html" title="一萬個重作的理由" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001950.html">« 展望 2008</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001952.html">一萬個重作的理由 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 09, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">演講：快快樂樂學 GNU Debugger (gdb)</h3>
+
+應 [<a href="http://phorum.study-area.org/">Study Area</a>] 之邀，月底將在台南分享關於 GNU/Linux 與 toolchain 相關的議題，本次演講主題為「快快樂樂學 GNU Debugger (gdb)」，以下引述討論區訊息 [<a href="http://phorum.study-area.org/index.php?topic=49876.0">2008一月份 SA@Tainan 快快樂樂學 GNU Debugger (gdb)</a>]：<ul class="code" style="margin: 6px;">
+<li>簡介：<ul>
+兩年前，為了徹底理解 GNU/Linux 底層運作機制，拿最簡單的 "Hello World" 開刀，部份心得匯集為「深入淺出Hello World」，並於北中南等地分享，計有 Part I / II / III。後續的規劃則因為大量使用 gdb / kdb /kgdb 等重要工具，決定以獨立的議程作講解，期望使聽者得以透過 GNU Debugger (gdb)來加速系統開發與分析，讓這個臥在硬碟深處許久的強力程式，激發其威力。本議程捨棄過往教條式的介紹形式，延續「深入淺出 HelloWorld」系列的「作中學」途徑逐一探討使用情境與案例分析。</ul>
+</li>
+
+<li>議程主題：<ul>
+<li>Why - 為何我們該善用 Debugger？</li>
+<li>Who - 誰會因為熟悉 Debugger 而受益？</li>
+<li>What - 史上最強大的 Debugger -- gdb 與一系列系統軟體</li>
+<li>Where - 利用 Debugger 的場合</li>
+<li>How - 還用說嗎？來就對了</li></ul>
+</li>
+
+<li>時間：1月26日14:00-17:00</li>
+
+<li>地點：<ul>
+<li>台南崑山科技大學 資訊科技大樓 I3502教室; 台南縣永康市大灣路949號</li>
+<li>[<a href="http://www.ksu.edu.tw/introduction/GoogleLocation.aspx">地理位置</a>]</li>
+<li>[<a href="http://www.ksu.edu.tw/introduction/images/campus_1024.jpg">校園地圖</a>]</li></ul>
+</li>
+
+<li>參考資訊：<ul>
+<li>[<a href="http://www.eettaiwan.com/ARTP_8800464697_676964.HTM">除錯問題成為眾矢之的</a>]</li>
+<li>[<a href="http://sources.redhat.com/gdb/">GDB: The GNU Project Debugger</a>]</li></ul>
+</li>
+
+<li>講師特別交代之注意事項：<ul>
+<li>本議程基於知識共享之原則，提供免費教育訓練，但僅限於 x86 硬體平台，若有 ARM 與 MIPS 平台需求者，請進一步聯繫講者</li>
+<li>礙於講者個人規劃，暫無舉辦台北場次的打算，請見諒</li>
+<li>事先提交問題，可優先解決與討論</li>
+<li>歡迎招待當地名產，或廣結善緣</li></ul>
+</li>
+</ul>
+本演講的講稿內容及聽眾的 Q&A 將會整理為「精通 GDB :深入 GNU 開發與除錯工具」一文，文章的序言可先行參考 [<a href="http://jserv.sayya.org/writing/mastering-gdb-preface.pdf">mastering-gdb-preface.pdf</a>]，有任何問題也請多利用前述的討論區，期待您的指教，謝謝！<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January  9, 2008 08:07 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>有無可能在中部或北部也舉辦一場勒？</p>
+<span class="comments-post">由 <a href="mailto&#58;saint1805&#64;edirect168&#46;com">neko_neko</a> 發表於</MTIfNonEmpty> January  9, 2008 10:20 AM</span>
+</div>
+<div class="comments-body">
+<p>To neko_neko,</p>
+
+<p>端看本次情況而定，謝謝！</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> January  9, 2008 12:25 PM</span>
+</div>
+<div class="comments-body">
+<p>報名資訊：<br />
+http://registrano.com/events/a3b8de</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> January 10, 2008 12:52 PM</span>
+</div>
+<div class="comments-body">
+<p>會有使用GDB的高級技術嗎?<br />
+希望能得到使用GDB的實際經驗<br />
+以及平常JSERV用GDB還做啥怪事的經驗</p>
+<span class="comments-post">由 <a href="mailto&#58;waylingII&#64;gmail&#46;com">wayling</a> 發表於</MTIfNonEmpty> January 11, 2008 11:28 AM</span>
+</div>
+<div class="comments-body">
+<p>To wayling,</p>
+
+<p>「高級」與否，不過就是主觀的認知罷了，計畫中，除了介紹 gdb 的操作，更會著重於應用的方式，比方說追蹤特定 process 行為、改變程式執行流程、硬體模擬 (是的，這是 gdb 內建的功能，但鮮少被著墨)，與其他小技巧等。</p>
+
+<p>不同於坊間的教育訓練課程，既然這是社群分享的議題，只要有一個人願意聽，我就會不斷開下去，或許會越來越深入，或許會另闢專題，就看前來指教朋友的反應了。</p>
+
+<p>thanks for your interest!</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> January 11, 2008 12:00 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1951" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

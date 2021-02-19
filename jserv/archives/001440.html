@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Cairo 練習：入力娘簡易實做</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001439.html" title="QEmacs hack" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001441.html" title="檢視 GPL 3.0 草案" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001439.html">« QEmacs hack</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001441.html">檢視 GPL 3.0 草案 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 17, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Cairo 練習：入力娘簡易實做</h3>
+
+「入力娘」是輸入法框架一個相當重要的設計，事實上，輸入法不只是一個輔助輸入的程式，能夠發揮的空間太多了，如 vgod 兄曾撰寫 [<a href="http://blog.vgod.tw/?p=77">輸入法框架帶來的無限可能</a>]，引述其中闡述輸入法的概念提示：<ul class="code" style="margin: 6px;">
+輸入法的角色很特別，它位於一般應用程式和作業系統的中間。輸入法可以攔截所有程式的輸入，再加以轉換後輸出給應用程式。所以輸入法是一個非侵入式的輸入過濾器。以中文輸入法來看，就是攔截使用者從鍵盤輸入的一串字元，接著透過某種編碼(注音、倉頡…)轉換為中文字輸出給程式。輸入法一直以來都是扮演著這種輸入各國文字的角色，但輸入法真的只有這樣而已嗎？<br />
+<br />
+其實輸入法在作業系統中是一個可以攔截任何輸入的程式，我們可以在這個位置提供更多方便的功能，不只有打中文這麼單純的事而已。例如，當我們用英文輸入時，輸入法可以幫助我們較正拼字，也可以讓我們只輸入頭幾個字，接著就自動補齊剩餘的部分。甚至還可以作成網址輸入工具：當我們輸入「@台灣大學」時，輸入法就自動到google找出台灣大學的URL http://www.ntu.edu.tw，接著輸出 &lt;a href=”http://www.ntu.edu.tw”&gt;台灣大學&lt;/a&gt;。
+</ul>
+去年參加 ICOS 2005 (細節可參考 [<a href="http://blog.linux.org.tw/~jserv/archives/001357.html">ICOS 2005 落幕</a>] 與 [<a href="http://blog.linux.org.tw/~jserv/archives/001361.html">ICOS 2005 見聞錄</a>] 兩篇 blog)，對 OpenVanilla 團隊精湛的演講與對開發輸入法系統的投入，印象深刻，其中也有「入力娘」的展示。
+<br />
+<br />
+前幾天寫了 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001427.html">拒絕注音文的小圖示</a>]，正巧今天花了一點時間學 [<a href="http://www.cairographics.org/">Cairo Graphics</a>]，所以就萌生念頭實做一個 Linux 版的「入力娘」：<br />
+<center><img src="http://people.debian.org.tw/~jserv/bpmf-cairo.png" width="535" height="412" />
+</center><br />
+這裡展示的技巧是 Alpha blending、cubic Bézier spline、antialiased text rendering，以及簡單的 transformation，目前已經可以把 [<a href="http://blog.linux.org.tw/~jserv/archives/001427.html">拒絕注音文的小圖示</a>] 的圖示，動態的作透明度處理，並且施加 composition，挺有趣的 :-)<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 17, 2006 08:44 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>jserv++<br />
+XD</p>
+<span class="comments-post">由 <a href="mailto&#58;barabbas&#64;gmail&#46;com">b6s</a> 發表於</MTIfNonEmpty> January 17, 2006 10:26 PM</span>
+</div>
+<div class="comments-body">
+<p>赞！~</p>
+<span class="comments-post">由 <a href="http://zigamber.tianya.cn">zigamber</a> 發表於</MTIfNonEmpty> January 18, 2006 02:13 AM</span>
+</div>
+<div class="comments-body">
+<p>太漂亮了。</p>
+<span class="comments-post">由 <a href="http://xyb.8800.org">xyb</a> 發表於</MTIfNonEmpty> January 18, 2006 12:38 PM</span>
+</div>
+<div class="comments-body">
+<p>閣下不謹眼光獨到 , 興趣愛好更是多元 , 在下看完您的文字後 , 深感慚愧不如</p>
+<span class="comments-post">由 <a href="mailto&#58;bioheazerd&#64;yahoo&#46;com&#46;tw">荒神</a> 發表於</MTIfNonEmpty> March  8, 2006 01:50 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

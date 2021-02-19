@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>damon's notepad: October 18, 2003 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~damon/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~damon/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~damon/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~damon/archives/2003_10_15.html" title="October 15, 2003" />
+
+<link rel="next" href="http://blog.linux.org.tw/~damon/archives/2003_10_26.html" title="October 26, 2003" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~damon/" accesskey="1">damon's notepad</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~damon/archives/2003_10_15.html">&laquo; October 15, 2003</a> |
+
+<a href="http://blog.linux.org.tw/~damon/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~damon/archives/2003_10_26.html">October 26, 2003 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">October 18, 2003</h2>
+
+
+<div class="blogbody">
+<a name="000453"></a>
+<h3 class="title">個人網站升級</h3>
+
+<p>花了一些時間把個人網站升級到apache 2上面，順便用一些很dirty的方法來做到ssl support</p>
+
+<p>自從把mysql,php support拿掉之後，覺得系統裡面裝太多雜七雜八的東西，又沒用到，例如ports裡面的ssl，因為原本裝的是apache13-ssl這種的，不知道為甚麼一定要安裝新版的openssl而不用系統本身內建的?<br />
+這幾天就把所有沒用到的東西都砍了，改用apache2，port maintainer一開始就已經把ssl support加入了，只是要自己手動製作crt , key</p>
+
+<p>懶得portupgrade了，全部用ports裡面的新版本，反正沒有甚麼資料</p>
+
+<p>至於做到ssl support的方法滿dirty的，有去看apache.org上的ssl faq真長，懶得看了XD</p>
+
+<p>直接用debian unstable這台apt-get install libapache-mod-ssl在把/etc/apache/裡面的ssl相關的檔案tar起來直接丟到server上，只要留下ssl.crt跟ssl.key就好了，在把ssl.crt裡面的snakeoil-dsa.crt跟ssl.key裡面的snakeoil-dsa.key直接cp成server.crt , server.key在/usr/local/etc/rc.d/apache2.sh stop;/usr/local/etc/rc.d/apache2.sh start<br />
+sockstat | grep 443有在listen就收工了</p>
+
+<p>當然，日後還是要花一些時間來確實了解openssl的運作跟如何製作自己的CA<br />
+</p>
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000453.html">12:36 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=453" onclick="OpenComments(this.href); return false">迴響 (380)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

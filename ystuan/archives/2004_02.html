@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>帝國反抗君之古戰場。PowerOp請您速至 blog.yam.com/ystuan 支援前線！: February 2004 Archives</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~ystuan/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~ystuan/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~ystuan/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~ystuan/archives/2003_12.html" title="December 2003" />
+
+<link rel="next" href="http://blog.linux.org.tw/~ystuan/archives/2004_03.html" title="March 2004" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~ystuan/" accesskey="1">帝國反抗君之古戰場。PowerOp請您速至 blog.yam.com/ystuan 支援前線！</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~ystuan/archives/2003_12.html">&laquo; December 2003</a> |
+
+<a href="http://blog.linux.org.tw/~ystuan/">Main</a>
+| <a href="http://blog.linux.org.tw/~ystuan/archives/2004_03.html">March 2004 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">February 02, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000577"></a>
+<h3 class="title">[Linux Kernel Development]Presentation for Chapter 4: System Calls</h3>
+
+<p>[Status: Draft]<br />
+[Version: v0.5]<br />
+[Last modified: 2004-02-10 14:15]</p>
+
+<p>Title: Linux Kernel Development <br />
+Author: Robert Love <br />
+Pages: xxvi + 332 <br />
+ISBN: 0672325128 <br />
+Format: Paperback <br />
+Publisher: SAMS, Developer Library Series <br />
+Publish Date: 8 Sept 2003 </p>
+
+<p><a href="http://tech9.net/rml/kernel_book/">http://tech9.net/rml/kernel_book/</a></p>
+
+<p><h1>Chapter 4 System Calls</h1></p>
+
+<p><h2>APIs, POSIX, and the C Library</h2><br />
+API: <br />
+- Application Programming Interface<br />
+- Applications are programmed against an API, not directly to syscalls<br />
+- The same API can exist on multiple systems and provide the same interface to applications while...<br />
+- The implementation of the API itself can differ from system to system.<br />
+POSIX:<br />
+- Portable Operating System Interface for UNIX<br />
+- is comprised of a series of standards from the IEEE<br />
+- aims to provide a portable operating system standard roughly based on Unix<br />
+- Linux is POSIX compliant<br />
+- POSIX is an excellent example of the relationship between APIs and system calls.<br />
+C library:<br />
+- implements the main API on Unix systems, including the standard C library and the system call interface.<br />
+<h2>Syscalls</h2><br />
+System calls:<br />
+- System calls are often called syscalls in Linux<br />
+- have a defined behavior<br />
+- are accessed via function call<br />
+- can define one ore more arguments<br />
+- might result in one or more side effects<br />
+- provide a return value that signifies success or error</p>
+
+<p>asmlinkage:<br />
+- a modifier on the function declaration<br />
+- tells the compiler to look only on the CPU stack for this function's arguments,  instead of registers<br />
+- a required modifier for all system calls<br />
+- detailed explanation: <a href="http://www.kernelnewbies.org/faq/#asmlinkage">http://www.kernelnewbies.org/faq/#asmlinkage</a><br />
+<h3>System Call Numbers</h3><br />
+Each system call <br />
+- is assigned a unique syscall number<br />
+- cannot change or else!<br />
+- is defined in entry.S<br />
+- You cannot recycle a system call number even if that system call is removed<br />
+<h3>System Call Performance</h3><br />
+Fast! Because......<br />
+- Linux has incredibly fast context switch times<br />
+- the simplicity of the system call handler and the individual system calls themselves</p>
+
+<p><h2>System Call Handler</h2><br />
+- Sits between user-space applications and kernel-space <br />
+- Handle the software interrupt from user-space<br />
+- Signal the kernel, have the system switch to kernel mode, where the system call can be executed in kernel-space<br />
+<h3>Denoting the Correct System Call</h3><br />
+To pass the system call number into the kernel on x86:<br />
+1. Store the number in the <b>eax</b> register<br />
+2. Issue the software interrupt, so that the system call handler reads the value from <b>eax</b><br />
+<h3>Parameter Passing</h3><br />
+- Same way as passing the system call number:<br />
+store in registers<br />
+- On x86, use <b>ebx</b>, <b>ecx</b>, <b>edx</b>, <b>esi</b>, and <b>edi</b> for first five  arguments<br />
+- Got six arguments or even more? Use a single register to hold a pointer to user-space<br />
+- Return value is sent back to user-space via <b>eax</b> register on x86<br />
+<h2>System Call Implementation</h2><br />
+Dos and Don'ts of system calls:<br />
+Do:<br />
+- Implement for exactly on purpose<br />
+- Clean and simple interface<br />
+- Smallest number of arguments possible<br />
+- Portability and robustness<br />
+Don't:<br />
+- Multiplex syscalls, such as ioctl()<br />
+- Assume its use today will be the same as its use tomorrow<br />
+- Make assumptions about an architecture's wordsize or endianness<br />
+<h3>Verifying the Parameters</h3><br />
+Every parameter must be checked to ensure it is not just valid and legal, but correct.<br />
+Ensure these before following a pointer into user-space:<br />
+- The pointer points to a region of memory in user-space<br />
+- The pointer points to a region of memory in the process's address space<br />
+- If reading, the memory is marked readable. If writing, the memory is marked writable</p>
+
+<p>copy_to_user() and copy_from_user() functions:<br />
+- reads from the 2nd parameter into the 1st parameter the amount of bytes specified in the 3rd parameter<br />
+- return the number of bytes they failed to copy on error<br />
+<h2>System Call Context</h2><br />
+During the execution of a system call, the kernel:<br />
+- is in process context<br />
+- is capable of sleeping<br />
+- is fully preemptible</p>
+
+<p><h3>Final Steps in Binding a System Call</h3><br />
+- Add an entry to the end of the system call table, entry.S<br />
+- Define the syscall number in include/asm/unistd.h for each architecture supported<br />
+- Compile the syscall into the kernel image, not as a module<br />
+<h3>Accessing the System Call from User-Space</h3><br />
+Linux provides a set of macros for wrapping access to system calls: <b>_syscalln()</b>, where n is between zero and six.<br />
+<h3>Why Not to Implement a System Call</h3><br />
+The pros, cons, and alternatives of implementing a new interface as a syscall:<br />
+The pros:<br />
+- System calls are simple to implement and easy to use<br />
+- System call performance on Linux in blindingly fast<br />
+The cons:<br />
+- Need to be officially assigned a syscall number during a developmental kernel series<br />
+- After the system call is in a stable series kernel, it is written in stone<br />
+- Each architecture needs to separately register the system call and support it<br />
+- For simple exchanges of information, a system call is overkill<br />
+The alternatives:<br />
+- Implement a device node and read() and write() to it. Use ioctl() to manipulate specific settings or retrieve specific information<br />
+- Certain interfaces, such as semaphores, can be represented as file descripters and manipulated as such<br />
+- The current trend is to implement a simple RAM-based filesystem where files represent the specific interfaces. Applications perform normal file I/O on the files to access the interface</p>
+
+
+
+<div class="posted">
+	Posted by ystuan at <a href="http://blog.linux.org.tw/~ystuan/archives/000577.html">01:15 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=577" onclick="OpenComments(this.href); return false">Comments (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

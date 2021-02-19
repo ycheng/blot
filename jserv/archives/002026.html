@@ -1,0 +1,295 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 透過 Python 體驗 QtWebKit 快速開發</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002025.html" title="「我愛 Git」簡報上線" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002027.html" title="以 ptrace 系統呼叫來追蹤/修改行程" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002025.html">« 「我愛 Git」簡報上線</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002027.html">以 ptrace 系統呼叫來追蹤/修改行程 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">May 21, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">透過 Python 體驗 QtWebKit 快速開發</h3>
+
+稍早寫過一篇文章 [<a href="http://blog.linux.org.tw/~jserv/archives/002003.html">QtWebKit: 將 Web 2.0 技術帶入行動通訊的系統設計</a>]，談及 Trolltech 對於 Qt Framework 與 WebKit 的整合，提供獨到的設計，不僅可很容易在應用程式中嵌入 WebKit 所帶來的 Web 2.0 網路服務外，還可作無接縫 (seamless) 的整合。不過前文並未解說整合細節，這裡就帶出具體而微的範例，體驗 QtWebKit 的技術突破與先進的特徵，恰好下個月要出席 [<a href="http://blog.linux.org.tw/~jserv/archives/002023.html">PycTW2008</a>]，那麼程式語言選用 Python 作為練習。<br />
+<br />
+日前 Trolltech 正式釋出 Qt 4.4，業已整合 QtWebKit，與 Qt framework 銜接的 [<a href="http://www.riverbankcomputing.com/software/pyqt/">PyQt</a>] 日前也推出 v4.4.2，即可透過 Python 來釋放 QtWebKit 的威力。Qt framework 一向最為人知的賣點就是 "signals-slots" 機制，自然在 PyQt 也少不了，而且還透過 [<a href="http://www.riverbankcomputing.com/software/sip/">SIP</a>] Python 模組，免去了許多語言層面的繁文縟節。首先，要存取 PyQt 的模組很容易，只要如此宣告：<br />
+<pre class="code" id="codemain" style="margin: 6px;"><span class="keyword">from</span> PyQt4.QtCore <span class="keyword">import</span> *
+<span class="keyword">from</span> PyQt4.QtGui <span class="keyword">import</span> *
+<span class="keyword">from</span> PyQt4.QtWebKit <span class="keyword">import</span> *
+</pre>
+在這個範例，筆者設想的操作情境為，展示如何透過 WebKit 顯示 HTML element 與 JavaScript，以及透過 iframe tag 嵌入 Google 首頁，在使用者互動的部份，透過 Javascript 建立對話框，並試著與 Python 的程式通訊。於是，我們建立一個 class 來專門描繪網頁，程式碼如下：<br />
+<pre class="code" id="codemain" style="margin: 6px;"><span class="keyword">class </span>BrowserScreen(QWebView):
+    <span class="keyword">def</span> __init__(self):
+        QWebView.__init__(self)
+
+        self.resize(800, 600)
+        self.show()
+        self.setHtml(<span class="literal">""</span><span class="literal">"
+           &lt;script>function message() { return "</span>Clicked!<span class="literal">"; }&lt;/script>
+           &lt;h1>QtWebKit + Python sample program&lt;/h1>
+           &lt;input type="</span>button<span class="literal">" value="</span>Click JavaScript!<span class="literal">" 
+                  onClick="</span>alert(<span class="literal">'[javascript] '</span> + message())<span class="literal">"/>
+           &lt;input type="</span>button<span class="literal">" value="</span>Click Python!<span class="literal">" 
+                  onClick="</span>python.alert(<span class="literal">'[python] '</span> +
+                                        python.message())<span class="literal">"/>
+           &lt;br />
+           &lt;iframe src="</span>http://www.google.com/<span class="literal">"
+                   width="</span>750<span class="literal">" height="</span>500<span class="literal">"
+                   scrolling="</span>no<span class="literal">"
+                   frameborder="</span>0<span class="literal">"
+                   align="</span>center<span class="literal">">&lt;/iframe>
+        "</span><span class="literal">""</span>)
+</pre>
+我們定義的 class 繼承自 QtWebKit 中的 class QWebView，在初始化時，即呼叫 resize(), show(), setHTML() 等 method。此外，與其說上述程式列表為 Python 程式語言，不如說就是 HTML 網頁原始碼。熟悉網頁程式設計者，一眼就可發現我們在兩個 input button 上建立 Javascript 事件關聯，其中一個呼叫 alert() method 來顯示對話框，而另一個則比較特別：<pre class="code" id="codemain" style="margin: 6px;">
+onClick="</span>python.alert(<span class="literal">'[python] '</span> +
+         python.message())
+</pre>
+這邊的 "python.alert" 與 "python.message" 就使用了 PyQt + QtWebKit 的專有功能，意思是按下 button 時，會呼叫 python 物件的 message method，而這個 "python" 物件可動態在欲嵌入 WebKit 的 Python 程式中傳入物件，當然，可有頗多變化。筆者這裡僅作字串回傳顯示的動作，不過即使如此，還是有兩項技術細節要思考：<ul>
+  <li>QtWebKit 的 class QWebView，其最主要的目標是走訪 HTML 個別 element 並描繪網頁，也就是內部維護著 DOM (Document Object Model)，包含我們剛剛看見的那兩個 input button 也在其中</li>
+  <li>Javascript (或 ECMAscript) 內部有自己的字串與物件表示，Python 也有字串，而 Qt framework 更有 class QString，那麼，該如何建立起彼此的關聯呢？至少，在筆者設計的情境中，就得考慮字串與物件遊走於這三方所需面對的議題</li>
+</ul>
+實際上，得面對的問題不只如此，不過 QtWebKit + PyQt 都幫我們處理掉，所以，筆者只要另行提供 Python 物件並交予 QtWebKit 即可。以下是傳入到 WebKit 的物件相關的 Python 程式碼：<br />
+<pre class="code" id="codemain" style="margin: 6px;"><span class="keyword">class </span>PythonJS(QObject):
+    __pyqtSignals__ = (<span class="literal">"contentChanged(const QString &amp;)"</span>)
+    @pyqtSignature(<span class="literal">"QString"</span>)
+    <span class="keyword">def</span> alert(self, msg):
+        self.emit(SIGNAL(<span class="literal">'contentChanged(const QString &amp;)'</span>), msg)
+
+    @pyqtSignature(<span class="literal">""</span>, result=<span class="literal">"QString"</span>)
+    <span class="keyword">def</span> message(self):
+        <span class="keyword">return</span> <span class="literal">"Click!"</span>
+</pre>
+這個名為 PythonJS 的 class，繼承自 class QObject。透過 PyQt，我們宣告一個自訂的 signal: "contentChanged(const QString &)"，這不需要額外的 moc compiler 即可有對應的 metadata 關聯。剛剛在 class BrowserScreen 的 HTML 程式列表中，所提及的 "python.alert" method 就定義於此，筆者依據 Qt 的 Signals-Slot 機制，去 emit 出 "contentChanged(const QString &)" 這個 signal，並將 alert() method 後方的字串 (const QString & 型態) 一併傳出，也可見到 PyQt 中宣告 msg 參數型態為 "QString"。同樣，PythonJS::message method 也是如此，依據上方的執行順序來看，會先呼叫 PythonJS::message() 在將傳回的 QString 字串透過 QtWebKit 內部的轉換，變成 JavaScript 的字串並作物件的合成動作 (即 "'[python] ' + python.message()" 陳述)，並將得到的 JavaScript 字串傳遞給 QtWebKit 外部的 Python 物件，呼叫 PythonJS::alert() method，當然，這時候要將 JavaScript 字串轉變成 Pthon 可處理的 QString 字串。<br />
+<br />
+撰寫了以上兩個 class，程式幾乎完成了，只要將兩者整合起來即可，為了增加視覺上的比較效果，筆者透過 Qt 4.4 提供的 System Tray (在 X11/FreeDesktop 的術語為 "Notification Area") 來作訊息顯示的動作。所以修改了 class BrowserScreen，追加兩個 method，程式碼如下：<br />
+<pre class="code" id="codemain" style="margin: 6px;"><span class="keyword">class </span>BrowserScreen(QWebView):
+    <span class="keyword">def</span> __init__(self):
+        QWebView.__init__(self)
+
+        self.createTrayIcon()
+        ...
+        self.trayIcon.show()
+
+    <span class="keyword">def</span> createTrayIcon(self):
+        self.trayIcon = QSystemTrayIcon(self)
+        self.trayIcon.setIcon(QIcon(<span class="literal">"images/trash.svg"</span>))
+
+    <span class="keyword">def</span> showMessage(self, msg):
+        self.trayIcon.showMessage(<span class="literal">"This is Python"</span>, msg,
+            QSystemTrayIcon.MessageIcon(0), 15 * 1000)
+</pre>
+BrowserScreen::createTrayIcon() method 透過 class QSystemTrayIcon 要求系統配置 system tray，筆者設定了 SVG 圖檔 (向量繪圖，所以不需要考慮顯示端的空間尺寸)，而 BrowserScreen::showMessage() method 看似不相關，僅是顯示訊息的動作，稍後，我們可透過 Qt 的 Signals-Slots，將 QtWebKit 中的 DOM/JavaScript 事件與此 method 給予 "connect" 起來。<br />
+<br />
+最後一個部份，就是畫龍點睛了，以下是 main 程式列表：<br />
+<pre class="code" id="codemain" style="margin: 6px;"><span class="keyword">if</span> __name__==<span class="literal">'__main__'</span>:
+    <span class="keyword">import</span> sys
+
+    app = QApplication(sys.argv)
+
+    browser = BrowserScreen()
+    pjs = PythonJS()
+    browser.page().mainFrame().addToJavaScriptWindowObject(<span class="literal">"python"</span>, pjs)
+
+    QObject.connect(pjs, SIGNAL(<span class="literal">"contentChanged(const QString &amp;)"</span>),
+                    browser.showMessage)
+
+    sys.exit(app.exec_())
+</pre>
+重點當然是從前面兩個 class 建立 Python 物件，也就是 "browser" 與 "pjs"，整個程式最巧妙之處，就在於以下這行：<br />
+<pre class="code" id="codemain" style="margin: 6px;">
+    browser.page().mainFrame().addToJavaScriptWindowObject(
+        <span class="literal">"python"</span>, pjs)
+</pre>
+這也是 QtWebKit 技術的「火力展示」，原來前面的 HTML 列表的 JavaScript 程式的 "python" 物件，就是甫建立的 "pjs" 物件，而下一行也充滿著驚喜：
+<pre class="code" id="codemain" style="margin: 6px;">
+    QObject.connect(pjs, SIGNAL(<span class="literal">"contentChanged(const QString &amp;)"</span>),
+                    browser.showMessage)
+</pre>
+class PythonJS 所生的物件 "pjs" 裡頭的 signal "contentChanged" 被連結 (connect) 到 class BrowserScreen 所生的物件 "browser" 裡頭的 slot "showMessage"，原本只是平淡無奇的 PyQt 敘述，但因為 "pjs" 物件被傳入 QtWebKit，WebKit 所描繪的網頁 (範例即 Google 首頁) 有完整的 DOM/JavaScript，依據之前的 HTML 程式列表，已建立這兩者的關聯，如今，再將 PyQt 的事件一舉打通。是此，Python/PyQt - QtWebKit - DOM/JavaScript 的關聯就建立了，咱們來體驗看看，以下是操作時的圖例：<br />
+<center><img src="http://jserv.sayya.org/khtml/screenshots/pyqtwebkit-1.jpg" width="524" height="267" /></center><br />
+在 system tray 多了一個綠色、類似資源回收桶的圖樣，而主畫面就如預期，就是 QtWebKit。是的，寫 UI 就是這麼簡單，只要 HTML tag 加上 iframe，頓時有聲有色，為了要證明這不是紙老虎，咱們按一下左方的 "Click Javascript!" input button，會得到下方螢幕輸出：<br />
+<center><img src="http://jserv.sayya.org/khtml/screenshots/pyqtwebkit-2.jpg" width="524" height="269" /></center><br />
+這就是 Javascript 裡頭呼叫 alert() method，展示了 QtWebKit 的基本能力，最後我們看看剛剛張羅許久的展示，當按下 "Click Python!" input button 後...<br .>
+<center><img src="http://jserv.sayya.org/khtml/screenshots/pyqtwebkit-3.jpg" width="524" height="267" /></center><br />
+注意到 system tray 下方彈跳出黃色對話訊息，別小看這個，這可是歷經 Python/PyQt - QtWebKit - DOM/JavaScript 等部份，顯示於我們眼前的。我們也可發現，QtWebKit 要與桌面整合並產生有效的互動，只需要上述這一些程式碼即可，透過 Python 體驗 QtWebKit 快速開發，看來很棒呢。<br />
+<br />
+取得上述程式碼加上 SVG 圖檔： [<a href="http://jserv.sayya.org/khtml/qtwebkit/pyqtwebkit-sample.tar.bz2">pyqtwebkit-sample.tar.bz2</a>]，因為 Qt framework 與 PyQt 都以 GNU GPL 授權發行，本範例也是如此。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 May 21, 2008 10:01 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2026" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

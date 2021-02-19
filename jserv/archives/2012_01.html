@@ -1,0 +1,266 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: January 2012 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2011_12.html" title="December 2011" />
+
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2012_02.html" title="February 2012" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2011_12.html">« December 2011</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+| <a href="http://blog.linux.org.tw/~jserv/archives/2012_02.html">February 2012 »</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+
+
+<h2 class="date">January 31, 2012</h2>
+
+
+<div class="blogbody">
+<a name="002196"></a>
+<h3 class="title">C 編譯器跟你想的不一樣</h3>
+
+2008 年筆者在 COSCUP 發表了題目為「<a href="http://blog.linux.org.tw/~jserv/archives/002064.html">我是軟體 -- 那些處理器教我的事</a>」的演講，探討因為處理器架構與系統軟體組態或假設不同，導致一連串令人意外的結果，著眼於涉及跨平台開發所潛藏有如未爆彈的種種議題。日前嘗試修改某個客戶的專案，沒想到又踩到另一個地雷，自詡是「<a href="http://blog.linux.org.tw/~jserv/archives/001965.html">慣 C</a>」迷的筆者，萬萬沒想到還得交叉對照組合語言輸出，才克服問題，撰文分享如下。<br />
+<br />
+考慮以下程式碼：(test.c)
+<pre class="code" style="margin: 6px;"><span class="keyword">#include</span> &lt;stdio.h><span class="keyword">
+#define</span> DEBUG 1<span class="keyword">
+#define</span> DBG( ... ) \
+    <span class="keyword">if</span> (DEBUG) {  __VA_ARGS__; }
+<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[]) {
+    <span class="keyword">char</span> *num;
+    <span class="keyword">switch</span> (argc - 1) {
+             <span class="keyword">case</span>  0: num =  <span class="literal">"zero"</span>;
+        DBG( <span class="keyword">case</span>  1: num =   <span class="literal">"one"</span>; )
+        DBG( <span class="keyword">case</span>  2: num =   <span class="literal">"two"</span>; )
+        DBG( <span class="keyword">case</span>  3: num = <span class="literal">"three"</span>; )
+        DBG( <span class="keyword">default</span>: num =  <span class="literal">"many"</span>; )
+        <span class="keyword">while</span> (--argc)
+            printf(<span class="literal">"%s "</span>, argv[argc]);
+        printf(<span class="literal">"\nArgument count: %s\n"</span>, num);
+        <span class="keyword">break</span>;
+    }
+    <span class="keyword">return</span> 0;
+}</pre>
+先不看 DBG() macro 的使用，似乎沒什麼特別之處，編譯並執行看看：<pre class="code" style="margin: 6px;">
+$ gcc -Wall -o test test.c
+$ ./test 1 && ./test 1 2 && ./test 1 2 3 && ./test 1 2 3 4
+1
+Argument count: many
+2 1
+Argument count: many
+3 2 1
+Argument count: many
+4 3 2 1
+Argument count: many
+</pre>
+完全符合預期，就是把 switch-case 走訪一遍，因為沒有 break 敘述，就到了最終的 "default" 條件，所以 char *nnum 指向字串 "many" 的記憶體位址。但倘若我們將第二行的 DEBUG 定義修改為以下：<pre class="code" style="margin: 6px;">
+#define</span> DEBUG 0
+</pre>
+再來重新編譯與執行看看：<pre class="code" style="margin: 6px;">
+$ gcc -Wall -o test test.c
+$ ./test 1 && ./test 1 2 && ./test 1 2 3 && ./test 1 2 3 4
+1
+Argument count: one
+2 1
+Argument count: two
+3 2 1
+Argument count: three
+4 3 2 1
+Argument count: many
+</pre>
+這是什麼狀況呢？被一串 if (0) { ... } 包圍的 switch-case 竟然會被處理，而且 break 巧妙地伴隨每個敘述出現。也就是說，原本的 "DBG( case  1: num =   "one"; )" 相當於 break; case 1: num = "one; break; 的效力。像這樣的 C 語法結構，可歸納為 [<a href="http://www.clifford.at/cfun/cliffdev/">Clifford's Device</a>]，簡單來說，就是符合以下的結構：<pre class="code" style="margin: 6px;">
+if (0) { label: ... }
+</pre>
+引述網頁描述：<ul>
+"it is skipped in the normal flow of execution and is only reached via the goto label, reintegrating with the normal flow of execution and the end of the if (0) statement. It solves a situation where one would usually need to duplicate code or create a state variable holding the information if the additional code block should be called."
+</ul>
+在普通的執行流程中，if (0) { ... } 包圍的陳述指令會被忽略，但倘若配合 goto 時 (本例是 switch-case，一個 C 語法的變形)，就不是這麼一回事，翻譯成組合語言或機械碼時，其實是很清楚且常見的結構。這樣的結構對於縮減煩冗的程式碼有些特別用途。上述程式碼有趣之處，就在於像 DBG() 這類的 macro 在前期開發階段通常被設定為 "1"，在後期則會逐步取消偵錯 / 驗證的程式碼時，將 macro 改為 if (0) { ... } 型態，而使開發者誤踩到「未爆彈」。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2012/01/c_1.html"> 1:21 PM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2196" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<h2 class="date">January 19, 2012</h2>
+
+
+<div class="blogbody">
+<a name="002195"></a>
+<h3 class="title">演講：L4 microkernel 的背景知識與最新的研究發展</h3>
+
+今年二月 7 日，小弟將分享關於 L4 microkernel 的背景知識與最新的研究發展，詳情請參考 [<a href="http://registrano.com/events/251d83">星系統社群：第5次星系主題-L4 microkernel 的背景知識與最新的研究發展</a>]。<br />
+<br />
+第一次見到 [<a href="http://en.wikipedia.org/wiki/L4_microkernel_family">L4 microkernel</a>]，是在 William Stallings 的 [<a href="http://williamstallings.com/OperatingSystems/">作業系統叢書</a>] 讀到，那時是 1997 年，僅提供七個系統呼叫但可搭建完整作業系統基礎的 microkernel，對當時還在唸高中的我，實在是不小的衝擊。高中住校沒有辦法使用電器設備，遑論使用網際網路，唯一獲取知識的方法，就是利用每天宿舍晚自習結束到關大門前的短暫一個半小時，去附近的書店啃書，William Stallings 的大作闡述作業系統非常透徹，而關於 L4 的部份，更激起我的興趣，但這類的書籍往往售出後，就很少進貨，而我身上根本沒什麼零錢，結果一時鋌而走險，竟然沒購買而擅自攜帶出去。這本書伴隨著我在高中的課餘生涯，也讓「系統程式」與我結下不解之緣。<br />
+<br />
+像這樣去附近的店家「借取」(一開始真的有歸還，但後來就無疾而終) 了好幾本關於作業系統、編譯器設計、Linux / BSD 系統書籍的行徑，是高中生涯很特別的插曲，但「偷書」是事實，估計總價約台幣五千多元。後來接了案子，逐漸有能力償還時，這些店家要不倒閉，不然就是不接受我的賠償，於是愧疚了十多年。這幾年購書，往往會要求不打折，不然就是同一本書一次多買幾份，送給需要的朋友，此外，我持續地作免費的資訊技術分享，就是希望能多作點補償。因為談及 L4 microkernel，也抖出「偷書」的陳年往事，如今探討這個議題，自然是五味雜陳，本議程最早規劃在去年，追憶 L4 發明人 Jochen
+Liedtke 教授過世十週年，不過當時有事耽擱，只好在今年擇期探討。<br />
+<br />
+L4 在上個世紀末證明，microkernel 的效能落差並非本質的限制，而是設計與實做的議題，也因此，L4 這個高效能的 microkernel 被稱為「第二代 microkernel」，   有鑑於 CMU Mach microkernel 的若干低效能表現 (如 IPC)，L4 進一步做出精簡的設計，只 7 個系統呼叫，而且核心本身只有 12 Kbytes，只實現以下三個抽象概念的基礎建設：<ul>
+    <li>Address space</li>
+    <li>Thread</li>
+    <li>IPC</li>
+</ul>
+藉由充分使用硬體機制來實現，大幅縮減 TLB 與 cache miss 的開銷。這十年來，無論是原本從事 microkernel 抑或 RTOS 開發的廠商與研究單位，則逐漸往虛擬化技術 (virtualization) 靠攏，愈來越多技術發生「大融通」的效應，而本議程則著眼於 L4 microkernel 與日益多元的應用方式，介紹其背景知識與發展，預定提綱如下：<ul>
+    <li>Myths of Microkernel</li>
+    <li>Characteristics of second generation microkernel</li>
+    <li>Key services: memory, thread, IPC management</li>
+    <li>L4 in real world: distributed, virtualization, and reliability</li>
+</ul>
+如同之前的演講 [<a href="http://blog.linux.org.tw/~jserv/archives/2011/11/_embedded_hyper.html">Embedded Hypervisor for ARM</a>]，小弟也會發表一項新專案，這是個極小的 L4 microkernel 與作業系統環境的實做，在某個程度上，可說是回應了 2007 年發表的 [<a href="http://blog.linux.org.tw/~jserv/archives/001865.html">Orz Microkernel</a>]。期待您的指教與交流，謝謝！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2012/01/l4_microkernel.html">11:36 AM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2195" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<h2 class="date">January  3, 2012</h2>
+
+
+<div class="blogbody">
+<a name="002194"></a>
+<h3 class="title">"Develop Community-based Android Distribution and Upstreaming Experience" 簡報上線</h3>
+
+去年十一月有幸受 [<a href="http://droidcon.nl/">droidcon</a>] 的邀請，到荷蘭阿姆斯特丹分享關於 [<a href="http://0xlab.org/">0xlab</a>] 兩年來的開發經驗，探討我們如何累積基於 Android 的技術，並且透過 open source 的力量，回饋到社群並為我們創造更多正向的開發機會。簡報已上線，請見： [<a href="http://0xlab.org/~jserv/dev-android-distribution.pdf">dev-android-distribution.pdf</a>]<br />
+<center>
+<div style="width:425px" id="__ss_10773288"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/jserv/dev-androiddistribution" title="Develop Community-based Android Distribution and Upstreaming Experience " target="_blank">Develop Community-based Android Distribution and Upstreaming Experience </a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/10773288" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/jserv" target="_blank">Jim Huang</a> </div> </div>
+</center>
+提綱如下：<ul>
+    <li>Reasons to build Android distribution</li>
+    <li>Lesson learned from AOSP</li>
+    <li>The methods to enhace Android software stack</li>
+    <li>Go upstream</li>
+</ul>
+包含之前去 [<a href="https://events.linuxfoundation.org/events/embedded-linux-conference-europe">Embedded Linux Conference Europe </a>] 演講的經驗在內，這兩次都讓相當感動，雖然極少有亞洲面孔的與會者，但只要展示出 [<a href="http://0xlab.org/">0xlab</a>] 與介紹 open source，有不少人就認得我們，還談了頗多關於台灣品牌的議題，非常激勵人心。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2012/01/develop_communi.html"> 2:49 PM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2194" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+
+<div class="blogbody">
+<a name="002193"></a>
+<h3 class="title">「用 Android 學習系統程式」簡報上線</h3>
+
+上個月筆者在台南崑山科技大學演講「<a href="http://phorum.study-area.org/index.php/topic,66705.0.html">用 Android 學習系統程式</a>」，簡報已上線，請參考 [<a href="http://0xlab.org/~jserv/discover-android-system.pdf">discover-android-system.pdf</a>]<br />
+<center>
+<div style="width:425px" id="__ss_10771110"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/jserv/discover-androidsystemfacilities" title="Discover System Facilities inside Your Android Phone " target="_blank">Discover System Facilities inside Your Android Phone </a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/10771110" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/jserv" target="_blank">Jim Huang</a> </div> </div></center>
+自 2006 年起，筆者分享了名為「深入淺出 Hello World」的系列演講後，獲得一些迴響與啟發，而隨著 Android 裝置的普及與整體硬體的提昇後，實際在大量使用的裝置如智慧型手機上，做觀察、分析，進而研究系統程式的原理，已是相當便利。本議程可視為「<a href="http://jserv.sayya.org/helloworld/">深入淺出 Hello World</a>」的實務篇，企圖從觀察 ARM/Linux 的運作開始，延伸去年的演講主題 [<a href="http://blog.linux.org.tw/~jserv/archives/2011/12/_linux_2.html">自己動手，豐衣足食 -- 淺談探索 Linux 系統設計之道</a>]，透過現有 Linux 核心與 Android 系統的若干機制，逐步揭開系統程式的面紗。<br />
+<br />
+議題大綱：<ul>
+    <li>握在手心的 Linux 核心: 工具與環境準備</li>
+    <li>從 Hello World 等級的程式分析起</li>
+    <li>探索記憶體模型</li>
+    <li>核心與使用者層級程式的互動</li>
+</ul>
+除了原本「<a href="http://jserv.sayya.org/helloworld/">深入淺出 Hello World</a>」探討的項目外，這次追加了 ARM 與 Binder IPC 的子項目，由於是第一部份，並未深入細節，不過仍是如過往一般，強調尋幽訪勝的方法，而稍候預計會有銜接的系列演講，還請多多指教，謝謝！<br />
+<br />
+PS: 本系列議程也規劃有台北、新竹的場次，但目前需要熱心朋友協助安排場地，基於知識分享交流的動機，全系列的演講都是公開免費的形式，歡迎與本人聯繫。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2012/01/_android.html">12:00 AM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2193" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+
+</body>
+</html>

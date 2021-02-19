@@ -1,0 +1,299 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 當感覺已麻木，告訴 Linux 說 reboot</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002059.html" title="演講：Clutter -- 釋放 OpenGL 威力的新途徑" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002061.html" title="「Clutter -- 釋放 OpenGL 威力的新途徑」簡報上線" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002059.html">« 演講：Clutter -- 釋放 OpenGL 威力的新途徑</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002061.html">「Clutter -- 釋放 OpenGL 威力的新途徑」簡報上線 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">August 03, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">當感覺已麻木，告訴 Linux 說 reboot</h3>
+
+<center><img src="http://jserv.sayya.org/misc/reboot.jpg" width="560" height="424" /></center><br />
+這標題是前幾日在 twitter 上意外聯想到，對於 Linux reboot() 系統呼叫的 geek 笑話，為了解釋箇中的幽默，決定寫一篇短文。<br />
+<br />
+當我們查閱 reboot(2) 的 manpage 時，可發現其函式宣告如下：<pre class="code" style="margin: 6px;">
+<span class="comment">/* Under glibc some of the constants involved have gotten
+   symbolic names RB_*, and the library call is a 1-argument
+   wrapper around the 3-argument system call: */</span>
+<span class="keyword">
+#include</span> &lt;unistd.h><span class="keyword">
+#include</span> &lt;sys/reboot.h>
+
+<span class="keyword">int</span> reboot(<span class="keyword">int</span> cmd);
+</pre>
+至於參數的 "cmd"，就是以 RB_ 開頭巨集表示的數值，可為以下：<ul>
+  <li>RB_AUTOBOOT - 系統會列印 "Restarting system."，並立即重開</li>
+  <li>RB_HALT_SYSTEM - 系統會列印 "System halted."，接著將控制權交與 ROM monitor (在非 x86 的系統很常見)</li>
+  <li>RB_ENABLE_CAD - 驅使 CAD (Ctr-Alt-Del 組合按鍵) 生效，亦即按下 CAD 後，就執行前述 RB_AUTOBOOT 的動作</li>
+  <li>RB_DISABLE_CAD - 使 CAD 失效，這意味著 CAD 不會讓系統重新啟動，但會觸發 SIGINT signal 並遞送給 init (process 1)</li>
+</ul>
+這是 glibc 考量到支援的眾多平台，做了一些包裝，所以 reboot() 在 glibc 是以接受單一參數的函式存在。在早先的版本，就是直接提供 Linux kernel 的系統呼叫 wrapper，其描述如下：<pre class="code" style="margin: 6px;">
+<span class="comment">/* For libc4 and libc5 the library call and the system call
+   are identical, and since kernel version 2.1.30 there are
+   symbolic names LINUX_REBOOT_* for the constants and a
+   fourth argument to the call: */</span>
+<span class="keyword">
+#include</span> &lt;unistd.h><span class="keyword">
+#include</span> &lt;linux/reboot.h>
+
+<span class="keyword">int</span> reboot(<span class="keyword">int</span> magic, <span class="keyword">int</span> magic2, <span class="keyword">int</span> cmd, <span class="keyword">void</span> *arg);
+</pre>
+看到參數的 magic 與 magic2 字樣，很自然就會想到，就是 magic number，並且背後大有文章。在資訊技術的領域中，不乏會有透過有限空間，表達獨特趣味的手法，比方說 Microsoft COM 技術裡頭，不時會有蹦蹦跳跳的貓咪，證據就是 "MEOW packet"，據某個權威者的說法 MEOW 代表 "Microsoft Extensible Object Wire" 之意，但不免啟人疑竇。又，從 Oak (橡樹) 更名為 Java 的知名程式語言，其 classfile 開頭就是 Cafe Babe (表示法為 0xCAFEBABE，亦即「咖啡寶貝」)，這一類的案例更是豐富，凡十六進位表示法恰好能對應到英文某些詞彙者，就稱為 [<a href="http://en.wikipedia.org/wiki/Hexspeak">Hexspeak</a>]。Linux kernel 內自然也有，而且不只一處，本文的主題 reboot() 就堪稱其中經典。<br />
+<br />
+前述的函式宣告中，前兩個參數 (magic 與 magic2) 必須同時符合某個條件，才真正會觸發系統重新啟動或設定 CAD 行為的能力，以避免不當地使用。明確來說，magic 必須為 LINUX_REBOOT_MAGIC1 ("0xfee1dead")，而 magic2 的值要為以下其中一個： (定義於標頭檔 include/linux/reboot.h 之中)<ul>
+  <li>LINUX_REBOOT_MAGIC2 = 672274793</li>
+  <li>LINUX_REBOOT_MAGIC2A = 85072278 (Linux 2.1.17 追加)</li>
+  <li>LINUX_REBOOT_MAGIC2B = 369367448 (Linux 2.1.97 追加)</li>
+  <li>LINUX_REBOOT_MAGIC2C = 537993216 (Linux 2.5.71 追加)</li>
+</ul>
+LINUX_REBOOT_MAGIC1 的值實在有意思，"0xfee1dead" 不就形如 "feel dead" 嗎？差別是前者是數字 "1"，後者是小寫字母 "l"，英文中 dead 的意思可解釋為「麻木不仁」一類，這也是本文標題的來源，因為，這會帶入 reboot() 作呼叫的動作，當然，看倌要發揮一些 geek 的幽默。<br />
+<br />
+不過，趣味處不只如此，magic2 四個數字貌似平凡，但實際上述說了 Linux Kernel 發展的歷史，怎麼說呢？咱們用比較技巧性的方式分析，首先是 LINUX_REBOOT_MAGIC2 = 672274793，看看其十六進位表示法：<pre class="code" style="margin: 6px;">
+$ printf "%x\n" 672274793
+28121969
+</pre>
+稍微作切割，就是 28/12/1969，也就是 Linus Torvalds 生日的 DD/MM/YYYY 寫法。也可以這樣解讀：
+<pre class="code" style="margin: 6px;">
+$ perl -e 'print localtime(672274793). "\n";'
+Mon Apr 22 06:59:53 1991
+</pre>
+透過 localtime 得知筆者在 GMT+0800 (台北時區) 的日期表示，這個 1991 年四月 22 日大致是 Linus Torvalds 當年在芬蘭赫爾辛基大學撰寫 Linux Kernel 的日期。令人拍案叫絕之處，還不只如此，咱們繼續看下一個 LINUX_REBOOT_MAGIC2A = 85072278：<pre class="code" style="margin: 6px;">
+$ printf "%x\n" 85072278
+5121996
+</pre>
+同樣的手法，得知日期是 1996 年十二月 5 日，這天是 Linus 千金 Patricia Miranda Torvalds 出生的日子，也被稱為 "Linus v2.0"，同理可推論下個數值 LINUX_REBOOT_MAGIC2B = 369367448：<pre class="code" style="margin: 6px;">
+$ printf "%x\n" 369367448
+16041998
+</pre>
+日期 1998 年四月 16 日，也就是二千金 Daniela Yolanda Torvalds，或 "Linus 3.0" 誕生的日子，當時甚至有網友異想天開問說「Linus 3.0 是否支援 IPv6 」或「Linus 是否 GPL 自己 的 DNA 序列」等令人莞爾的問句，女兒出生隔日則推出 Linux 2.1.97。<br />
+<br />
+「最新」的一個家庭成員，表示為 LINUX_REBOOT_MAGIC2C = 537993216：：<pre class="code" style="margin: 6px;">
+$ printf "%x\n" 537993216
+20112000
+</pre>
+小女兒 Celeste Amanda Torvalds 誕生於 2000 年十一月 20 日，陪伴著服務於幼稚園的夫人，一家五口，應該頗熱鬧。看來沈迷電腦技術的高人，不僅軟體生產力強大，真實世界也不遑多讓。該不會過一段時間，又追加一個 magic number 呢？ *笑*<br />
+<br />
+在 uClibc 中，關於 reboot() 函式的實做，可窺知如何使用系統呼叫。檔案 libc/sysdeps/linux/common/reboot.c 的內容如下：
+<pre class="code" id="code"><span class="keyword">#include</span> &lt;sys/syscall.h><span class="keyword">
+#include</span> &lt;sys/reboot.h><span class="keyword">
+#define</span> __NR__reboot __NR_reboot
+<span class="keyword">static</span> inline _syscall3(<span class="keyword">int</span>, _reboot, <span class="keyword">int</span>, magic, <span class="keyword">int</span>, magic2, <span class="keyword">int</span>, flag);
+
+<span class="keyword">int</span> reboot(<span class="keyword">int</span> flag)
+{
+        <span class="keyword">return</span> (_reboot((<span class="keyword">int</span>) 0xfee1dead, 672274793, flag));
+}</pre>
+reboot() 系統呼叫要能呼叫，其成立條件除了前述的 magic 與 magic2 要符合外，系統得有 SYS_BOOT capability (參見 include/linux/capability.h 標頭檔) 以及 BKL (Big Kernel Lock，就最新的發展來說，已逐漸移去 BKL)。除了字面上 "reboot" 的「重新啟動」意思，事實上，這個系統呼叫 (核心實做名稱為 "sys_reboot") 提供以下功能選項：<ul>
+  <li>指定方式關機：restart (重新啟動/暖開機)、halt (系統停止運作)、poweroff (關閉電源)</li>
+  <li>觸發某些硬體架構上特定的「關機指令」，比方說回到 watchdog 或 ROM monitor</li>
+  <li>切換 CAD (control-alt-delete) 的處理</li>
+</ul>
+為了讓核心的驅動或運作得以正常結束，reboot 系統呼叫也會逐一觸發已註冊的 reboot_notifier callbacks。<br />
+<br />
+談及 reboot 系統呼叫時，我們也會提到 Linux 上的 [<a href="http://en.wikipedia.org/wiki/SysRq">SysRq</a>]，透過這個神奇的機制，我們可要求系統作些特別的動作，如重新啟動系統或關機。首先得先使其生效：<pre class="code" style="margin: 6px;">
+# echo 1 > /proc/sys/kernel/sysrq
+</pre>
+強制重新開機 (也叫做 fast reboot) 就給予以下指令：<pre class="code" style="margin: 6px;">
+# echo b > /proc/sysrq-trigger
+</pre>
+至於強制關機，就是以下：<pre class="code" style="margin: 6px;">
+echo o > /proc/sysrq-trigger
+</pre>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 August  3, 2008 07:27 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>这个也应该算是彩蛋吧！呵呵！</p>
+<span class="comments-post">由 <a href="http://xiaosuo.cublog.cn">xiaosuo</a> 發表於</MTIfNonEmpty> August  3, 2008 08:26 AM</span>
+</div>
+<div class="comments-body">
+<p>多虧了 Linus 爸爸，在全世界採納 Linux 核心設備都（幾乎）留下了她們存在的證明~XD..</p>
+<span class="comments-post">由 <a href="http://m-wei.net">魏藥</a> 發表於</MTIfNonEmpty> August  3, 2008 12:55 PM</span>
+</div>
+<div class="comments-body">
+<p>這真是有趣的彩蛋，沒有GUI，原來也是可以放入有趣的東西~_~</p>
+<span class="comments-post">由 <a href="http://magicdesign.blogspot.com/2008/05/blog-post_28.html">魔法設計師</a> 發表於</MTIfNonEmpty> August  4, 2008 12:42 AM</span>
+</div>
+<div class="comments-body">
+<p>經過您的一番解說之後我現在終於了解某些magic number是怎麼來的了 :-)<br />
+之前完全沒有想過要用hex拆解這些magic number！</p>
+<span class="comments-post">由 <a href="http://memyselfandtaco.blogspot.com">James Yu</a> 發表於</MTIfNonEmpty> August 22, 2008 09:54 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2060" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: SA@台中五月份 AJAX & Ruby on Rails 心得分享</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001645.html" title="中國麒麟作業系統與 FreeBSD 的比較分析" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001647.html" title="Vim 配合 Doxygen 的彩度提示" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001645.html">« 中國麒麟作業系統與 FreeBSD 的比較分析</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001647.html">Vim 配合 Doxygen 的彩度提示 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">April 28, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">SA@台中五月份 AJAX & Ruby on Rails 心得分享</h3>
+
+[<a href="http://phorum.study-area.org/">酷！學園</a>] 討論區的公告 [<a href="http://phorum.study-area.org/viewtopic.php?t=38868">SA@台中 5 月份 AJAX & Ruby on Rails心得分享!</a>]，很吸引我，引用心得分享資訊：<ul class="code" style="margin: 6px;">
+本次的主題有兩個。<br>
+<br>
+AJAX全稱為「Asynchronous JavaScript and XML」（非同步JavaScript和XML）是一種創建互動式網頁應用的網頁開發技術。它使用：<ul>
+<li>使用XHTML+CSS來表示信息</li>
+<li>使用JavaScript操作DOM（Document Object Model）進行動態顯示及交互</li>
+<li>使用 XML 和 XSLT 進行數據交換及相關操作</li>
+<li>使用 XMLHttpRequest對象與Web伺服器進行非同步數據交換</li>
+<li>使用 JavaScript 將所有的東西綁定在一起</li>
+</ul>
+來源: [<a href="http://zh.wikipedia.org/wiki/AJAX">Wikipeida::AJAX</a>]<br>
+<br>
+主題：AJAX 心得分享<br>
+講師：jameschih<br>
+大綱：<ul>
+<li>AJAX的基礎的開發和原理的說明</li>
+<li>DOM模式</li>
+<li>CSS BOX模型介紹</li>
+<li>IE與FIREFOX開發外掛的使用</li>
+<li>javaScript prototype1.4 函式簡易使用說明</li>
+<li>簡易支援PHP的AJAX框架使用</li>
+</ul>
+Ruby 是一個純物件導向的直譯式語言。擁有強大的功能，簡易的語法，遵循著最直覺原理設計的 API。讓你能夠專注於手邊的工作而不必和你的工具纏鬥。 Ruby 是程式設計師的最好朋友。<br>
+<br>
+RubyOnRails 是一套開發 Web 應用程式的框架。它有簡潔清楚的架構，卻沒有煩瑣的設定。它讓你能愉快的開發美麗的程式，大幅提高你的生產力。<br>
+<br>
+主題：Ruby on Rails 簡介<br>
+講師：contagious<br>
+大綱：<ul>
+<li>Rails 有多紅</li>
+<li>Ruby on Rails 到底是什麼</li>
+<li>Ruby 如何讓 Rails 與眾不同</li>
+<li>Demo<ul>
+<li>簡單的 Blog 程式</li>
+<li>Rails 的 AJAX 支援</li></li>
+</ul>
+時間：2006年 05 月 13 日(星期六) 13:30 休息時間視現場決定～<br>
+地點：清水國小(視聽教室) 清水鎮光華路125號<br>
+費用：0 -<br>
+[<a href="http://tnlug.linux.org.tw/join.php ">報名網址</a>]
+</ul>
+</ul>
+如果沒有意外，我應該會出席 (調整行程中)，看看能否激發新想法，還有順便去拜訪台中的朋友，以及遊覽台中科學博物館。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 April 28, 2006 09:01 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>不嫌棄的話</p>
+
+<p>讓我和 Walkingice 做個東道主如何 :)</p>
+<span class="comments-post">由 <a href="http://blog.outian.net/">OuTian</a> 發表於</MTIfNonEmpty> April 30, 2006 11:00 AM</span>
+</div>
+<div class="comments-body">
+<p>賀！</p>
+
+<p>開大食團！</p>
+
+<p>OuTian請客，OuTian出錢！<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;walkingice0204&#64;雞mail&#46;com">walkingice</a> 發表於</MTIfNonEmpty> May  2, 2006 01:50 AM</span>
+</div>
+<div class="comments-body">
+<p>原來 OuTian 在這邊席開百桌..<br />
+這摸好康，那我也來參一腳...</p>
+<span class="comments-post">由 <a href="http://www.neo.com.tw">Neo</a> 發表於</MTIfNonEmpty> May  2, 2006 11:59 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

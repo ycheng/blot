@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>timhsu: 傾印執行檔 (dump2bin)</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~timhsu/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~timhsu/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~timhsu/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~timhsu/archives/000027.html" title="My Debian &amp; IDE card" />
+
+<link rel="next" href="http://blog.linux.org.tw/~timhsu/archives/000040.html" title="Fix Module Binary" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+<!--
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="http://blog.linux.org.tw/~timhsu/archives/000028.html">
+<dc:title>傾印執行檔 (dump2bin)</dc:title>
+<dc:description>很久以前曾經看到一位很有名的 hacker - silvio 將 core 檔轉換成 ELF 執行檔(core2elf), 當時覺得非常有趣. 在 Un*x 的檔案權限限制裡, 如果我們將某個執行檔設為可執行卻不可讀寫, 那麼我們將無法讀取檔案內容, 也無法對該執行檔作正常的 gdb 動作. 對執行檔進行讀取和除錯其實是逆向工程或是系統安全裡的基本操作, 有些系統管理者或程式設計者太過信賴 Un*x 權限管理, 將過多的資訊保存在執行檔裡, 卻可能導至一些問題的發生. 這個程式 dump2bin.c 是我利用 Linux 提供的 ptrace 系統呼叫, 將執行檔內容傾印至指定的檔案. 例如: ./flags 原本是不可讀寫的執行檔, 但經過 dump2bin 轉換成 ./flags2 即可讀寫....</dc:description>
+<dc:creator>timhsu</dc:creator>
+<dc:date>2003-07-01T01:07:50+08:00</dc:date>
+<license rdf:resource="http://creativecommons.org/licenses/by-nc-sa/1.0/" />
+</Work>
+<License rdf:about="http://creativecommons.org/licenses/by-nc-sa/1.0/">
+<requires rdf:resource="http://web.resource.org/cc/Attribution" />
+<requires rdf:resource="http://web.resource.org/cc/Notice" />
+<requires rdf:resource="http://web.resource.org/cc/ShareAlike" />
+<permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+<permits rdf:resource="http://web.resource.org/cc/Distribution" />
+<permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+<prohibits rdf:resource="http://web.resource.org/cc/CommercialUse" />
+</License>
+</rdf:RDF>
+-->
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~timhsu/" accesskey="1">timhsu</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~timhsu/archives/000027.html">&laquo; My Debian & IDE card</a> |
+
+<a href="http://blog.linux.org.tw/~timhsu/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~timhsu/archives/000040.html">Fix Module Binary &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">July 01, 2003</h2>
+
+<div class="blogbody">
+
+<h3 class="title">傾印執行檔 (dump2bin)</h3>
+
+<p>很久以前曾經看到一位很有名的 hacker - <a href="http://www.big.net.au/~silvio/">silvio</a> 將 core 檔轉換成 ELF 執行檔(core2elf), 當時覺得非常有趣. 在 Un*x 的檔案權限限制裡, 如果我們將某個執行檔設為可執行卻不可讀寫, 那麼我們將無法讀取檔案內容, 也無法對該執行檔作正常的 gdb 動作.<br />
+對執行檔進行讀取和除錯其實是逆向工程或是系統安全裡的基本操作, 有些系統管理者或程式設計者太過信賴 Un*x 權限管理, 將過多的資訊保存在執行檔裡, 卻可能導至一些問題的發生.<br />
+這個程式 <a href="http://info.sayya.org/~kids/source/dump2bin.c">dump2bin.c</a> 是我利用 Linux 提供的 ptrace 系統呼叫, 將執行檔內容傾印至指定的檔案. <br />
+例如: ./flags 原本是不可讀寫的執行檔, 但經過 dump2bin 轉換成 ./flags2 即可讀寫.<br />
+flags 的 file owner 可以為任何人, 只要可以執行的檔案都可轉換.</p>
+
+<p>[tim@localhost hack]$ ls -al ./flags<br />
+---x--x--x    1 tim      tim         11400  6月 23 17:21 ./flags*<br />
+[tim@localhost hack]$ ./dump2bin ./flags ./flags2 <br />
+Ready to dump ./flags to ./flags2 ...<br />
+Child pid = 12183<br />
+Converted successfully!<br />
+[tim@localhost hack]$ ls -al ./flags2 <br />
+-rwx------    1 tim      tim         11400  7月  1 01:01 ./flags2*<br />
+[tim@localhost hack]$ file ./flags2 <br />
+./flags2: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), for GNU/Linux 2.2.5, dynamically linked (uses shared libs), stripped</p>
+
+<a name="more"></a>
+
+
+<span class="posted">由 timhsu 發表於 July  1, 2003 01:07 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+</div>
+</div>
+</body>
+</html>

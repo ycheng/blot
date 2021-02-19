@@ -1,0 +1,246 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 0xlab 成立半年回顧</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002117.html" title="演講：探索嵌入式 ARM 平台與 SoC -- Part I + Part II" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002119.html" title="打造 Brainfuck 的 JIT compiler" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002117.html">« 演講：探索嵌入式 ARM 平台與 SoC -- Part I + Part II</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002119.html">打造 Brainfuck 的 JIT compiler »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">October 31, 2009</h2>
+
+<div class="blogbody">
+
+<h3 class="title">0xlab 成立半年回顧</h3>
+
+「如果有兩條路，一定要選艱苦的那條，它會把你最好的那些東西給榨出來」<br />
+<br />
+電影《喜馬拉雅》如是說。半年前，[<a href="http://0xlab.org/">0xlab</a>] 在一小群工程背景的朋友的期許下，宣佈<a href="http://blog.linux.org.tw/~jserv/archives/002102.html">於 4 月 27 日成立</a> (十進位的 427 等於十六進位的 0x1ab，其形貌類似於 "0xlab"，故稱)，來自過去於 [<a href="http://wiki.openmoko.org">Openmoko</a>] 服務、消費性電子產品 ODM/OEM 開發，以及 freelancer 的經驗，我們著手進行若干計畫，並依據承諾，將大部分的成果，透過 free software / open source 的形式，開放出來，同時也相當高興，這些創作獲得來自世界上不同角落的迴響。<br />
+<br />
+生命本質正是一個不知來自何處、去至何方的奇蹟，而存在也是一個時空的偶然，需要不停的奮鬥，來印證生命真實的存在。生命也需要不斷跋涉，無論昨日有多少功績，無論昨日園圃裡有多少花朵，那是屬於昨日；若一心沉湎於昨日的喜悅，就難享今日更清醇的歡欣。於是，今日，一個新的開始，更需要我們前進、去孕育。美國管理學權威 Peter F. Drucker 在《創新和企業家精神》一書談及：<ul class="code" style="margin: 6px;">
+「即使日本人現在也不得不超越模仿、進口和採用他人技術的階段，學會由自己來進行真正的技術創新」
+</ul>
+這段寫於二十多年前的文字，依然適用於當今的局面，而我們相信，在今日的技術產業，進行技術創新的最佳途徑，就是延攬 open source 資源，並以開放與務實的精神，專注於推動硬體廠商與開放軟體社群的聯繫，成為軟硬體整合方案提供者，讓更多基於開放軟體的裝置走入日常生活，即是 0xlab 的使命。一棵小草，也許永遠不能成為參天大樹，但它可能做最綠最堅強的小草；一滴水，也許永遠不能像長江大河一樣奔騰，但它可以成為所有水中的最純的那一滴。是此，我們著手研究若干關鍵的技術項目，如 Linux Kernel, Android, GCC/Bunutils/GDB, OpenGL|ES, Wireless LAN/Bluetooth, ... 等等，就如 MIT Media Lab 主任 Nicholas Negroponte 所說：<ul class="code" style="margin: 6px;">
+「創造力來源於不同事物的意外組合。使差異最顯著的最佳方法是把不同年齡、有不同文化和不同信仰的人攙雜在一起」
+</ul>
+<a href="http://0xlab.org">0xlab</a> 的團隊就是如此的「意外組合」，並透過 open source 的力量，去創造更多組合的可能。任何事都是由一個決心、一顆種子開始，回顧我們所在的台灣，幾乎無法在世界地圖中一眼找到，但台灣所具備的，在其他國家未必能有，舉凡由經濟部擬定的「兩兆雙星產業發展計畫」背後的半導體、面板產業。其中「兩兆」指未來產值分別超過新台幣一兆元以上的半導體產業及影像顯示產業，而影像顯示產業的第一階段，將以平面顯示產業為發展重點。「雙星」則指數位內容產業，廣泛包含軟體、電子遊戲、媒體、出版、音樂、動畫、網路服務等領域，以及生物技術產業，無可否認的，台灣至今仍有獨特的優勢，但未來呢？愚昧的筆者，沒辦法給予定見，但認同俄國小說家屠格涅夫所說：「先相信你自己，然後別人才會相信你」。相信台灣資訊產業的突破，所以我們選擇留在此處，而貫串數位內容產業的核心，其實正是軟體。人們似乎每天在接受命運的安排，但實際上人們每天安排著自己的命運，不是嗎？<br />
+<br />
+回顧這半年，0xlab 團隊至少有如下的里程碑： (隨機順序)<ul>
+  <li>開發的程式碼，獲得 <a href="http://www.kernel.org/">Linux Kernel</a>, <a href="http://openocd.berlios.de/web/">OpenOCD</a>, <a href="http://code.google.com/android/">Android</a>, <a  href="http://www.mesa3d.org/">Mesa 3D</a> 等世界一流 open source 計畫的採納</li>
+  <li>承上，甚至成為官方的 project committer，如 <a href="http://www.mesa3d.org/">Mesa 3D</a> 的 OpenGL|ES 實做</li>
+  <li>建立 0xlab 的 Android 開發分支 -- [<a href="http://code.google.com/p/0xdroid/">0xdroid</a>]，將 Android 帶到更多的硬體環境、引入更豐富的特徵，與效能 / 功能的改良，並保持 open source 的開發模式</li>
+  <li>與世界大廠建立聯繫，如 Qualcomm Innovation Center, Inc.(QuIC), Motorola mobile device, TI (德州儀器) 等等，保持資訊的公開分享與流通，0xlab 本身也是 OESF (<a href="http://www.oesf.biz/">Open Embedded Software Foundation</a>) 的成員組織</li>
+  <li>與台灣本地的硬體廠商交流，推動對於建構於 open source 技術的硬體裝置的開發模式</li>
+  <li>不定期於 OSDC.tw, TOSSUG, FreedomHEC, COSCUP 等研討會/社群活動分享近期的開發心得與技術進展</li>
+</ul>
+台灣已故的經營之神王永慶先生說過一席話，讓筆者省思頗久：<ul class="code" style="margin: 6px;">
+「我個人認為，我們輸給人家的地方是生活以及工作的觀念和態度。」
+</ul>
+是呀，同樣是寫軟體，同樣在資訊產業打滾，為何台灣人總有被人矮化的感覺呢？從十年前筆者開始參與 open source 專案開發以來，就有如此的感嘆，撇開本職學能不論，觀念與態度上，的確有顯著落差。古希臘哲學家亞里斯多德表示：「人生最終的目的在於覺醒和思考的能力，而不只在於生存」，他因這個信條，驅使而在哲學、邏輯、生物、政治經濟、美學等廣泛的領域中取得了令人眩目的成就，並由留下的大量著作警示世人：人不該局限於動物般的對生存的奮鬥中，人可貴之處，應在覺醒與思考的能力。<a href="http://0xlab.org">0xlab</a> 試著在生存的奮鬥之餘，嘗試從過去的軟體、硬體、消費性電子產品開發模式中覺醒，靜心探索並將其轉化為焠煉後的永續 open source 形式，願我們能平穩地走在這艱苦的路途，一如期望，逼迫我們將最好的那些東西給榨出來。<br />
+<br />
+延伸資訊：<ul>
+  <li>0xlab 首頁： <a href="http://0xlab.org/">0xlab</a></li>
+  <li>0xlab 開發日誌： <a href="http://planet.0xlab.org">Planet 0xlab</a></li>
+  <li>0xlab 參與開發/貢獻的專案列表： <a href="http://0xlab.org/projects.html">0xlab Projects</a></li>
+  <li>0xlab 聯絡資訊：<ul>
+      <li>E-mail: contact@0xlab.org</li>
+      <li>IRC: irc.freenode.org/6667 #0xlab</li>
+      <li>郵件論壇： <a href="http://groups.google.com/group/0xlab-discuss">0xlab-discuss</a> (一般討論) / <a href="http://groups.google.com/group/0xlab-devel">0xlab-devel</a> (技術開發)</li>
+  </ul></li>
+</ul>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 October 31, 2009 08:32 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>加油，認同你們的理想。</p>
+<span class="comments-post">由 <a href="http://coolfire.fetag.org/">Coolfire</a> 發表於</MTIfNonEmpty> November  2, 2009 10:10 AM</span>
+</div>
+<div class="comments-body">
+<p>MESA 3D 那部份真的很棒！加油！</p>
+<span class="comments-post">由 <a href="mailto&#58;charles0126&#64;gmail&#46;com">charles</a> 發表於</MTIfNonEmpty> November  2, 2009 02:16 PM</span>
+</div>
+<div class="comments-body">
+<p>加油！大家要奮鬥。</p>
+<span class="comments-post">由 <a href="http://magicdesign.blogspot.com/">MGdesigner</a> 發表於</MTIfNonEmpty> November  2, 2009 09:42 PM</span>
+</div>
+<div class="comments-body">
+<p>台湾人是中国人吗？</p>
+<span class="comments-post">由 <a href="mailto&#58;ghosert&#64;gmail&#46;com">Jay</a> 發表於</MTIfNonEmpty> November  5, 2009 01:16 PM</span>
+</div>
+<div class="comments-body">
+<p>凡走過必留痕跡！請繼續加油，Good Job…</p>
+<span class="comments-post">由 <a href="http://mozoblog.homelinux.com">mozo</a> 發表於</MTIfNonEmpty> December 15, 2009 10:27 AM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2118" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

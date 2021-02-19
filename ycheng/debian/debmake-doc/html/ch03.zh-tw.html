@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>章 3. 工具的配置</title>
+    <link rel="stylesheet" type="text/css" href="debian.css"/>
+    <meta name="generator" content="DocBook XSL Stylesheets V1.79.1"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="home" href="index.zh-tw.html" title="Debian 維護者指南"/>
+    <link rel="up" href="index.zh-tw.html" title="Debian 維護者指南"/>
+    <link rel="prev" href="ch02.zh-tw.html" title="章 2. 預備知識"/>
+    <link rel="next" href="ch04.zh-tw.html" title="章 4. 簡單例子"/>
+  </head>
+  <body>
+    <div class="navheader">
+      <table width="100%" summary="Navigation header">
+        <tr>
+          <th colspan="3" align="center">章 3. 工具的配置</th>
+        </tr>
+        <tr>
+          <td align="left"><a accesskey="p" href="ch02.zh-tw.html"><img src="images/prev.png" alt="前一頁"/></a> </td>
+          <th width="60%" align="center"> </th>
+          <td align="right"> <a accesskey="n" href="ch04.zh-tw.html"><img src="images/next.png" alt="下一頁"/></a></td>
+        </tr>
+      </table>
+      <hr/>
+    </div>
+    <div class="chapter">
+      <div class="titlepage">
+        <div>
+          <div>
+            <h1 class="title"><a id="setup"/>章 3. 工具的配置</h1>
+          </div>
+        </div>
+      </div>
+      <div class="toc">
+        <p>
+          <strong>內容目錄</strong>
+        </p>
+        <dl class="toc">
+          <dt>
+            <span class="section">
+              <a href="ch03.zh-tw.html#email-setup">3.1. 電子郵件地址</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch03.zh-tw.html#mc-setup">3.2. mc</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch03.zh-tw.html#git-setup">3.3. git</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch03.zh-tw.html#quilt-setup">3.4. quilt</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch03.zh-tw.html#devscripts-setup">3.5. devscripts</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch03.zh-tw.html#pbuilder-setup">3.6. pbuilder</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch03.zh-tw.html#gbp-setup">3.7. git-buildpackage</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch03.zh-tw.html#proxy">3.8. HTTP 代理</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch03.zh-tw.html#repropro">3.9. 私有 Debian 倉庫</a>
+            </span>
+          </dt>
+        </dl>
+      </div>
+      <p><span class="strong"><strong>build-essential</strong></span> 套件必須在構建環境內預先安裝。</p>
+      <p><span class="strong"><strong>devscripts</strong></span> 套件應當安裝在維護者的工作環境中。</p>
+      <p>儘管這個不是絕對的要求，但是在維護者的工作環境內裝上並配置好本章節提到的各個常用的套件會有助於維護者高效投入工作。這些軟體可以構成我們共同確立的一個基準工作環境。</p>
+      <p>如有需要，請同樣按需安裝在“Debian 開發者參考”文中 <a class="ulink" href="https://www.debian.org/doc/manuals/developers-reference/tools.html">Debian 維護者工具概覽</a> 一節提到的各個工具。</p>
+      <div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;">
+        <table border="0" summary="Caution">
+          <tr>
+            <td rowspan="2" align="center" valign="top">
+              <img alt="[注意]" src="images/caution.png"/>
+            </td>
+            <th align="left">注意</th>
+          </tr>
+          <tr>
+            <td align="left" valign="top">
+              <p>這裡展示的工具配置方式僅作為範例提供，可能與系統上最新的套件相比有所落後。Debian 的開發具有一個移動的目標。請確保閱讀合適的文件並按照需要更新配置內容。</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="email-setup"/>3.1. 電子郵件地址</h2>
+            </div>
+          </div>
+        </div>
+        <p>許多 Debian 維護工具識別並使用 shell 環境變數 <span class="strong"><strong>$DEBEMAIL</strong></span> 和 <span class="strong"><strong>$DEBFULLNAME</strong></span> 作為作為您的電子郵件地址和名稱。</p>
+        <p>我們可以通過將下面幾行加入 <span class="strong"><strong>~/.bashrc</strong></span><a href="#ftn.idm653" class="footnote" id="idm653"><sup class="footnote">[6]</sup></a> 的方式對這些軟體進行配置。</p>
+        <p><strong>新增至 <span class="strong"><strong>~/.bashrc</strong></span> 檔案. </strong>
+</p>
+        <pre class="screen">DEBEMAIL="your.email.address@example.org"
+DEBFULLNAME="Firstname Lastname"
+export DEBEMAIL DEBFULLNAME</pre>
+        <p>
+</p>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="mc-setup"/>3.2. mc</h2>
+            </div>
+          </div>
+        </div>
+        <p><span class="strong"><strong>mc</strong></span> 命令提供了管理檔案的簡單途徑。它可以開啟二進位制 <span class="strong"><strong>deb</strong></span> 檔案，並僅需對二進位制 <span class="strong"><strong>deb</strong></span> 檔案按下回車鍵便能檢查其內容。它呼叫了 <span class="strong"><strong>dpkg-deb</strong></span> 命令作為其後端。我們可以按照下列方式對其配置，以支援簡易 <span class="strong"><strong>chdir</strong></span> 操作。</p>
+        <p><strong>新增至 <span class="strong"><strong>~/.bashrc</strong></span> 檔案. </strong>
+</p>
+        <pre class="screen"># mc related
+export HISTCONTROL=ignoreboth
+. /usr/lib/mc/mc.sh</pre>
+        <p>
+</p>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="git-setup"/>3.3. git</h2>
+            </div>
+          </div>
+        </div>
+        <p>如今 <span class="strong"><strong>git</strong></span> 命令已成為管理帶歷史的原始碼樹的必要工具。</p>
+        <p><span class="strong"><strong>git</strong></span> 命令的使用者級全域性配置，如您的名字和電子郵件地址，儲存在 <span class="strong"><strong>~/.gitconfig</strong></span> 檔案中，且可以使用如下方式配置。</p>
+        <pre class="screen">$ git config --global user.name "Name Surname"
+$ git config --global user.email yourname@example.com</pre>
+        <p>如果您仍然只習慣 CVS 或者 Subversion 的命令風格，您可以使用如下方式設定幾個命令別名。</p>
+        <pre class="screen">$ git config --global alias.ci "commit -a"
+$ git config --global alias.co checkout</pre>
+        <p>您可以使用如下命令檢查全域性配置。</p>
+        <pre class="screen">$ git config --global --list</pre>
+        <div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;">
+          <table border="0" summary="Tip">
+            <tr>
+              <td rowspan="2" align="center" valign="top">
+                <img alt="[提示]" src="images/tip.png"/>
+              </td>
+              <th align="left">提示</th>
+            </tr>
+            <tr>
+              <td align="left" valign="top">
+                <p>有必要使用某些圖形介面 git 工具，例如 <span class="strong"><strong>gitk</strong></span> 或 <span class="strong"><strong>gitg</strong></span> 命令來有效地處理 git 倉庫的歷史。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="quilt-setup"/>3.4. quilt</h2>
+            </div>
+          </div>
+        </div>
+        <p><span class="strong"><strong>quilt</strong></span> 命令提供了記錄修改的一個基本方式。對 Debian 打包來說，該工具需要進行設定，從而在 <span class="strong"><strong>debian/patches/</strong></span> 目錄內記錄修改內容，而非使用預設的 <span class="strong"><strong>patches/</strong></span> 目錄。</p>
+        <p>為了避免改變 <span class="strong"><strong>quilt</strong></span> 命令自身的行為，我們在這裡建立一個用於 Debian 打包工作的命令別名：<span class="strong"><strong>dquilt</strong></span>。之後，我們將對應內容寫入 <span class="strong"><strong>~/.bashrc</strong></span> 檔案。下面給出的第二行為 <span class="strong"><strong>dquilt</strong></span> 命令提供與 <span class="strong"><strong>quilt</strong></span> 命令相同的命令行補全功能。</p>
+        <p><strong>新增至 <span class="strong"><strong>~/.bashrc</strong></span> 檔案. </strong>
+</p>
+        <pre class="screen">alias dquilt="quilt --quiltrc=${HOME}/.quiltrc-dpkg"
+complete -F _quilt_completion $_quilt_complete_opt dquilt</pre>
+        <p>
+</p>
+        <p>然後我們來建立具有如下內容的 <span class="strong"><strong>~/.quiltrc-dpkg</strong></span> 檔案。</p>
+        <pre class="screen">d=.
+while [ ! -d $d/debian -a `readlink -e $d` != / ];
+    do d=$d/..; done
+if [ -d $d/debian ] &amp;&amp; [ -z $QUILT_PATCHES ]; then
+    # if in Debian packaging tree with unset $QUILT_PATCHES
+    QUILT_PATCHES="debian/patches"
+    QUILT_PATCH_OPTS="--reject-format=unified"
+    QUILT_DIFF_ARGS="-p ab --no-timestamps --no-index --color=auto"
+    QUILT_REFRESH_ARGS="-p ab --no-timestamps --no-index"
+    QUILT_COLORS="diff_hdr=1;32:diff_add=1;34:" + \
+            "diff_rem=1;31:diff_hunk=1;33:diff_ctx=35:diff_cctx=33"
+    if ! [ -d $d/debian/patches ]; then mkdir $d/debian/patches; fi
+fi</pre>
+        <p>請參考 <span class="strong"><strong>quilt</strong></span>(1) 和 <a class="ulink" href="file:///usr/share/doc/quilt/quilt.html">處理大量補丁的方法暨對 Quilt 的介紹</a> 以瞭解如何使用 <span class="strong"><strong>quilt</strong></span> 命令。</p>
+        <p>要取得使用範例，請檢視 <a class="xref" href="ch04.zh-tw.html#alt-patch" title="4.8. 第三步（備選）：修改上游原始碼">節 4.8, “第三步（備選）：修改上游原始碼”</a>。</p>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="devscripts-setup"/>3.5. devscripts</h2>
+            </div>
+          </div>
+        </div>
+        <p><span class="strong"><strong>debsign</strong></span> 命令由 <span class="strong"><strong>devscripts</strong></span> 套件提供，它可以使用使用者的 GPG 私鑰對 Debian 軟體包進行簽名。</p>
+        <p><span class="strong"><strong>debuild</strong></span> 命令同樣由 <span class="strong"><strong>devscripts</strong></span> 套件提供，它可以構建二進位制套件並使用 <span class="strong"><strong>lintian</strong></span> 命令對其進行檢查。<span class="strong"><strong>lintian</strong></span> 命令的詳細輸出通常都很實用。</p>
+        <p>您可以將下列內容寫入 <span class="strong"><strong>~/.devscripts</strong></span> 檔案來進行配置。</p>
+        <pre class="screen">DEBUILD_DPKG_BUILDPACKAGE_OPTS="-i -I -us -uc"
+DEBUILD_LINTIAN_OPTS="-i -I --show-overrides"
+DEBSIGN_KEYID="Your_GPG_keyID"</pre>
+        <p>用於 <span class="strong"><strong>dpkg-source</strong></span> 命令的 <span class="strong"><strong>DEBUILD_DPKG_BUILDPACKAGE_OPTS</strong></span> 中可以額外使用 <span class="strong"><strong>-i</strong></span> 和 <span class="strong"><strong>-I</strong></span> 選項以幫助構建原始碼中具有外來無關內容的套件（參見 <a class="xref" href="ch05.zh-tw.html#build-noextra" title="5.15. 構建套件時排除不必要的內容">節 5.15, “構建套件時排除不必要的內容”</a>）。</p>
+        <p>當前情況下，使用 4096 位的 RSA 金鑰是較好的做法。另見 <a class="ulink" href="https://keyring.debian.org/creating-key.html">建立一個新 GPG 金鑰</a>。</p>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="pbuilder-setup"/>3.6. pbuilder</h2>
+            </div>
+          </div>
+        </div>
+        <p><span class="strong"><strong>pbuilder</strong></span> 套件提供了淨室（乾淨的）（<span class="strong"><strong>chroot</strong></span>）構建環境。<a href="#ftn.idm742" class="footnote" id="idm742"><sup class="footnote">[7]</sup></a></p>
+        <p>我們可以搭配使用另外幾個輔助套件對其設定。</p>
+        <div class="itemizedlist">
+          <ul class="itemizedlist">
+            <li class="listitem"><span class="strong"><strong>cowbuilder</strong></span> 套件能加速 chroot 建立過程。</li>
+            <li class="listitem"><span class="strong"><strong>lintian</strong></span> 套件能找到所構建套件中的缺陷。</li>
+            <li class="listitem"><span class="strong"><strong>bash</strong></span>、<span class="strong"><strong>mc</strong></span> 和 <span class="strong"><strong>vim</strong></span> 套件在構建失敗時用來查詢問題。</li>
+            <li class="listitem"><span class="strong"><strong>ccache</strong></span> 套件可以加速 <span class="strong"><strong>gcc</strong></span>。（可選）</li>
+            <li class="listitem"><span class="strong"><strong>libeatmydata1</strong></span> 套件可以加速 <span class="strong"><strong>dpkg</strong></span>。（可選）</li>
+            <li class="listitem">並行執行 <span class="strong"><strong>make</strong></span> 以提高構建速度。（可選）</li>
+          </ul>
+        </div>
+        <div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+          <table border="0" summary="Warning">
+            <tr>
+              <td rowspan="2" align="center" valign="top">
+                <img alt="[警告]" src="images/warning.png"/>
+              </td>
+              <th align="left">警告</th>
+            </tr>
+            <tr>
+              <td align="left" valign="top">
+                <p>可選的設定項可能造成負面影響。如果有疑問，請關閉它們。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <p>我們使用如下給出的內容來建立 <span class="strong"><strong>~/.pbuilderrc</strong></span> 檔案（所有可選功能均已關閉）。</p>
+        <pre class="screen">AUTO_DEBSIGN="${AUTO_DEBSIGN:-no}"
+PDEBUILD_PBUILDER=cowbuilder
+HOOKDIR="/var/cache/pbuilder/hooks"
+MIRRORSITE="http://deb.debian.org/debian/"
+#APTCACHE=/var/cache/pbuilder/aptcache
+APTCACHE=/var/cache/apt/archives
+#BUILDRESULT=/var/cache/pbuilder/result/
+BUILDRESULT=../
+EXTRAPACKAGES="ccache lintian libeatmydata1"
+
+# enable to use libeatmydata1 for pbuilder
+#export LD_PRELOAD=${LD_PRELOAD+$LD_PRELOAD:}libeatmydata.so
+
+# enable ccache for pbuilder
+#export PATH="/usr/lib/ccache${PATH+:$PATH}"
+#export CCACHE_DIR="/var/cache/pbuilder/ccache"
+#BINDMOUNTS="${CCACHE_DIR}"
+
+# parallel make
+#DEBBUILDOPTS=-j8</pre>
+        <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+          <table border="0" summary="Note">
+            <tr>
+              <td rowspan="2" align="center" valign="top">
+                <img alt="[注意]" src="images/note.png"/>
+              </td>
+              <th align="left">注意</th>
+            </tr>
+            <tr>
+              <td align="left" valign="top">
+                <p>可以考慮建立從 <span class="strong"><strong>/root/.pbuilderrc</strong></span> 到 <span class="strong"><strong>/home/&lt;user&gt;/.pbuilderrc</strong></span> 的符號鏈接以獲得一致的體驗。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+          <table border="0" summary="Note">
+            <tr>
+              <td rowspan="2" align="center" valign="top">
+                <img alt="[注意]" src="images/note.png"/>
+              </td>
+              <th align="left">注意</th>
+            </tr>
+            <tr>
+              <td align="left" valign="top">
+                <p>由於 <a class="ulink" href="https://bugs.debian.org/606542">缺陷 #606542</a>，您可能需要手動將 <span class="strong"><strong>EXTRAPACKAGES</strong></span> 列出的套件安裝進入 chroot。請見 <a class="xref" href="ch07.zh-tw.html#chroot" title="7.10. chroot">節 7.10, “chroot”</a>。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+          <table border="0" summary="Note">
+            <tr>
+              <td rowspan="2" align="center" valign="top">
+                <img alt="[注意]" src="images/note.png"/>
+              </td>
+              <th align="left">注意</th>
+            </tr>
+            <tr>
+              <td align="left" valign="top">
+                <p>應當在 chroot 環境內外同時安裝上 <span class="strong"><strong>libeatmydata1</strong></span> (&gt;=82-2)，否則即為關閉 <span class="strong"><strong>libeatmydata1</strong></span>。該套件在某些構建系統中可能導致競爭情況（race condition）發生。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+          <table border="0" summary="Note">
+            <tr>
+              <td rowspan="2" align="center" valign="top">
+                <img alt="[注意]" src="images/note.png"/>
+              </td>
+              <th align="left">注意</th>
+            </tr>
+            <tr>
+              <td align="left" valign="top">
+                <p>並行的 <span class="strong"><strong>make</strong></span> 可能在某些已有套件上執行失敗，它同樣會使得構建日誌難以閱讀。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <p>我們可以按如下方式建立觸動指令碼。</p>
+        <p>
+          <span class="strong">
+            <strong>/var/cache/pbuilder/hooks/A10ccache</strong>
+          </span>
+        </p>
+        <pre class="screen">#!/bin/sh
+set -e
+# increase the ccache caching size
+ccache -M 4G
+# output the current statistics
+ccache -s</pre>
+        <p>
+          <span class="strong">
+            <strong>/var/cache/pbuilder/hooks/B90lintian</strong>
+          </span>
+        </p>
+        <pre class="screen">#!/bin/sh
+set -e
+apt-get -y --allow-downgrades install lintian
+echo "+++ lintian output +++"
+su -c "lintian -i -I --show-overrides /tmp/buildd/*.changes; :" -l pbuilder
+echo "+++ end of lintian output +++"</pre>
+        <p>
+          <span class="strong">
+            <strong>/var/cache/pbuilder/hooks/C10shell</strong>
+          </span>
+        </p>
+        <pre class="screen">#!/bin/sh
+set -e
+apt-get -y --allow-downgrades install vim bash mc
+# invoke shell if build fails
+cd /tmp/buildd/*/debian/..
+/bin/bash &lt; /dev/tty &gt; /dev/tty 2&gt; /dev/tty</pre>
+        <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+          <table border="0" summary="Note">
+            <tr>
+              <td rowspan="2" align="center" valign="top">
+                <img alt="[注意]" src="images/note.png"/>
+              </td>
+              <th align="left">注意</th>
+            </tr>
+            <tr>
+              <td align="left" valign="top">
+                <p>所有這些指令碼都需要設定為全域性可執行：“<span class="strong"><strong>-rwxr-xr-x 1 root root</strong></span>”。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+          <table border="0" summary="Note">
+            <tr>
+              <td rowspan="2" align="center" valign="top">
+                <img alt="[注意]" src="images/note.png"/>
+              </td>
+              <th align="left">注意</th>
+            </tr>
+            <tr>
+              <td align="left" valign="top">
+                <p><span class="strong"><strong>ccache</strong></span> 的快取目錄 <span class="strong"><strong>/var/cache/pbuilder/cache</strong></span> 需要為了 <span class="strong"><strong>pbuilder</strong></span> 命令的使用而設定為全域性可寫：“<span class="strong"><strong>-rwxrwxrwx 1 root root</strong></span>”。您需要明白這樣會帶來相關的安全隱患。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="gbp-setup"/>3.7. git-buildpackage</h2>
+            </div>
+          </div>
+        </div>
+        <p>您也可能需要在 <span class="strong"><strong>~/.gbp.conf</strong></span> 中設定全域性配置資訊</p>
+        <pre class="screen"># Configuration file for "gbp &lt;command&gt;"
+
+[DEFAULT]
+# the default build command:
+builder = git-pbuilder -i -I -us -uc
+# use pristine-tar:
+pristine-tar = True
+# Use color when on a terminal, alternatives: on/true, off/false or auto
+color = auto</pre>
+        <div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;">
+          <table border="0" summary="Tip">
+            <tr>
+              <td rowspan="2" align="center" valign="top">
+                <img alt="[提示]" src="images/tip.png"/>
+              </td>
+              <th align="left">提示</th>
+            </tr>
+            <tr>
+              <td align="left" valign="top">
+                <p>這裡的 <span class="strong"><strong>gbp</strong></span> 命令是 <span class="strong"><strong>git-buildpackage</strong></span> 命令的一個別名。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="proxy"/>3.8. HTTP 代理</h2>
+            </div>
+          </div>
+        </div>
+        <p>您應當在本地設定 HTTP 快取代理以節約查詢 Debian 軟體倉庫的頻寬。可以考慮以下幾種選項：</p>
+        <div class="itemizedlist">
+          <ul class="itemizedlist">
+            <li class="listitem">簡單的 HTTP 快取代理，使用 <span class="strong"><strong>squid</strong></span> 軟體包。</li>
+            <li class="listitem">特化的 HTTP 快取代理，使用 <span class="strong"><strong>apt-cacher-ng</strong></span> 套件。</li>
+          </ul>
+        </div>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="repropro"/>3.9. 私有 Debian 倉庫</h2>
+            </div>
+          </div>
+        </div>
+        <p>您可以使用 <span class="strong"><strong>reprepro</strong></span> 套件搭建私有 Debian 倉庫。</p>
+      </div>
+      <div class="footnotes">
+        <br/>
+        <hr/>
+        <div id="ftn.idm653" class="footnote">
+          <p><a href="#idm653" class="simpara"><sup class="simpara">[6] </sup></a>這裡假設您正在使用 Bash 並以此作為登入預設 shell。如果您設定了其它登入 shell，例如 Z shell，請使用它們對應的配置檔案替換 <span class="lang">~/.bashrc</span> 檔案。</p>
+        </div>
+        <div id="ftn.idm742" class="footnote">
+          <p><a href="#idm742" class="simpara"><sup class="simpara">[7] </sup></a><span class="strong"><strong>sbuild</strong></span> 套件提供了另一套 chroot 平臺。</p>
+        </div>
+      </div>
+    </div>
+    <div class="navfooter">
+      <hr/>
+      <table width="100%" summary="Navigation footer">
+        <tr>
+          <td align="left"><a accesskey="p" href="ch02.zh-tw.html"><img src="images/prev.png" alt="前一頁"/></a> </td>
+          <td align="center"> </td>
+          <td align="right"> <a accesskey="n" href="ch04.zh-tw.html"><img src="images/next.png" alt="下一頁"/></a></td>
+        </tr>
+        <tr>
+          <td align="left" valign="top">章 2. 預備知識 </td>
+          <td align="center">
+            <a accesskey="h" href="index.zh-tw.html">
+              <img src="images/home.png" alt="起始頁"/>
+            </a>
+          </td>
+          <td align="right" valign="top"> 章 4. 簡單例子</td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>timhsu: Fix Module Binary</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~timhsu/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~timhsu/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~timhsu/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~timhsu/archives/000028.html" title="傾印執行檔 (dump2bin)" />
+
+<link rel="next" href="http://blog.linux.org.tw/~timhsu/archives/000044.html" title="關於 Dlink 650+ for Linux" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+<!--
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="http://blog.linux.org.tw/~timhsu/archives/000040.html">
+<dc:title>Fix Module Binary</dc:title>
+<dc:description>How to fix symbols and version of module binary? 有沒有遇過像這樣的訊息呢? [root@localhost net]# insmod acx100sta_cs.o acx100sta_cs.o: kernel-module version mismatch acx100sta_cs.o was compiled for kernel version 2.4.21-0.13mdk while this kernel is version 2.4.21-0.18mdk. 有時候我們從一些網站上下載回某個 linux driver, 有些含 source, 有些僅是 module binary 若該...</dc:description>
+<dc:creator>timhsu</dc:creator>
+<dc:date>2003-07-14T11:13:22+08:00</dc:date>
+<license rdf:resource="http://creativecommons.org/licenses/by-nc-sa/1.0/" />
+</Work>
+<License rdf:about="http://creativecommons.org/licenses/by-nc-sa/1.0/">
+<requires rdf:resource="http://web.resource.org/cc/Attribution" />
+<requires rdf:resource="http://web.resource.org/cc/Notice" />
+<requires rdf:resource="http://web.resource.org/cc/ShareAlike" />
+<permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+<permits rdf:resource="http://web.resource.org/cc/Distribution" />
+<permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+<prohibits rdf:resource="http://web.resource.org/cc/CommercialUse" />
+</License>
+</rdf:RDF>
+-->
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~timhsu/" accesskey="1">timhsu</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~timhsu/archives/000028.html">&laquo; 傾印執行檔 (dump2bin)</a> |
+
+<a href="http://blog.linux.org.tw/~timhsu/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~timhsu/archives/000044.html">關於 Dlink 650+ for Linux &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">July 14, 2003</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Fix Module Binary</h3>
+
+<p>How to fix symbols and version of module binary?</p>
+
+<p>有沒有遇過像這樣的訊息呢?<br />
+[root@localhost net]# insmod acx100sta_cs.o<br />
+acx100sta_cs.o: kernel-module version mismatch<br />
+        acx100sta_cs.o was compiled for kernel version 2.4.21-0.13mdk<br />
+        while this kernel is version 2.4.21-0.18mdk.                 </p>
+
+<p>有時候我們從一些網站上下載回某個 linux driver, 有些含 source, 有些僅是<br />
+module binary 若該 module binary 編譯的環境(kernel 版本)和目前正在用的<br />
+kernel 版本不符時, 往往就會出現 kernel-module version mismatch 的錯誤.</p>
+
+<p>有個方法是利用 insmod -f 來強迫載入 module.<br />
+還有個法子, 請下載 <a href="http://info.sayya.org/~kids/tools/fixscript">fixscript</a></p>
+
+<p>fixscript 可直接修改 module binary 裡的符號表和版本資訊以符合目前<br />
+運行中的 kernel 版本和環境. fixscript 處理過後即可不用 insmod -f <br />
+來強迫載入. 只是這樣的 module 可能帶來一些風險, 要自行斟酌使用之.</p>
+
+<p>使用範例:<br />
+[root@localhost root]# ./fixscript acx100sta_cs.o newacx100sta_cs.o<br />
+Fixscript V1.7                                                     <br />
+doing eth_type_trans trunc=eth_type_trans new=eth_type_trans_R729edb6c<br />
+doing __wake_up trunc=__wake_up new=__wake_up_Rb76c5f1e               <br />
+doing __kfree_skb trunc=__kfree_skb new=__kfree_skb_Rc45b82d1<br />
+doing alloc_skb trunc=alloc_skb new=alloc_skb_Rdc2b24bd      <br />
+doing pci_register_driver trunc=pci_register_driver new=pci_register_driver_R1e536d21                                                                          <br />
+doing __generic_copy_from_user trunc=__generic_copy_from_user new=__generic_copy_from_user_R116166aa                                                           <br />
+doing __release_region trunc=__release_region new=__release_region_Rd49501d4<br />
+doing kmalloc trunc=kmalloc new=kmalloc_R93d4cfe6                           <br />
+doing pci_free_consistent trunc=pci_free_consistent new=pci_free_consistent_R1bfc1908                                                                          <br />
+doing pci_enable_device trunc=pci_enable_device new=pci_enable_device_R1bc741d2<br />
+doing alloc_etherdev trunc=alloc_etherdev new=alloc_etherdev_R6520b46c         <br />
+doing vfree trunc=vfree new=vfree_R2fd1d81c                           <br />
+doing pci_disable_device trunc=pci_disable_device new=pci_disable_device_R958460<br />
+05                                                                             <br />
+doing boot_cpu_data trunc=boot_cpu_data new=boot_cpu_data_R0657d037<br />
+doing cpu_raise_softirq trunc=cpu_raise_softirq new=cpu_raise_softirq_Rd01f3ee8<br />
+doing free_irq trunc=free_irq new=free_irq_Rf20dabd8                           <br />
+doing unregister_netdev trunc=unregister_netdev new=unregister_netdev_Rd372bc38<br />
+doing __out_of_line_bug trunc=__out_of_line_bug new=__out_of_line_bug_R8b0fd3c5<br />
+doing iounmap trunc=iounmap new=iounmap_R5fb196d4                              <br />
+doing pci_alloc_consistent trunc=pci_alloc_consistent new=pci_alloc_consistent_Rca1c24c8                                                                       <br />
+doing __ioremap trunc=__ioremap new=__ioremap_R9eac042a<br />
+doing del_timer trunc=del_timer new=del_timer_Rfc62f16d<br />
+doing register_netdev trunc=register_netdev new=register_netdev_Rc85ab262<br />
+doing iomem_resource trunc=iomem_resource new=iomem_resource_R9efed5af   <br />
+doing kfree trunc=kfree new=kfree_R037a0cba                           <br />
+doing request_irq trunc=request_irq new=request_irq_R0c60f2e0<br />
+doing netif_rx trunc=netif_rx new=netif_rx_Rd1546c1c         <br />
+doing __verify_write trunc=__verify_write new=__verify_write_R203afbeb<br />
+doing pci_unregister_driver trunc=pci_unregister_driver new=pci_unregister_driver_Re8061e13                                                                    <br />
+doing skb_over_panic trunc=skb_over_panic new=skb_over_panic_R5ced0794<br />
+doing pci_set_master trunc=pci_set_master new=pci_set_master_R99cc7ae2<br />
+doing sleep_on_timeout trunc=sleep_on_timeout new=sleep_on_timeout_R75c8e394<br />
+doing sprintf trunc=sprintf new=sprintf_R1d26aa98                           <br />
+doing jiffies trunc=jiffies new=jiffies_R0da02d67<br />
+doing __vmalloc trunc=__vmalloc new=__vmalloc_R79995c5b<br />
+doing softnet_data trunc=softnet_data new=softnet_data_R338e35b2<br />
+doing __request_region trunc=__request_region new=__request_region_R1a1a4f09<br />
+doing printk trunc=printk new=printk_R1b7d4074                              <br />
+doing add_timer trunc=add_timer new=add_timer_Ra19eacf8<br />
+doing __generic_copy_to_user trunc=__generic_copy_to_user new=__generic_copy_to_<br />
+user_Rd523fdd3                                                                 </p>
+
+<p>[root@localhost root]# insmod newacx100sta_cs.o<br />
+Warning: loading newacx100sta_cs.o will taint the kernel: no license<br />
+  See http://www.tux.org/lkml/#export-tainted for information about tainted modu<br />
+les                                                                            <br />
+newacx100sta_cs.o: init_module: No such device<br />
+Hint: insmod errors can be caused by incorrect module parameters, including inva<br />
+lid IO or IRQ parameters.                                                      <br />
+      You may find more information in syslog or the output from dmesg</p>
+
+<a name="more"></a>
+
+
+<span class="posted">由 timhsu 發表於 July 14, 2003 11:13 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+</div>
+</div>
+</body>
+</html>

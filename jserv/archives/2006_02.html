@@ -1,0 +1,3327 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: February 2006 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2006_01.html" title="January 2006" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2006_03.html" title="March 2006" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/2006_01.html">« January 2006</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/2006_03.html">March 2006 »</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">February 28, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001546"></a>
+<h3 class="title">思辨邏輯原理道覺悟</h3>
+
+晚上花了一些時間閱讀 [<a href="http://pro-velop.blogspot.com/">Creativity Zen Espresso | 創意心法</a>]，作者 [<a href="http://www.blogger.com/profile/5723825">東行者</a>] (我猜此稱呼較為合適) 一系列的 blog 與寫作，令我頗感驚艷與啟發性，思考文化、哲學，以及電腦科學的齊一是很美妙的，雖然這三者有明確的分野，但本質上又是如此的相似，這篇 blog [<a href="http://pro-velop.blogspot.com/2006/02/blog-post_19.html"> 思辨．邏輯．原理．道．覺悟；
+思辨邏輯原理道覺悟</a>] 就是一個很特別的切入點，並試圖從簡約的二元邏輯，「悟」出原理與哲理。蘇格拉底說過，未經反省的人生是不值得活的，是此，陷入沉思的我，再度詞窮，繼續反省。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001546.html">10:10 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1546" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001545"></a>
+<h3 class="title">讓 MPlayer 支援原生WMV9</h3>
+
+[<a href="http://www.mplayerhq.hu/">MPlayer</a>] 的功能強大，而且支援的媒體檔案與平台數量都是一流的，對於 Microsoft 專屬的 mpeg-4 與 wmv1/2/3 (這三者分別對應我們常稱呼的 WMV 7/8/9，小寫表示 video coding 的 algorithm，大寫表示 Window Media Player 支援格式)，[<a href="http://www.mplayerhq.hu/">MPlayer</a>] 跟 Xine 或 VLC 一樣，都透過 Win32 DLL loader 強制載入修改過的 win32 codec (用惡行對付 Microsoft 的惡行 :P)。VLC 已初步支援 WMV9 (VC-1)，可參考 [<a href="http://www.nanocrew.net/2005/09/01/compiling-vlc/">Instructions for compiling VLC with VC-1 (WMV9) support under Ubuntu Breezy</a>]，而我在想，是否能夠將這些成果移植到 [<a href="http://www.mplayerhq.hu/">MPlayer</a>] 呢？剛剛 hacking 一段時間，完成了 :-)<br>
+<br>
+以下是參考的編譯流程：<br>
+(1) 取得 cvs tarball 與我做的 patch：<ul><pre class="code" style="margin: 6px;">
+# wget http://jserv.sayya.org/mplayer/mplayer-cvs-snapshot-20060228.tar.bz2
+# wget http://jserv.sayya.org/mplayer/wmv3-support-via-vc1.diff.gz
+</pre></ul>
+(2) 解壓縮並施加 patch：<ul><pre class="code" style="margin: 6px;">
+# tar jxvf mplayer-cvs-snapshot-20060228.tar.bz2 
+# cd mplayer-cvs-snapshot-20060228
+# zcat ../wmv3-support-via-vc1.diff.gz | patch -p1
+</pre></ul>
+(3) 組態配置，以下是我的組態，可作為參考 (請記得把 pentium-m 換成您的 machine)：<ul><pre class="code" style="margin: 6px;">
+CFLAGS="-O5 -march=pentium-m \
+-mmmx -msse -msse2 -mfpmath=sse,387 \
+-fomit-frame-pointer -fforce-mem -fforce-addr \
+-finline-functions -freorder-functions \
+-frename-registers -ftracer -fweb -funit-at-a-time \
+-fbranch-target-load-optimize2" \
+sh configure \
+  --prefix=/usr \
+  --confdir=/etc/mplayer \
+  --disable-gui \
+  --enable-menu \
+  --disable-inet6 \
+  --language=en \
+  --enable-sse2 \
+  --enable-i18n \
+  --disable-gl \
+  --disable-win32 \
+  --enable-dynamic-plugins
+</pre></ul>
+上面的 "--disable-win32" 就是告訴 MPlayer 我不需要邪惡的 win32 dll loader，我用 native WMV9 codec。<br>
+(4) 開始漫長的等待：<ul><pre class="code" style="margin: 6px;">
+make
+</pre></ul>
+這個 hacking 很有趣，在我的電腦運作的畫面如下：<br>
+<img src="http://jserv.sayya.org/mplayer/screenshots/mplayer-wmv9.png"><br>
+所以現在不需要帶有罪惡感的 win32 codecs，也可以播放了，並且 [<a href="http://www.mplayerhq.hu/">MPlayer</a>] 支援的平台眾多，或許在 64-bit 的硬體也可以運作 (？)。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001545.html">06:47 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1545" onclick="OpenComments(this.href); return false">迴響 (8)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 27, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001544"></a>
+<h3 class="title">善用 GCC builtins 實現 Vectorization</h3>
+
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001271.html">Vectorization 的呈現</a>] 提到 GCC 4 vectorization optimization 的使用，而 GCC 3.3/3.4 可透過 GCC builtins 和 MMX intrinsics，前者的使用可用以下這個小程式來體驗：
+<pre class="code" style="margin: 6px;"><span class="keyword">#include</span> &lt;stdio.h>
+<span class="keyword">typedef</span> <span class="keyword">int</span> v4hi __attribute__ ((mode(V4HI)));
+<span class="keyword">typedef</span> <span class="keyword">int</span> v2si __attribute__ ((mode(V2SI)));
+
+<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])
+{
+        <span class="keyword">short</span> pa[4] = { 0x8000, 0x8000, 1, -1 };
+        <span class="keyword">short</span> pb[4] = { 0x8000, 0x7FFF, -1, -2 };
+
+        v4hi va, vb;
+        v4hi vsum;
+
+        va = ((v4hi *) pa)[0];
+        vb = ((v4hi *) pb)[0];
+
+        vsum = va + vb;
+
+        printf(<span class="literal">"Use MMX Intrinsics to compute vec_add: %llx \n"</span>, 
+                  (<span class="keyword">long</span> <span class="keyword">long</span>)vsum);
+
+        <span class="keyword">return</span> 0;
+}</pre><br>
+在 Intel PXA27x 的組譯碼為： (部份)<ul><pre class="code" style="margin: 6px;">
+.LC2:
+        .ascii  "Use MMX Intrinsics to compute vec_add: %llx \n\000"
+        .text
+        .align  2
+        .global main
+        .type   main, %function
+main:
+        @ args = 0, pretend = 0, frame = 16
+        @ frame_needed = 0, uses_anonymous_args = 0
+        stmfd   sp!, {r4, lr}
+        mov     r4, #8
+        sub     sp, sp, #16
+        mov     r2, r4
+        ldr     r1, .L2
+        add     r0, sp, r4
+        bl      memcpy
+        mov     r2, r4
+        ldr     r1, .L2+4
+        mov     r0, sp
+        bl      memcpy
+        wldrd   wr2, [sp, #8]
+        wldrd   wr0, [sp, #0]
+        ldr     r0, .L2+8
+        waddh   wr1, wr2, wr0
+        tmrrc   r2,r3,wr1
+        bl      printf
+        mov     r0, #0
+        add     sp, sp, #16
+        ldmfd   sp!, {r4, pc}
+.L3:
+        .align  2
+.L2:
+        .word   .LC0
+        .word   .LC1
+</pre></ul>
+可以發現 GCC 將向量加法轉換為 Wireless MMX 指令集，以兩道加法完成 32 * 4 bit 整數運算。另外，MMX intrinsics 的使用可參考 [<a href="http://jserv.sayya.org/misc/mmintrin-samples.tgz">我寫的小程式</a>]，可以編譯為 x86 (MMX) 與 arm (PXA27x) 的機械碼，透過 gdb sim 可以看到微妙的差異。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001544.html">09:05 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1544" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001543"></a>
+<h3 class="title">CAILogin : Counter Artificial Intelligence Login</h3>
+
+最近在讀一篇有趣的 paper [<a href="http://www.vogue.is.uec.ac.jp/~koike/awasee/MobileHCI2003.pdf">Awase-E: Image-based Authentication for Mobile Phones using User’s Favorite Images</a>] (PDF 文件)，這是來自 SONY 電腦科學實驗室的成果，也在現實環境中廣泛的使用了。同時，也激起我對 image-based user verification 的興趣，就傳統的實做而言，[<a href="http://cailogin.berlios.de/">CAILogin</a>] 提供了以 GPL 授權發行、pure C 的實做，並且可作為 CGI 使用，執行畫面如下：<br>
+<center><img src="http://jserv.sayya.org/misc/cailogin.png"></center><br>
+這一類的 image-based user verification 技術在許多層面來說，是成功的，但基於對 TTS (Text-To-Speech) 的熱衷，我還是不免質疑：「那視覺障礙的族群，誰來協助他們處理授權認證呢？」<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001543.html">10:52 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1543" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001542"></a>
+<h3 class="title">有那麼嚴重嗎？</h3>
+
+標題要用閩南語國語發音，記得在之前台灣的總統大選時常聽到，不過我剛剛讀 SIMENS 的文件，讓我很想大聲說這句話：<br>
+<center><img src="http://jserv.sayya.org/misc/warning-in-document.png"></center><br>
+看看標題「WinCC flexible 2004 移植」，然後再看看內文的警告符號，原來此類 porting guide 也會造成客戶或開發者嚴重的人身傷害阿，原來 HMI (Human Machine Interface) 要考慮的議題這麼多阿，難道是我過去太不嚴謹了？<br>
+<br>
+於是我很用力的讀完這份文件，我還是想說：<ul>
+有那麼嚴重嗎？
+</ul><br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001542.html">01:11 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1542" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 26, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001541"></a>
+<h3 class="title">隨手畫 - Ally</h3>
+
+第一次見到 Ally Wang 是在去年的 ICOS 2005，主辦單位給我的題目是「FreeJava / 夢幻軟體計畫」(當天的紀錄在 [<a href="http://blog.linux.org.tw/~jserv/archives/001357.html">ICOS 2005 落幕</a>])，她恰好就是負責我那場 session 的流程進行，後來在這個月 Mark Shuttleworth 來台參訪的台大行程中，到台大附近舉辦 party，Ally 跟我打招呼，我認了 (而且「楞了」) 好久，才想到在去年就見過面 (尷尬，記憶衰退)，後來，好心的 Ally 幫我處理 OpenFoundry 帳號的問題，不過讓我印象深刻的還是她的黑框眼鏡。<br>
+<br>
+微醺的夜晚，愜意地寫稿、讀 SØren Kierkegaard 的《懷疑者》，以及隨性的發呆，腦中依稀浮現出 Ally 的身影，草草作此素描紀錄： (click to enlarge)<br>
+<center><a href="http://jserv.sayya.org/gallery/drawing-ally.jpg"><img src="http://jserv.sayya.org/gallery/drawing-ally-small.jpg"></a></center><br>
+必須承認，這素描與本人有一段差異，其實我只是想捕捉感覺。這個突發奇想，讓我想到《懷疑者》裡面的敘述：「當下正好是一種不確定性。在當下之中不會發生關係，因為一旦有了關係，當下就會被取消。因此，一切都是當下即真的，但這個真理在下一瞬間裡就變成了謬誤，因為在當下之中，一切都不是真的。」，而我又陷入辯證的哲思...<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001541.html">11:53 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1541" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001540"></a>
+<h3 class="title">數學對 Programming 的重要性</h3>
+
+數學為科學之母，當然電腦科學更是依賴數學的基礎，以前的 Programming 可都是對當時的技術領域都有充分的認知，要自己設計 logic gates、自己 layout、自己寫 monitor、kernel、driver，自己開發應用程式，以前 Bell Lab 有一群這樣的高手 (不然 UNIX 是怎麼來的？)，不過隨著 Programming 的複雜度日增與軟硬體的分工趨近成熟，現在很多 Programming 還真的是 for Dummies 的，好像什麼學問都不必碰，然後就可以組合積木一樣 (我沒有說這樣不好)。<br>
+<br>
+在我從事目前的工作以前，也是抱持類似的想法。以前我遇過最需要數學基礎的項目，大概就是電腦圖學，以及花好幾周 trace JPEG codec 的過程，除此之外，的確只需要中學數學就可作多數的 Programming。現在很多軟體元件都是黑盒子，尤其像是 codec 一類的，幾乎都是特定組織與廠商維護，作為系統整合，只要會呼叫 API 即可，然後產品一個接著一個問世，比方說多媒體手機、VoIP phone、Set-Top Box 等等，不過，如果真的去探討系統效能或潛在的缺陷時，這些黑盒子很多時候是問題所在，但問題不在於 vendor 本身，甚至也不在 solution 中，相反地，就是一味認為這些是黑盒子，在沒有理解其運作原理與設計上的限制前提下，徒然重組並整合，就釀成潛在的問題。<br>
+<br>
+該怎麼解決？首先當然是弄懂這些黑盒子，雖然不需要從零到有去實做，但是至少要懂這些原理，感謝我現在的老闆給我這個機會，可以仔細檢視 video / audio / speech coding 的數學原理與規範，並且著手針對硬體平台作最佳化。有一段時間，沒有讀過工程數學的我，被迫演繹一個又一個的數學式，整天抱著離散時間系統一類的書籍苦 k (其實昨天寫  blog [<a href="http://blog.linux.org.tw/~jserv/archives/001536.html">技術本身與道德無關；它沒有是非對錯</a>] 時，我還是在算數學)，但最後還是達到階段性的目標，記得有廠商聽到我們在一樣的硬體平台上，video frame 與 QC 就是大幅超越他們的實測值而驚訝不已，讓我掩不住嘴角的微笑，其實我沒有作什麼卓越的改良，我只是發揮演算法的特性並作調整罷了，因為我懂那些原理。<br>
+<br>
+對岸的孟岩寫了兩篇以數學教育為主軸的文章，很值得一讀：<ul>
+<li>[<a href="http://blog.csdn.net/myan/archive/2006/02/22/605113.aspx">數學與算法隨想</a>]</li>
+<li>[<a href="http://blog.csdn.net/myan/archive/2006/02/24/608422.aspx">技術圖書與數學教育</a>]</li>
+</ul>
+我知道工程數學很重要，但是為何我以前大學念到三年級，還是沒有認真去念，以至於工作一段時間，才因為需要去作深入的效能最佳化，陸續接觸呢？其實我有修過工程數學，而且有 pass，但是我根本就無法回憶，因為當時只是考前一晚，用力背公式與題型，就去應試了，如今，回想自己在短暫大學生涯的無知，以及離開學校沒有再作加強的遺憾，孟岩的這席話讓我很有感覺：<ul class="code" style="margin: 6px;">
+我們不否認有一些天生的數學人才，能夠遨遊於大段的、完全抽象的數學論述之中而氣不長出，面不改色，但是對於更多的人來說，完全脫離開現實世界經驗去直接把握現代數學知識，至少是並不容易。然而這並不意味著這些「普通」人不能夠掌握數學，不能夠用好數學——他們僅僅是需要更符合他們認知習慣的、從具體到抽象的、循序漸進的、「正常」的引導方式。一般由職業數學家寫成的數學教材，往往以一種自我陶醉的方式天馬行空，普通讀者很難跟得上，從而也就很難學的懂。本來可以掌握數學的很多人，就這樣被吞噬了。而當這種高高在上的純數學的著作方式遭到質疑時，數學家們卻又總是忙不迭地聲明數學的獨立性、抽象性與高高在上的地位，以為辯護，似乎這種拒人於千里之外的風格是為了維護數學之神聖地位的必須。我們設想，若格鬥家傳授格鬥術時，不以教授學生為中心，而以格鬥之真實為理由對學生飽以老拳，則即使那學生是數學天才，也必定會在鼻青臉腫之下感到憤懣。而很多數學天才們編寫教材時卻拒絕以讀者為中心，拒絕了教育讀者的義務，並以這種拒絕為榮耀，豈非咄咄怪事？須知，數學或許是宇宙間唯一神聖的，但對於教材作者來說，讀者的利益至少也是同等神聖的。
+</ul>
+屈指算算，自己在 IT 產業翻滾也有段時間了，有時候也會脫口說：「六年前我在設計 xxx 的時候就遇到這種問題...」一類倚老賣老的話，但是，我真的懂了嗎？不，一無所知，而我也到最近，才知道工程數學可以解決這麼多問題，微分方程與 Euler expansion formula 是如此的美妙，許多電子工業的原理就是從這些定理與方法輾轉並建構的。正所謂「少壯不努力，老大徒傷悲」，年華已逝的我，只能在孤寂的夜晚，努力地研讀這些 textbook，不過，如果當時我在修工程數學的時候，就能知道這一系列看似抽象、看似數學的「遊戲」，以及笨重難懂的 formula，其實是這麼地貼近我們，並賦予 IT 產業無限的價值，我想，今天我不至於如此哀怨。<br>
+<br>
+無論如何，面對浩瀚的知識與無窮的學問，我終於學會了謙卑，並真誠地尋求與真理的共鳴：數學對 Programming 的重要性實在難以言喻，並且，數學也真的給予我們強大的力量。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001540.html">09:37 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1540" onclick="OpenComments(this.href); return false">迴響 (4)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001539"></a>
+<h3 class="title">"Architects" & "architect"</h3>
+
+在解釋標題前，必須提到 Stuart's blog [<a href="http://blogs.sun.com/roller/page/stuartsblog?entry=big_a_little_a">Big "A", little "a"</a>] 這篇，他提到：<ul>
+"Perhaps two of the most abused words in the IT industry are architecture and architect. Architects fulfil roles anywhere from hardware presales to aligning technology to the requirements of the business. Architecture describes anything from a computer block diagram to a blueprint for enterprise automation."
+</ul>
+這讓我想到 Martin Fowler 大師的文章 [<a href="http://www.martinfowler.com/articles/designDead.html">Is Design Dead?</a>]，裡面有一節提到：<ul>
+<b>Do you wanna be an Architect when you grow up?</b><br>
+<br>
+For much of the last decade, the term "software architect" has become popular. It's a term that is difficult personally for me to use. My wife is a structural engineer. The relationship between engineers and architects is ... interesting. My favorite was "architects are good for the three B's: bulbs, bushes, birds". The notion is that architects come up with all these pretty drawings, but it's the engineers who have to ensure that they actually can stand up. As a result I've avoided the term software architect, after all if my own wife can't treat me with professional respect what chance do I stand with anyone else?<br>
+<br>
+In software, the term architect means many things. (In software any term means many things.) In general, however it conveys a certain gravitas, as in "I'm not just a mere programmer - I'm an architect". This may translate into "I'm an architect now - I'm too important to do any programming". The question then becomes one of whether separating yourself from the mundane programming effort is something you should do when you want to exercise technical leadership.<br>
+<br>
+This question generates an enormous amount of emotion. I've seen people get very angry at the thought that they don't have a role any more as architects. "There is no place in XP for experienced architects" is often the cry I hear. 
+</ul>
+的確，軟體架構師 (software architect) 一詞在 IT 產業是近來相當熱門的字眼，而就我有限的經驗來說，我的顧問工作也常常被對映到這個項目，Martin Fowler 表示難以接受此術語，他太太是位建築工程師，並且他巧妙的用一句話比喻架構師與工程師之間的微妙差異：<ul>
+「架構師喜好三種東西：球狀物、灌木叢和鳥。架構師畫出這些美麗的圖畫，卻要工程師保證能全都做出來。」
+</ul>
+Stuart 則是試圖釐清 "Architects" & "architect" 兩者的關係：<ul>
+Taking a step back, dictionary.com defines an architect as "One who designs and supervises the construction of buildings or other large structures". Working with this definition then we can draw a distinction between what I like to call Small "a" architects - those who can design and supervise the construction of enterprises, and Big "A" Architects - those with architect in their job title.
+</ul>
+或許，在這個大寫 "A" 與小寫 "a" 之間，我們需要更能明確描述工作內容與具體細節的用詞，而非空泛的稱謂。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001539.html">06:02 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1539" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001538"></a>
+<h3 class="title">testosterone : Python Unit Testing Interface</h3>
+
+剛剛讀 perky (來自韓國的 FreeBSD committer) 的 blog [<a href="http://openlook.org/blog/1044">남성을 위한 유닛테스트 UI - 테스토스테론</a>]，他提到 [<a href="http://www.zetadev.com/software/testosterone/">testosterone</a>] 這個 Python Unit Testing Interface，透過 CLI (command line interface) 或 curses 清楚地呈現 Unit Testing 的進度介面，同質的專案可參考 wiki [<a href="http://pycheesecake.org/wiki/PythonTestingToolsTaxonomy">PythonTestingToolsTaxonomy</a>]，專案也提供了生動的 Flash 動畫展示：<br>
+<center><a href="http://www.zetadev.com/software/testosterone/screencast.html"><img src="http://www.zetadev.com/software/testosterone/screencast.gif"></a></center><br>
+看來 [<a href="http://www.zetadev.com/software/testosterone/">testosterone</a>] 是很值得參考的 Unit Testing UI，此外，我之前使用過作以協助 Unit Testing 的專案是 [<a href="http://gintas.pov.lt/guitest/">guitest</a>] (Python helper library for testing Python GUI applications) 與 [<a href="http://gnomebangalore.org/ldtp/index.php/Main_Page">GNU / Linux Desktop Testing Project (ldtp)</a>]，後者的複雜度的確高許多，而且我好像也只看到 [<a href="http://gnomebangalore.org/ldtp/index.php/Projects_using_LDTP">Projects using LDTP</a>] 部份採用。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001538.html">05:26 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1538" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001537"></a>
+<h3 class="title">蘇哲的 IM-BUS 提案</h3>
+
+寫完 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001455.html">下一代的 SCIM 設計</a>] 後，蘇哲很快給予 SCIM 2.0 Message Bus 與 IIIM Server Framework 兩者在概念上的差異提示：<ul>
+Comparing to IIIMSF, Message BUS runs on client side, actually all processes on the diagram run on client side. And Message BUS itself doesn't load and external module nor links to any external libraries.<br>
+<br>
+While IIIMSF runs on server side and loads all LEIF modules directly.</ul>
+蘇哲也在 Google Talk 跟我說到他將在研討會對此提案作探討，後來才知道是第一屆 SFSG (SPI Feasibility Study SubGroup) 會議，Yong Sun (findsun) 做了簡要的紀錄 [<a href="http://blogs.sun.com/roller/page/yongsun?entry=summary_of_1st_sfsg_and">SUMMARY of 1st SFSG and 5th WG3-SWG1 MEETING</a>]，對於蘇哲提出的 IM-Bus 有所著墨，也提及 IIIMF 中的差異，很值得參考。<br>
+<br>
+不過呢，話說回來，輸入法系統的複雜度，光是架構上，就跟中階分散式系統不相上下，更別說語音、手寫，或者其他人因工程的要素列入考量的情況了，是此，我們得用崇高的敬意看待輸入法發展 :P<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001537.html">01:38 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1537" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 25, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001536"></a>
+<h3 class="title">技術本身與道德無關；它沒有是非對錯</h3>
+
+這幾天為了一些專案，又是開會又是加班，產生嚴重的無力感，是阿，都花這麼多時間工作了，為何產品的質與量沒有獲得提昇呢？昨天閱讀 Jim Turley 的文章 [<a href="http://www.eettaiwan.com/ARTP_8800407997_676964.HTM">程式修補週期令人抓狂</a>] ，讓我想到，這些產品背後的資深經理、專案管理人、軟硬體與韌體工程師，與廣大的企劃與行銷人等，究竟有無聽到使用者的心聲呢？我們都知道 Jim Turley 抱怨的對象就是 Microsoft Windows 一類的「通用性」系統，還有充斥於我們周遭的那些電子設備。<br>
+<br>
+誠如 TI 總裁暨執行長 Rich Templeton 在今年 3GSM World Congress 上的說法：「行動電話將成為市場上最重要的消費電子產品」，身處於世界手機使用密度最高的台灣，更是有這種感覺，Rich Templeton 也在演講中提到：<ul>
+「... 無論肯亞的農夫、柏林的執行長或東京的青少年都將感受到手機對生活的影響，因為行動電話正在跨越文化、社會、生活方式和經濟的界限。... 行動電話正朝著下個階段邁進，它們將提供更強大的通訊和娛樂效能，以及更便利、更具彈性和更高利潤。 ... 未來行動電話將變得更個人化，並成為家庭和辦公室的延伸。」
+</ul>
+這個概念說起來簡單，真的要作實在困難重重，特別是現在的企劃與市場開發研究員的「豐富」腦力激盪，常令實地開發的工程師膽顫心驚。幾年前就有人希望手機能內建 camera，當時被不少觀察家嗤之以鼻，然而，放眼望去，中高階手機都內建 camera，甚至還用這個特徵來界定中低階手機的分野，想來真是奇妙。照相手機目前有CCD 和 CMOS 兩種呈現技術，前者在圖像品質佔有優勢，而後者辨識率、耗電量和成本考量佔優勢，這是一般使用者的認知，然而，將這些 camera 整合進對資源錙銖必較的手機，真的這麼容易？<br>
+<br>
+即便是業界紛紛提出「多媒體處理器」的解決方案，都還有許多基本卻又難以掌握的因素，阻撓產品現身的時程，Mentor Graphics 在過去就遇到多個來自韓國高階手機機種設計時，在 ASIC 層面遇到因潛在的 interrupt 讓系統陷入 starvation 的致命問題，前前後後造成的財務損失與開發資源的投入，都難以計數，而強調 "time-to-market" 的這些電子裝置開發流程，不僅要面臨 camera 這類高技術的挑戰，還要面臨從過去 legacy system 就有的議題：功能需求越來越多、開發方式沒有明顯突破，但時間卻越來越短，所以品質也成為不定時的炸彈。<br>
+<br>
+硬體自出貨後，除非全面回收外，就不可能更動，所以硬體工程師擔負的責任異常重大，我想，這也是為何在網路上可以看到不少軟體工程師對專案開發的抱怨或揶揄，但鮮少看到來自硬體工程師的說法，或許就是因為他們加班都沒時間了，哪有閒情再來訴苦 (*笑*)，相對的，軟體層面的更新被視為可接受的例行性動作，無論軟體設計設計初期採用了哪一位軟體工程大師的「聖經」，並且貫徹 CMMI 流程，當來自與週邊硬體整合的複雜性介入、涉及在理論與實務性已知的技術盲點，以及時程推動的 deadline killer，軟體在方面是無助的，於是一系列的 patch 或 workaround 是必要的手段，更別說來自客戶理性或非理性的要求，這些都是對技術的嚴厲的考驗。然而就如 Jim Turley 所說：<ul>
+持續不斷地升級也令人反感。有一天，你的電視 (或者VCR、MP3播放機或手機) 本來用得好好的，可是第二天它就完全變樣了。不是真的壞掉，但就是不一樣了。螢幕顏色變了，項目單換了，選項被重置了。這可能任何時候都會發生，與你所做的任何事都徹底無關。怎麼如此怪異呢？修補錯誤程式碼成為一種生活方式。簡言之，「第一次就讓它正確」成了奢望之言。在現實中，我們要買的東西鄉--也許要生產的，產品總是伴有缺陷。但修復那些缺陷絕不應是強制性的，絕不能是偷偷摸摸的，而且也絕不能是不可取消的。
+</ul>
+儘管技術本身與道德無關，但是執技術牛耳的那些廠商，還是得以道德的途徑，解決技術問題，他繼續說：<ul>
+我們不能真地譴責技術。技術本身與道德無關；它沒有是非對錯。該譴責的是那些負責指揮掌管技術工程師們的經理人。他們 (還有我們) 必須抵制「在下一個版本中修復它」的衝動。不，產品應該是現成可用的，老弟。那是客戶付錢給你的原因。如果它不能如一開始廣告宣傳般那樣運作的話，他們絕對有權退回產品。
+</ul>
+下筆之際，週末我還在台北內湖思考 MPEG-2 Decoding 的 instruction-level optimizations，在心頭的思緒圍繞著「不能徹底發揮硬體效能的軟體是罪惡的」這個概念，持續追蹤系統的效能瓶頸。廣為人知的 Intra 8x8 / Inter 8x8 IDCT 運算，就如 video coding 的教材提到：<ul>
+Performs VLC decoding of DCT coefficients for one intra 8x8 block, dequantization of coefficients, inverse DCT and storing of resulted 8x8 block to destination.
+</ul>
+就算這個部份已達到 optimal，對系統效能造成衝擊的還有太多因素了，這些都不是學者會提到的議題，因為沒有高度的學術價值，但是我們都必須以既有的技術，作為克服種種威脅效能、功能，或品質等「病毒」的利器，因為，我不想讓這些「技術議題」造成日後的「道德問題」。這是軟體工程師不得不面臨的問題，尤其是從事消費性電子裝置開發者，更需設身處地，只有更多的付出，才能創造更高的價值。<br>
+<br>
+自勉！<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001536.html">05:53 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1536" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001535"></a>
+<h3 class="title">史上最慘烈的 Orz</h3>
+
+剛剛 descent 在 #dot 提到這張圖：<br>
+<center><img src="http://www.worldpressphoto.nl/images/photocache/photos/2006/Sports%20Action/SA-1_745x345x90.jpg"></center><br>
+果然是「史上最慘烈的 Orz」阿，實在很難想像這瞬間的撞擊力道有多大，照片出處為 [<a href="http://www.worldpressphoto.nl/index.php?option=com_photogallery&task=view&id=604&Itemid=137&bandwidth=high">1st prize - World Press Photo</a>]。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001535.html">02:50 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1535" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001534"></a>
+<h3 class="title">以Qt4 的 QAbstractEventDispatcher 與 Gtk+/GNOME 元件作緊密整合</h3>
+
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001392.html">GParts - GTK+/GNOME 與 Qt/KDE 應用程式的整合</a>] 提過包含 [<a href="http://www.scheinwelt.at/~norbertf/common_main_loop/">Common Main Loop</a>] 等一系列的技術，用以解決棘手的問題：GTK+ 底層的 event loop 是建構於 GLib，而 Qt 則是一套複雜的 C++ Framework，如果要讓兩者協同運作，首先就會遇到 main loop 的議題。在這方面的進展，也促使 [<a href="http://gparts.blogspot.com/">GParts</a>] 的可能性，而我也在今年 [<a href="http://blog.linux.org.tw/~jserv/archives/001410.html">KDE@Taiwan 第二次使用者聚會</a>] 整理過去開發的心得，做了 [<a href="http://jserv.sayya.org/kde/kparts-xparts-gparts-kdetw2006.pdf">淺談 KParts、XParts，以及 GParts 與桌面整合技術</a>] (PDF slides) 的分享，事實上，在世界各地，已經有若干開發者如火如荼地展開這方面的技術突破，而 Trolltech 也在 Qt 4.1 提出 [<a href="http://doc.trolltech.com/4.1/qabstracteventdispatcher.html">QAbstractEventDispatcher</a>] API 作為回應，引用 class description 如下：<ul class="code" style="margin: 6px;">
+The QAbstractEventDispatcher class manages Qt's event queue, excluding GUI-related events.<br>
+<br>
+It receives events from the window system and other sources. It then sends them to the QCoreApplication or QApplication instance for processing and delivery. QAbstractEventDispatcher provides fine-grained control over event delivery.<br>
+<br>
+For simple control of event processing use QCoreApplication::processEvents().<br>
+<br>
+For finer control of the application's event loop, call instance() and call functions on the QAbstractEventDispatcher object that is returned. If you want to use your own instance of QAbstractEventDispatcher or of a QAbstractEventDispatcher subclass, you must create your instance before you create the QApplication object.<br>
+<br>
+The main event loop is started by calling QCoreApplication::exec(), and stopped by calling QCoreApplication::exit(). Local event loops can be created using QEventLoop.<br>
+<br>
+Programs that perform long operations can call processEvents() with various QEventLoop::ProcessEventsFlag values OR'ed together to control which events should be delivered.<br>
+<br>
+QAbstractEventDispatcher also allows the integration of an external event loop with the Qt event loop. For example, the Motif Extension included with Qt includes a reimplementation of QAbstractEventDispatcher that merges Qt and Motif events together.
+</ul>
+於是乎，透過 Qt 4.1 的 [<a href="http://doc.trolltech.com/4.1/qabstracteventdispatcher.html">QAbstractEventDispatcher</a>] API，允許我們在 Qt Event Loop 中「調整」其 dispatcher 行為，讓其他 GUI Toolkit/widget set 得以共享 main loop 並不打擾其預期 event processing 行為。<br>
+<br>
+在 2004 年初，知名 KDE 開發者 Zack Rusin 也在 KDE 開發者文件網頁寫了一篇文章 [<a href="http://developer.kde.org/documentation/tutorials/qtgtk/main.html">Integrating Qt/KDE into Gtk/GNOME apps</a>]，他設計了 QtGTK 這個輕量級的 library，證明這個概念的可行性，當然，那是 Qt3 時代的產物，相關的討論可參考 KDE.News 的新聞 [<a href="http://dot.kde.org/1073668213/">GTK+ Apps Get Free Reign on KDE Technology</a>]， Daniel Molkentin 也延續這個發展，在以 Gtk+ 2.x 撰寫的 Beep Media Player (即 XMMS2) 中「嵌入」KDE KFileDialog，並提供兩份展示照片 [<a href="http://ktown.kde.org/~danimo/screenies/bmp_kde_diropen_dlg.png">KDE Directory Open in XMMS2</a>] 與 [<a href="http://ktown.kde.org/~danimo/screenies/bmp_kde_fileopen_dlg.png">KDE File Open in XMMS2</a>]。而去年 Zack Rusin 加入 Trolltech 後，整個 KDE 與 FreeDesktop 也激發更多創新，[<a href="http://doc.trolltech.com/4.1/qabstracteventdispatcher.html">QAbstractEventDispatcher</a>] 一類的機制在 Qt 4.x 出現後，未來 KDE 與 GNOME 兩大桌面計畫的整合又會如何呢？咱們拭目以待 :-)<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001534.html">01:54 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1534" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 24, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001533"></a>
+<h3 class="title">Follow Your Dreams</h3>
+
+俄國大文豪 Feodor Mikhailovich Dostoyevsky 曾說：「唯有太卑鄙得偏愛自己的人，才能無恥的寫自己的事」，這也讓我無論在 blog 或其他形式的寫作中，多少有所保留。<br>
+<br>
+上週四 (Feb 16) 時值 [<a href="http://blog.linux.org.tw/~jserv/archives/001508.html">2006 年初 Mark Shuttleworth 一行人訪台</a>] 在台大的演講，[<a href="http://www.markshuttleworth.com/">Mark Shuttleworth</a>] 給予在場聆聽的觀眾很大的震撼。953 期的《商業周刊》(2006.2.27-2006.3.5) 第 62 到 65 頁有篇針對 [<a href="http://www.markshuttleworth.com/">Mark Shuttleworth</a>] 的專欄〈拼命工作一年 瘋狂玩樂兩年：心理隨時有『夢想清單』，到太空旅行的三十二歲網路富翁〉(全文可參閱 [<a href="http://www.businessweekly.com.tw/webfineprint.php?id=22127">商業周刊</a>] 文章)，在報導中提到：<ul class="code" style="margin: 6px;">
+馬克今年三十二歲，他曾經從一人公司開始，在三年半內，發展出全球第一套網路安全交易軟體，最後以五億七千五百萬美元，賣給網路交易公司 VeriSign。當年賣掉公司後，他把所有的財產放到倫敦的股票和債券市場，才六年多，他的財富已從五億美元 (約合新台幣一百六十二億) 變成約十三億美元 (約合新台幣四百二十億元)...
+</ul>
+讀到這裡，或許會想到《富比世》中許多成功創業家行徑，然，Mark Shuttleworth 的成功與網路息息相關，並且他也是透過網路的開放性，得以與世界各地的高手交流，他也認為，最重要、最有趣的事情，永遠該排在第一順位，是此，拼命工作也拼命玩，除了造就成功的網路交易軟體與稍後成立推動 Ubuntu 的 [<a href="http://www.canonical.com/">Canonical Ltd.</a>] 外，他花費二千萬美金 (約合新台幣六億四千萬美元) 與投入長達一年半的集訓，就為了體驗十天的太空旅行，作為史上第二個太空旅客，Mark Shuttleworth 認為：<ul>
+「如果我不如此完成願望，我會每日望著天空，然後問自己為何不去？」
+</ul>
+在台大的演說中，我深深感受到 Mark Shuttleworth 對工作與計畫的投入，只比我大上八歲，是我與世界級的富翁，最近距離的場合，演講中提到：<ul>
+「還有什麼計畫，比建立新的全球性自由軟體作業系統平台，造成的影響範疇來得更大、更多迴響，也更具挑戰性呢？」
+</ul>
+基於這個理念，以及 Mark Shuttleworth 對人類社會的觀察，[<a href="http://www.ubuntu.com/">Ubuntu Linux</a>] 於是生焉，其訴求即是 "Linux for Human Beings"，至於演說與來台訪問的細節，這裡就不贅述，相關的媒體與社群都有詳細的報導。我跟 Mark 拍了一張合照： (click to enlarge)<br>
+<center><a href="http://jserv.sayya.org/gallery/mark-jserv.jpg"><img src="http://jserv.sayya.org/gallery/mark-jserv-small.jpg"></a></center><br>
+演講後，一行人到台大附近參與 party，Mark 在我的 HP nc4000 notebook 上給了簽名： (click to enlarge)<br>
+<center><a href="http://jserv.sayya.org/gallery/follow-your-dreams.jpg"><img src="http://jserv.sayya.org/gallery/follow-your-dreams-small.jpg"></a></center><br>
+中間那句 "To Jserv, Follow your dreams!" 一直縈繞在心坎，一週後的今日，仍難以忘懷。<br>
+<br>
+八年後的我，會是如何呢？我不敢奢想要成為大人物，更不想要獲得鉅款，但我有夢想，只是如飄浮不定的雲，
+難以捉住，更別說予以清楚的定義，又久久因 Feodor Mikhailovich Dostoyevsky 的一席話，不敢說出自己的夢想，不過如今，我要大聲的說：「我跟 Mark 一樣有瘋狂的夢想，而且我也要用很瘋狂的途徑去完成」。企極完成的夢想，就是孩提時在作文簿上面寫的「我希望世界大同」，十幾年過去了，還是不變，雖然衍生其他更具體的計畫。曾有一段時間，我常有高達六位數的進帳，那是出賣良知與靈魂給魔鬼的報酬，在某一日，我徹底看到自己的罪行，決定放棄這優渥的生活型態與慾念，陸續捐出不該屬於我的財富，並且保持付出的習慣。<br>
+<br>
+無論是透過捐款 (讓真正需要協助的人，能獲得些許的支持)、履行環保措施 (讓萬物賴以維生的環境，能不再惡化)，或者是寫 free software (讓軟體自由，重現資訊社會的價值)，都是我的作法，儘管收入微薄的我，不管拿出多少比例的薪資，還是如塵埃般渺小；即使我身體力行，以 [<a href="http://blog.linux.org.tw/~jserv/archives/001264.html">騎腳踏車上下班</a>] 一類的舉動，試圖降低廢棄排放量，或於街角仿效拾荒老人撿拾資源垃圾，還是難以挽救整體頹勢；雖然我稍微會 programming，但是能投入在 free software 的時間相當少，必須在日常工作與顧問項目結束後，才可能用所剩不多的時間精力來 hacking，能對這個社會有什麼幫助，都是大話罷了，我無意再詳述自己這些「可笑的成就」，因為這本來就是一個大環境一份子該做的事情，而且，我根本不夠投入，寂寞的夜裡，想到自己對夢想的背離，時有遺憾，甚至企盼能舉槍 [<a href="http://blog.linux.org.tw/~jserv/archives/001518.html">上膛</a>]，在最痛苦的時候，逃避這一切的衝擊。<br>
+<br>
+年輕人總是喜歡做夢，而當夢醒時分，才發現美夢一個接著一個破滅，才又回到現實，開始作妥協。<br>
+<br>
+自去年四月份開始，我告訴自己要改變對生活與工作的態度，至少要讓自己有成長的感覺，決定作自己毫無把握的項目，雖然現在可以說沒有什麼成果，但是看著自己的筆記與心得累積，還是感到欣慰，是的，這些我還是學得來，只是需要一點時間。<br>
+<br>
+騎腳踏車上下班，與其說是運動，還不如說是培養耐力。踩著踏板的時候，總是會有一種奇妙的感覺，現在的我終
+於懂了，是那種腳踏實地的感覺，我用自己的力量，一步接著一步，朝目標邁進，與身旁穿梭的汽機車相較，還是
+有前進的，只是途徑不一樣罷了，我選擇比較慢、迂迴，但是可以把深度帶給我的路。<br>
+<br>
+家人一直很反對我從事資訊科技產業，也不認為在台灣寫軟體能有什麼作為。麻醉與催眠自我，似乎是我相當擅長的手段，高中住校時，就在座位前面貼了臺北醫學院的字樣，每天告訴自己：「我要考上醫學院，不要讓家人失望」，
+事實上，我一點興趣也沒有，某一天做完生物解剖，難過的吃不下飯，當天去電給苗栗的家人，說明心境的轉變...
+或許，從那個時候開始，我開始反省，我迷惘了，到底什麼是我要的。<br>
+<br>
+有一段時間，台中一中的榮譽榜總是會出現自己的名字，哪怕是小小的三個字，對我來說，都是一種莫大的鼓舞。
+還記得那時候，我不敢白天去看，而是利用宿舍即將關門前，在校工還沒把燈熄掉，自己一個人在榮譽榜前面駐足
+，找尋自己的名字。一直忘不了那次，剛去一中唸書的我，還是從最後幾名開始找自己的名字，一方面是榜單太高
+了，再來是對自己沒有太大的信心，找了老半天，竟然發現是排在全校第五名的位置，對我這個來自鄉下的學生來
+說，早已感動到眼眶濕了。<br>
+<br>
+不過最後，踏入疑雲的我，質疑是否該朝著根本沒有興趣項目前進，抑或，這只是證明自己的必要手段？<br>
+<br>
+許多當年在一中的同學，現在都相當有成就，大概只有我還在原地打轉，感覺走了很多路，卻又常常繞回出發點。
+年少輕狂的我，做了許多他人眼中完全不可認同的舉動，有時候我會後悔，有時候也只能麻醉自己，不是借助酒精
+，就是用自虐壓迫自己，內心深處迴盪著家父十餘年前說的那句話：<ul>
+「選擇了，就不要後悔。」
+</ul>
+結束沉悶的工作內容，驅車返回住所的途中，想買點啤酒，就在張望之際，路燈投射於門前，透過水氣的折射，映射出幾份霓彩，霎是美麗，讓我想到尼采的詩裡面這麼寫到：<ul>
+ "du Augen-Wunderweide"
+</ul>
+這描述讓我心生嚮往，造字面的意思，是說絕佳的視覺牧場，其前後文的中文翻譯如下：<ul><pre>
+「你這沈靜的天空 --- 如穹，藍光閃爍如絲，
+　如傘一般在五彩繽紛的屋頂上挪移，
+　那是我 --- 叫我怎麼說？ --- 是我深深愛著、害怕、妒忌的...
+　我真的想要痛飲這樣的魂靈！
+　我會放走它嗎？
+　不！你這無與倫比的寰宇！你依舊沈靜
+　--- 我的幸福！我的幸福！」
+</pre></ul>
+天際風雲變幻，對一個凡人來說，何等狀闊可觀呢？握著手上的啤酒罐，杯中物豈可比得上這樣的魂靈？是此，放回冰櫃，我陷入漫長的思考。記得《安娜與國王》片中，曾有一句對話：<ul>
+「苟活是不夠的，生命何其短暫，對只活一次的基督徒來說，更是如此」
+</ul>
+我並沒有明確的宗教信仰，大抵歸論於「不可論知者」，如果真的要說，我唯一的信仰是社會主義，純粹基於對這個社會的愛與投入而生，並非「空想」，更非為了「實踐」而「實踐」的謬行 (按：我不是任何國家的共產黨黨員)。以往的日子，總是認為年輕氣盛，可大肆揮霍時光，於是苟且偷安的活著，然而，對時間的認知，已經不是狹義相對論可以片面文字的掌握，任何一個突發的事件，都會讓人對生命的價值改觀。<br>
+<br>
+受到 Purple 的影響，前往書店閱讀她多次述及幾米的畫冊《Beautiful Solitude》，對文學或藝術的觸感相當遲鈍的我，品味幾米繪製這系列畫冊的背景時，卻有複雜的感受。1995 年，罹患癌症的幾米，在一年的治療後，過著與世隔絕的生活，這些畫冊紀錄他生命的點滴。家母在 2003 年初被診斷罹患癌症，那時候我仍於空軍服役，輾轉才得知這個消息，那時候心情很惡劣，在那之前，家母身體都保持在相當好的狀態，鮮少需要醫療，就算有，頂多是執教鞭時損傷喉嚨，吃吃成藥了事，但如今... 後來，部隊讓我放了一段頗長的假期，在家中，才慢慢感受家母的心路歷程，有高度文學造詣的家母，試著以文字轉換並保存這些感受，一向頗少觸電腦的她，也試著將這些文字，一個接著一個地鍵入。<br>
+<br>
+閱讀到幾米這本畫冊的「六月二十四日天氣陰沈」時，看著畫中的景象，又瞥見左邊的文字：<ul>
+「一陣狂風吹來，打亂了他們的節奏...」
+</ul>
+突然間，我又回到三年前，那些「打亂節奏」的事情，眼角的分泌物可能會讓我出洋相，於是草草走向櫃台結帳。但，也因為如此，我對於「生命何其短暫」有了更深的體悟。<br>
+<br>
+我對於人類文明的存在 (being) 持有高度興趣，緣起緣滅，特別是異化的過程。computer science 建構了一系列有系統的模式 (pattern) 與典範 (paradigm)，於是我想：能否用以描述、模擬，以及重構這個社會與文明的發展呢？這是我的出發點。作為兼職的工程師、全職的哲學家，「工讀生」是我最適合的頭銜， 好一段時間沒有涉獵人文方面的精神食糧，特別在閱讀 Purple 所抒發的觀點後，更讓我有種「貧困」的感覺，好似回到四年前在成大總圖書館閱讀《哲學的貧困》一書的心境。馬克思回應法國經濟理論家普魯東的《經濟矛盾的體系，或貧困的哲學》，因而作此書，馬克思先批判普魯東的經濟理論、社會觀點，以及哲學途徑，最後結論普魯東只是冒牌的哲學家。或許這兩本著作的影響力不甚顯著，但「哲學的貧困」一詞倒是因而風行，與其說我是個工程師，那我寧可說是哲學家，一位貧困的哲學家，以孱弱的軀體、須臾即逝的人生旅程，體驗並思考人生，這是我的使命，踏上這條路，無法回頭、看不到盡頭，只知前頭，只得吟誦美國詩聖 Robert Frost 在〈The Road Not Taken〉中著名的詩句：
+<ul><pre>
+I took the one less traveled by,
+And that has made all the difference.
+</pre></ul>
+《伏爾泰哲理美文集》提到：<ul>
+「哲學家是智慧愛好者，也是真理愛好者。所有的哲學家都有這種雙重性格：遠古的哲學家們在傳播道德真理時無
+一不在德行方面給世人樹立了榜樣。」
+</ul>
+雖不能至，然心嚮往之。其實我對於我的生活也不是特別喜歡，也是默默的忍受著，如果說我身上有多少美德，大概就只有誠實與忍耐。以前去中醫熱敷，中醫師會提醒感覺疼痛時要自行挪移肩上的覆蓋物，沒想到我一直到皮膚燙傷都沒有感覺，只有咬緊牙根的撐著... 以沒有變速功能的淑女車挑戰 [<a href="http://blog.linux.org.tw/~jserv/archives/001491.html">陽明山</a>] 或 [<a href="http://blog.linux.org.tw/~jserv/archives/001334.html">北宜公路</a>]，雖然這類無聊的行徑對常人來說根本不屑一顧，但這過程中，除了體能訓練的出發點外，其實我在發洩，被高度社會化要求，總是被設立要達到期許的範疇，持續踩著腳踏板，挪移軀體，享受這流汗的過程，我只是證明，透過僅有的裝備與資源，在崎嶇難行的漫長大道，挑戰自我的極限。腦際浮現出一句話：<ul>
+「人生應是不斷探求真理的旅行」
+</ul>
+這是革命先烈謝雪紅女士常掛在口邊的一句話，拜讀謝先烈的口述自傳《我的半生記》後，讓我感動不已，讓我窺見身為一名女性，是如何與舊社會的封建傳統搏鬥，對殖民帝國入侵、資本主義的鬥爭，以及在處於階級束縛下與民族革命間掙扎反抗，所建構出台灣左翼女性解放史的剪影。是的，我持續在探求真理的旅程中，望著拜隨旅程而出現的美景，如之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001443.html">江城如畫裡 山晚望晴空</a>] 所說：<ul>
+得以於「數位監獄」欣賞這少見的美景，羽翼雖仍被緊縛，但「江城如畫裡，山晚望晴空」，觀彩虹與流雲共日，美麗的詩篇在藍天中畫下純真的標點，而我，持以赤子之心，何嘗不能自由的掙脫呢？
+</ul>
+我的工作就某方面來說，是在追求真理，雖然對人類的幫助何其微小，但至少我看到專案一點一滴的被建構、效能逐
+漸的提升，以及趨近成熟的思想體系，儘管這過程中必須涉入許多非技術性的議題。《伏爾泰哲理美文集》的著名章節「查第格」，在錯綜複雜的敘事中，隱約看到對人世的無知、如何活在希望中，以及何其複雜的人際交互作用，這就是人生最好的寫照，我甚至不知道自己在這個寓言性的描述中，扮演哪個角色，但我愛好智慧與真理，也希望能將這些傳播出去，影響更多的人們...<br>
+<br>
+按佛洛伊德的理論，人格是一整體，由三部份組成，分別稱為本我、自我，以及超我 (id / ego / superego)，對
+許多經典書籍往往淺嘗輒止的我，面對大師們的分析，對於自身的處境，只能聯想起 Leonard Woolf 的代表作之一《Mrs. Dalloway》，而這本大作尚未出版前，所用的題目就是 The Hours，爾後還被改拍攝為同名電影，這也是
+Purple 提到相當喜愛的電影，雖然電影是虛構的，但其中第一個角色 Virginia Woolf 恰有其人，除了時間錯綜複雜外，最令人玩味之處，我想就是對峙的自我矛盾。這本大作是 Leonard Woolf 在意識流創作走向成熟的過渡性作品，小說好比置身於時光隧道，縱橫三十年的生活，就這麼濃縮於一天的十五個小時內，而作為讀者，我們卻又何等真實的看到第一次世界大戰後，英國社會中不同階層所呈現，一幅活生生的生活畫面。<br>
+<br>
+小說中，Leonard Woolf 由不同人物的回憶，以及 Mrs. Dalloway 的內心獨白，由多角度地展現了生存狀態。當戰爭無情地粉碎了人們對和平、美好生活的嚮往時，作為生命共同體的每個寰宇的一份子，難免對這龐大的物質世界感到荒誕與絕望。生與死的矛盾、外在自我與內在自我的矛盾，無時無刻不在撞擊著她的心靈，使她每天都生活在靈魂的拷問之下，這樣的生存狀態對於現在的我來說，頗為神似，我開始思索在相似的狀態中，探知生命何去何從的議題。走在林蔭，回想這短暫的二十餘年歲月，不就是 State Machine 的移轉嗎？我們很早就被賦與某種始命，也在長輩與社會的共同期許下，有了預設的路徑與 paradigm transition。外在自我，是展現於客觀世界中並適應於客觀世界的一種生命狀態，是非本真的自我，而內在自我，則是真實地面對個體靈魂的本真狀態的自我，倘若兩個自我不一致時，生命便處於矛盾的狀態中，這即便是此刻的我。<br>
+<br>
+尼采曾說：「人是有權胡說的動物，是一種怪獸，一種超獸」，我不是很認同尼采的部份哲學論點，不過這句是
+頗貼切的。<br>
+<br>
+畢卡索油畫中，有一幅標題為〈The Family of Saltimbanques〉是其在 1905 年的著名代表作，充斥土黃色、紅色和粉紅色彩，"Saltimbanques" 這個字是法文，一般的翻譯是雜耍藝人，詞源同拉丁文 saltor，而此際最能描述我的用字淺詞，莫過於此。下筆的同時，想起之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001253.html">小丑的宿命</a>]，引述《浮士德》第二卷結尾詩的開頭：<ul>
+  Alles Verganglich
+  lst nur ein Gleichnis
+</ul>
+"Gleichnis" 在德文的意思是「比喻」，歌德在詩作中認定人世無常只是虛妄，而只有理想世界方得永恆，而這個
+「比喻」用得巧妙，尼采借用此意當頭棒喝的攻擊這個論點，於是我們只見到這個世界有種神秘的遊戲規則主宰寰
+宇，揉入所有的存在與幻象，但這一切只是永恆的癡迷，而我，作為這個世界的一個小丑，又怎能知曉什麼呢？<br>
+<br>
+現在的我，可以說是沒有足夠的時間與興致，以閱讀人文書籍，導致逐漸自我沈淪，而我卻無從改變，可悲。最近
+的夢境中，置身於一家幽靜的書店，拾起 Milan Kundera 的《生命中不能承受之輕》翻閱著，我是個悲觀的人，不過我喜愛閱讀這類對政治、文化、生命價值醒思的著作，而嘲諷的口吻，牽引著我在故事、夢境、反思、散文、詩歌、當代與古老歷史的變奏遊戲徘徊。<br>
+<br>
+Milan Kundera 同樣以歌德的「不朽」論點出發，但更深刻的勾勒「世界遊戲」的荒誕與五彩繽紛...<br>
+<br>
+閱讀 Rauber Maria Rilke 的《Duineser Elegien》，「存在之道」一直是我想探討的。過去我們在封閉的世界中，在人類世界的意識覺醒後，在塵世中我們看清自己。作為寰宇的一份子，個體不過只是基於意識的存在，持續的體驗沈淪與復活，至少就某種形式而言。德文用詞有許多非英文或中文語法上難以理解的詞性與句法，而詩歌創作又巧妙的運用這特色，將寓意融入，是此，不從原文著手，似乎永遠少了一份感覺。必須透過媒介才能自我思考的結果，即是思考被媒介限制，是以何能在既有的框架中，探究更深入的思維呢？此際，我的思緒亂如麻。<br>
+<br>
+作為一種怪獸，喔不，一種超獸，脫口而出的胡言亂語，僅是我的省思，一味在這虛渺的舞台，找出自己的定位，
+在迷失的過程中，試著找出方向，只是狂人的夢囈，不是嗎？而我豈能得知人世各階段的遞移呢？<br>
+<br>
+行文至此，啤酒罐被撬開瓶蓋，脹氣的軀體中，五臟六腑在翻滾。喝酒絕對無法消愁，但是我格外享受酒醒的痛苦，然而小貓說過的話語悄悄地浮現於微弱的意識中：<ul>
+「人最過無助之事，便是無法摒棄不完美的自己。醜惡的自己。不管是身體的生命或是精神上的目標。為何自殺被視為罪惡呢？那是因為人們假設自己害怕被拋棄，而法律的意義就在於消除恐懼，即使恐懼本是構成腦細胞的一部分。我連第一關都過不了。我無法想像我的父母親的痛苦，即使我確知他們與我一樣是自私的生命體。為何自私的人們也為別離煩惱呢？如果人們能夠理性地卻除煩惱，那是冷酷而不是自私。而冷酷的人並不那麼自私，因為他們不是為了自己而生活。如果你也主動放棄生命，我也許會化成泡沫。」
+</ul>
+處於放任肉體腐朽的我，面對這兩年前 (Feb 7 2004) 的來信警語，衝去浴室，以滾燙的熱水來逼出酒氣，刺激我的感官。萎靡的我、垂喪的志氣，以及一再被挑戰的信念，在酒精於高溫起的化學作用中，以前所未有的衝擊，讓肉體協同主控精神為之扭曲，醜惡不堪的自己，在一瞬間，如蒸氣般汽化... 好長一段時候後，凝結於壁磚的水滴，又逐漸匯集，是的，這是淨化洗滌過的我，而耳盼尚回響著 Mark Shuttleworth 動人的演說，那股熱情、瘋狂地追逐夢想，並認真的活著，每一天、每一刻、每一分，乃至每一秒！<br>
+<center><b>Follow you dreams!</b></center>
+嘗試走出陰霾，繼續我的夢想！<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001533.html">02:54 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1533" onclick="OpenComments(this.href); return false">迴響 (6)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 23, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001532"></a>
+<h3 class="title">閉關？</h3>
+
+雖然說我最近因為趕某些計畫，比較忙碌些，但還是常掛在 IRC 上，無聊時也會寫幾篇 blog，但 [<a href="http://blog.linux.org.tw/~jserv/archives/001267.html">我的 MSN Messenger 帳號</a>] 則有段時間沒上線。不只一位朋友來信或 private message 詢問這個問題，以為我閉關去了，這裡稍作說明：laptop 上的 gaim cvs 似乎出了問題，我陸續做了些 [<a href="http://jserv.sayya.org/gaim/">patch</a>]，不過並未能完全運作，而最近下班後實在沒有足夠的體力來 hacking ，所以... MSN Messenger 的帳號就一直沒開，並不是因為我在「閉關」，而是我需要時間 hacking gaim & MSN。需要與本人交流的朋友，可用 Email 或 Google Talk 聯繫，謝謝！<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001532.html">10:41 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1532" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 22, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001531"></a>
+<h3 class="title">塞翁失馬焉知非福、失而復得焉知非禍</h3>
+
+這幾天壓力很大，我有若干項 software component 與 driver issues 沒有解決，其實今天很想請假，好好休息一番，沒想到早上又乖乖到辦公室工作。中午在內湖科學園區看到捐血車，想到自己今年度還沒捐血，所以就「灑熱血」了。不曉得是血量較大還是自己最近身心不適，下午有點暈眩，稍微補充一點熱量，則是繼續 coding，沒想到，竟然解決了兩個重大 issues，並且我也完成一個 feature 的實做，很開心。<br>
+<br>
+晚上一如往常，[<a href="http://blog.linux.org.tw/~jserv/archives/001264.html">騎腳踏車上下班</a>]，順道去金石堂書店看書，拜讀施純協教授的《數位邏輯》以及 Matthew von Unwerth 的《佛洛伊德的輓歌》，讓我有種醍醐灌頂的暢快，是此，打算回內湖住所再行詳讀。踩著淑女車行進中，瞥見右方巷子有輛休旅車往我的方向衝來，而左邊又有公車穿越，心想：<ul>
+「這下完了，我每個月花不少錢買保險，該不會要用到了？」
+</ul>
+也不知道為什麼，突然有股力量，讓我得以瞪腳跳出座墊，所以儘管淑女車後輪輾毀，可是我只有輕微碰撞，驚險。肇事的休旅車駕駛是個可愛的女生，她坦承根本沒有看到我在騎腳踏車，那位駕駛好心的載我與心愛的淑女車去 GIANT 門市維修 (唉，之前遇過不少撞後連聲歉意都沒有，就匆忙閃躲的駕駛，這次算相當幸運了)，不過維修費用真是... :(<br>
+<br>
+算一算我這幾年在台北出車禍與維修淑女車的費用，足夠買這台價格 NT$1800 的淑女車三台之譜，雖然折換大眾交通工具還是很划算啦 (努力說服自己)。<br>
+<br>
+回家跟 duan 兄聊到這些事，「塞翁失馬焉知非福、失而復得焉知非禍」實在非常貼切，捐血失去一些血量造成輕微暈眩，可是下午竟然有重大突破，是福份，但也因為這個福份，讓我不慎遇上這場車禍，而自己竟然有超乎預期的體能反應，也該說是自己運氣好。<br>
+<br>
+徒步回家的路上，跟自己的保險業務員也聊了一些，順便問些保險給付的項目，這次應該只是有驚無險的度過，未來還得要更謹慎才是。但無論如何，我還是會繼續騎腳踏車出沒在台北，儘管交通還不是很理想、空氣也不是很好，安全問題總是疑慮，只是為了環保、為了磨練，以及 Just for Fun!<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001531.html">10:44 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1531" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001530"></a>
+<h3 class="title">帝王夢</h3>
+
+標題很難想，因為很容易就跟餐飲或特種行業命名衝突，傳統中國人好像認為加個「帝王」一詞就翻身了？剛剛讀 windknight's blog [<a href="http://windknight.blogbus.com/logs/2006/02/1959098.html">新中國成立以來稱帝者一覽</a>]，我的 kBrowser 似乎沒辦法很正常觀看頁面，所以我重新排版過：<ul class="code" style="margin: 6px;">
+時間: 2006-02-21<br>
+太搞了，呵呵<br>
+<br>
+<ul>
+<li>大中華佛國 (1947-1953，1983)<ul>
+<li>先主石頂武 (1947-1953) 圖謀叛亂，被人民政府處決</li>
+<li>後主石金鑫 (1983) 石頂武之子，1983年復國，旋被鎮壓</li></ul></li>
+<li>道德金門皇帝<ul>
+<li>丁興來 (1981-1990) 地處大別山，由於交通閉塞，直到稱帝後十年才被發現並被鎮壓</li></ul></li>
+<li>中原皇清國<ul>
+<li>正皇帝張清安 (1982)</li>
+<li>副皇帝廖桂堂 (1982) 以皇清為年號，地處大巴山</li></ul></li>
+<li>聖朝國<ul>
+<li>林文勇 (1980-1982) 地處大巴山儀隴山區</li></ul></li>
+<li>1982 年地處大巴山的曹家元自稱玉皇大帝，旋滅</li>
+<li>1980 年地處大巴山的朱仕強自稱皇帝，僅七日即滅</li>
+<li>大聖王朝（1986-1988）<ul>
+<li>女皇晁正坤 (1986-1988) 地處膠東半島</li></ul></li>
+<li>萬順天國 （1990-1992）<ul>
+<li>李成福 (1990-1992) 地處豫西。自建安民黨、萬李起義軍，自稱唐朝後裔，妄圖以農村包圍城市的方式復辟唐朝帝制，定都西安。後被公安局鎮壓</li></ul></li>
+<li>90 年代地處大西南偏遠山村的農民趙振國自稱天道教的玉皇大帝</li>
+</ul>
+<br>
+這些所謂的「皇帝」大致分為三類人，一、文盲。二、江湖術士。三、權力狂。他們大都是地處邊遠地區和山鄉，由於交通閉塞，土地貧嵴，村民愚昧，拉幫結派聚眾稱帝。<br>
+<br>
+資料來源《帝夢驚華》。
+</ul>
+《帝夢驚華》這本書引發我很大的興趣，該書報導了數起中共建國以來，山區農民的「稱帝」鬧劇，找了一下，發現 [<a href="http://www.i118.com/book/product/B00352.htm">《帝夢驚華》 的簡介</a>]，引述如下：<ul class="code" style="margin: 6px;">
+<center><img src="http://www.i118.com/image/book/B00352.jpg"></center><br>
+中華民族的現代化，是悲苦與壯美共生的歷程。<br>
+<br>
+貧窮引致落後，愚昧滋生罪惡。1976年秋至1993年春，當代中國農村竟然鬧出「稱帝」事件數百起，正式「立國登基」的「皇帝」百餘人，地域遍及川、湘、豫、魯等多個省份，聞之駭人！<br>
+ <br>
+湖南湘潭，秋收起義的策地，有人做起「真命天子」出世的美夢，大封文武百官；現代史上英雄的大別山區，一個老瞎子款款登「龍廷」，賜封「東宮」、「西宮」，左右「丞相」；昔日革命根據地川北大巴山，鬧起「皇帝」、「副皇帝」；九十年代蘇北「黃壇國皇上」，竟有三宮六院十七妃嬪，數百農戶送女入教，美人麗婦爭相「進宮」……本書從當代中國十數年的「稱帝」案例中，選出最為驚心動魄的十個，案情曲折跌宕，資料真實完整，文筆生動流暢，並附「帝」、「後」、「妃」及「皇印」、「國璽」、「龍袍」照片一批，讀之令人扼腕，發人深思！
+</ul>
+就我讀過的近代史，充其量提到袁世凱的稱帝與張勳的復辟，再來就是日本軍閥扶植的偽滿州國，後來國共決裂，稍後中國人民共和國成立，皇權思想還如孤魂野鬼般找尋投胎對象，或許就是前述的那些「帝王」。<br>
+<br>
+其實也可以發現，第一個「新中國」，也就是孫文就任大總統的中華民國，雖引入歐美的民主制度，還有「兄弟我」獨創的五權憲法，但中國長久陷入軍閥割據，人民苦不堪言，即使北伐成功，民生問題還有待大幅改進。試看長沙大火，綿延不絕之慘景，當時的政府又是做出什麼回應？中國的米倉都已如此，更何況位於邊陲或偏遠地區的人們，基本食衣住行基本需求勢必面臨極大的問題，若能獲得施捨或禮遇，恩惠的確有如降自真命天子，貧窮與迷信的交互作用，見證了這些帝王的興起。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001530.html">02:57 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1530" onclick="OpenComments(this.href); return false">迴響 (5)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 21, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001529"></a>
+<h3 class="title">LightOn : 轉吧！七彩霓虹燈</h3>
+
+今天在公司用 gdb 跟「神秘計畫」的 codebase 搏鬥，依然沒有任何進展，感到很沮喪，回家後改來撰寫有趣的小程式，試圖找出樂趣：<br>
+<center><img src="http://jserv.sayya.org/misc/lighton.jpg"></center><br>
+靈感來自國內「夾子電動大樂隊」的作品〈轉吧七彩霓虹燈〉，歌詞如下：<ul><pre class="code" style="margin: 6px;">
+轉吧七彩霓虹燈(Turn On The Disco Ball)
+
+[口白]
+看那七彩的霓虹燈，它的發明者是愛迪生，且讓我們帶來這首
+〈轉吧　七彩霓虹燈！〉
+
+一個兩個三個四個，五個六個七個八個，
+天花板總是有許多，許多數不完的彩虹燈！
+
+紅色紫色藍色灰色！綠色白色黑色黃色！
+頭頂上總是有許多，許多顏色的彩虹燈！
+
+轉吧！轉啊！七彩霓虹燈！讓我看透這一個人生，
+讓那沒有答案的疑問，通通掉進雨後的水坑！
+
+轉吧！轉吧！流汗的人們！忘掉憂愁和煩悶，
+隨著那穿腦的歌聲，證明這還是彩色的人生！
+
+今夜又來到絢麗的PUB，看看有沒有開心果，
+明日又是期待的假日，今晚一定要用力跳.....舞！
+
+[口白]
+轉！...看那七彩霓虹燈！
+轉！...哈！哈！原來這就是幸福可愛的人生！
+轉！...管他誰是愛迪生！
+轉！...我們是夾子電動大樂隊！
+</pre></ul>
+我寫的「七彩霓虹燈」程式可 [<a href="http://jserv.sayya.org/misc/lighton.tar.bz2">在此下載</a>]，程式名稱取作 "LightOn"，因為跟某家公司有關 :P<br>
+<br>
+LightOn 用 Cairo 實做出 ARGB image 顯示效果，並展示之前 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001440.html">Cairo 練習：入力娘簡易實做</a>] 提到的技巧，當作娛樂還不錯，寫程式何必一定要把自己搞得整日緊繃，不也可比照陶淵明在〈五柳先生傳〉敘及的情境呢？<ul>
+嘗著文章自娛，頗示己志，忘懷得失，以此自終。
+</ul>
+所以，轉吧！七彩霓虹燈<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001529.html">10:16 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1529" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 20, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001528"></a>
+<h3 class="title">小技巧：指定 Gtk+ 應用程式中 File Chooser 的預設目錄</h3>
+
+知名的 Gtk+/X11 hacker - Ross Burton - 在 blog [<a href="http://www.burtonini.com/blog//computers/filesel-2006-02-20-12-30">Default Location in GTK+ File Chooser</a>] 提到非常有用的技巧。Gtk+ 的應用程式普遍使用到 GtkFileChooser widget，其呈現的效果如下：<br>
+<center><img src="http://developer.gnome.org/doc/API/2.0/gtk/filechooser.png"></center><br>
+使用 Ubuntu 的朋友可以發現，最近 Gtk+ 預設 File chooser 開啟的目錄變成 $HOME/Documents，其實很惱人，但是只要執行應用程式前，指定以下環境變數：<ul>
+export GTK_DEFAULT_FILECHOOSER_DIR=$HOME
+</ul>
+Gtk+ File chooser 就會乖乖的切到 $HOME 目錄下。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001528.html">10:29 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1528" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001527"></a>
+<h3 class="title">本 blog 的統計數字</h3>
+
+因為接下 (根本就不知道為什麼) [<a href="http://blog.linux.org.tw/">blog.linux.org.tw</a>] 的管理工作，大刀闊斧砍了一堆 spam comment / trackball (對了，其實還有許多「幽靈」spam 還沒整頓，請有權限的前輩幫忙一下，謝謝)，並且無聊到把這上面的 blog 都讀完了，我發現 [<a href="http://blog.linux.org.tw/~ystuan/">PowerOP 舊的 blog</a>] 放置了 [<a href="http://www.sitemeter.com/">SiteMeter</a>]，覺得很有趣，所以我昨天也在 [<a href="http://blog.linux.org.tw/jserv">Jserv's blog</a>] 加了相關的 HTML tag。原本只是玩票性質，沒想到今天看了 [<a href="http://www.sitemeter.com/?a=stats&s=s23jserv">SiteMeter 對 Jserv's blog 的統計</a>]，嚇了一跳：<ul class="code" style="margin: 6px;">
+<table border='0' width='450' cellpadding='1' cellspacing='1'><tr><td align='center'  bgcolor="#316310" width='450' colspan='4'><font face='Arial'  color="#FFFFFF"><a href='http://blog.linux.org.tw/~jserv/' style='color: rgb(255,255,255)'>Jserv blog</a></font><br/><b><font face='Arial'  color="#FFFFFF">Site Summary</font></b></td></tr><TR><TD align="center" width="365" colspan="4"><SMALL>&nbsp;&nbsp;</SMALL><td></TR><TR><td align="left" width="365" bgcolor='#9CCE9C' colspan="4"><font face="Arial">&nbsp;&nbsp;<b>VISITS</b></font></td></tr><TR><TD align="center" width="365" colspan="4"><SMALL>&nbsp;&nbsp;</SMALL><td></TR><tr><TD width=82>&nbsp;&nbsp;</TD><TD align="left" width=168><font face="Arial">Total</font></TD><TD align="right" width=85><font face="Arial">1,881</font></TD><TD width=30>&nbsp;&nbsp;</TD></TR><tr><TD width=82>&nbsp;&nbsp;</TD><TD nowrap align="left" width=168><font face="Arial">Average Per Day</small></font></TD><TD align="right" width=85 title='(total visits for the last 7 days / 7)'><font face="Arial">664</font></TD><TD width=30>&nbsp;&nbsp;</TD></TR><tr><TD width=82>&nbsp;&nbsp;</TD><TD nowrap  align="left" width=168><font face="Arial">Average Visit Length</font></TD><TD align="right" width=85 title='minutes:seconds'><font face="Arial">2:17</font></TD><TD width=30>&nbsp;&nbsp;</TD></TR><tr><TD width=82>&nbsp;&nbsp;</TD><TD align="left" width=168><font face="Arial">Last Hour</font></TD><TD align="right" width=85><font face="Arial">58</font></TD><TD width=30>&nbsp;&nbsp;</TD></TR><tr><TD width=82>&nbsp;&nbsp;</TD><TD align="left" width=168><font face="Arial">Today</font></TD><TD align="right" width=85><font face="Arial">552</font></TD><TD width=30>&nbsp;&nbsp;</TD></TR><tr><TD width=82>&nbsp;&nbsp;</TD><TD align="left" width=168><font face="Arial">This Week</font></TD><TD align="right" width=85 title='Total visits for the last 7 days.'><font face="Arial">1,329</font></TD><TD width=30>&nbsp;&nbsp;</TD></TR><TR><TD align="center" width="365" colspan="4">&nbsp;&nbsp;<td></TR><TR><td align="left" width="365" bgcolor='#CE9CCE' colspan="4"><font face="Arial">&nbsp;&nbsp;<b>PAGE VIEWS</b></font></td></tr><TR><TD align="center" width="365" colspan="4"><SMALL>&nbsp;&nbsp;</SMALL><td></TR><tr><TD width=82>&nbsp;&nbsp;</TD><TD align="left" width=168><font face="Arial">Total</font></TD><TD align="right" width=85><font face="Arial">3,311</font></TD><TD width=30>&nbsp;&nbsp;</TD></TR><tr><TD width=82>&nbsp;&nbsp;</TD><TD nowrap align="left" width=168><font face="Arial">Average Per Day</small></font></TD><TD align="right" width=85  title='(total page views for the last 7 days / 7)'><font face="Arial">1,207</font></TD><TD width=30>&nbsp;&nbsp;</TD></TR><tr><TD width=82>&nbsp;&nbsp;</TD><TD nowrap align="left" width=168><font face="Arial">Average Per Visit</font></TD><TD align="right" width=85><font face="Arial">1.8</font></TD><TD width=30>&nbsp;&nbsp;</TD></TR><tr><TD width=82>&nbsp;&nbsp;</TD><TD align="left" width=168><font face="Arial">Last Hour</font></TD><TD align="right" width=85><font face="Arial">90</font></TD><TD width=30>&nbsp;&nbsp;</TD></TR><tr><TD width=82>&nbsp;&nbsp;</TD><TD align="left" width=168><font face="Arial">Today</font></TD><TD align="right" width=85><font face="Arial">897</font></TD><TD width=30>&nbsp;&nbsp;</TD></TR><tr><TD width=82>&nbsp;&nbsp;</TD><TD align="left" width=168><font face="Arial">This Week</font></TD><TD align="right" width=85 title='Total page views for the last 7 days.'><font face="Arial">2,414</font></TD><TD width=30>&nbsp;&nbsp;</TD></TR></table>
+</ul>
+看來頗神奇，才短短兩天，這些數據怎麼來的呢？<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001527.html">09:56 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1527" onclick="OpenComments(this.href); return false">迴響 (9)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001526"></a>
+<h3 class="title">fnord : 極小但完整的 web server</h3>
+
+有些朋友要我推薦給 MIPS 或 ARM7 平台的輕量級 http daemon，過去會想到 lighthttpd，不過現在有新的選擇 [<a href="http://www.fefe.de/fnord/">fnord</a>]，Debian 也有收錄。官方網頁 [<a href="http://www.fefe.de/fnord/others.html">Comparing fnord to other web servers</a>] 做了令人印象深刻的比較，引用如下：<br>
+<table border>
+<tr><th>Name<th>static binary size<th>GET<th>CGI<th>keep-alive<th>virtual hosting<th>remarks
+
+<tr><td><a href=/fnord/>fnord</a><td>13k/18k<td>yes<td>yes<td>yes<td>yes<td>the reference ;)
+<tr><td><a href=http://server.sundawn.net/Lynorics/prog/ghttpd.html>ghttpd</a><td>37k<td>yes<td>GET only<td>no<td>yes<td>found a buffer overflow with the first grep
+<tr><td><a href=http://aurora.esi.uem.es/~alo/?action=cherokee>cherokee</a><td>14k<td>yes<td>no<td>no<td>no<td>Two orders of magnitude slower than fnord on my laptop
+</table>
+其功能也令人驚艷：
+<ul>
+<li>Small! (13k static Linux-x86 binary without CGI, 18k with CGI)
+<li>Fast! (see <a href=SPEED>this document</a>), uses mmap (and on Linux, sendfile)
+<li>Scalable! (see <a href=2.5.50-scalability.png>this plot from Linux
+2.5.50</a>, measured using <a href=sigio.c>this Linux 2.4+ specific
+hack</a>.  The fnord plot ends at 8000 connections because I couldn't
+open more connections before fnord kept timing out the old ones)
+
+<li>connection keep-alive
+<li>el-cheapo virtual domains (similar to thttpd)
+<li>IPv6 support (through <a href=../ucspi/>tcpserver</a>)
+<li>CGI (through pipes, not temp files like Apache)
+<li>Content-Range (not the full specs, just a-b or a- byte ranges)
+<li>transparent content negotiation (will serve foo.html.gz if foo.html
+was asked for and browser indicates it understands deflate, same for
+foo.png for foo.gif and image/png)
+<li>Now also with directory index generation (<tt>-DDIR_LIST</tt>).
+</ul>
+fnord 透過 [<a href="http://www.fefe.de/ucspi/">tcpserver</a>] 啟動，另外，fnord 內部的 [<a href="http://www.fefe.de/libowfat/">libowfat</a>] 很特別，包裝了一系列字串與 buffer 處理的 routines。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001526.html">10:42 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1526" onclick="OpenComments(this.href); return false">迴響 (5)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001525"></a>
+<h3 class="title">教育與思維能力</h3>
+
+必須承認，這種命題由我這個沒受過高等教育的鄙夫執筆，不僅沒有說服力，還會引來不必要的嘲諷，所以本篇 blog 大部分的內文我改放到自己的日記中，這裡僅作點題。拜讀 [<a href="http://www.sciscape.org/articles/genius_n_edu/">從天才思維省思現代教育</a>] 後，內心的澎湃是難以形容的。<br>
+<br>
+我很高興唸過所謂的「名校」，見過許多真正兼具才智與創造力的天才們，走在校園，常常遇到的情境是：左邊的同學是物理奧林匹亞國手、右邊的同學高二跳級考上台大電機系、前面站著一群剛從奧林匹亞培訓營回來的同學，後面則有幾個討論組合數學的同學、.... 而我，來自鄉下的學生，慶幸自己不被留級外，唯一的用途似乎只是他們的墊腳石 (按：我有這個資格嗎？)。古人說「勤能補拙」，我難以認同，畢竟這之間的落差實在太遠：我同學開始念莎士比亞的劇本時，我還不會書寫注音符號；在我還在背九九乘法表時，我那些同學已經在證明費瑪最後定理；在我思考「一公斤的棉花與一公斤的鐵哪個比較重」的問題時，同學已經在計算核能物理與臨界量、... 最後，我懂了，我們生活在不同的維度，只是恰好有交集，苟活於一維空間的我，不可能理解那些游移於三維、四維、...、十一維空間 (我念一中的時，第一次去福利社買飲料，就聽到有同學在討論十一維空間!!) 的天才們。<br>
+<br>
+基於這種自卑，其實我認識的天才同學並不多，即便在資優班的同學，這些「震撼教育」給我很大的啟發，還讓我在那個時期，不斷思考自己作為一種「商品」，依據《資本論》的「商品剩餘價值」到底在哪？在此求學，只是苦苦追趕同儕在 n 年前的知識？1914 年諾貝爾物理學獎主的 Max Laue 曾說：<ul class="code" style="margin: 6px;">
+「重要的不是獲得知識，而是發展思維能力。教育無非是一切已學過的東西都遺忘掉的時候所剩下來的東西。」
+</ul>
+華裔科學家李政道也說過：<ul class="code" style="margin: 6px;">
+「培養人才最重要的是創造能力。」
+</ul>
+哈佛大學教育學院認知和教育學教授 Howard Gardner 常舉一個例子：哈佛大學的畢業生在拿到畢業證書時，
+被問及：<ul>
+「為何夏天比冬天來得熱？」
+</ul>
+超過 25% 學生的答覆，與學齡前的幼童沒有兩樣：<ul>
+「因為地球在夏天時比較接近太陽」
+</ul>
+反而是多數的小學學生都可以明確指出，太陽斜射的角度才是決定因素，美國的科普教育難道如此不扎實？非也，或許當限定某個專業後，基本的「常識」反而很容易被忽略。而且我也相信，即使是那 25% 作此回答的哈佛大學畢業生，在各行各業中，還是會有耀眼的表現。<br>
+<br>
+[<a href="http://www.sciscape.org/articles/genius_n_edu/">從天才思維省思現代教育</a>] 一文提到：<ul class="code" style="margin: 6px;">
+1921年春天，愛因斯坦為創立一所大學，曾到美國去募款，現場的聽眾向他提出了許多問題：「您可記得聲音的速度是多少？」「您怎樣才能記得住許多東西？」「您是把所有的東西都記在您的筆記本上，隨身攜帶嗎？」……<br>
+<br>
+面對這些提問，愛因斯坦侃侃而談：「我從來不帶什麼記著所有東西的筆記本，我常常任自己的頭腦輕鬆，以便把全部精力集中到我要研究的問題上。至於你們問我聲音的速度是多少，這我很難確切地回答，需要查一查物理學辭典，因為我從來不大注意去記辭典上可以查到的東西……」「那您頭腦裡盡記些什麼呀？」人們驚訝地問。<br>
+<br>
+「我記的是書本上還沒有東西，我尋找著書本上還沒有的知識。」愛因斯坦回答說，「僅僅死記那些書本上可以翻到的東西，什麼事件啦，人名啦，公式啦，等等，根本就不用上大學。我覺得，高等教育必須充分重視培養學生思考和探索問題的本領。人們解決世界上的問題，靠的是大腦的智慧和創造性的思維，而不是照本宣科。」 
+</ul>
+可笑的是，高中時期的我，雖然對近代史、古典哲學、歐亞文化、代數、化學，以及基礎生物有高度的興趣，但充其量只是不排斥，而且願意花時間死記罷了，這讓我得以考上大學，跨越高等教育的門檻，然而，我的確不配在高等學府進修，因為我缺乏思維能力。文章也提到：<ul class="code" style="margin: 6px;">
+許多偉大的科學家都說，他們的思考過程主要是集中在影像、感覺和文字上。伽利略用圖表將自己的想法形象化，從而取得科學研究上的突破，愛因斯坦也說他「指尖的特殊感覺」常指引他朝正確的方向來思考。<br>
+<br>
+關於這種感覺，愛因斯坦自己說過：「我看到數學分成許多專門領域，每個領域都能耗費去我們短暫的一生。因此，我覺得自己的處境像布里丹的驢子一樣，它不能決定究竟該吃哪一捆乾草。這顯然是由於我在數學領域裡的直覺能力不夠強，以致不能把真正帶有根本性的最重要的東西，同其餘那些多少是可有可無的廣博知識明確地區分開來……誠然，物理學也分成了各個領域，每個領域都能吞噬一個人短暫的一生……可是，在這個領域裡，我不久就學會了識別出那種能導致深化知識的東西，而把其它許多東西撇開不管。」<br>
+<br>
+天才們一旦具備了一定的語文能力，似乎就會傾向於以圖像的方式來進行思考，使他們能透過不同的途徑靈活展現知識。當愛因斯坦對一個問題做過全面性的思考後，他往往發現到，盡可能以各種不同方式來對該問題做不同角度的探討相當地必要，此時他主要運用直觀和空間來進行思考，對他來說，文字和數字在此過程中並不是那麼地重要。 
+</ul>
+這讓我想到，Jacques Hardamart 在 1945 年出版的《The Psychology of Invention in the Mathematical Field》探討數學家思考的過程，發現所有數學家在創造過程中，幾乎避免使用精確的語言，而是採用模糊的視覺或觸覺概念，他以愛因斯坦的一封信件為例：<ul class="code" style="margin: 6px;">
+  「不管是書寫或口述的字詞或語言，在我的思考機構裡，幾乎都不扮演任何角色。 ...思考的實際要素似乎是某些記號，以及多少算是清晰的意象，可以自發地再生產與結合。 ...以我的情況而言，上述的要素是視覺、甚至某種體感 (muscular) 類型。至於約定俗成的文字或其他記號，我只有在次要的情況裡，才會殫精竭慮去探求。」
+</ul>
+然而，至今我在演繹多項應用數學的分析與歸納過程，仍拘泥於精確的語言表示，未能捕捉「模糊的視覺或觸覺概念」，或許是我所在的 IT 產業不允許、也不期望我陷入此等「難以掌握」的泥淖，但是，一定程度上，我也開始質疑在教育基礎上，所建立的思維能力。 (...後略，不公開...)<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001525.html">02:43 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1525" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001524"></a>
+<h3 class="title">Wir müssen wissen, wir werden wissen / 我們必須知道，也終將會知道</h3>
+
+柯尼斯堡 (Konigsberg) 在十八世紀出現一位偉大的哲學家 Immanuel Kant，在十九世紀又誕生同等偉大的數學家 David Hilbert，兩人分別成為哲學史與數學史的不朽，各自的批判精神和樂觀主義精神，永駐世人心中。<br>
+<ul>
+「數學是連結理論和實務、思想和經驗之間落差的工具。數學建起雙方的橋樑，並益加穩固。事實上，現代文明中，所有關於理性認識和征服自然的部分，都有賴於數學！」
+</ul>
+1930 年 9 月 8 日，在柯尼斯堡，剛過完 68 歲生日的 Hilbert，在接受榮譽市民受禮儀式的演說〈邏輯與認識自然〉中，Hilbert 這麼提到，他認為雖然數學的應用相當重要，但絕不可用以衡量數學的價值，對維護純粹數學做了有力辯護，最後，從擴音裝置，對著懷疑主義者的「愚蠢的不可知」，堅定有力地說出了最後一句話：<ul>
+Wir müssen wissen, wir werden wissen
+</ul>
+即 "we must know, we shall know"、「我們必須知道，也終將會知道」，這句話給後世相當大的鼓舞，也是 Hilbert 的墓誌銘，同時也是回應 Hilbert 年輕時，德國哲學家 Emil Du Bois-Reymond 對這世界種種不可知，提出悲觀的哲學論點，後者指出：「我們不知道，也永遠不會知道」，作為無法參透人性意志、物質本性，與科學難以解釋的現象等等的論點，於是乎，"Wir müssen wissen, wir werden wissen" 這句話對世界上悲觀哲學理論者，予以致命一擊。<br>
+<br>
+同時，在演說中，Hilbert 提到：<ul>
+「Kant 高估了存在既與的事實的作用和範圍，他的哲學理論存在將人類神化的缺陷，我們必須擺脫它。」
+</ul>
+從人類內在心智過程與物質世界的關聯，Hilbert 否定 Kant 哲學，在提出「Hilbert 的 23 個數學問題」後，數學形式化，並用確切的證明建立起新的思維體系，Hilbert 是成功的，而且是如此的耀眼。就時間觀點來說，Kant 從直覺的角度，認定是人類主觀、生來賦予的直觀形式，其立足的根基，是牛頓力學的絕對時空概念，並予以形式上對應於人類的認知，但隨著二十世紀初相對論與量子力學理論的相繼提出，Kant 無從改變此思維體系的絕對性，可說是嚴重的致命傷，Hilbert 重新挑戰 Kant 時空觀點的完備性。<br>
+<br>
+有意思的是，像 Hilbert 對著數學抱著高度信心，相信是極大部份的數學家所共有的，但在演說結束沒多久，同年 11 月17 日，《Monatshefte fur Mathematik und Physik》期刊接受 25 歲的 Kurt Gödel 的稿件，證明了不完備定理 (Incompleteness Theorem，整個理論是在 1931 年完成)：有些命題為真，但無法被證明，數學家或許可說：「被證明的就是真的」，但再也無法說：「真的一定會被證明」。<br>
+<br>
+參考資料：<ul>
+<li>董世平 - [<a href="http://episte.math.ntu.edu.tw/articles/mm/mm_15_4_11/page3.html">戈德爾不完備定理</a>]</li>
+</ul>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001524.html">12:59 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1524" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 19, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001523"></a>
+<h3 class="title">XOrg 的 Xlib 改用 git 管理專案開發</h3>
+
+Keith Packard 在 xorg mailing-list 發佈了 [<a href="http://lists.freedesktop.org/archives/xorg/2006-February/013075.html">Xlib moved to git</a>]，未來 XOrg X11R7.1 的版本控制系統會從 CVS 移向 git，一般使用者可以如以下方式存取 Xlib  git：<ul>
+jserv@venux:~/x11$ <b><u>git clone git://anongit.freedesktop.org/git/xorg/lib/libX11</u></b><br>
+defaulting to local storage area
+</ul>
+XCB/XCL 的 branch 也即將整合進 mainline，這是繼之前 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001251.html">在 Linux kernel 外應用 GIT，兼談分散式版本控制系統</a>] 提到 XMMS2 的例子後，另一個指標性的個案，採用 git 作分散式版本控制系統，也逐漸成為重要的項目，同質的開放實做還有 svk、GNU Arch、baz、monotone，以及 bazaar-ng 等等。對了，git 現在有很多輔助的應用程式，也提供 ncurses-based 的工具，可以視覺化管理，非常方便。<br>
+<br>
+對了，Keith Packard 已經在去年年底離開 HP Labs，改為 Intel 服務，這會創造出什麼新變化呢？真期待。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001523.html">05:17 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1523" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001522"></a>
+<h3 class="title">JNI_OnLoad 的非預期現象</h3>
+
+Alan Burlison 在 blog [<a href="http://blogs.sun.com/roller/page/alanbur?entry=jni_onunload_mostly_useless">JNI_OnUnload(): mostly useless</a>] 提到 JNI_Unload 這個 JNI call 搭配 JNIInvokeInterface 的 AttachCurrentThread call 造成非預期的現象。在 kaffe/include/jni.h 中，相關的定義如下：<ul><pre class="code" style="margin: 6px;">
+<span class="comment">/* These functions might be defined in libraries
+   which we load; the JNI implementation calls
+   them at the appropriate times.  */</span>
+<span class="keyword">extern</span> JNIEXPORT jint JNICALL JNI_OnLoad (JavaVM *, <span class="keyword">void</span> *);
+<span class="keyword">extern</span> JNIEXPORT <span class="keyword">void</span> JNICALL JNI_OnUnload (JavaVM *, <span class="keyword">void</span> *);
+
+<span class="comment">/*
+ * Invocation API.
+ */</span>
+<span class="keyword">struct</span> JNIInvokeInterface
+{
+  <span class="keyword">void</span> *reserved0;
+  <span class="keyword">void</span> *reserved1;
+  <span class="keyword">void</span> *reserved2;
+
+  jint (JNICALL *DestroyJavaVM)         (JavaVM *);
+  jint (JNICALL *AttachCurrentThread)   (JavaVM *, <span class="keyword">void</span> **, <span class="keyword">void</span> *);
+  jint (JNICALL *DetachCurrentThread)   (JavaVM *);
+  jint (JNICALL *GetEnv)                (JavaVM *, <span class="keyword">void</span> **, jint);
+  jint (JNICALL *AttachCurrentThreadAsDaemon) (JavaVM *, <span class="keyword">void</span> **, <span class="keyword">void</span> *);
+};
+</pre></ul>
+Alan Burlison 指出問題的癥結：<ul class="code" style="margin: 6px;">
+what was puzzling me was that although JNI_OnLoad() was being called OK, JNI_OnUnload() was never being called, and because the thread was attached to the JVM via a call to <a href="http://java.sun.com/j2se/1.5.0/docs/guide/jni/spec/invocation.html#attach_current_thread">AttachCurrentThread()</a>, the JVM would never exit as it still had an active thread. A simple workaround was to attach the thread to the JVM as a daemon thread using <a href="http://java.sun.com/j2se/1.5.0/docs/guide/jni/spec/invocation.html#attach_current_thread_as_daemon">AttachCurrentThreadAsDaemon</a> as daemon threads don't keep the JVM alive, but that still meant the DLL wasn't being cleaned up properly.
+</ul>
+稍後他試著解決問題，過去可用 java.lang.System.runFinalizersOnExit() method，不過這已經 deprecated，他最後使用的解法如下：<ul class="code" style="margin: 6px;">
+In light of this it appears that although JNI_OnLoad() is useful, JNI_OnUnload() is less than useful. There is a workaround, which is to register a native exit callback using <a href="http://java.sun.com/j2se/1.5.0/docs/api/java/lang/Runtime.html#addShutdownHook(java.lang.Thread)">Runtime.addShutdownHook()</a> and do the cleanup that way, but it's kind of broken that JNI_OnUnload() doesn't actually do what it is supposed to, and even more odd that the JNI documentation is completely silent as to why it doesn't actually work.
+</ul>
+在 GNU Classpath (Kaffe 算是其「超集」) 中，package gnu.xml.libxmlj.util 用到這個技巧，可參閱 gnu/xml/libxmlj/util/XMLJ.java 在 initialization 的部份程式碼，其 JNI native impl 位於 native/jni/xmlj/xmlj_util.c。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001522.html">04:01 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1522" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001521"></a>
+<h3 class="title">搜尋技術的進步對於郵件與桌面系統的衝擊</h3>
+
+這個標題似乎太嚴肅了，內文則恰好相反。晚上思考 zeta function 難以入眠，於是我又開始想 call for paper 的提案 (週四才被 hc 追殺過)，反正現在失眠了，索性隨便紀錄想法 (與 call for paper 無關就是)。<br>
+<br>
+我開始用 email，大概是在 1998 年，之前所有投稿或者書信往來，都是親手撰寫並透過傳統紙本傳遞。第一個使用的 email client 是 [<a href="http://www.neoplanet.com/">NeoPlanet</a>] 內建的，後來我因為興趣與工作需要，在 Win32、Linux、Solaris，以及 QNX 上切換開發環境，免不了要收 email，所以學習了若干個 mail client，像是 pine、mutt、KMail、... 等。那時候覺得 web mail 很蠢，而且自己對 SMTP 的不信任，導致跟 Web 掛勾的項目都直覺性地反感，記得有一次接一個案子，對方就是要我以 JavaMail 提供一個 WebMail 導向的整合環境，當時第一個反應是：「天阿！別鬧了」。<br>
+<br>
+然而，曾幾何時，我漸漸捨棄習慣的 mail client，改用 GMail，過去嗤之以鼻的低效率、操作不便、不安全、垃圾郵件、... 的問題，竟然一掃而淨，我甚至開始將自己以 Giga bytes 計數的 mailing-list folders，逐步置放於 GMail 帳號中，反正 Google 就是有辦法提供空間。最吸引我的地方，就是快速、有效率，而且高度彈性的郵件搜尋，這對於每天都得讀上百篇文件與郵件的我，有非常巨大的幫助，另一者就是聰明的垃圾郵件過濾，我不再需要維護自己的 filter，反正 Google 的工程師總是會處理好。<br>
+<br>
+再者，錯殺資料的次數，大概可跟我讀過的書籍數量相比，當然，我會作備份，但是生活在海島型氣候的台灣，硬體總是會在不預期罷工，並且根據 Murphy's Law，就算事先有因應之道，但是這些已知的潛在問題，總會在關鍵時刻出錯。GMail 的容量實在是驚人，而且申請帳號是如此容易，所以一個人擁有 n 個帳號也非難事，透過現有的工具 (Freshmeat.net 有好多 free software 可協助)，無論是備份、紀錄、放照片，或者只是隨身攜帶資料，GMail 都是很理想的選擇，那我，作為一個使用者，為何一定要把資料放在 localhost 呢？<br>
+<br>
+我用以謀生的工作，也很難局限於某個項目，所以常常需要找 marketing、software、hardware、protocol、RF、... 等領域的文件，並且會收到來自內部與外部的 mail，幾年前年紀還小的時候，還會仔細的分類並彙整，但如今，我早已「視茫茫、髮蒼蒼」，沒有足夠的精力去作這些瑣碎的工作，只得一股腦兒都塞到 /home/jserv/doc 或 /home/jserv/picture 等目錄，未來要參照資料怎麼辦呢？Google Desktop 幫了很大的忙，可惜不知道葫蘆裡面賣什麼藥。硬體的運算能力已經可支撐高效率的搜尋技術，是此，有 [<a href="http://beaglewiki.org/Main_Page">Beagle</a>] 與 [<a href="http://kat.mandriva.com/">Kat</a>] 一類 Desktop Search Engine 的現身，提供了全面性的系統架構，得以與桌面系統和底層的作業系統作緊密的結合，如提昇 Linux 檔案搜尋速度，而出現的實驗性 inotify。<br>
+<br>
+可以想見的未來，公司任何一個職員，只要是坐在辦公室的，絕對要面臨高負載的「數位資料衝擊」，總是有找不到的文件、總是不曉得自己曾經讀過什麼資料，以及總是無法在一堆資料中，找出真正的「資訊」，試想，我這個微不足道的小小工讀生都得為這些資料費神了，那我的老闆怎麼辦？請再多秘書也沒辦法解決問題！Newsweek 刊載了 Bill Gates 的文章 [<a href="http://www.msnbc.msn.com/id/11020787/site/newsweek/print/1/displaymode/1098/">The Road Ahead</a>]，提到當代人總是把「資料」和「知識」這兩個概念搞混淆，前者只是單純、沒有加工的數位訊號集合，換言之，是種「言語」，而，後者則建立於「經驗、環境、闡述，以及反思」的基礎之上，是此，可說是種「語言」。當代人企盼的，正是有系統、得以掌握、充分明暸的「語言」，知識系統也面臨空前的衝擊，如何針對個人、企業，乃至於跨及海內外趨近無限的原始「資料」，分析其「言語」，歸納出有價值的「語言」呢？<br>
+<br>
+同時，層出不窮的 Web applications，除了創造商機與開拓人類視野外，深刻地讓人體會到人和知識之間聯繫的重要性，並且，為每個使用者創造出獨特、客制、前設性的價值，不僅是這些應用程式的特性，更可說是「職責」。GMail 的 tag 引來許多聯想，並激起全球開發者的腦力激盪，像是我在 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001284.html">夢幻軟體計畫八月份進度</a>] 提到的 [<a href="http://rt.openfoundry.org/Foundry/Project/?Queue=441">CatFS</a>]，就是一個 native GMail Taggable  meta- Linux file system 的實做 (應該是全球第一個)，其他透過 [<a href="http://fuse.sourceforge.net/">FUSE - Filesystem in Userspace</a>] 實做的 GMail-based 的 filesystem 就更千奇百怪了，找找 Slashdot 的新聞與評論，總是會出現令人驚艷的新發現。這說明了什麼？我前面提過，使用者逐漸將資料置放於 GMail 一類高負載容量、便於存取，以及相對安全的環境中，資料量的增加是相當驚人，所以有效且直覺的分類系統，是另外一個挑戰，不可避免要提到 data mining 相關的技術。如果我們不看深入的技術，其實我們已經逐步走入過去只在科幻電腦出現的情境，假以時日，我們如果對《生命中不能承受之輕》這本經典有興趣，但沒有足夠時間閱讀，或許可以這麼跟電腦對話：<ul>
+請彙整《生命中不能承受之輕》相關的資料並建檔，我需要中文撰寫的評價
+</ul>
+在人們享受一杯濃郁的咖啡後，桌面系統就擺放好足夠的資料，並且下載的電子檔也被標示特定的 tag，告訴使用者這本書的作者 - 米蘭．昆德拉 - 的生平與相關著作，等等，這不是早就可以透過 Google 搭配 script 做到？是的，不過未來應該有更強健的 smart tagging 機制，可以動態讓這些資料具備特定的 tag，並依據使用者的偏好與意圖作調整，而，資料的「呈現」，絕對不是死板板的電子檔或摘要，相反地，桌面系統的 "Dashboard" 應該要能生動的呈現，並且讓這些 tagged 的資料，得以依據權重，主動式彙整... 就這個例子來說，使用者或許會在 Virtual  Reality 的環境中，一步又一步的帶入米蘭．昆德拉營造的人類境況 (condition humaine)，這個「不能承受之輕」究竟為何？除了昆德拉以悖論的手法透過小說提出外，我們還可看到其他旁徵博引的文獻，適度地呈現於視野可及之處，最後，電腦可協助我們將剛才的探索歷程 (traversing) 記錄下來，以特定的資料結構，匯集那些獲取的資料。<br>
+<br>
+GNOME 開發者、VMware 員工- Christian Hammond (chipx86) - 在他的 blog 展示了 [<a href="http://www.chipx86.com/blog/?p=154">Taggable Desktop</a>] 與 [<a href="http://www.chipx86.com/blog/?p=140">Tagging and the GNOME Desktop</a>] 的概念與實做，可作為 [<a href="http://beaglewiki.org/Main_Page">Beagle</a>] 與 [<a href="http://kat.mandriva.com/">Kat</a>] 這類 Desktop Search Engine 的延伸，並整合 taggable meta filesystem，提供一個桌面環境的 MVC (Model-View-Controller) pattern 的實現，當然，這勢必會激發出更多的想像力與功能上的創新。<br>
+<br>
+未來會如何呢？我想，就如 1900 年第二屆國際數學家大會中，知名數學家 David Hilbert 在「數學問題」的開場白提到： (德文原文)<ul>
+ "Wer von uns wurde nicht gern den Schleier luften, unter dem die Zukunft verbogen liegt, um einen Blick zu werfen auf die bevorstehenden Fortschritte unserer Wissenschaft und in die Geheimnisse ihrer Entwickelung wahrend der Kunftigen Jahrhunderte?"
+</ul>
+中文的意思是，身處在這變動的時代，我們之中有哪一個人不想揭開未來的面紗，讓隱藏其後的真相顯露出來，下科學的下一波進展、向未來世紀科學發展的秘密引領盼首呢？的確，我們已感受到搜尋技術的進步，對於郵件與桌面系統的衝擊，這些變動將在不久的未來，大幅改變既有的使用習慣，甚至是桌面環境生態。<br>
+<br>
+Let's Hacking!<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001521.html">04:47 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1521" onclick="OpenComments(this.href); return false">迴響 (7)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 18, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001520"></a>
+<h3 class="title">如何與不同性格的人共事？</h3>
+
+閱讀 [<a href="http://ttw3.mmh.org.tw/Pharmacy/new_page_182.htm">如何與不同性格的人共事？</a>] 這篇文章的同時，讓回想自己的職場生涯。如果說，有拿錢的工作就稱為「工作」的話，那我的一份「工作」或許是作 CTO 或技術總監 (時間是在上個世紀末，那個虛幻的時代)，後來有別的老闆出錢讓我當專案經理，過一段時間，我又覺得該回到「基本面」 (薪資就跟股價一樣，狂跌 *笑*)，做了一段時間的「工程師」，最後我回來當「工讀生」，算是我比較滿意的職務。<br>
+<br>
+斷斷續續的「工作」大約三年多，儘管人生歷練有限，但還是與多種性格的人共事，文章提到的「小箴言」真是相見恨晚，這整理的十個情境，我似乎都遇過了。至今，我還是學不會，該怎樣作人，才得以八面玲瓏，並且有效率地解決問題。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001520.html">08:49 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1520" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001519"></a>
+<h3 class="title">語文的變態</h3>
+
+標題的「變態」不若是新聞媒體的用詞，相反地，我指的是生物學上闡述蝴蝶從蛹到成蟲的變化 (即「完全變態」)。中午拜讀 Jedi 的 [<a href="http://jedi.org/blog/archives/005359.html">文化入侵與反入侵</a>] 與余光中的 [<a href="http://lordchaos.dominatus.net/text/yu.txt">怎樣改進英式中文？──論中文的常態與變態</a>] 這兩篇深入的文章後，我在蹙眉中沉思，好一段時間才回神。<br>
+<br>
+在 2004 年底，我公佈了新書《揭開 X Window System 神秘面紗》的撰寫計畫，稍後 blog [<a href="http://blog.linux.org.tw/~jserv/archives/000924.html">不朽的意志</a>] 提到撰書的理念，面對 X Window System 這個年紀與我相當的偉大建設，除了要述及技術細節外 (按：與之前所有的演講有關的技術項目都會在此重新詮釋，如果之前閱讀 slides 未能理解者，希望這本書會讓讀者有深入的認知)，我很想用有限的語文來描述 X Window System 發展歷程的巨變，以及那些為發展過程付出的 talented developers 的精神，就如 William Faulkner 的說法：<ul class="code" style="margin: 6px;">
+我相信人類不僅能夠忍耐痛苦，而且還可以克服致勝；他的不朽在於他在萬物中那永不懈怠的聲音，而在於他有靈魂，有慈悲，犧牲，以及堅忍的精神，而作家的責任就是寫出這些事情來。
+</ul>
+這些 developers，或用行內的說法：hackers，隨著年歲的增長，有的已不在人世、有的退隱，而新血的投入，則讓這份犧牲奉獻的精神，以 MIT X License 形式延續下去。我，作為一個旁觀者，有必要用適當的篇幅來歌頌這些豐功偉業，是此，原本是技術導向的書籍，也慢慢融入歷史與主體性哲學的題材，用字遣詞與例證的選擇，也讓我苦惱。<br>
+<br>
+必須承認，在我的閱讀習慣中，英文、德文，以及 Programming Languages (許多優秀 Programmers 的確可寫出「如詩一般的 code、如 code 一般的詩」，比方說台灣偉大的 hacker - 唐鳳) 所佔的比率，遠比中文資料來得多，而後者扣除新聞性的題材，所剩者寥寥無幾，而我早已被「西化」，每每犯下余光中在 [<a href="http://lordchaos.dominatus.net/text/yu.txt">怎樣改進英式中文？──論中文的常態與變態</a>] 所提及的謬誤，如君所見，我發表的文字中，充斥了迂迴作態的醜勢，是此，可以想見，倘若新書有機會問世，一定是本如余光中所說「惡性西化的畸嬰」，他提出警語：<ul class="code" style="margin: 6px;">
+中文發展了好幾千年，從清通到高妙，自有千錘百鍊的一套常態。誰要是不知常態為何物而貿然自詡為求變，其結果也許只是獻拙，而非生巧。變化之妙，要有常態襯托才顯得出來。一旦常態不存，餘下的只是亂，不是變了。
+</ul>
+於是乎，所謂語言的「變態」，豈非淪為語言的「病態」呢？下筆之際，我還是用貧困的文字，一而再、再而三地暴露自己「病入膏肓」的窘態。Jedi 的札記則從一個看似簡單的問題出發：<ul>
+「Chinese」這個詞到底要如何「翻譯成我們所使用的語言」
+</ul>
+不僅直覺上會聯想到「政治外交意義」的挑戰，zh_TW 與 zh_CN 在文化上的分歧 (我只得訴諸強調抽象的西文來表示這概念)，說是「兩個文化體」，一點也不為過，Jedi 甚至舉了這個例子：<ul class="code" style="margin: 6px;">
+zh_CN 會把「牛」當形容詞用，例如「牛人」、「最牛的团」，這翻譯成 zh_TW 應該是類似「大師」和「最搶眼的團」之類的意思，當然按照語氣及情境，應該要用更鄙俗的字眼纔對，不過在此的重點是，這兩種語言已經有了很大的差別了。這就好比日文裏也有「手紙」（てがみ）這樣的漢字，不過翻譯成 zh_TW 時是「信」的意思，而不是 zh_TW 中的「手紙」（也就是「衛生紙」）；就算這兩種語言用了相同的字符，但是實實在在就是兩種語言，不應該視為同一種。<br>
+<br>
+如果能夠明白這已經是兩種語言了，接下來就能看出正在發生中的文化入侵現象。試想，如果今天本地的居民看到「手紙」的時候會覺得那是「信」而不是「衛生紙」，在論文中用了「魯棒法」這樣的名稱，稱讚漂亮的女生「質量很好」，何嘗不是開始以別人的價值觀作為自己的價值觀、以別人的文化作為自己的文化、以別人的信仰作為自己的信仰了呢？這種入侵的手法，可以說是跟微軟慣用的「規格污染」手法如出一轍了。
+</ul>
+這也讓我想到，因為投入國際性的 Free / Open source software 開發計畫，我總是會接觸到許多開發者，其中有不少熱情的年輕德國青年，在 IRC 上除了會討論技術開發外，我們有時後會討論到文化差異，而我也發現，這群德國青年也逐漸捨棄冗長、晦暗難懂的德文，改用時下流行的美式英語用詞，這何嘗不是語文的「變態」，但如果衍生為 Jedi 提到的「語言會演變、會交流、會融合，這是極其自然的，然而當這種交融變成單方面的併吞，那可就不是甚麼正常而合理的現象」，的確是發人深省的重大問題。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001519.html">02:33 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1519" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001518"></a>
+<h3 class="title">上膛</h3>
+
+　　「你快樂嗎？」<br>
+<br>
+心理醫師看到我的病歷，開口就問。<br>
+<br>
+　　「我被說服成為所謂快樂的人」<br>
+<br>
+無奈的回答。<br>
+<br>
+　　「你什麼時候會快樂？」<br>
+<br>
+我不方便說，因為說出來，心理醫師大概會把我直接趕出去。<br>
+<br>
+　　「有朝一日，人類獲得解放的時候」<br>
+<br>
+心理醫生面對我這種接近宗教性的歇斯底里搖了頭，是的，醫生放棄了，於是我再度走出診所，我已經痛苦了十餘年，映入眼簾的是，社會的亂象、人性的沈淪，以及這個世界體系的趨近崩潰...<br>
+<br>
+我何得何能改變什麼呢？一點也不，這樣苟延殘喘有何意義？除感到可恥外，這一切壓迫我，到了無法呼吸的地步。<br>
+<br>
+　　「碰！」<br>
+<br>
+上膛的機槍做出非常有意義的「改變」，我看見自己的屍體血跡斑斑，沒多久被拖出去... <br>
+<br>
+　　「也好，他終於可以喘氣了。」<br>
+<br>
+於 2005 年某日。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001518.html">12:39 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1518" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001517"></a>
+<h3 class="title">百藝窮通偕世變 : 談資訊系統的變革</h3>
+
+中國近代五四運動主將、中國共產黨共同發起人、知名的文藝理論家 - 陳獨秀 - 在《寄沈尹默絕句之四》詩中提到：<ul class="code" style="margin: 6px;">
+論詩氣韻推天寶，無那心情屬晚唐。<br>
+百藝窮通偕世變，非因才力薄蘇黃。
+</ul>
+簡單來說，「百藝窮通偕世變」是指，百藝之變化，應隨同「世」的變遷而有所調整。剛剛在 [<a href="http://www.beerbsd.net/article/276/dvorak-says-will-apple-adopt-windows">Apple 打算改用 Windows？</a>] 讀到 BeerBSD 對於 PC Magazine 的 John C. Dvorak 撰寫的 [<a href="http://www.pcmag.com/print_article2/0,1217,a=171069,00.asp">Will Apple Adopt Windows?</a>] 一文做出的眉批，<ul class="code" style="margin: 6px;">
+呵呵，老德這篇文章擺明不就是要捅馬蜂窩嗎？普天之下，誰都知道有史以來對品牌最忠諴的就是所謂的麥克族 (Mac Users)嘛！嗯，或者與其說是忠誠倒不如說是一種信仰，甚至就是一種文化……<br>
+<br>
+在這個文化的信仰中，隱隱然總是認為 Windows (Wintel) 根本就是個不入流的抄襲者，是惡朱奪紫的西貝貨，就算披上 GUI 的介面也只是沐猴而冠……(哈哈哈，我這段話恐怕也是在捅馬蜂窩……）
+</ul>
+我無意去探究 Apple 公司的秘辛，不過，有注意到 [<a href="http://webkit.opendarwin.org/">WebKit</a>] 發展的朋友，會發現這個以 KDE KHTML 為基礎的 HTML rednering engine，且為 Apple Safari 核心的計畫，在近來的 Subversion repository 加入了 cross-platform 的支援，並有了初步的 Win32 porting，並且，還是全職的 Apple 工程師在維護這項 porting 工程，這代表什麼呢？<br>
+<br>
+另外一個例子，口口聲聲打壓 Linux 與自由軟體的 Microsoft，不也重金聘請一狗票 OpenBSD hackers 來開發產品？不也僱用 Gentoo Linux 的發起人嗎？(剛離職) 甚至，如 [<a href="http://freesf.tnc.edu.tw/modules/news/article.php?storyid=949&com_id=493&com_rootid=492&com_mode=thread">天落紅雨! 微軟在 SourceForge.net 推出一個開放原始碼授權的工具</a>] 與 [<a href="http://developers.slashdot.org/article.pl?sid=04/05/13/005254&mode=thread&tid=109&tid=185&tid=187"> Microsoft Releases WTL To SourceForge</a>] 兩篇新聞稿提及的，Microsoft 在 SourceForge 註冊了兩個自由軟體專案，以 IBM CPL 授權發行，分別是 [<a href="http://wtl.sourceforge.net/">WTL (Windows Template Library)</a>] 與 [<a href="http://wix.sourceforge.net/">WIX (Windows Installer XML)</a>]，更別說微軟中國研究院對於 GHC 的投入。<br>
+<br>
+這兩個例子都是比較片面性的，如果在 Google 以「自由軟體」或 "open source" 一類的關鍵字搜尋，還可以找到這一系列被「剷平世界的力量」所影響的例證，特別在資訊系統來說，這些變化相當的大。「百藝窮通偕世變」用以形容瞬息萬變的資訊產業，再適切不過了，除了技術是無止盡的改進，在觀念上，更需要有宏觀的思維並接納這些變化。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001517.html">12:19 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1517" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 17, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001516"></a>
+<h3 class="title">Delphi : 易主的神殿？</h3>
+
+在我念國中的時候，Bill Gates 已經是家喻戶曉的大人物，Windows Programming 也變得異常熱門，而且物件導向的技術也終於能在 PC 等級的硬體實現。Borland 公司的 Delphi RAD 種種劃時代的創新，總讓我光看廣告就神往不已，雖然我是到了大學才開始作 Delphi/Object Pascal Programming，Delphi 開發工具一直是我相當敬重的。<br>
+<br>
+讀到 [<a href="http://blog.csdn.net/myan/archive/2006/02/16/600279.aspx">誰會買下 Delphi</a>] 時，心情是相當沈重的，一時之間，也不知道該說什麼。Delphoi 是古希臘城，位於雅典北方約 170 公里處。Delphoi 城中有一座神殿，進駐的神址本來是大地之母蓋婭，後來改由預言之神阿波羅坐鎮，並將 Delphoi 改為Delphi，成為重要的神諭地。我想，當初 Borland 以 Delphi 命名其劃時代的 RAD/IDE 時，或許隱含了神秘的旨意吧。<br>
+<br>無論如何，就算是叱吒風雲二十餘載的開發工具研發企業，也會面臨此窘境，Delphi 作為這個領域的「神殿」一點也不為過，如今，即將易主，未來又是如何呢？對開發者來說，就如 Delphi 神殿前的神諭：<ul>
+"Know Thyself."</ul>
+徹底瞭解自己，從技術、團隊合作、理性，以及 Programmer 應有的堅忍不拔精神等方面， 找到自我的價值，並建立自信，當然，也要善用工具，最終一定會找尋出最佳的方向。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001516.html">10:35 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1516" onclick="OpenComments(this.href); return false">迴響 (4)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 16, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001514"></a>
+<h3 class="title">uClinux-powered 的 JuiceBox</h3>
+
+<center><img src="http://www.linuxdevices.com/files/misc/mattel_juicebox-thm.jpg"></center><br>
+[<a href="http://elinux.org/wiki/TimRiker">Tim Riker</a>] 發起了修改 Mattel JuiceBox 韌體的計畫，讓 uClinux 可在此裝置運作，相關的資訊可參考 wiki [<a href="http://elinux.org/wiki/JuiceBox">JuiceBox</a>] 與 [<a href="http://elinux.org/wiki/FrontPage">eLinux</a>]。<br>
+<br>
+Mattel JuiceBox 的軟體設計採用香港 [<a href="http://www.emsoftltd.com/">Emsoft</a>] 公司的解決方案，其參考的 PMP software stack 如下圖：<br>
+<center><img src="http://www.emsoftltd.com/products/pmpdiagram.gif"></center><br>
+根據 LinuxDevices.com 的新聞 [<a href="http://www.linuxdevices.com/news/NS7467429921.html">JuiceBox gets Linux jolt</a>]，其硬體規格如下：<ul class="code" style="margin: 6px;">
+The JuiceBox is a $70 teen-targeted PMP (portable media player) powered by a 66MHz, 16/32-bit ARM7 processor. It has a 2.7-inch 240x160 color LCD, 2MB or 8MB of RAM (depending on the model), and 8MB of Flash, expandable through an SD/MMC slot. The device also has a "JuiceWare" slot, intended for use with an optional mp3 player module, photo-viewing module, and pre-packaged video modules with titles like "the triple-crown of skateboarding."
+</ul>
+而 hack 的過程很有意思，引述如下：<ul class="code" style="margin: 6px;">
+The hack involves cutting traces and soldering bridges on a JuiceBox "MP3 kit" module, and then trimming the edge slots off an MMC card and delicately epoxying it into place within the module. The hack also involves soldering serial and JTAG port connector wires into the JuiceBox itself, and then copying a bootloader, uClinux kernel, and ramdisk to the JuiceBox's SD/MMC card. A soon-to-be-released, GPL-licensed "flash_program" application is then loaded into memory and executed on the JuiceBox, to copy these items to the modified module.<br>
+<br>
+The payoff is a module that can be used to boot an unmodified JuiceBox into uClinux, and then bask in the calm dignity of dmesg output, surely an improvement, if the [<a href="http://www.juicebox.com/">JuiceBox website</a>] is any indication. 
+</ul>
+詳情可參考 wiki [<a href="http://www.elinux.org/wiki/CategoryJuiceBox">CategoryJuiceBox</a>]。此外，LinuxDevices.com 的另一篇新聞 [<a href="http://www.linuxdevices.com/news/NS4071373137.html">PDA market sets new record -- without Linux</a>] 做了 Linux-based devices 的市場分析，也值得一看。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001514.html">10:43 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1514" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001513"></a>
+<h3 class="title">SA-RTL : Stand-Alone RTLinux</h3>
+
+[<a href="http://www.rtlinux-gpl.org/~vesteve/">SA-RTL</a>] 是個相當特別的 Realtime Linux 實做，衍生自著名的 RTLinux (知名處不僅是 Realtime 技術，也有 FSMLabs 的 patent)。不同於 RTLinux 以 Linux kernel patch 的形式散佈，[<a href="http://www.rtlinux-gpl.org/~vesteve/">SA-RTL</a>] 本身就是具體而微的 RTOS，能夠支援 RTLinux v3 大多數的 POSIX 1003.13 Realtime API，其特性如下：<ul>
+<li>Low memory overhead. The core systems contains only following modules: the code of RTLinux, the minimum code needed to boot the system and basic virtual memory management.</li>
+<li>Scalability. Users will be able to customize RTLinux funcionalities to reduce kernel memory usage.</li>
+<li>Porting will be possible to systems without hardware for virtual memory support. Therefore, Stand-Alone RTLinux could be ported to a wider range of architectures.</li>
+<li>Less TLB and memory cache misses since only real-time applications are being executed.</li>
+<li>One problem of RTLinux is the use kernel modules or applications that execute directly interrupt management processor instructions (cli and sti), for example, some xfree86 drivers disable interrupts or lock the PCI bus for long time periods. Stand-Alone RTLinux removes this problem since the target system will be compiled to a single static and bootable kernel.</li>
+<li>We are not longer limited by the Linux memory manager. Standard RTLinux memory management relays completely on the Linux so it is not possible to implement custom virtual memory management algorithms. Stand-Alone RTLinux has full control of the MMU. </li>
+</ul>
+詳情可參考論文 [<a href="http://www.rtlinux-gpl.org/~vesteve/docs/ws2003.pdf">Stand-Alone RTLinux-GPL</a>]。最後更新的版本是 2.2-pre2，包含以下重要元件：<ul>
+<li>Fixed priority scheduler</li>
+<li>periodic and one-shot timer</li>
+<li>IPC mechanisms: Semaphores, Mutexes, Condition variables, Barriers (POSIX standard), and Signals</li>
+<li>GDB Agent</li>
+<li>Tracer</li>
+<li>SA-RTL executive memory protection / allocator (TLSF)</li>
+<li>context memory protection</li>
+<li>POSIX I/O Device</li>
+</ul>
+我在 hacking 的過程中，對 [<a href="http://www.rtlinux-gpl.org/~vesteve/">SA-RTL</a>] 2.2-pre2 做了修改，可 [<a href="http://jserv.sayya.org/kernel/sa-rtl-2.2-pre2-fix1.tar.bz2">在此取得</a>]。在 source tree 中還包含了 MicroWindows 的移植與 i386、ARM (SA1110)、Xeno，以及 [<a href="http://www.xtratum.org/">XtratuM</a>] 架構的支援，其中 [<a href="http://www.xtratum.org/">XtratuM</a>] 是相當特別的 nano-kernel / pico-kernel，[<a href="http://www.rtlinux-gpl.org/~vesteve/">SA-RTL</a>] 與其組合可帶來相當的 virtualization 彈性與效能，並且也可避開 FSMLabs 的 patent。<br>
+<br>
+就作業系統設計的角度來說，當 Microkernel 由 CMU Mach 演化為嶄新的 L4 microkernel，其他研究團隊在 realtime 發展提出 nanokernel 與 MIT Exokernel 等新架構，而較傳統的設計中，也陸續因應更嚴苛的挑戰與彈性需求，出現 Resource kernel 等折衷架構，Linux kernel 作為這巨大變動環境中的成功的傳統架構，在銜接新架構的同時，引入許多途徑，[<a href="http://www.rtlinux-gpl.org/~vesteve/">SA-RTL</a>] 就是一個很好的例子。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001513.html">01:06 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1513" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 14, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001511"></a>
+<h3 class="title">Sex + Math = Max</h3>
+
+我又寫了一個奇怪的標題，在解釋之前，說個故事。今天又在跟硬體搏鬥，多次修改軟體後，還是無法達到預期的效能與呈現結果，於是跑去辦公室樓下透透氣，暢飲時，耳聞隔壁的朋友在聊黃色笑話 (按：與本文無關，略)，基本上，黃色笑話都圍繞在 "sex" 的主題，亦即在性器官與交歡做了很大的聯想，而我在腦際突然有個念頭，於是萌生本篇 blog。<br>
+<br>
+以數字表達成群男女之間的交歡 (象形文字？)，可表示為：<ul>
+(1-1) + (1-1) + (1-1) + (1-1) + ...
+</ul>
+又，考慮獨立個體之間的「交換性」，也可寫為：<ul>
+1 - 1 + 1 - 1 + 1 - 1 + 1 - 1 + ...
+</ul>
+不談黃色笑話的低俗面，"sex" 本身的歷史價值是很重要的。記得毛主席在 1958 年一月 28 日最高國務會議上的講話中提及：<ul>
+「人多好還是人少好？我說現在還是人多好，恐怕還要發展一點。你現在要人家節育，但我們一是工具不夠，二是宣傳不夠。農民字都不認識，還有早婚的習慣，你強迫他節育，又不行，他不能控制自己。人類還不能掌握這個勞動力的擴大再生產，幾億人口還不能掌握自己的命運。我看要搞到七億人口，就會緊張起來，邵力子先生那個道理就會大興。邵先生之道大興之日，是七億人口到八億人口之時。你現在講，他橫直不聽。但是我並不是說不要做宣傳，不要製造工具。要做宣傳，要儘可能做宣傳。我是贊成節育的、並且贊成有計劃地生育的。像日本人一樣能控制。現在人多一些，氣勢旺盛一些。要看到嚴重性，同時也不要那麼很怕。我是不怕的，再多兩億人口，我看問題就解決了。走到極點就會走向反面。現在我看還沒有達到極點。中國地大物博，還有那麼一點田。……人多沒有飯吃怎麼辦？少吃一點。要節省。一方面講節育，一方面要節省，要成為風氣。」</ul>
+如果將上面的計算式賦予 "+" 與 "-" operator 計算能力，那麼，到底數值為何呢？很明顯，兩兩一對 (1 - 1) 為 0，即便無限延伸下去，總和也會是 0，但這是錯的。將第二個式子改寫為：<ul>
+1 - (1 - 1 + 1 - 1 + 1 - 1 + ...)
+</ul>
+並且令 S 為總和，則 S = 1 - S，也就是 S = 0.5，有趣吧？<br>
+<br>
+另一種探討的方法是透過級數展開：<br>
+<center><img src="http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn05.gif"></center><br>
+以 x = -1 代入 (忽略範圍限制)，可得：<ul>
+0.5 = 1 - 1 + 1 - 1 + 1 - 1 + 1 - 1 + ...
+</ul>
+用數學的術語來說，就是「收斂」，而回到剛剛的式子，當 x = 2 代入時，得到：<ul>
+-1 = 1 + 2 + 4 + 8 + 16 + ..
+</ul>
+又是怎麼一回事呢？這裡就不探討相關的數學細節了 (展開式的上限)，屬於高中數學範疇，略過，但從這個例子也可以發現，Math 與 Sex 彼此的交合，創造的是 Max，這在極限時，收斂與發散微妙的變化，所以：<ul>
+Sex + Math = Max
+</ul>
+故點題，黃色笑話也可大做文章呢 :-)<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001511.html">01:50 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1511" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001510"></a>
+<h3 class="title">初探 Linux Mobile Phone</h3>
+
+因為某種緣故，我不是很想寫這個主題的文章，但在拜讀 [<a href="http://mobile.newsforge.com/print.pl?sid=06/02/01/1655248">Linux-based Motorola cell phones frustrate third-party developers</a>] 與 [<a href="http://www.thinknext.net/archives/237">何種Linux Phone?</a>] 兩篇文章後，我覺得該說點話。首先，我對 Motorola 公司是有好感的，特別是其 m68k 更是我第一個學習的硬體架構 (原始設計團隊現於 Freescale)，會到現在的公司服務 (手機 ODM)，我想某種程度來說，是有關係的 (好吧，您說是「緣份」，我也接受)。[<a href="http://www.thinknext.net/archives/237">何種Linux Phone?</a>] 很多敘述是相當正確，並以簡要的文字帶過，Motorola 與 Trolltech 兩家公司的合作，的確創造新的契機，2003 年的初試啼聲，也為原本「虛無飄渺」的手機作業系統市場中 "Linux OS" 的項目，造就一份真實性，在此之前，Linux 早已被預測是「未來的主流作業系統」，但 Linux 的確只是 kernel。<br>
+<br>
+如果不談 mobile phone，Linux 應用在消費性通訊器材的計畫，以 [<a href="http://tuxscreen.net/">TuxScreen</a>] 作為代表，這個計畫除了建構於 Linux kernel on StrongARM 外，還提供一系列的軟體與韌體，如 toolchain、GUI system、driver、DSP firmware、Applications、... 等，"Open" 的精神在這類的計畫是很重要的訴求，然而許多硬體除了規格取得的困難度外，還得考慮到元件的「可取代性」，無論是技術上抑或非技術議題。以 MMI solution 切入的 Trolltech，如之前 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001473.html">Trolltech Qtopia 大放異彩</a>] 提及，在商業與實務上，證明了 free / open source 模式的可行性，然而這其實只在純粹軟體的範疇生效，光是 GSM/GPRS/CDMA protocol stack 這個項目就是極其深奧的黑盒子。Red Ferret Journal 的文章 [<a href="http://www.redferret.net/?p=6121">The Tux Phone</a>] 提到 open source community 有些勇敢的 hackers 展開對現有手機產品的研究，也包含前述 protocol stack 的部份，該文有一段相當有意思，引用作參考：<ul>
+So they’re going to make a Linux mobile phone. A Tux Phone, if you will. Open source ringtones? Who knows.<br>
+<br>
+For a programmer, this is a dream come true. Here’s the entire telephone presented to me as a data object. I literally write to and read from a file to run the entire phone if I’m programming in linux. The GM862’s the core of the phone, the thing that actually lets you communicate to the GSM and GPRS networks. They even have one that has an embedded Python interpreter. Seriously slick. But, I want a phone with features to rival my V3. So, I want a fairly powerful controller.
+</ul>
+Motorola 接手 Trolltech Qtopia 許多 MMI 的基礎建設，並且著手做了重大的改進，可參考 [<a href="http://www.linuxdevices.com/news/NS2102246580.html">Motorola aims new Linux phone UI at replacement market</a>] 報導提到 A910 的設計觀點與突破，未來的變化也會更多元。<br>
+<center><a href="http://www.mobileburn.com/imagepop.jsp?file=%3Cimg+src%3D%22media%2Fmotorola%2Fa910%2Fthumb_a910_screen_media-IMG_3986.jpg%22+width%3D%22117%22+height%3D%22150%22+alt%3D%22Multimedia%22+border%3D%220%22+pos1%3E"><img src="http://jserv.sayya.org/misc/thumb_a910_screen_media-IMG_3986.jpg"></a></center><br>
+儘管許多軟硬體大廠合組了 [<a href="http://lipsforum.org/">Linux Phone Standards Forum (LiPS) </a>]，以制定一系列 Linux-based mobile phone 的功能性需求與參考軟體建設等標準，並且 MontaVista 之前也提出 [<a href="http://mobilinux.com/">Mobilinux</a>]，作為完整的 total solution，與 Microsoft 或 Symbian 等公司的系統作區別化：<br>
+<img src="http://linuxdevices.com/files/misc/mobilephone-os-comparison.jpg"><br>
+甚至連 [<a href="http://www.osdl.org/">OSDL (open source development labs)</a>] 也提出 [<a href="http://linuxdevices.com/news/NS5746144590.html">Mobile Linux Initiative (MLI)</a>]，相當有趣的是，當我們比較這幾個檯面上組織與實做，有相當大的 overlapping，並且成員的組合也可說是「各懷鬼胎」，逐步走入百家爭鳴的戰國時代。<br>
+<br>
+除了 [<a href="http://www.sda-asia.com/sda/article/psecom,id,73,nodeid,1,_language,Singapore.html#">The Rise of Real-time Linux</a>] 這篇描述到 Linux Realtime capability 的改善與實做，現今許多 Embedded Linux devices 也巧妙地融入 resource kernel、nano-kernel，以及 exo-kernel 的嶄新設計 (有意思的是，這些架構在一定程度都視 Linux kernel/application 為 legacy system)，以因應更複雜的能源管理機制、高負載的運算量、多元的通訊架構、... 等重大議題，特別在 ARM RISC 上，最近陸續有 software/hardware co-design 的突破，可以想見的是，未來仍充斥著並行發展、開放規格，以及強韌的參考實做 codebase 的概念與原則。<br>
+<br>
+至於 Linux mobile phone 到底會不會成功呢？我無法斷言，但是我已經很明確看到發展的方向與概念，縱使有新秀 killer application 崛起，或許還是會秉持這些原則吧。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001510.html">12:40 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1510" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 13, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001509"></a>
+<h3 class="title">NetBSD 的 framebuffer console 與 progress bar 支援</h3>
+
+NetBSD hacker - Jared McNeill - 最近在 NetBSD 實做了 framebuffer console 與 progress bar 的支援：<br>
+<center><img src="http://jserv.sayya.org/misc/NetBSD_Splash_Progress.jpg"></center><br>
+他也做了 [<a href="http://www.invisible.ca/~jmcneill/netbsd/vesa/splashboot_small.mp4">展示影片</a>] (MPEG-4 格式)，詳情可參考 wiki [<a href="http://www.invisible.ca/core/VESA_Framebuffer_console_in_NetBSD">VESA Framebuffer console in NetBSD</a>]，截至目前為止，已經實做的項目有：<ul>
+<li>Basic framebuffer support<ul>
+  <li>Changes video resolution</li>
+  <li>Sets up rasops and wsdisplay subsystems</li>
+  <li>Attaches as the system console</li></ul></li>
+<li>XFree86 "just works"</li>
+<li>Support for XFree86 'wsfb' display driver<ul>
+  <li>Removes dependency on options INSECURE for running X server on i386</li></ul></li>
+<li>Optional boot splash screen support</li>
+<li>Setup an ANSI palette via VBE</li>
+<li>Progress bar (via options RASOPS_PROGRESS)</li>
+<li>Virtual screens support (using wsdisplay_vcons from macallan, not yet part of -current)</li>
+<li>Fast scrolling (shadow framebuffer code added to rasops)</li>
+</ul>
+Sweet !<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001509.html">10:14 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1509" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001508"></a>
+<h3 class="title">2006 年初 Mark Shuttleworth 一行人訪台</h3>
+
+引用洪朝貴教授的 [<a href="http://people.ofset.org/~ckhung/a/c060.php">介紹網頁</a>]：<ul>
+活動名稱： Mark Shuttleworth 一行人訪台<br>
+日期： 2/16 (四), 2/17 (五)<br>
+地點： 台北<br>
+網址： <a href="https://wiki.ubuntu.com/AsiaBusinessTour/Taipei">https://wiki.ubuntu.com/AsiaBusinessTour/Taipei</a><br>
+Ubuntu Linux 背後 Canonical 公司 的創辦人 Mark Shuttleworth (他也是史上第二位太空旅客) 於一月底至二月中旬率眾進行 亞洲之旅, 其中 2/16,2/17 兩天將在臺北訪問。<br>
+<br>
+此行的目的主要是在亞洲推廣 Ubuntu Linux, 特別是將它介紹給各國政府及硬體/系統廠商; 同時也要與亞洲各地的 Ubuntu 社群會面。 Shuttleworth 說: 「我們最有興趣的訪談對象有兩類: 正在評估大規模採用 Linux 的政府, 及已經或即將出售預先安裝 Linux 的系統廠商。」 「關於後者, 我們特別想與該公司內熱衷於 Linux 桌面系統及 Linux 伺服器系統的朋友。 不論是公司內的 CTO, 或是公司內的 Linux 愛用者, 我們都有興趣接觸。」
+</ul>
+看來蒐集簽名的時候又到了 :P<br>
+考慮拿我這台跑 Ubuntu Linux (dapper) 的 compaq nc400 的 notebook 去，外加 Ubuntu CD/DVD (我手頭沒有官方版，有哪位朋友可以提供呢？) 去索取簽名。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001508.html">12:50 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1508" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 12, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001507"></a>
+<h3 class="title">我所見的愛情</h3>
+
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001496.html">告別，不是遺忘</a>] 提過那段深刻的感情生活，有感而發地記錄下來。接踵而來的工作，讓我喘不過氣，不斷的涉獵相關技術項目 (涵蓋軟硬體與複雜的週邊)、無止盡的 Try & error，和頻繁鍵擊以撰寫程式碼，根本無心力去關注荒蕪許久的心田，更別說醞釀新戀情了。隻身降臨於世上，在一陣嚎啕大哭後，展開了人生，自此，大腦皮質深處保存自身與周遭共同編織的記憶：那些曾經歷經過的、獲得的、失去的，以及至今還陪伴在旁的。佛語說：「五百年修得同舟渡」，依恃這觀點看所謂的「緣份」，前世五百年的回眸，換得今生的擦肩而過；前世千年的等待，方換得片刻的溫存，愛就是寰宇無比強大的力量，緊緊的牽繫著前世與今生的微妙變化，只有前世有約的人，今生才能相隨。<br>
+<br>
+週六去公司繼續未完成的工作，仍是沒有明顯進度的一天，寫了整天的 test code，也改了 driver，可是硬體就是不領情，我正在設計一個 graphics engine 與從事 multimedia codec 的 fine tune (只能提到這裡，請勿臆測工作項目細節)，這都是有高度挫折感的項目，連續好幾天的夢境都還在思索箇中的設計細節。生活總是需要調劑，傍晚六點三十分，從內湖騎著淑女車前往民權西路的朝代戲院，稍微放鬆自己。因為走錯電影廳 (肯定是 coding 到頭暈的緣故)，觀賞 [<a href="http://tw.movie.yahoo.com/mstory.html?t=movie&id=1449">婆家就是你家 (The Family Stone)</a>] 這齣在去年 X'mas 時節上映的電影。我很少觀賞愛情溫馨喜劇，至少在沒有女伴的時候，總覺得缺少某些要素，不過作為調劑身心，也不失是個好機會，再跟那些專案計畫搏鬥的話，肯定造成更大的身心失調，於是我將錯就錯地觀賞。該片可說是《慾望城市》女主角 Sarah Jessica Parker 轉戰大螢幕的作品，[<a href="http://tw.movie.yahoo.com/mstory.html?t=movie&id=1449">劇情簡介</a>] 提到：<ul>
+<center><img src="http://tw.news.yimg.com/xp/movie/photo/movie/1449.jpg"></center><br>
+史東家族感情好但個性難搞，當家中「超完美長子」艾弗瑞（德穆莫洛尼飾），打算趁聖誕節帶女友梅芮狄絲（莎拉潔西卡派克飾）回家過節，史東人都嚴陣以待。史東家氣氛溫馨自在，偏偏梅芮狄絲個性拘謹，是個神經緊繃的工作狂，遇到毒舌派小姑艾咪帶頭排擠，處心積慮想融入大家的阿梅，毫無招架之力；別說討好小姑小叔，就連一向思想開明的母親西碧兒（黛安基頓飾）也出面反對婚事。於是梅芮狄絲急電老妹茱莉（克萊兒丹妮絲飾）前來搭救，沒想到幫了倒忙，就在所有人都抓狂的同時，反倒流露了彼此的真感情… 
+</ul>
+影評可以參考 [<a href="http://publish.pots.com.tw/Chinese/FilmReview/2005/12/16/390_37filmr1/index.html">理想的同志之家：《婆家就是你家》</a>]，其實這不是我喜歡的電影類型，但在片尾，我忍不住哭了，當翌年耶誕，家族成員紛紛返家，瞻仰因病逝去的祖母 (艾弗瑞母親) 的遺容時，或許是因為，家裡也有個罹患絕症的母親，並且自己正於愛情的轉折處，飄灑的淚水是複雜的，有一半是因為了溫馨的結局，而另一半則是追思，有人說，「錯過的總是最好的，失去的都是最珍貴的，放棄的都是不忍的」，無論是健康，抑或愛情，的確如此。<br>
+<br>
+忘了說，在《<a href="http://tw.movie.yahoo.com/mstory.html?t=movie&id=1449">婆家就是你家</a>》前，我看了《哈利波特》(二輪電影院一張票可以看兩齣)，雖然沒有特別的感覺，但劇中描述耶誕舞會的片段，我想起過去寫的短文〈風中起舞〉：<ul><pre class="code" style="margin: 6px;">
+圓舞曲輕盈地傾瀉於原本寧靜的夜，音符如精靈之竊取旋律，賦予夜新的生命。
+
+揮手彎腰，示意我的邀請，而妳回以燦爛笑靨，月光下，我們開始輕柔起舞。
+
+妳在我懷中，轉過一個又一個的迴旋，每次妳的回眸，都不偏不倚的在我眼中
+激盪，秋波垂涎，怎不開啟我心扉？
+
+我細細的看著妳，打量著你，深怕遺露了什麼。
+
+浸淫於銀色月光下，妳的面龐溢滿幸福飽滿的笑顏動人，究詰深邃的思維，
+襯托在受微風拂拭而略上揚的短髮梢，更是難捨目光之頓足。
+
+忍不住，我用力握緊妳的手，深怕那一陣風，將吹散妳溫暖的雙手；
+　　　　　　　　　　　　　深怕下個迴旋，將獨自面對滿室惆悵；
+　　　　　　　　　　　　　深怕雙手攤開，將逐漸失溫而凍結。
+
+羞澀的請求，別鬆開雙手，我只想緊握著。
+
+群 於台南住所
+June 25, 2001 晨
+</pre>
+</ul>
+大概只有熱戀中，才得以寫出如此的文字，雖然文筆不佳，但至少表達了對愛情的憧憬與身陷其中的陶醉。隨著
+《<a href="http://tw.movie.yahoo.com/mstory.html?t=movie&id=1449">婆家就是你家</a>》劇情的起伏，昔日的情愫竟也悄悄地浮盪著，片中艾弗瑞去接待素未謀面、梅芮狄絲的老妹，茱莉，見茉莉緩緩自公車階梯走下，艾弗瑞很傳神地表達出，在英文中 "turn on" 的反應，這是描述男人看到女人動人的一面，突然眼睛一亮的情形。我喜歡過的女生，似乎都曾給我 "turn on" 的感覺，很難訴諸言表，《詩經‧衛風‧碩人》的「巧笑倩兮，美目盼兮」大概即是如此吧。我喜歡劇中後半段多線程描述每個成員徜徉於各自的幸福喜悅的部份，背景是大雪紛飛的平安夜，覆蓋銀白，所有景物帶有一絲蒼涼，但是緣份牽連了滾滾紅塵中原本獨自徬徨的個體，不期然地遇見。縱使置身茫茫人海，心與心之間，傾刻了無距離，伴隨穿越時空的祝福，正如劇中展現的場景：或相擁踏過雪地、或依偎於車廂、或沈浸於美好時光、或享受人生的餘暉、...<br>
+<br>
+相當慶幸，我經歷過深刻的愛情，在我短暫的生命中，刻劃過六分之一的紀錄，就如磁帶機的磁蕊般，人生是單向的，我們只會往前走，無法重新定位於過去的位置，整捲錄完重錄，但我們有回首過往的權利。緣，是奇妙的，所有的幸福因相望而成緣，所有的無奈因相忘而失緣，作為人生的過客，註定最後都要迷失在永恆的輪迴。塵緣的禪理，或許來日，我們會在菩提樹下領悟。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001507.html">11:30 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1507" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001506"></a>
+<h3 class="title">藝術與生活、文體與行動倫理的統一</h3>
+
+稍早的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001502.html">對於美，無止盡的追求</a>] 與 [<a href="http://blog.linux.org.tw/~jserv/archives/001288.html">美的具象</a>] 撰寫後，在「美」的具象與實踐層面，我想起過去於花蓮空軍服役時，曾於「軍旅手記 - 心得寫作簿」(即「莒光作文簿」) 紀錄一篇相關的週記。該文撰寫時間是 Oct 17, 2002，於花蓮空軍佳山基地，並未收錄於拙作〈大頭兵日記選〉，內文如下：<ul class="code" style="margin: 6px;">
+日本作家三島由紀夫在《太陽與鐵》提及：「自己企盼的是『藝術與生活、文體與行動倫理的統一』。」，這一小段富饒哲理的小語，令我思索頗久，許久未沐浴於形而上哲學洗禮的我，開始以「實踐」一面切入。生活本身即是至高的藝術，對一個觀察入微、強調人生體驗的作家而言，更是如此，縱使行文有如浮雲流水，文體所欲反映人生之價值，是端視情感與理性的平衡、理想和行為的均衡、功利和道義的制衡，以及決策和成敗的權衡。而對於一個作家，「文體」可說是其外在，「行動倫理」便是內在修行，這兩者的一統，不啻是最高價值藝術的人生？謹此自勉！
+</ul>
+三島由紀夫認為，藝術 / 文學和現實生活應該是一致的，而觀念與行動即是一體兩面，官能性來說，是觀念引導了行動，並藉由行動完成觀念。三島在《太陽與鐵》探討了我們與生俱來的「肉體」，並給予新的解釋，作為橫跨精神與肉體的橋樑，在這個嶄新的視野，我們發現肉體是「外來的」，隨著時間的遞移，肉體逐漸衰退與腐朽，而探索肉體的真實與存在，唯有予以改造。因為肉體雖是上天的賜予，但並不完備，經過有如鍛鍊文體的過程去探索肉體，最後肉體才能成為自己完全的掌握，這衍生於王陽明的「知行合一」，生活即藝術、藝術即生活的模式，乃是最高的價值，也是最終極的「美」。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001506.html">09:25 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1506" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001505"></a>
+<h3 class="title">KDE 首次 Technical Working Group</h3>
+
+KDE.News 的新聞 [<a href="http://dot.kde.org/1139614608/">Technical Working Group Elected</a>] 提到 KDE 首次的 Technical Working Group 成員已經被選出，並期望能夠有效的處理 KDE 技術協調的議題，整個組織的規劃可參考去年的 [<a href="http://ev.kde.org/meetings/2005-working-groups-discussion.php">KDE Working Groups Discussion</a>]。<br>
+<br>
+節錄新聞稿中成員介紹的資訊：<br>
+<p><img src="http://static.kdenews.org/danimo/david.jpg" align="left" />
+<br /><strong><a href="http://people.kde.org/david.html">David Faure</a></strong>, one of the authors of Konqueror, currently works for Klarälvdalens Datakonsult AB and is being sponsored by Trolltech to spend 50% of his work time to work directly on KDE. David has been one of KDE's release coordinators in the past. Important for David as a member of the Technical Working Group is that the Working Group does not step on people's toes and makes all decisions. However, he does want the TWG to ease decision-making processes in the areas of application inclusion, release schedules and conflict resolution where KDE currently lacks a decision-making process.
+</p><br clear="all" />
+
+<p><img src="http://static.kdenews.org/danimo/dirk.jpg" align="left" />
+<br /><strong><a href="http://people.kde.org/dirk.html">Dirk M&uuml;ller</a></strong> has been kept busy with system administration and KDE infrastructure tasks. He feels that it's important to move KDE 4 forward because it is once again a big chance to change the way KDE works internally and the way it interacts with the user. Dirk is also doing research in various areas of quality assessment, such as automated code verification.  Dirk is working for SUSE/Novell.
+</p><br clear="all" />
+
+<p><img src="http://static.kdenews.org/danimo/george.jpg" align="left" />
+<br /><strong><a href="http://people.kde.org/george.html">George Staikos</a></strong>, who acts as the Canadian and general North-American press contact, wants to ensure that the Technical Working Groups doesn't overstep its boundaries or make questionable decisions. He states that he wants to keep KDE very free of bureaucracy and make sure it continues to follow the bazaar model that made KDE so successful. George is the President of Staikos Computing Services, Inc.
+</p><br clear="all" />
+
+<p><img src="http://static.kdenews.org/danimo/gunnar.jpg" align="left" />
+<br /><strong><a href="http://people.kde.nl/gunnar.html">Gunnar Schmidt</a></strong>, one of the founders of KDE Accessibility (which is also his main working area within KDE) sees himself as the accessibility and human interface coordinator in the Technical Working Group. Gunnar is currently working on his diploma thesis which includes writing a decent screen magnifier with a KDE user interface.
+</p><br clear="all" />
+
+<p><img src="http://static.kdenews.org/danimo/lubos.jpg" align="left" />
+<br /><strong><a href="http://people.kde.org/lubos.html">Lubos Lunak</a></strong>, the maintainer of KWin, KSMServer, and some X11-related parts in kdelibs has also done quite a lot of work on performance. Lubos wants to do whatever it takes to shape KDE 4 and push it towards becoming reality. Lubos is employed by SUSE/Novell.
+</p><br clear="all" />
+
+<p><img src="http://static.kdenews.org/danimo/coolo.jpg" align="left" />
+<br /><strong><a href="http://people.kde.org/stephan.html">Stephan Kulow</a></strong>, the current release coordinator of KDE has been pushing KDE into new directions more than once, notably the modular way of distribution, adoption of gettext and the bug tracking system. Coolo works for SUSE/Novell where his tasks involve working on KDE.
+</p><br clear="all" />
+
+<p><img src="http://static.kdenews.org/danimo/thiago.jpg" align="left" />
+
+<br /><strong><a href="http://people.kde.nl/thiago.html">Thiago Macieira</a></strong> is a 24 year-old Brazilian who recently moved to Oslo to work for Trolltech. He thinks that the Technical Working Group has to be pro-active, especially in elaborating a long-term vision for KDE.
+</p><br clear="all" />
+有趣的是新聞後面的討論，blacksheep 提到：<ul>
+it has been said that Novell was not supporting KDE, but suprising three of these guys are employed by them. This is exciting to know. On the other hand, I believe David Faure used to work for Mandrake... It's disapointing to see that they don't employ no-one in this group, since they are a pretty big distro I think.
+</ul>
+而 Andras Mantia 回應：<ul>
+it doesn't really matter where someone works, but what he has done and what we think he can do for KDE. The members were not appointed or elected by companies, but by the members of the KDE e.V., read KDE contributors and developers of all kind.
+</ul>
+感謝這些偉大的先進們，更期待 KDE 未來可造就更大的成功。<br>
+<br>
+KDE rules!<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001505.html">01:16 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1505" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 11, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001504"></a>
+<h3 class="title">建構在 Linux 的高效能冰淇淋製造機</h3>
+
+LinuxDevices.com 的新聞 [<a href="http://linuxdevices.com/articles/AT9296154631.html">Device Profile: MooBella on-demand ice cream maker</a>]，提到這個相當特別的裝置。<br>
+<center><img src="http://linuxdevices.com/files/misc/moobella_girl.jpg"></center><br>
+此 MooBella 機器可在 45 秒內產生變化多端的冰淇淋，種類達 96 種，為何要採用 Linux 呢？就如 MooBella 的 Baxter 所說：<ul>
+"It's a very powerful system, and there are a lot of people doing innovation in the Linux environment."
+</ul>
+看著照片中女孩甜蜜的笑容，Linux 的應用可以涵蓋到冰淇淋製造，實在是很夢幻的事情 *笑*<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001504.html">10:48 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1504" onclick="OpenComments(this.href); return false">迴響 (6)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001503"></a>
+<h3 class="title">LaTeX CJK 已完整支援 Unicode</h3>
+
+<p>李果正前輩的 blog [<a href="http://blog.bs2.to/post/EdwardLee/4684">LaTeX CJK 已完整支援 Unicode</a>]，告知這個重大的消息，最新的 development snapshot 突破之前多國語文的限制，並幾乎涵蓋目前 Unicode 所收錄的字。可喜可賀！</p>
+
+<p>看來我也該把過去用 cwTex 的書稿轉換到 CJK LaTeX 了。</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001503.html">01:17 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1503" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001502"></a>
+<h3 class="title">對於美，無止盡的追求</h3>
+
+去年七月 13 日，早上六點，驚醒。<br>
+<br>
+那是一個相當真實的夢，我在咳血，而且很劇烈。或許是以前在真實環境中有過這樣的感受，所以夢境中格外鮮明且強烈，醒來時一身是汗，喉嚨還有酸味，極度噁心。<br>
+<br>
+一早出門散心，看著晨曦的美景，我想到偉大的俄國畫家 Илья Ефимович Репин，為詩人普希金畫像的故事。Репин 全神貫注的創作幾百張畫，捕捉普希金 (Pushkin, Aleksandr) 的顏面動作，或微笑，或苦笑；尋找適宜的場景，或於晨曦，或於黃昏的河畔、... 最後終於定案，也就是《涅瓦河邊的普希金》這份鉅作，二十年就這樣過去。世界知名的畫家如 Репин，竟然可以為了一幅畫像，耗費二十年以及難以計數的修改，這代表了什麼？我想，或許懂了。<br>
+<br>
+去年七月 18 日，晚上看了〈非凡新聞〉在 21:00 的〈好主意好生意〉節目，介紹到「相思李舍」(地址：台北市光復南路240巷7號) 的李老闆，建築背景的他，把工業的精準堅持與科學實驗精神，在咖啡烹煮上，發揮到極致。我看著節目的影片，只能目瞪口呆的看著，上萬杯咖啡的烹煮就是實驗，從中掌握變因，連酯質與水分的交錯也不放過，只見用照明燈打在表面，凝視泡沫形成的樣貌，推論出其質感...<br>
+<br>
+很難形容李老闆給我的震撼，但是很明顯的，我對於專業的要求，還是太得過且過，甚至，李老闆可以很精準的算出他開業與烹煮咖啡的時間，截至接受採訪時，是十年三個月又二十七天。最後，李老闆做了些提示：<ul>
+<li>實驗精神是很重要的，每個細節都有學問</li>
+<li>對於細節，務必親身嘗試，才能領會箇中奧秘</li>
+<li>要保有懷疑的態度，並透過實驗作驗證</li>
+</ul>
+實驗精神的確重要，其實我們的生活本身，就是不斷的實驗，只是我們不作 paperwork，無法找出該 model 的方程式。<br>
+<br>
+大學一年級時，正值網路泡沫化時期，只要會寫 HTML 都可找到一份不錯的工作，更別說我當時已經會寫基本的 web browser、web/news server，以及設計 Web application framework，那時學長問及畢業的計畫，對此類問題，利慾薰心的我只會有一種答案、一種說詞：<ul>
+「我要創業」
+</ul>
+在我離開成功大學前夕，仍舊抱持這樣的想法。有一天，當我親手毀掉 Venux Kernel 與 Sputnik! 第一版的程式碼時，將充滿匠氣與髒亂的程式碼銷毀殆盡，是時候了，該有新的思維，覓尋新的出路、那生命的新契機。<br>
+<br>
+烹煮咖啡看似小事，但何嘗沒有其艱澀的學問呢？<br>
+<br>
+大學時代的我，幾乎都抱著許多創業的書籍猛看，無論是創業傳記，還是投資，或相關的財經指南，沒有高度興趣的我，卻會逼著自己學習，然後又如施打毒品一般，嘴角發出微微的聲音，喃喃自語的道著：<ul>
+「舜何人也？予何人也？有為者亦若是。」
+</ul>
+這句孟軻曾說過的話，一次又一次的麻痺自我。<br>
+<br>
+不過，這樣根本不適合我，從那一天開始。平凡的我，只想追隨 Che Guevara 為自由革命、將 Evariste Galois 的群論應用在人類社會，以及追隨黑格爾建立哲學為基礎的新秩序，至於其他，不過只是這個過程中的副產物罷了，但我竟然過了這麼久才懂。<br>
+<br>
+仿效諾曼第登陸，我稱為上述的「那一天」為 D 日，在 D + 3 日時，我繼續毀了過去的計畫書，並銷毀殘餘的紀錄，於是，D + 7 日時，我覺得我心靈自由了，不再為「不存在的羅馬」而戰。<br>
+<br>
+老子《道德經》第二章提及：<ul><pre class="code" style="margin: 6px;">
+天下皆知美之為美　斯惡已
+　　皆知善之為善　斯不善已
+故有無相生　難易相成
+　長短相形　高下相傾
+　音聲相和　前後相隨
+是以聖人處無為之事　行不言之教
+萬物作而弗始　生而弗有
+　　為而弗恃　功成而不居
+夫唯弗居　是以不去
+</pre></ul>
+人類之所以會從事探究自然環境，主要是基於生活的需求與好奇心驅使，依侍天賦五官和思想的能力。而，若無理智與有系統的思想體系，很快的，會遇到障礙，無所適從，也因此，所有思想的總體，必須有其一貫性，符合內在的邏輯，並且利用實踐的經驗來驗證，這就是「真」與「善」。<br>
+<br>
+不違反常識與現實的前提下，邏輯和理智，是哲學家不可或缺的工具，藉由此兩大元素，可用以推廣知識的領域、辨認真偽。一旦經過邏輯和理智考驗的言論或辯論，就是辯證法的準則，《老子》五千言中，豐富的存在著，更抽象來說，這即是擁有「真」與「善」的人們，永無止盡的追求真理的「美」，終究超脫軀體的限制，師法寂靜，萬物都不過是迷障罷了，而唯有「美」長存。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001502.html">12:52 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1502" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 10, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001501"></a>
+<h3 class="title">沉淪的液體</h3>
+
+許久沒有去速食店，點了一餐熱量很高的套餐，大口咬嚼著，試圖忘掉種種不愉快。<br>
+<br>
+然而，暢飲大杯可樂時，我赫然想到俄國文學家 Д.И. Дмитрий Иванович Писарев (D. I. Pisarev) 的一句名言：<ul>
+「人不是可以注入任何液體的空瓶」
+</ul>
+是此，我顫抖著，人生也如空瓶，其包裝甚至不如眼前的可口可樂來得圓潤，大多終其一生僅是其貌不揚的瓶子罷了。如果，當中注入庸俗與低劣，勢必無法容納崇高與偉大，一旦被虛偽和凶殘所占據，純真和善良便無法容身；有了自私和冷酷，便失去了博愛和熱情... 唉，我不啻如眼前盛裝滿滿黑色液體的瓶子，裝滿著欲望和為之紛爭不息的操勞，想當然爾，無法容納寧靜與祥和，塞滿了無窮無盡的浮躁與煩惱，自適和歡愉當然被驅逐得無影無蹤。<br>
+<br>
+讓我們洩慾吧，釋放這些邪惡的黑色液體，最好連同氣泡都弭平！<br>
+<br>
+去年六月 18 日，找些東南亞的共產革命資料作參考，並紀錄心得，不自覺，鍵盤沾染的一些淚水。與其說是「革命」，還不如說是這是內鬥史，當然，我知道，真正的傷亡遠比統計數據呈現來得許多，儘管人類世界在變遷，但基本需求是不變的，是此，人類的貪婪永無止息，這些衝突被轉化，透過鮮明的旗幟展現，於是乎，這些殺戮與爭奪，最後只剩下滿地的鮮血與屍體...  手不停在顫抖，儘管有很多想法，但卻難以脫口。<br>
+<br>
+為何高智慧生物如人類，會犯這樣的錯誤呢？榴彈刺穿的人體，鮮血汩汩而流，屍首遍地，哀號聲不斷，人類為何而戰？<br>
+<br>
+本來打算睡一下，結果在〈DISCOVERY〉上看到介紹柬埔寨的報導，一開始是提到觀光據點的吳哥文化，之後提到赤柬的錯誤試煉，短短幾年時間，超過兩百萬人死於這場浩劫。睡意全失的我，望著節目中一幕又一幕的骷顱 (被屠殺的人骨被當作地圖、地標使用)，雖然這些悲劇我早已知曉，但此際的我，表情還是跟參訪的主持人一樣的詫異。<br>
+<br>
+早已不閱讀童話的我，昔日的記憶也逐漸散去，只剩下模糊的輪廓。<br>
+<br>
+而我，卻天真的寫著童話，用鮮血與汗水在編織，汗孔脹大的冒著水氣，胸口持續在淌血，雙手微微顫抖著，死神就在後方，等著冥鐘的敲響，在最後一次的迴音後，將靈魂與軀體徹底分離。<br>
+<br>
+這些童話完成多少？我不知道，也無從評估，只知道死神已經逐步前來，我只能疾筆快書。這是我的童話，血汗交織的記憶。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001501.html">11:16 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1501" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 09, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001500"></a>
+<h3 class="title">扁頭泥蜂 (Ampulex compressa) 的特性</h3>
+
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001490.html">寄生蟲的智慧</a>] 提到的文章 [<a href="http://loom.corante.com/archives/2006/02/02/the_wisdom_of_parasites.php">The Wisdom of Parasites</a>]，mybigfish 提供繁體中文的解說，轉載如下：<ul class="code" style="margin: 6px;">
+作者: mybigfish (ghoti) 看板: News<br>
+標題: [News] 寄生生物的智慧：把蟑螂當殭尸般利用的黃蜂<br>
+時間: Sun Feb  5 18:52:54 2006<br>
+<br>
+<u>寄生生物的智慧：把蟑螂當殭尸般利用的黃蜂</u><br>
+<br>
+我像某些人們收集 Star Trek 影集一樣的收集寄生生物的故事，並且將他們蒐集成一本書 ( http://carlzimmer.com/parasite_1.html ) 我想我已經相當完整的蒐集了全部的東西。但，直到現在為止，我不知怎地竟然忽略了可怕而自豪的東西，那就是黃蜂（wasp），名叫：扁頭泥蜂 (Ampulex compressa)。<br>                                                
+<br>
+當期成年時 Ampulex compressa 就像是常見的黃蜂，到處嗡嗡叫並且交配。但是當雌鋒要產卵時事情開始荒誕起來。她會找一隻蟑螂，成為蛋的宿主，然後對蟑螂進行二次精確的叮螫，首先她蜇蟑螂的中間部份，導致蟑螂前腳彎曲。由第一次叮螫所造成的短暫痲痹讓雌黃蜂有更充裕的時間進行更精確的頭部叮螫。雌黃蜂滑動她的刺穿過蟑螂的外殼，並且直接進入其腦部。她顯然利用刺兩側的感應器，將刺導入腦中，有點像外科醫生那樣搖動內視鏡直達你的腹腔中。她的刺會持續在蟑螂的腦中偵測直到發現一個特定的地方，那個地方似乎控制住蟑螂的逃脫反應。然後她注射第二次毒液，以這種方式感染那些神經，導致逃脫的反應消失。                                          <br>
+<br>
+從外面看來這個效果簡直是超現實的行為。黃蜂並沒有完全麻醉蟑螂。事實上蟑螂可以抬起牠的前腳並繼續前進。但是牠不能夠按照自己的意思移動。黃蜂會抓住蟑螂的一根觸鬚然後引導牠 -- 用以色列科學家，他研究 Ampulex ( http://www.bgu.ac.il/life/Faculty/Libersat/index.htm ) 的話來形容：像一條被狗練拴住的狗  ( http://tinyurl.com/7do5m )<br>
+<br>
+這隻如殭尸一般的狗... ㄜ... 蟑螂，經由牠主人引導爬行，結果是到了黃蜂的巢穴。蟑螂順從的鑽入地道當中，並且安靜的待在裡面，然後黃蜂會把洞口用卵石塞住。蟑螂並不會反抗。當卵成熟時，幼蟲會自蟑螂體內咬破一個洞。蟑螂就一命嗚呼了。                                          <br>
+<br>
+幼蟲會在蟑螂體內成長，大約在八日內，吃光牠宿主的器官。然後牠會開始編織繭，當然也是在蟑螂體內進行。經過四週或更長的時間，黃蜂成年，破繭而出，離開蟑螂體內。這時就可以看見成年的黃蜂爬出蟑螂體外，讓所有的外星人電影看起來就好像是從這裡抄襲的。<br>
+<br>
+從這裡，我發現黃蜂因為許多理由而顯得迷人。其中之一，牠代表著一種演化的過度時期。一次又一次的，獨立生存的（free-living）有機體變成寄 生蟲，讓自己與宿主精確無暇的配合。如果你仔細考慮這些充分發展的的寄生生物，你很難想像他們是怎樣發展而來的。Ampulex 提供了一些線索，因為牠生活於獨立生存與寄生這兩個世界中。<br>
+<br>
+Amuplex 在技術上來說非寄生生物，而是所謂 exoparasitoid。換句話說，就是一個獨立自主的成年個體，將卵產在宿主上，然後幼蟲爬入宿主體內。各位可以輕易的想到，當 Ampulex 的祖先如同黃蜂一般，把卵產在死昆 蟲旁邊，就好像其他物種現在所進行的一樣。這些屍體餵養了祖先，然後演化成為黃蜂附在活的宿主身上。因此也不難想像，如同 Ampulex 這樣的黃蜂會演化成全然的寄生生物，將其卵直接注射到宿主中，也像其他物種現在所進行的一樣。<br>
+<br>
+然後，這裡就這麼一螫。Ampulex 不想殺死蟑螂。牠們不想如蜘蛛或是蛇那樣把牠全然痲痹，因為牠的體積太小，不可能把龐大的蟑螂拖回巢中。因此牠直接修改蟑螂的神經網路，讓牠不會想要脫逃。牠的毒液不只是把蟑螂變成殭尸而已。牠也改變了牠們的新陳代謝，所以牠對氧的消耗量只剩 1/3。<br>
+<br>
+這位以色列科學家發現他們也可透過對蟑螂注射麻醉藥物降低其耗氧量，或著藉由移除黃蜂用刺使其失能的神經達到同樣的效果。不過他們只能辦到粗糙的模擬；經過 "改裝" 的蟑螂很快就脫水而死，而且會在 6 日內死亡。<br>
+<br>
+黃蜂的毒液不知怎地可以讓蟑螂處於暫停狀態，卻能讓保持牠在健康的狀態下，甚至黃蜂的幼蟲能在體內狼吞虎嚥。                             <br>
+<br>
+科學家依然不曉得黃蜂如何辦到這些豐功偉業。部份原因是因為他們的無知，他們還需要對於神經系統以及新陳代謝了解更多。但是數百萬年以來的自然選擇讓 Ampulex 能夠對宿主進行逆向工程。我們應該跟隨牠的領導，獲得寄生生物的智慧。                                              <br>
+<br>
+如果想獲得更多寄生生物的傳說請看：Parasite Rex.
+( http://www.amazon.com/gp/product/074320011X/104-2290428-7419165?v=glance&n=2831
+55 )
+</ul>
+大自然就是如此奇妙，而從我之前的眉批，看人類社會，似乎好像也是這麼一回事阿。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001500.html">11:59 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1500" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001499"></a>
+<h3 class="title">ShUnit : Bourne Shell 的 Unit Test Framework</h3>
+
+[<a href="http://shunit.sourceforge.net/">ShUnit</a>] 是設計給 Bourne Shells (包含 bash) 的 Unit Test Framework (!!)，雖然目前還是雛型階段，不過的確可以拿來作 unit testing & verification，執行畫面如下：<br>
+<img src="http://jserv.sayya.org/misc/shunit-sample.png"><br>
+對了，原本的 [<a href="http://shunit.sourceforge.net/">ShUnit</a>] 並沒有加上終端機彩色支援，我做了一個 [<a href="http://jserv.sayya.org/misc/shUnit-colorized.diff">讓 ShUnit 支援彩色</a>] 的小 patch (against cvs head)，嗯，我現在比較想做的是，讓 M4 macro + autotools + shUnit 搭配，讓建構的過程更 robust。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001499.html">11:23 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1499" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 08, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001498"></a>
+<h3 class="title">truD 技術 : 提昇平面電視畫質的演算法</h3>
+
+過去在 LiteOn 服務時，雖然沒有實際的產出，但我也獲得許多啟發，決定投身於消費性電子裝置的核心技術與基礎建設開發。除了之前在 blog [<a href="http://blog.linux.org.tw/~jserv/archives/000938.html">光寶老闆的創業故事</a>] 述及的思想方面的啟發，而我也開始對 HDTV 與 LCD-TV 內部的技術產生了興趣，最近安排了很大比例的時間研讀相關的 spec，我才深深地感覺「觀賞電視是輕鬆的，但設計電視則是極端複雜的」。誠然，原本只是單純的涉獵呈像與 CATV，沒想到還讀到與政令法規相關的部份，還佔了好大的比例，不要說數位電視，我似乎對傳統電視的光學原理從來沒有足夠的認知。<br>
+<br>
+撇開這些議題不論，我注意到 Micronas 公司的 [<a href="http://www.micronas.com/products/trud/">truD</a>] 技術，這是一個提昇平面電視畫質的嶄新演算法，包含一系列的重要技術，並已經實做於硬體層面，可參考相關的報導：<ul>
+<li><a href="http://www.eettaiwan.com/ARTP_8800366828_480702.HTM">Micronas單片TV解決方案有助於提高開發效率</a></li>
+<li><a href="http://www.eettaiwan.com/ARTP_8800376060_876045.HTM">Micronas最新控制IC最佳化平面顯示器圖像品質</a></li>
+<li><a href="http://www.advancedimagingpro.com/article/printer.jsp?id=1522">Loewe Excels with Micronas' truD Frame Rate Converter</a></li>
+</ul>
+truD 技術為何能達到「視覺可分辨」的突破呢？簡單來說，平面顯示器原本就有較好的畫質，但如果平面電視由傳統的數位電視訊號作為驅動，這個優勢就無法充分發揮，這也是目前的技術障礙，何也？Broadcasting TV 原本就只鎖定 CRT 電視的特定顯示性能，而如果引入電影媒體的話，這個問題會更加惡化，原因是電影以 24 fps 播放，而美規電視系統以 60 fps 播放，是此，這會導致 frame-rate 的落差，又因為影像訊號通訊採 interlacing 格式，所有的落差會產生閃動、抖動，以及沿著對角線的鋸齒狀花點。<br>
+<br>
+在原理上來說，數位電視畫質的改善，必須先將電視訊號作 deinterlacing，以符合平面電視循序性的掃描模式，而 [<a href="http://www.micronas.com/products/trud/">truD</a>] 則繼續作以 24 fps 播放的影片與 50/60 ftp 的平面電視之間的 frame 落差中，插入損失的 frame 作為補償，也就是新聞稿提到的：<ul>
+Accurate vector-based motion estimation makes these fill-in frames as sharp as the originals. With this technology, the chip calculates the shift in position of every object on the screen between each frame. It then uses this information to precisely interpolate the object's location in intermediate frames. The result is steady real motion, instead of the edgy movements and blurring common to DTV displays that do not use truD.
+</ul>
+其他可作為參考的技術有動態對比增強(DCE)、照明和色彩銳利度增強(LSE/CSE)、選擇性色彩增強(SCE)、非線性色彩空間增強(NCE)及內容自適應空間雜訊降低(TNR) 等等。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001498.html">08:40 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1498" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 07, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001497"></a>
+<h3 class="title">人非聖賢 - Bug-free 的迷思</h3>
+
+剛剛閱讀 [<a href="http://blog.joycode.com/jiangsheng/archive/2006/02/05/71101.aspx">BUG，規範，斷言和調試</a>] 從經典的 "Bug-free" 宣稱出發，探討軟體測試的嚴謹與問題，Donald E. Knuth 在《TeX: The Program》的前言提到：<ul>
+「我相信，在 1985 年 11 月 27 日，TeX 代碼裡面的最後一個 BUG已經被發現和解決了。但是，如果代碼中仍舊有 BUG，我很高興付給任何第一個發現 BUG 的人 20.48 美元(這是前一個金額的兩倍，而且我計劃在一年內把它翻倍。你看，我很自信！)」
+</ul>
+後續發生的事件與反省，可看原 blog 精彩的描述。<br>
+<br>
+此外，我最近又回頭閱讀 GCC Hacker - Joseph Myers - 詳細整理的 [<a href="http://www.srcf.ucam.org/~jsm28/gcc/">GCC and C standards development</a>]，有許多先進的 GCC / Target/Frontend-specific optimizations & improvements 也由 [<a href="http://www.codesourcery.com/">CodeSourcery</a>] 公司 (Joseph Myers 任職的專業 GCC 顧問公司) 所主導。<br>
+<br>
+「人非聖賢，孰能無過」，Bug-free 的神話或許只可能在 "Hello World" 這種規模的程式落實，不過我弄 MCP 或其他低階 micro-controller 時，也發現因為 hardware signal synchronization 的議題，讓 LCD 說個 "Hello World" 都會有 bug 的時候。但是，無論如何，隨著軟體開發的標準化、各式高低階工具的發展，我們更能洞見這些「陷於焦油坑的恐龍」。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001497.html">09:48 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1497" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001496"></a>
+<h3 class="title">告別，不是遺忘</h3>
+
+中午醒來，悵然與淡淡的傷感襲身，或許，這肇因於昨夜漫長的 coding 與寫作。飄零於台北街頭，此際，聯想起清代詞人納蘭容若的一闕詞《生查子》：<ul>
+惆帳彩雲飛，碧落知何許；<br>
+不見合歡花，空依相思樹。<br>
+總是別時情，那時分明語；<br>
+判得最長夜，數盡厭厭雨。
+</ul>
+有時候會被問及過去的感情生活，特別是聚餐的場合，大概只能援以 Modest Mouse 樂隊的歌曲〈Out of Gas〉中的歌詞：「意見就像小貓，我已經送給別人」，說來也算巧合，當我耳聞該歌曲時，正是與小貓離別後的數日。而，納蘭容若巧妙的用合歡 (學名：Albizia julibrissin，豆科、合歡屬，澳大利亞國花) 與相思樹 (學名：Acacia confusa Merr，薔薇目、豆科、相思樹屬，熱帶植物)，這兩種位居不同經度的物種，詞人作以對比，更讓人覺得距離的遙遠不可測，漫漫長夜，別時情盤繞於心扉，徒然「數盡厭厭雨」。清代詞人納蘭容若能撰述這一系列道時尋常、美麗哀愁，卻又長久瀰漫的創作，或許跟他的人生歷練有關，詞人十七歲與盧氏成婚，兩人感情甚篤，但不久盧氏亡故，這就使深遠的淒婉，每從詞作中昇華。<br>
+<br>
+同樣以《生查子》為詞牌名的詞，宋代歐陽修也有一作，即膾炙人口的〈人約黃昏後〉：<ul>
+去年元夜時，花市燈如晝，月上柳梢頭，人約黃昏後。<br>
+今年元夜時，月與燈依舊，不見去年人，淚濕春衫袖。
+</ul>
+蘇軾不也在《江城子 乙卯正月二十日夜記夢》提及「相顧無言，惟有淚千行。料得年年腸斷處，明月夜，短松岡」，當代歌手王傑的歌曲《回首夢已遠》：<ul>
+燈火闌珊淚眼凝望煙水寒<br>
+長夜無眠不知今夕是何年<br>
+望斷千帆形孤影單不勝寒<br>
+無奈人在天涯魂縈夢牽<br>
+<br>
+情難斷難捨難分理還亂<br>
+人聚散風吹雲散月已殘<br>
+曾經多少愛戀纏綿<br>
+奈何情深緣淺<br>
+轉眼已是曲終人散<br>
+才知回首夢已遠<br>
+往事如煙無語蒼天
+</ul>
+至今仍在耳盼絮聒，我不是無奈的接受結局，而是，結局讓我慢慢的體驗愛情。<br>
+<br>
+這段時間中，我設計、規劃，以及最佳化了兩個中型 Embedded System 專案，「設計」本身會牽涉到無數的修改，特別是架構性的，縱使已經歷經一段時間的規劃、頂著「高級工程師」或「顧問」的頭銜，但 IT 產業的變化萬千，面對種種未知數，就好比在蠻荒中墾殖。與其使用電子製圖軟體，我寧可用手繪，用簡單的紙筆，一個 block 接著一個 block 的繪製，勾勒出我規劃的架構。為何要使用這種沒有效率且不精確的方式？很以難一語道盡，無論是大型專案抑或小型計畫，都是一種藝術品，而規劃其藍圖，是相當具有挑戰性的，就算最後是失敗的產品或計畫 (很多時候都不是技術問題)，這個過程已經足夠，至少對我來說。既然用手繪，鉛筆與橡皮是不可或缺。作 Draft Diagram 時，握著橡皮，頓時感悟：橡皮可拭去設計圖本的字跡，但卻擦不去那些早已經力透紙背的印記，是的，回憶還存在著，儘管我們訴諸外力去改變樣貌，但存在是不爭的事實，不是嗎？<br>
+<br>
+這讓我聯想起某一段讀過的文字：<ul>
+ 「也許，這就是回憶給我們的禮物，假如我們也會遺忘，但至少我們
+   曾經一起哭過，一起笑過，一起到過那些美麗的地方。假如我們也
+   會遺忘，但只要這一刻的銘記還在讓彼此相愛的人廝守身旁，幸福
+   的模樣也會在我們本來空無一物的腦海裡徜徉。」
+</ul>
+在記憶的洪荒中，每個人都走在銘記與遺忘的邊緣，哪怕只是些夢境、哀愁、離人和故鄉，一年一年的雨水以及早
+已變換青春的模樣。所以，我說：「告別，不是遺忘」。<br>
+<br>
+群 於內湖住所<br>
+Feb 7, 2006<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001496.html">12:59 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1496" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001495"></a>
+<h3 class="title">每兩對夫婦結婚的同時，就有一對夫婦離婚？</h3>
+
+新聞寫作的技巧很重要，《遠見》雜誌第 236 期 (Feb 2006) 
+p.141 提到：<ul>
+今天的台灣，每兩對夫婦結婚的同時，就有一對夫婦離婚。
+</ul>
+而根據 [<a href="http://sowf.moi.gov.tw/stat/year/y02-13.xls">2004 年台灣區離婚與結婚的統計</a>] (Microsoft Excel 格式)，其統計總和如下圖：<br>
+<img src="http://people.debian.org.tw/~jserv/divorce-rate-taiwan-2004.jpg"><br>
+台灣地區的離婚率計算方式，採粗離婚率 (crude divorce rate)，即將一年離婚數，除以該年總人口數，取千分比，此算法是國際認可並作為比較的指標。所以從上圖統計可發現，2004 年粗離婚率為 2.8 (千分比)，而《遠見》雜誌的記者顯然是透過比較「技巧」的寫作方式，姑且不論這字面的意思，剛剛參考了一些資料：<ul>
+<li>[<a href="http://english.people.com.cn/english/200011/18/eng20001118_55543.html">Taiwan's Divorce Rate Up</a>]</li>
+<li>[<a href="http://answers.google.com/answers/threadview?id=36331">Q: divorce rate </a>]</li>
+<li>[<a href="http://paowang.com/blog/shamu/archives/003609.html">Shamu: Seeing US and China From Chinese Eyes (老中看美国，以及中国）</a>]</li>
+</ul>
+需要注意的是，粗離婚率與人口結構和出生率，有微妙的關聯性，如果一個國家邁入「老人化」，相對的粗離婚率會較低，這是因為總人數相對提高，而沒考慮年齡分佈的因素，是此，也有專家提出一系列的修正方式。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001495.html">04:08 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1495" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 06, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001494"></a>
+<h3 class="title">Kaffe 計畫十週年</h3>
+
+剛剛在 [<a href="http://planet.classpath.org/">Planet Classpath</a>] 發表了關於 <a href="http://www.advogato.org/person/jserv/diary.html?start=5">Kaffe 計畫十週年的訊息</a>，內文如下：<ul class="code" style="margin: 6px;">
+<b>Ten Anniversary of Kaffe Project</b><br>
+In Feb 6 1996, Tim Wilkinson released the first version of <a href="http://www.kaffe.org/">Kaffe</a> as version 0.1, which is the first independent free and open source implementation of Java Virtual Machine. See the ChangeLog <a href="http://www.kaffe.org/cgi-bin/viewcvs.cgi/kaffe/ChangeLog.1?rev=HEAD&content-type=text/vnd.viewcvs-markup">here</a>:<br><ul><pre>
+Tue Feb  6 11:38:46 MET 1996    Tim Wilkinson   &lt;tim@sarc.city.ac.uk&gt;
+<p>          * Version 0.1 of Kaffe released.
+</pre></ul>
+The brave action inspires many developers around the world, and various research projects and commercial products were constructing on the basis of <a href="http://www.kaffe.org/">Kaffe</a>, and we could find some Kaffe-related projects in <a href="http://www.kaffe.org/links.shtml">Links</a>. Now, after ten years, there are many and many free Java runtimes and "clones". It's really amazing that GNU Classpath, GCJ, Kaffe, etc. are going better and better, more and more robust, and still free and open. :-)<p>
+Happy Birthday to Kaffe!</p>
+</ul>
+看到自己參與的計畫十週年，就好像替自己的情人慶生一般 *笑*<br>
+ps: 本文恰好為本 blog 第六百篇百篇，沾點喜氣<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001494.html">03:56 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1494" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001493"></a>
+<h3 class="title">Imagination Technologies Group 的 3DMarkMobile06 benchmark 結果</h3>
+
+位於倫敦的 [<a href="http://www.imgtec.com/">Imagination Technologies Group</a>] 展示了他們以 TI SoC 為基礎的 2D/3D accelerated graphics，並透過 FutureMark 的 3DMarkMobile06 benchmark 做出了些令人驚艷的評比報告，不過目前能獲得的資訊還相當有限。新聞稿可以參考以下兩篇：<ul>
+<li>LinuxDevices.com - [<a href="http://www.linuxdevices.com/news/NS6023095418.html">Benchmark clocks OMAP2420 graphics on Linux, Symbian</a>]</li>
+<li>Embedded.com - [<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=178601746">Results of games benchmarks for mobile processor released</a>]</li>
+</ul>
+TODO: 分析 3DMarkMobile06 對於 OpenGL/ES 1.x 作 system-analysis 的方式，以及 SoC Integration 的衝擊。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001493.html">03:52 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1493" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001492"></a>
+<h3 class="title">用 C++ Template 算階層</h3>
+
+數學的階層運算實做上有很多方式，剛剛讀 AK's weblog [<a href="http://synflood.at/blog/index.php?/archives/499-Fun-with-C++-templates-let-the-compiler-compute-the-factorial!.html">Fun with C++ templates: let the compiler compute the factorial!</a>]，發現這個特別的技巧，直接使用 C++ Template 的語意來達成：<ul>
+jserv@venux:/tmp$ cat factorial.cc<br>
+<pre class="code" style="margin: 6px;"><span class="keyword">#include</span> &lt;iostream>
+<span class="keyword">template</span> &lt;<span class="keyword">int</span> N>
+    <span class="keyword">struct</span> fact {
+        <span class="keyword">enum</span> { value = N * fact&lt;N - 1>::value };
+};
+<span class="keyword">template</span> &lt;>
+<span class="keyword">struct</span> fact&lt;1> {
+    <span class="keyword">enum</span> { value = 1 };
+}; 
+<span class="keyword">int</span> main()
+{      
+    std::cout &lt;&lt; <span class="literal">"5! = "</span> &lt;&lt; fact&lt;5>::value &lt;&lt; std::endl; 
+}</pre>
+jserv@venux:/tmp$ g++ -o factorial factorial.cc <br>
+jserv@venux:/tmp$ ./factorial <br>
+5! = 120
+</ul>
+真有意思！<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001492.html">11:09 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1492" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 05, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001491"></a>
+<h3 class="title">與淑女有約：內湖到陽明山的散步</h3>
+
+我的新年計畫中，有一項就是騎淑女車挑戰陽明山，而今天下午實現了一半。之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001334.html">與淑女有約：內湖到北宜公路的散步</a>] 寫完後，我就一直想試試其他的路線，誰說騎自行車一定要買上萬的專業單車呢？我這台 GIANT 淑女車可以說是門市賣最便宜的車種，但還是一樣可以作許多有趣的挑戰，趁著今天的好天氣，我決定到處走走。早上先從內湖、南港、八德路、新生南路、台大、新店，並抵達北宜公路路口，這兩個多小時的路程算是暖身，中午稍作休息，就開始騎淑女車的散步路程。<br>
+<br>
+下午兩點，由內湖出發，故意繞遠路先到東湖、大湖公園、大直 (買急救用品)，才到自強隧道，這也是為了熱身，畢竟陽明山的路是出名的難走。穿越自強隧道後，行經東吳大學、中影文化城，快要到前往陽明山的仰德大道時，我在復興橋停下來：<br>
+<center><img src="http://people.debian.org.tw/~jserv/hacking-around-taiwan/2005-02-05-ym-1.jpg"></center><br>
+這次的目標是僅可能「一口氣抵達」，也就是連稍作休息都在淑女車上，無論用什麼鳥姿勢，就是要跨越這重重的挑戰，所以我在復興橋旁做了些熱身操。然後：衝吧！<br>
+<br>
+前往陽明山的車流不容小覷，套句 duan 兄說的話：「台北人沒什麼地方好去，假日都擠在陽明山」，因為有還算充分的體能訓練，所以剛開始的路程我都算能接受，而且沒有停下來休息。就這樣，看著門牌從仰德大道一段數字更迭，我的心情相當愉快，希望這次能比之前更順利。抵達仰德大道二段時，我略為休息，臨崖眺望意境悠閒，處處清風伴我，美景盡收眼底：<br>
+<center><img src="http://people.debian.org.tw/~jserv/hacking-around-taiwan/2005-02-05-ym-2.jpg"></center><br>
+對了，我還穿越了臺灣神學院，這裡因為路面較窄、車潮匯集，我只好牽著淑女車緩緩前進：<br>
+<center><img src="http://people.debian.org.tw/~jserv/hacking-around-taiwan/2005-02-05-ym-3.jpg"></center><br>
+之後又開始衝刺，全身汗流浹背，並且已經開始飲用第二罐礦泉水。這路程充斥了 35 到 55 度的陡坡，而我早已使出全身吃奶的力氣，用力推進，從背後看一定很好笑：一個無聊男子，全身濕透、站立於淑女車上，用力擺動下體，拼命的動... 不管，我就是要挑戰這些路段，這不僅是體力的挑戰，更是意志力的耐力訓練。新陳代謝快得讓我有些難以支架，心臟就好像快跳出來，雙腿也微微顫抖，終於，我到了仰德大道四段：<br>
+<center><img src="http://people.debian.org.tw/~jserv/hacking-around-taiwan/2005-02-05-ym-4.jpg"></center><br>
+雖然距離真正的目標還有一段距離，不過感到頗欣慰，因為我已經超越之前自己的紀錄了。奇怪的是，我竟然有股靈感，我想到 zeta function，s &lt; 1 時 zeta function 的曲線在我腦海刻劃著，而延伸下去，我試著找尋 zeta function 的非明顯零點... 想著想著，我抵達了陽明山國家公園：<br>
+<center><img src="http://people.debian.org.tw/~jserv/hacking-around-taiwan/2005-02-05-ym-5.jpg"></center><br>
+後來又騎了一段，不過體能上的限制，讓我不得不坐下來休息，這是騎上陽明山後第一次坐著 (其實也只有一次)。我帶了《核反應工程》，所以休息的這段時間，我再度翻閱這本給我很大啟發的教科書 (到高二結束前，我心目中的第一志願還是核子工程，不過輾轉經歷了些變化)：<br>
+<center><img src="http://people.debian.org.tw/~jserv/nuclear-textbook.jpg"></center><br>
+從上一張照片可以發現，手振的情況變得嚴重，後面的路程中，雖然我有試著拍攝，不過發現拍出來的照片難以辨識，這裡略過。之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001307.html">漫游七星山</a>] 提到我去年跟 robben 爬七星山，於是我想：<ul>
+「能否一路騎淑女車，抵達七星山的登山口 -- 陽明山國家公園附近的苗圃呢？」
+</ul>
+可惜，全身的疲倦度增加，而且飲用水似乎不太充足，作罷，於是回程。下山是相當愉快的，有強烈「苦盡甘來」的感覺，除了中間幾個小段需要爬坡外，大部分都像是「溜滑梯」，真是舒暢阿。<br>
+<br>
+經過文化大學時，拍攝了一張留念 (唉，竟然找不到文化大學的女生幫我跟淑女車，最好還加上真正的淑女，一起來個合照)：<br>
+<center><img src="http://people.debian.org.tw/~jserv/hacking-around-taiwan/2005-02-05-ym-6.jpg"></center><br>
+這一路「滑」下來，好幾次都快要失速，可見之前爬陡坡有多艱辛，哈哈，我終於辦到了！為了安全，有幾段是用牽車下山的，當時似乎有些頭暈，畢竟這樣的挑戰還是頭一遭。快到仰德大道一段時，拍張照片留念：<br>
+<center><img src="http://people.debian.org.tw/~jserv/hacking-around-taiwan/2005-02-05-ym-7.jpg"></center><br>
+嗯，接下來就慢慢的騎回內湖了，大約是下午五點回家。很充實的「散步」規劃，希望下次繼續挑戰，當然是跟心愛的淑女車一起啦。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001491.html">11:39 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1491" onclick="OpenComments(this.href); return false">迴響 (5)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001490"></a>
+<h3 class="title">寄生蟲的智慧</h3>
+
+剛剛在 #debian-zh IRC channel 瞥見 [<a href="http://www.carlzimmer.com/">Carl Zimmer</a>] 的文章 [<a href="http://loom.corante.com/archives/2006/02/02/the_wisdom_of_parasites.php">The Wisdom of Parasites</a>]，探討了我們一向看不起的寄生蟲 (無論是本意或者延伸意義)，其豐富多元的生活型態，以及其生活哲學與智慧。我缺乏這方面的背景，反覆查詢辭典後，才略為理解 [<a href="http://www.carlzimmer.com/">Carl Zimmer</a>] 所闡述的意思，的確，寄生蟲與宿主間微妙的關係，以及面臨天擇不得不演化出獨特的機能與代謝方式，許多寄生蟲內部運作的機制，對科學家來說，還是一團謎雲，正如文章所提：<ul class="code" style="margin: 6px;">
+Scientists don't yet understand how Ampulex manages either of these feats. Part of the reason for their ignorance is the fact that scientists have much left to learn about nervous systems and metabolism. But millions of years of natural selection has allowed Ampulex to reverse engineer its host. We would do well to follow its lead, and gain the wisdom of parasites.
+</ul>
+這讓我聯想到，《莊子》中一則「渾沌」的寓言，如果「渾沌」是最原始且最真實的生命體，渾沌之體一再被所謂的「機巧」分門別類的鑿空，這或許是生物學上的「分化」、社會學上的「分工」，然而，我們也看到這也暴露出片面化、孤立化的頹勢。然而，對生命、科學，乃至萬物運行之道有更深入理解時，反過來看這些寄生蟲、動植物，或者是人類社會，不正如唐代詩人高適在《別董大》提及的「莫愁前路無知己，天下誰人不識君。」，我們都是依循齊一的哲理與機制存在、演化，以至於生生滅滅...<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001490.html">01:26 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1490" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001489"></a>
+<h3 class="title">FreeType 新進展</h3>
+
+昨天在 #dot IRC channel (對了，好像不只一位朋友問我如何參與討論，使用 IRC 的方式，請參考 Tetralet 兄撰寫的 [<a href="http://tetralet.luna.com.tw/index.php?op=ViewArticle&articleId=46&blogId=1">IRC Chat 真好玩呀！</a>] 與 [<a href="http://tetralet.luna.com.tw/index.php?op=ViewArticle&articleId=63&blogId=1">用 GAIM 來上 IRC！</a>] 兩篇精彩的 blog)，台灣的 [<a href="http://www.freetype.org/">FreeType</a>] hacker - olv - 提到他的進展：<ul   class="code" style="margin: 6px;">
+ 2月 04 17:21:06 olv    初步把 akito 的 hinting patch port 到 freetype 2.1.10 了 :)<br>
+ 2月 04 17:21:19 olv    http://www.olv.idv.tw/~olvaffe/tmp/freetype2/autofit.png &lt;--- freetype 2.1.10<br>
+ 2月 04 17:21:29 olv    http://www.olv.idv.tw/~olvaffe/tmp/freetype2/akito-autofit.png &lt;--- with akito's patch<br>
+ 2月 04 17:28:08 olv    DreamerC: http://www.olv.idv.tw/~olvaffe/tmp/freetype2/akito.png &lt;--- 這是 freetype 2.1.7 + akito's patch<br>
+ 2月 04 17:28:21 olv    DreamerC: 這張會嗎？<br>
+ 2月 04 17:28:23 DreamerC       等寬字還是有需要的<br>
+ 2月 04 17:28:44 DreamerC       好多了<br>
+ 2月 04 17:30:23 olv    DreamerC: 喔 原來是指寬度<br>
+ 2月 04 17:30:41 olv    DreamerC: 那個部分還沒 port<br>
+ 2月 04 17:31:14 olv    DreamerC: 還要先改 freetype autofit 的架構<br>
+ 2月 04 17:32:00 jserv--        olv++ # 好漂亮的字<br>
+ 2月 04 17:32:29 olv    jserv--: 我的眼睛快瞎了 :(
+</ul>
+感謝 olv 犧牲他寶貴的時間與視力，為我們爭取在世界一流的 [<a href="http://www.freetype.org/">FreeType</a>] 計畫中，實做了這些字型處理的突破！<br>
+<br>
+對了，對岸的高手 easion 也在他自己寫的作業系統 [<a href="http://jicama.cosoft.org.cn/">Jicama</a>] 中加入 FreeType 的支援，可參考 [<a href="http://jicama.cosoft.org.cn/blog/index.php?job=art&articleid=a_20060205_085436">FreeType for vindows快照</a>]，vindows 是 Jicama 的 GUI system，快照如下：<br>
+<center><img src="http://jicama.cosoft.org.cn/blog/up/1139100860.jpg"></center><br>
+Amazing!<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001489.html">12:00 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1489" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001488"></a>
+<h3 class="title">All-Around Smart</h3>
+
+<center><table border="1" width="355" cellspacing="0" cellpadding="0" name="qgtable2">
+<tr>
+<td align="center">
+<font size="+2">All-Around Smart</font><br />
+<br />You are all-around smart.  Essentially, that means that you are a good combination of your own knowledge and experience, along with having learned through instruction - and you are equally as good with theoretical things as you are with real-world, applied things.  You have a well-rounded brain.<br /><br />
+40% applied intelligence<br />20% learned intelligence<br /><br />
+</td>
+</tr>
+
+<tr>
+<td>
+<table name="qgtable" width="350" height="350" cellpadding="0" cellspacing="0" border="0" style='background: url(http://www.quizgalaxy.com/result_images/int-quiz-bg.jpg); background-repeat: no-repeat;'>
+<tbody>
+<tr height="198">
+	<td width="234"></td>
+	<td></td>
+</tr>
+<tr>
+	<td width="234"></td>
+	<td valign="top" align="left" border="0"><img src="http://www.quizgalaxy.com/result_images/locator.gif" border="0" /></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+
+<tr>
+<td align="center" border="0">
+<a href="http://www.quizgalaxy.com/quiz.php?id=53">Take this quiz</a> at <a href="http://www.quizgalaxy.com">QuizGalaxy.com</a>
+</td></tr>
+</table></center><br>
+我果然屬於「樣樣通、樣樣鬆」的類型，此外就是資質駑鈍，這讓我想起之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001322.html">鼯鼠與軟體專案開發</a>]，說不定鼯鼠就是屬於我這種類型 *笑*<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001488.html">02:12 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1488" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001487"></a>
+<h3 class="title">Novell Linux Desktop 展示影片</h3>
+
+LinuxEdge 的新聞 [<a href="http://www.linuxedge.org/?q=node/55">Novell Linux Desktop Demonstration Videos</a>]，提到以下訊息： <ul class="code" style="margin: 6px;">
+A preview of Novell Linux Desktop 10 (NLD10) was shown to an audience at the Solutions Linux conference this week in Paris. We have a selection of videos which display a variety of amazing effects through the use of XGL, including transparency, wobbling windows, a 3D Cube for desktop switching, and a task switcher which displays a preview of windows.
+</ul>
+可以看到 GNOME 最新的技術，以及 Novell 在桌面與辦公室的許多貢獻，並且還有 David Reveman 加入 Novell 後，對於 Linux Graphics 一系列的突破，做了 Xgl、Cairo，以及 glxcompmgr 的展示。新聞網頁有提到影片下載的位址，而我剛剛在台大計中做了 [<a href="http://linux3.cc.ntu.edu.tw/~jserv/novell-linux-desktop-demo/">展示影片的 Mirror</a>]，可以體驗這些震撼 :-)<br>
+<br>
+對了，雖然 Reveman 說在 [<a href="http://freedesktop.org/Software/XDevConf">X.org Developer's Conference</a>] 時，才會把上述的貢獻釋出，不過已經放出一部分 snapshot，我做了一個簡單的 script，可以從 glitz、Cairo、Xgl，到 glxcompmgr 一次建構完畢，有興趣的朋友可以 [<a href="http://people.debian.org.tw/~jserv/build-xgl-glxcompmgr.sh">抓來玩玩</a>]。安裝完畢後，執行方式如下：(作為參考的 script)<ul><pre class="code" style="margin: 6px;">
+#!/bin/sh
+XGL_DISPLAY=:1
+killall -9 metacity
+killall -9 Xgl
+sleep 1
+PREFIX=$HOME/xgl-prefix
+LD_LIBRARY_PATH=$PREFIX/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH
+$PREFIX/bin/Xgl $XGL_DISPLAY -ac \
+    -fullscreen \
+    -accel xv:pbuffer -accel glx:pbuffer &
+sleep 1
+export DISPLAY=$XGL_DISPLAY
+metacity &
+xterm &
+$PREFIX/bin/glxcompmgr \
+    shadow wobbly fade gconf cube
+</pre></ul>
+Linux Desktop 的未來還是很值得期待，希望明天會更好。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001487.html">01:48 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1487" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001486"></a>
+<h3 class="title">Tor : 第二代 onion routing</h3>
+
+剛剛讀 [<a href="http://blog.linuxeden.com/110848">巴蠻子的新破茅屋</a>] 的 blog [<a href="http://blog.linuxeden.com/post/110848/3826">如何解決上不了sf.net的問題</a>]，發現了 [<a href="http://tor.eff.org/">Tor</a>] 這個計畫，引用 [<a href="http://risker.org/files/Tor/index.html">用Tor實現有效和安全的互聯網訪問</a>] 一文的介紹： <ul class="code" style="margin: 6px;">
+Tor 的全稱是 "The Onion Router"，號稱是 "An anonymous Internet communicaton system"，主頁在：<a href="http://tor.eff.org">http://tor.eff.org</a>。<br>
+<br>
+它針對現階段大量存在的流量過濾、嗅探分析等工具，在 JAP 之類軟件基礎上改進的，支持 Socks5，並且支持動態代理鏈（通過 Tor 訪問一個地址時，所經過的節點在 Tor 節點群中隨機挑選，動態變化，由於兼顧速度與安全性，節點數目通常為 2-5 個），因此難於追蹤，有效地保證了安全性。另一方面，Tor 的分布式服務器可以自動獲取，因此省卻了搜尋代理服務器的精力。下圖是一個簡單的 Tor 安全訪問與危險訪問的區別示意圖：<br>
+<center><img src="http://risker.org/files/Tor/images/HowTorWorking.png"></center>
+</ul>
+前面已經介紹過 onion routing 的概念，而 [<a href="http://tor.eff.org/">Tor</a>] 就是一個實做，最早由美國海軍研究實驗室資助，2004 年成為 EFF (Electronic Frontier Foundation，EFF) 的研究計畫。[<a href="http://tor.eff.org/">Tor</a>] 是在 OSI 網路第七層的 application layer 進行加密，而之所以稱為 "onion"(洋蔥) routing，就是因為這個結構類似洋蔥，使用者只能看到表皮，但如何要一窺核心，就得一層又一層的撥開。router 間的傳輸都經過對稱的 key 作加密，形成如洋蔥般有層次的結構，中間所經過的各節點，又好比洋蔥的一層皮，將 client 包覆其中，保護資料來源，這也是 onion router 對於安全性的基本概念。<br>
+<br>
+[<a href="http://tor.eff.org/">Tor</a>] client 需要在 localhost 安裝 onion proxy，會持續的與其他 [<a href="http://tor.eff.org/">Tor</a>] node 交流，從而構成 virtual circuit。onion proxy 採用 Socks5，所以常見的網路應用程式就可以透過 onion proxy，再 virtual circuit 中進行通訊。<br>
+<br>
+官方網頁 [<a href="http://tor.eff.org/overview.html.en">Tor: Overview</a>] 有幾張很清楚的示意圖：<br>
+<center><img src="http://tor.eff.org/images/htw1.png"><br>
+<br>
+<img src="http://tor.eff.org/images/htw2.png"><br>
+<br>
+<img src="http://tor.eff.org/images/htw3.png"><br></center>
+<br>
+[<a href="http://tor.eff.org/">Tor</a>] 以 BSD License 發行，支援 Win32 與 UNIX-like 平台，在 Debian 的使用，可參考 [<a href="http://risker.org/files/Tor/index.html">用Tor實現有效和安全的互聯網訪問</a>] 一文，節錄如下： <ul class="code" style="margin: 6px;">
+在 /etc/apt/sources.list 中增加如下兩行：<ul>
+deb http://mirror.noreply.org/pub/tor stable main<br>
+deb-src http://mirror.noreply.org/pub/tor stable main
+</ul>
+然後執行：<ul>
+apt-get update && apt-get install tor tsocks
+</ul>
+安裝完畢後，系統會建立 Debian-tor 的帳號，並且以該用戶的身份啟動 tor，開機自動起動，可以在 /etc/rc2.d/ 下進行調整。<br>
+<br>
+需要編輯的文件其實只有一份，即 /etc/tsocks.conf，只需要三行即可：<ul>
+server = 127.0.0.1<br>
+server_type = 5<br>
+server_port = 9050
+</ul>
+要用 Tor 進行代理的程序，以 tsocks 啟動，比如，希望用 Tor 代理所有 web 訪問，則可以執行：<ul>
+$ tsocks firefox
+</ul>
+</ul>
+其餘資訊可參考 [<a href="http://tor.eff.org/">Tor</a>] 官方網頁，與維基百科 [<a href="http://zh.wikipedia.org/wiki/Tor">Tor - Wikipedia</a>]。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001486.html">12:15 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1486" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 04, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001485"></a>
+<h3 class="title">再探羅塞達碑石 : 連續時間系統與離散系統的橋樑</h3>
+
+剛剛用了一點時間翻譯 Jack W. Crenshaw 發表於 Embedded.com 的專欄文章 [<a href="http://www.embedded.com/showArticle.jhtml?articleID=175002472">More on the Rosetta Stone</a>]，該文用很淺顯的描述，介紹到數位類比與離散時間系統的基本概念，很值得入門參考。<br>
+<br>
+<table cellpadding="0" cellspacing="0">
+<tr>
+<td></td>
+</tr>
+</table>
+<!-- End SiteCatalyst code version: G.7. -->
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td><a href="/"><img src=
+"http://i.cmpnet.com/embedded/redesign/logo.gif" alt="Embedded.com"
+border="0"></a></td>
+<td width="20">&nbsp;&nbsp;</td>
+</tr>
+</table>
+<p><h1>再探羅塞達碑石 / More on the Rosetta Stone</h1>
+<font size="2" face="verdana,arial,helvetica,sans-serif">
+<!-- author(s) -->
+<font face="verdana,arial" size="2">原作： Jack W. Crenshaw</font> <br>
+<font face="verdana,arial" size="2">繁體中文翻譯： <a href="http://blog.linux.org.tw/jserv/">黃敬群 (Jim Huang / jserv)</a></font>
+<br>
+Dec 14 2005 (12:21 PM)<br>
+URL: <a href=
+"http://www.embedded.com/showArticle.jhtml?articleID=175002472">http://www.embedded.com/showArticle.jhtml?articleID=175002472</a></font></p>
+<p><font size="2" face="verdana,arial,helvetica,sans-serif">過去幾個
+月，我已經嘗試深入解釋一個原始而又有用的等式，並且我比喻該等式為
+「羅塞達碑石」。 [譯注：羅塞達碑石 (Rosetta Stone) 的典故是，1799 年
+拿破崙遠征埃及時期，法軍上尉 Pierre-François Xavier Bouchard 在尼羅河
+口港灣城市羅塞塔 (Rosetta，今日稱為 el-Rashid) 發現此碑石，自此揭開
+古埃及象形文字之謎。羅塞塔碑石製作於公元前 196 年，，原本是一塊刻有
+埃及國王托勒密五世召書的碑石，但由於這塊碑石同時刻有同一段文字的三種
+不同語言版本，使得近代的考古學家得以在對照各語言版本的內容後，解讀出
+已經失傳千餘年的埃及象形文之意義與結構，而成為今日研究古埃及歷史的
+重要里程碑。由於是破解埃及象形文這種如謎題般的事物之起始點，「羅塞塔
+碑石」也因而被比喻為解決難題或謎題的關鍵線索或工具，本文點題正是取此
+引申義。]</font></p>
+<center><font size="2" face=
+"verdana,arial,helvetica,sans-serif"><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn01.gif"></font></center>
+(1)
+<p>這個等式將我們所在真實世界的連續時間，以及電腦賴以運作的離散時間系統，
+巧妙的連結起來。如果讀者之前已經閱讀過這系列的專欄文章，我們已經有了所需
+的基本概念：泰勒級數、指數函數，以及綜合除法 [譯注：綜合除法 (synthetic 
+division) 為 nested multiplication，又稱 Horner 法，即中國古代之秦九韶法]。
+如果讀者之前沒有接觸，這邊有個簡短的複習。</p>
+<p>這裡先以略不同於之前所提的泰勒級數作出發：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn02.gif"></center>
+(2)
+<p>之所以作更動，是因為這一項造成模稜兩可的情況：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn0A.gif"></center>
+<p>這一項我稍早曾使用過，如果逐字解析，可以得到以下語意：</p>
+<p>&bull; 首先計算 <i>x</i> = 0 時，<i>f</i>(<i>x</i>) 的值</p>
+<p>&bull; 再取其導函數</p>
+<p>不過這是錯誤的，因為既然 <i>f</i>(0) 是個常數值，取其導函數就沒有意義 
+[譯注：恆為 0]。正確的認知應該是：</p>
+<p>&bull; 先取 <i>f</i>(<i>x</i>) 的導函數</p>
+<p>&bull; 再計算 <i>x</i> = 0 時，導函數的值</p>
+<p>論及泰勒級數時，我稍加延遲給予更多的符號更動，好讓讀者熟悉符號的表示
+與意義，我希望能更加清楚的表達。不過很顯然，等式 (2) 很難理解，所以我們即刻
+將使用這些表示法。</p>
+<p>泰勒級數允許我們預測一個函數未來的值 -- <i>所有的</i>未來值，依據特定點
+的值，以及其導函數，也就是探討 <i>x</i> = 0 時。當然，我們還需要除了 <i>x</i> 
+= 0 以外的值，所以我們可略為改變這些變數。</p>
+<p>過去我並沒有使用嚴謹的數學，來對這些級數作衍生，但我給了一些解釋與足夠的
+範例讓讀者明白。</p>
+<p>在看了泰勒級數後，我們觀察了指數函數： <i>e<sup>x</sup></i>，指數函數最基本
+的特性就是其導函數等於自身：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn03.gif"></center>
+(3)
+<p>以這個定義作出發，我們使用泰勒級數來表示指數函數：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn04.gif"></center>
+(4)
+<p>如果讀者正在思索這個等式，可以比較等式 (2) 與等式 (4) 相近的表示方式。</p>
+<p>最後，讓讀者知道綜合除法，允許我們得到類似這樣的衍生關係：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn05.gif"></center>
+(5)
+<p>讀者不需要透過這個技巧來演繹「羅塞達碑石等式」，將會在稍後當我們應用時，會
+派上用場。之前我應該提過，這個級數只適用 |<i>x</i>| &lt; 1 的情況。
+There's a moral in here somewhere, which is that elegant math doesn't protect 
+us from stupidity. [譯注：這句話經典，保留不譯以強調之]。如果 |<i>x</i>| &gt;1，
+很顯然，級數的每一項將會較之前來得大，所以這個級數將無法涵蓋。</p>
+<p><font size="3" color="#003366" face="Verdana"><b>Smooth
+operators</b></font><br>
+<p>如果讀者先前有從事過程式設計，我就不必提及 operator 是什麼了。
+"+" 是個 operator，而 "-"、"*"，以及 "/" 都算是。簡單來說，一個 operator 使用
+一個或一個以上的參數 [譯注：即 operand]，並施加一些操作，該符號告訴我們這些被
+操作或運算的對象，做了哪些事情，例如 "+" 告訴我們作加法運算。用 C++ 語言的術語，
+operator 可以被 overloaded。兩個整數的相加，就像是對兩個浮點數，甚至是複數的加法
+相似的途徑，而兩個向量或矩陣的加法則有很大的差異，不過基本的涵義可以說是一致。</p>
+<p>概念上來說，這是相當具有威力的。中心思想就是，我們不需要關心 operand 到底是什麼
+值、什麼型態。如此一來，"1 + 1" 的加法運算，可以說是跟 "1.23456 + 6.54321" 在概念
+上一致的。</p>
+<p>現在，這部份就是關鍵：與 operator 關聯者，就是一組施加於 operand 的操作與運算。
+一旦得知這些規則後，到底你使用什麼符號就不是這麼重要了，我可以輕易的使用這樣的
+表示法：</p>
+<p><i>x</i> banana <i>y</i></p>
+<p>(6)</p>
+<p>而不是 <i>x</i> + <i>y</i> 一類的，只要我們認可 "banana" 是個 operator。</p>
+<p>本文將會注意到導函數的符號，就如讀者所知，這個符號：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqnB.gif"></center>
+<p>意味著對函數 <i>f</i>(<i>x</i>) 做了某種運算，而在這個例子來說，是計算函數曲線
+的斜率，或是至少在一個範圍內，<i>x</i> 的值。不過很明顯 [譯注：「很明顯」這個用詞，
+總讓譯者想到數學界的一代宗師高斯所發表的數學文獻中，有些惱人的字眼：「現在我們就
+得到...」或是「現在我們明顯可見...」一類的用詞，忽略在導入結論中，那些繁複的過程，
+譯者很希望譯文中不要有太多這類的「黑盒子」]，我們可以使用這些不同的表示法，其涵義
+是一樣的：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqnC.gif"></center>
+<p>像是：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn07.gif"></center>
+(7)
+<p>(最後一個是特例，在物理學上，當獨立的變數為時間時，可以簡化表示為此) 我將會述及，
+如果我們使用其他的表示法，泰勒級數可以更加簡便。任何階的導函數可以被更低階的導函數所
+定義： </p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn08.gif"></center>
+<p>(8)</p>
+<p>現在，我希望讀者可以同意符號的使用並不會影響要表達的意思，現在我將要引入一個同義
+單元： <i>D</i>，讀者可以同意其定義方式為：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn09.gif"></center>
+(9)
+<p>就如之前所說，只要讀者認同 <i>D</i> 表示「對獨立變數取微分」的操作運算 [譯注：或
+者，operator]，就很清楚了。正如等式 (8)，我們也必須認可這個寫法：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn10.gif"></center>
+(10)
+<p>有了這個定義，我們可以改寫等式 (2) 為：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn11.gif"></center>
+(11)
+<p>現在我們來到相當精彩的部份了。想像一下，可以對函數本身找出自己的因式：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn12.gif"></center>
+(12)
+<p>啊？！發生什麼事情，這怎麼可能呢？我們可以指派一個 operator 來取得 operand 的
+因數嗎？當然可以，就像是這樣：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn13.gif"></center>
+(13)
+<p>我們也已經同意，一個 operator 可在任何 operand 施加操作，所以等式 (12) 的意思
+等同於等式 (11)，也就是：取得 <i>f</i>(<i>x</i>) 的多階導函數，並且計算 <i>x</i> = 0 的
+值。而我們只是稍加簡化符號使用的形式。</p>
+<p>現在我們看看括號中級數的形式，在等式 (12) 中，這等同於指數函數的形式，因此我們可以
+這樣改寫：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn14.gif"></center>
+(14)
+<p>如果泰勒級數的因式 operator 表示法讓讀者覺得很難接受，取指數的 operator 必定更加
+打擊讀者。記住：符號本身沒有太大的意義，等式 (11) 與 (14) 的表示是一致的，因為我們
+已經建立表示法的規範。等式 (14) 並未能減輕我們的負擔，只是讓我們得以透過更精簡的方式，
+來作表示。</p>
+<p><font size="3" color="#003366" face="Verdana"><b>The importance
+of being discrete</b></font><br>
+前面所及的，是 <i>f</i>(<i>x</i>) 在連續系統中的行為，而現在我們要來探討不連續的情況。
+前面已經提過「羅塞達碑石等式」，是聯繫連續時間系統與離散時間系統的橋樑。相當清楚，獨立
+的變數不必是時間，在目前所提到的等式中，我有計畫的使用更一般性的變數： <i>x</i>。我們
+使用時間作探討的原因是，在嵌入式系統中，對電腦運算更有意義。</p>
+<p>現在假設我們有一台嵌入式的電腦，該電腦裝置對應到真實、實體的系統：車子的導航控制
+系統。我們可以讓車子的時速表產生正比於車速的電壓變化，並且電腦可以透過數位類比轉換 
+(A/D converter) 來取得該電壓資料。而這個電壓變化，如同車速，是時間的連續函數： 
+<i>v</i>(<i>t</i>)，關係圖如下圖 (一)：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/12Crenshaw01.gif"></center>
+<p>儘管電壓變化是連續性的，但對於電腦來說，並非如此，電腦只能從數位類比轉換中，讀取
+特定的數值，並且受軟體設計的控制。這些由電腦處理的數值，原本在圖 (一) 以點表示，我姑且
+稱他們為：
+<i>y</i><sup>0</sup>,<i>y</i><sup>1</sup>, . . .
+<i>y<sup>n</sup></i>。為了紀錄，這些數列並非無限長的延伸下去，有可能在長時間的紀錄後，
+現在這個時間的車速就不再保存。現在，我們稱為目前時間為： <i>t<sup>n</sup></i>。</p>
+<p>一般來說，這並不足以知道每一個時間點所測量的電壓變化，我們也必須知道測量過程中的
+時間點。以數學的術語來說，圖 (一) 中每個黃色點，表示一個 
+<i>ordered pair</i>, {<i>t<sub>i</sub></i>,<i>y<sub>i</sub></i>}。為了徹底表示量測的
+資料，我們必須一併保存量測到的電壓變化與時間值，這樣的資料稱為「<i>以時間為標記的
+資料</i>」。</p>
+<p>然而，在圖 (一) 中，我們可以發現，這些測量是在一定間隔 &Delta;<i>t</i> 取得的，如果
+可以的話，我們總是這麼作，因為如果不在一定間隔測量，數學運算會複雜許多。對於所有讀者
+可能會感興趣的控制系統，測量的間隔僅可能會一致，在這樣的案例來說，我們不需要儲存時間
+標記，因為我們可由下面的式子計算：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn15.gif"></center>
+(15)
+<p>當以「羅塞達碑石 operator」處理時，讀者可以放心的假設時間間隔總是一致的。</p>
+<p>現在，重要的部份：表示電壓變化 <i>v</i>(<i>t</i>) 測量的數列 <i>y<sub>n</sub></i> 會
+變化，電壓變化是由平滑曲線所表示的連續時間函數，然而測量值 <i>y<sub>n</sub></i> 是一組
+離散的數列，對應到特定的時間點。對電腦來說，探討像是 <i>y</i><sub>4.5</sub> 的測量值，
+沒有意義，因為<i>測量結果不存在</i>。
+<p>換句話說，我們嘗試著控制以連續時間系統變化的裝置，我們想要控制 <i>v</i>(<i>t</i>)，
+而非 <i>y<sub>n</sub></i>。這也就是在連續與離散世界中的關係，我們僅能在離散的時間點測量
+電壓變化，但是我們必須使用這些測量值，去推測連續時間相關的函數。所以，這是「羅塞達碑石」
+出現之處。</p>
+<p><font size="3" color="#003366" face="Verdana"><b>Back to the
+Taylor Series</b></font><br>
+現在，讓我們回到泰勒級數，稍早已經簡化成等式 (14) 的形式。</p>
+<p>為了簡化，我一貫假設展開式在大約 <i>x</i> = 0 的點。很顯然，方程式對其他起始點來說，
+還是成立的。我們可以對變數略作些更動，定義以下：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn16a.gif"></center>
+(16)
+<p>於是：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn16b.gif"></center>
+<p>並且：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn17.gif"></center>
+(17)
+<p>將這些代入等式 (14) 可得：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn18.gif"></center>
+(18)
+<p>我們只需要再三個步驟。第一個並不重要，只是以測量階段的大小值 <i>h</i> 來
+替代 &Delta;<i>t</i>，這裡不解釋為何要使用 <i>h</i> 而非 &Delta;<i>t</i>。
+原因消失在時間的迷霧中，但這個符號在絕多數的數值計算教科書被採用，所以我延續
+這個傳統。</p>
+<p>第二步是精巧且微妙的。記得之前提過所測量的數值 {<i>y</i><sub>0</sub>,
+<i>y</i><sub>1</sub>, ..., <i>y<sub>n</sub></i>}，都是在時間 {<i>t</i><sub>0</sub>,
+<i>t</i><sub>1</sub>, ..., <i>t<sub>n</sub></i>} 的 <i>v</i>(<i>t</i>) 函數值，
+也就是：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn19.gif"></center>
+(19)
+<p>這看來更合理，然後改寫等式 (18) 為：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn20.gif"></center>
+(20)
+<p><font size="3" color="#003366" face="Verdana"><b>What does it
+mean?</b></font><br>
+永遠別忘記表示法本身的意義，再說一次，我們試著讓表示法更簡潔，但必須要能夠被理解，
+像是簡化的版本，要能夠被理解為與原本泰勒級數相似。更明確來說，
+像是 <i>Dy<sub>n</sub></i> 的項會被理解為：</p>
+<p>&bull; 首先，取得 <i>v</i>(<i>t</i>) 的導函數</p>
+<p>&bull; 再來計算當 <i>t</i> =<i>t<sub>n</sub></i> 時，導函數的值</p>
+<p>看到這裡，讀者或許會問：「但是我該如何得到導函數？我現在只測量電壓變化」，
+真實世界中，我們的確不知道 <i>v</i>(<i>t</i>) 的導函數，因為我們不可能知道 [譯注：
+世事難料，誰知道下一秒車速會受到什麼新的變因影響？]。等式 (20) 看來就有點無用，但
+並非如此，讀者將會在稍後發現。</p>
+<p>直到現在，我們沒有發明什麼新東西。等式 (18) 就跟等式 (2) 一樣，只是看起來比較
+複雜罷了，但是我們可以速記等式 (18)，作稍後使用。</p>
+<p>Oliver Heaviside 大約在 1885 年發明「應用微積分」(operational calculus) 的一
+系列方法，對當時數學界引發很大的討論，純數學家叫囂說那些方法不嚴謹，沒辦法透過
+數學途徑來驗證完備性。隨著時間消逝，科學家持相反的意見，純數學家還是認定那些在
+數學上是不完備的，但物理學家與應用數學家欣然採納這方法，以便得到實用的答案。
+最後，某人建構一個完備的數學證明，終結了長久的辯論。</p>
+<p>在處理類似等式 (18) 與 (20) 時，Oliver Heaviside 注意到，儘管像是 D 的符號清楚
+表示特定的操作 operator，他還是可以對這些 operator 施加代數運算，就像一般的代數
+運算一般，而且他總是獲得正確的結果。這是應用微積分的中心思想。</p>
+<p>既然 Oliver Heaviside 沒辦法證明他的操作在數學上是完備的，讀者可以理解為何
+數學家過去對此相當敏感，但是 Oliver Heaviside 不介意，反正他總是得到答案。</p>
+<p><font size="3" color="#003366" face="Verdana"><b>Introducing
+<i>z</i></b></font><br>
+稍後才會探討等式 (20) 的益處，而現在，讓我們來看看 transformation [譯注：讀者
+看到 "z" 與 "transformation"，或許會聯想到離散時間系統的 Z-transform，將一個離散
+的訊號，從 time domain 轉換成 frequency domain，不過作者這裡並不直接述及這部份]。
+z operator 是一個處理離散資料的表格的 operator，而非處理連續系統的函數，其目標是
+在置放離散資料的表格中，一步接著一步推動「指標」，也因此，定義為：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn21.gif"></center>
+(21)
+<p>如果 <i>z</i> 讓我們在資料集合中，推進一個項目，讀者應該可以理解其相反的
+操作 <i>z</i><sup>-1</sup> 則是逆向推進一個項目。而逆向的操作會比正向 z operator 
+操作來得有用，因為我們跟電腦都不能預知未來，我們無法在上一次測量的資料流中，得知
+下一個項目。如果 <i>y<sub>n</sub></i> 表示上一次的測量，
+那麼 <i>y<sub>n</sub></i><sub>+1</sub> 還未發生。
+相反地，我們可輕易得知 <i>y<sub>n</sub></i><sub>-1</sub>, <i>y<sub>n</sub></i><sub>-2</sub>, 或者
+更前面的項目。我們所必須要做的，就是查看在資料流中，較舊的那些項目。控制系統一類
+的應用稱 <i>z</i><sub>-1</sub> 為 unit delay，因為該操作讓資料陣列反向一個或以上的
+位置。</p>
+<p>我們現在位於泰勒級數轉換為「羅塞達碑石」的最後一階段，替換等式 (21) 左邊的項為
+等式 (20)，我們得到：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn22.gif"></center>
+(22)
+<p>我們得到有趣的結果：<i>z</i> 與 <i>e<sup>hD</sup></i> 兩者都是 operator，對位於
+離散表格中的值 <i>y<sub>n</sub></i> 進行操作與運算，但是 operand 在等式兩側都是一致
+的，所以，透過 Heaviside 提出的方法，我們可以將 <i>y<sub>n</sub></i> 因數抵銷，這樣
+就得到「羅塞達碑石等式」的形式：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn23.gif"></center>
+(23)
+<p><font size="3" color="#003366" face="Verdana"><b>Manipulating
+operators</b></font><br>
+現在我們已經跨越了重要的藩籬，等式 (22) 顯示兩種不同對 <i>y<sub>n</sub></i> 的操作，
+而等式 (23) 則了無參數，只包含 operator 而無 operand，這是應用 Heaviside 提出的方法。
+他建議我們可以如代數運算般，處理 operator，而不必注意我們現在處理的到底為何，這真的不是
+很原始的概念。在這之後，我們思考像是 "+" 一類簡單的 operator，但是我們卻可以轉換成不同
+的型態，並保有處理對象的正確性，這是十分有用的。</p>
+<p>我們將在未來的專欄文章探討其他的使用，而目前來說，我將要給讀者看一個轉換，這也是
+為何我們不必為不知悉 <i>v</i>(<i>t</i>) 的導函數而擔憂。</p>
+<p>如果 Heaviside 提出的方法是正確的，而且我們可以對這些 operator 作處理，我們就可以
+解等式 (22) 的 <i>D</i>，得到：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn24a.gif"></center>
+<p>或</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn24b.gif"></center>
+(24)
+<p>先讓這些 operator 如過去一般，在 <i>y<sub>n</sub></i> 施加運算處理：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn25.gif"></center>
+(25)
+<p>看看什麼出現在等式左邊： <i>y<sub>n</sub></i> 那些複雜的導函數 (或者，更精確來說，
+<i>t<sub>n</sub></i> 代入的值)，我們所擁有的，就是數值微分的公式。
+在 <i>v</i>(<i>t</i> 給定的測量值 <i>y<sub>n</sub></i>，我們可以藉由存放於離散資料
+表格中的操作，找出其導函數。</p>
+<p>看來很棒，不是嗎？當然，讀者一定想知道我們如何計算施加於 <i>y<sub>n</sub></i> 的 
+operator l<i>n</i>(<i>z</i>)，答案是：與我們在等式 (22) 所作的運算一樣，延展該函數
+為指數數列，現在就是在 <i>z</i> 的時間，並套用在 <i>y<sub>n</sub></i> 的操作上。</p>
+<p><font size="3" color="#003366" face="Verdana"><b>Where have we
+been?</b></font><br>
+讓我們回顧所作的一切，我從泰勒級數作出發，並且給予讀者足夠的範例，再來，我簡約成
+等式 (22) 的形式，這是透過泰勒級數與 <i>e<sup>x</sup></i> 指數級數之間的相似性。
+而後，藉由 Heavisid 的應用微積分的啟發，我給予讀者 "naked operator" 的形式，而這
+正是我們的「羅塞達碑石」。最後，我注意到，一旦我們得到這個形式，就可以用代數運算
+的方式，來對 operator 進行處理，這也導出其他關聯性。</p>
+<p>我將會在日後的專欄中，給予讀者看些例子，並且會探討等式 (25) 進行數值微分的應用，
+也會給讀者積分與內插的公式，這些都衍生自等式 (24)，再會！</p>
+<p><i><b>Jack Crenshaw</b> is a senior software engineer at General
+Dynamics and the author of</i> Math Toolkit for Real-Time
+Programming<i>, from CMP Books. He holds a PhD in physics from
+Auburn University. E-mail him at <a href=
+"mailto:jcrens@earthlink.net">jcrens@earthlink.net</a>.</i></p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001485.html">08:29 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1485" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001484"></a>
+<h3 class="title">Protech 的 Panel PC</h3>
+
+LinuxDevices.com 的新聞稿 [<a href="http://www.linuxdevices.com/news/NS7485963691.html">Fanless industrial panel PCs run Linux</a>]，介紹了台灣 [<a href="http://www.protech-ipc.com/">Protech Systems</a>] 公司的 [<a href="http://www.protech-ipc.com/ipc/product_panelpc.asp">Panel PC 系列產品</a>]。該公司的 PPC-736XF 系列採用 Via Eden 733 MHz x86 Processor，主要規格如下：<ul><ul class="code" style="margin: 6px;">
+<center><img src="http://www.linuxdevices.com/files/misc/ProtechPPC-7365F.jpg"></center><br>
+<li>Processor -- 733 MHz Via Eden with VT8606 Northbridge</li>
+<li>Memory -- 1 x DIMM, PC133 memory up to 512M SDRAM</li>
+<li>Display (depending on model):<ul>
+  <li>15-inch -- XGA</li>
+  <li>10.4-inch -- SVGA</li>
+  <li>8.4-inch -- SVGA</li>
+  <li>5-wire analog touchscreen option interfaces through USB</li></ul></li>
+<li>Storage -- IDE<ul>
+  <li>CompactFlash slot, user accessible</li>
+  <li>2.5-inch drive bay</li></ul></li>
+<li>Connectivity:<ul>
+  <li>Gigabit Ethernet</li>
+  <li>2 USB 1.1</li>
+  <li>2 serial</li></ul></li>
+<li>parallel port, PS/2 keyboard and mouse</li>
+<li>Audio -- line in, line out, mic in</li>
+<li>Power -- 24 VDC, 60 to 80 watts depending on size</li>
+</ul></ul>
+網頁提到支援 RedHat Linux 8.0 / 9.0，看來應該有機會支援 Debian GNU/Linux。至於詳情，我就不知道了，不過，如果 [<a href="http://www.protech-ipc.com/">Protech Systems</a>] 公司願意免費提供硬體讓小弟的 Lab 測試，那我或許可以把 Debian 與 NetBSD 放進去 *笑*<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001484.html">03:13 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1484" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001483"></a>
+<h3 class="title">Keroro Desktop Environment</h3>
+
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001477.html">ToyWM 的建構紀錄</a>] 提到我在開發 window manager 面臨的技術議題，不過，在 X Window System 下，window manager 有很大的控制權，如果還整合 composite manager 就更不再話下，既然是 "Toy"-WM，應該可以作為新想法的 testbed。<br>
+<br>
+去年在公司，SoG 學長與 momodalo 貢獻了他們的玩具，而我也開始惡搞 hardware，惡搞的結果如下圖：<br>
+<center><img src="http://people.debian.org.tw/~jserv/directfb-demo-on-panel.jpg"></center><br>
+圖中的「新玩具」就是剛彈與 [<a href="http://www.keroro.com/">Keroro 軍曹</a>] 的「合體」，LCD Panel 裡面一堆亂蹦亂跳的企鵝，搭配起來，還有點味道呢。<br>
+<br>
+那 Keroro 又是如何跟 Window manager 乃至於 Desktop Environment 關聯呢？剛剛瞥見 [<a href="http://home.so-net.net.tw/luyaotsung/simonemoticon/skin75.htm">Simon自製的面版</a>] 這個網頁，給我很大的啟發，我想到：<ul>
+能否將 Keroro 的親和度感覺，整合到 [<a href="http://zirconium.xisystems.net/">ZDE</a>] 一類的嶄新 Desktop environment 設計中呢？
+</ul>
+我還沒敲定實做細節，不過大概的想法略為紀錄，預計的運作畫面如下：<br>
+<img src="http://people.debian.org.tw/~jserv/keroro-desktop.jpg"><br>
+在 Keroro Desktop Environment 中，會透過 smart window placement (可能是透過 ToyWM) 對既有的 X11 Applications，適當的安置其顯示位置與視窗大小，就如上圖中兩個對稱的箭頭。或許，會引入 "spacer" 的概念，將 smart window placement policy 做得更有彈性，也可以針對特定應用，賦予其不同的行為表現。<br>
+<br>
+在去年的 [<a href="http://blog.linux.org.tw/~jserv/archives/001318.html">心得分享：kernel 2.6 與桌面環境的整合</a>]，我試著整理 Linux desktop 在技術上，會需要底層 Linux kernel 整合的一些議題，並且也已經有驗證概念的雛型。不說別的，我們現在的硬體可以說貫徹 "Play-and-Play" 的理念，但過去在 Linux 上，要掛載 USB 隨身碟都可能要在終端機打一堆字，雖然給我們 "full control"，但是能否有更簡單、更直覺的處理方式呢？所以 Project Utopia 被提出，gnome-volume-manager 作為最早的概念驗證實做，而且我們也可以發現，Desktop IPC / Messaging mechanism 需要更有彈性，至少，與 kernel 相關、並且會影響桌面使用的項目，能更明確且直覺的呈現於使用者之前。基於這個原則，[<a href="http://zirconium.xisystems.net/">ZDE</a>] 透過 XML/SOAP 加強了  Notification / Desktop IPC 以及應用程式的整合，而 Keroro Desktop Environment 對於 hotplug 裝置或者動態訊息的處理，也會採取類似的想法。在上面的圖中，右下方展示了使用情境：使用者將數位相機的 USB 接線插入，Keroro 精靈偵測這個硬體資訊，並且以跳動提醒使用者知道，而在 device probing 後，以一 popup window 告知使用者，隨後將觸發註冊的 handler，比方說開啟 File manager 等。<br>
+<br>
+對我個人來說，Keroro Desktop Environment 基本上只是玩票性質的練習，體驗簡單、直接，有效率的桌面環境的實做過程，應該是很有趣的。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001483.html">02:40 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1483" onclick="OpenComments(this.href); return false">迴響 (8)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 03, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001482"></a>
+<h3 class="title">The Digital Universe : 協同創作的科學知識平台</h3>
+
+<center><a href="http://www.digitaluniverse.net/"><img src="http://www.digitaluniverse.net/i/call_download.jpg"></a></center><br>
+在 [<a href="http://gezhi.org/">格志</a>] 讀到 [<a href="http://gezhi.org/111">The Digital Universe</a>]，摘錄文章介紹：<ul class="code" style="margin: 6px;">
+<a href="http://www.nature.com/nature/journal/v439/n7076/full/439516b.html">《自然》雜誌介紹了</a>這個網站：<a href="http://www.digitaluniverse.net/">The Digital Universe</a>，要做網絡上可信賴的科學信息源。<br><br>
+
+它也包括一個百科全書，使用類似 WikiPedia 的技術，而且 WikiPedia 的創始人之一 Larry Sanger 正在幫助創建。但是，和 WikiPedia 完全不同的是，所有的內容都將來自專家，而且上線前都需經過編輯評審。
+</ul>
+Wikipedia 的共同創辦人 [<a href="http://en.wikipedia.org/wiki/Larry_Sanger">Larry Sanger</a>] 於 2002 年二月離開 Wikipedia 後，雖然仍繼續從事類似 Wikipedia 性質的計畫，不過他隨後對 Wikipedia 運作的模式做了批評，可參考：[<a href="http://www.kuro5hin.org/story/2004/12/30/142458/25">Why Wikipedia Must Jettison Its Anti-Elitism </a>]。Jonathan G. Cohen 的短文 [<a href="http://www.philoneist.com/50226711/wikipedia_cofounder_launches_rival_online_encyclopedia.php">Wikipedia Co-Founder Launches Rival Online Encyclopedia</a>] 對於 [<a href="http://www.digitaluniverse.net/">The Digital Universe</a>] 做了簡要的介紹，節錄如下：<ul class="code" style="margin: 6px;">
+The site will feature articles distinctly categorized in two tiers, ones that are publicly contributed by selected individuals and others that have been sealed and certified by designated experts in a field the entry concerns. <br><br>
+
+Those who are employed by the project will be paid part-time to write articles by Digital Universe; initial funding coming from US $10 million that has been raised from investors and donations.  The Digial Universe business model does not rely upon advertising or subscriber fees, but rather from providing internet services such as premium e-mail and broadband access.  Fees charged from these services will fund the project.  A web browser, ManyOne, which has been reportedly designed to display rich and interactive 3-D material used in Digital Universe, is being developed by a technology partner of the same name.<br><br>
+
+Similar to Wikipedia's inchoate period when it debuted with only 20 articles (As of 12/19/05, 872,567 articles exist on the English host - approximately five years later), the encyclopedia will launch with a dozen subject-area portals and add new ones every few weeks.  The Earth Portal is one example, and according to DigitalUniverse's FAQ, it will identify "the state of the environment, trends, predictions, and ways that everyone can be involved to help create a sustainable plan for our planet."
+</ul>
+同時也可以參考新聞稿 [<a href="http://news.com.com/2102-1038_3-5999200.html?tag=st.util.print">Wikipedia alternative aims to be 'PBS of the Web'</a>]，Jonathan G. Cohen 表示：<ul class="code" style="margin: 6px;">
+The Philoneist Says:  Hopefully Digital Universe will live up to its promise and be able to accumulate a broad array of well constructed and thorough content from sources of authority.  The strength of Wikipedia's open contributor system will remain extant in this scenario due to its flexibility; articles on Wikipedia can be updated immediately following related developments, are subject to scrutiny, and as they are written by anyone on the internet can comprise a broader perspective.  Read my brief editorial below for a partial solution to Wikipedia's accuracy problems. 
+</ul>
+在概念上雖然相近於 Wikipedia，但是實施的細節以及基金會運作的模式則大異其趣，[<a href="http://www.digitaluniverse.net/">The Digital Universe</a>] 已經上線，希望能一如承諾，帶來協同創作的科學知識平台。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001482.html">11:36 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1482" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001481"></a>
+<h3 class="title">如何成為 Hacker 與 Programmer</h3>
+
+之前提過 [<a href="http://blog.linux.org.tw/~jserv/archives/001183.html">如何成為優秀的工程師</a>]，後來又陸續讀了幾篇經典的文章與討論。我常自稱是 X Hacker 或 VM Designer，不過我真實的身份是某企業裡面的小小工讀生，只有在夜黑風高的晚上，才會在酒精的催化下，成為一個 hacker，我一直想知道如何讓這樣的關係與生活態度獲得改善，至少勝任扮演的角色，除了拜讀 Eric Raymond 的 [<a href="http://catb.org/~esr/faqs/hacker-howto.html">How To Become A Hacker</a>] 外，還讀了以下這幾篇：<ul>
+<li>Robert L Read - [<a href="http://samizdat.mines.edu/howto/HowToBeAProgrammer.html">How to be a Programmer: A Short, Comprehensive, and Personal Summary</a>]</li>
+<li>Peter Norvig - [<a href="http://www.norvig.com/21-days.html">Teach Yourself Programming in Ten Years</a>] / [<a href="http://www.open-asm.com/article/tenyears.htm">繁體中文翻譯</a>]</li>
+<li>Paul Graham - [<a href="http://www.paulgraham.com/gh.html">Great Hackers</a>]</li>
+</ul>
+這幾篇文章的論點彼此都有些出入，不過可以從中看出 Programmer 與 Hacker 相似的人格特質、執著、對關鍵的掌握度，以及自我肯定的途徑。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001481.html">09:08 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1481" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001480"></a>
+<h3 class="title">Sun Microsystems 的 "Inside Jack" 系列卡通</h3>
+
+剛剛讀一位 Sun Microsystems 員工的 blog [<a href="http://blogs.sun.com/roller/page/dlacher?entry=jack_is_dead">Jack is dead</a>]，提到 Sun 相當著名的行銷廣告 [<a href="http://www.sun.com/emrkt/insidejack/">Inside Jack</a>] ，先來回顧一下這幾個特別的卡通：<br>
+<TABLE WIDTH=100% BORDER=0>
+  <TR>
+    <TD ALIGN=MIDDLE>
+      <A HREF=http://www.sun.com/aboutsun/media/features/insidejack1/><IMG SRC=http://blogs.sun.com/roller/resources/dlacher/insidejack1.jpg WIDTH=200></A><BR><CENTER>[Episode One: The Sun-Microsoft Thing]</CENTER>
+    </TD>
+    <TD ALIGN=MIDDLE>
+      <A HREF=http://www.sun.com/aboutsun/media/features/insidejack2/><IMG SRC=http://blogs.sun.com/roller/resources/dlacher/insidejack2.jpg WIDTH=200></A><BR><CENTER>[Episode Two: Solaris 10]</CENTER>
+    </TD>
+  </TR>
+
+  <TR>
+    <TD ALIGN=MIDDLE>
+      <A HREF=http://www.sun.com/aboutsun/media/features/insidejack3/><IMG SRC=http://blogs.sun.com/roller/resources/dlacher/insidejack3.jpg WIDTH=200></A><BR><CENTER>[Episode Three: AMD]</CENTER>
+    </TD>
+    <TD ALIGN=MIDDLE>
+      <A HREF=http://www.sun.com/emrkt/insidejack/episode4/><IMG SRC=http://blogs.sun.com/roller/resources/dlacher/insidejack4.png WIDTH=200></A><BR><CENTER>[Episode Four: Dual Core Sun Fire V40z]</CENTER>
+    </TD>
+  </TR>
+</TABLE>
+digg.com 的 [<a href="http://digg.com/linux_unix/Sun_s_Inside_Jack_Cartoon">Sun's Inside Jack Cartoon</a>] 做了以下描述：<ul class="code" style="margin: 12px;">
+This comedic Flash cartoon takes you inside Jack's opinion bubble. Jack is a developer that despises "marketing droids" and comes up with his own ideas while they lecture. The four episodes speak of Sun and Microsoft relationships, Solaris 10 and AMD CPUs. It's relatively funny and enjoyable even for those without the "techie-mind"!
+</ul>
+而 Matrix.org Forum 的 Neo 則給了以下眉批 [<a href="http://matrix.foresee.cn:8080/forum/thread.jspa?threadID=3091&tstart=195"> Inside Jack Episode I</a>]：<ul class="code" style="margin: 12px;">
+[<a href="http://www.sun.com/aboutsun/media/features/insidejack.html">Inside Jack Episode I: The Sun-Microsoft Thing</a>] 是 Sun 官方網站最新放出的 flash 動畫，開始的音樂很爽，然後開始圍繞「How can Sun use the $2,000,000,000?」的問題調侃。裡面有很多好玩的 dd，例如上來 Jack 就說「My name is Jack, and I write code...」，令人想起工藤新一的「<a href="http://matrix.foresee.cn/blogs/neo/archives/001058.html">工藤新一…探偵さ！！</a>」，開會時打遊戲和睡覺的工程師，Balmore和McNealy對著說「Hi, I love you, man」的表情和語氣，然後還有2 billion一個的「IBM consulting contract」。。。BTW，Jack 的那件寫著「No, I will not fix your computer」的 t-shirt 很討人喜歡，其實這在 [<a href="http://www.thinkgeek.com/tshirts/frustrations/388b/">ThinkGeek</a>] 賣 15-19 美刀一件。
+</ul>
+Funny，不過看來沒有續集了。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001480.html">02:58 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1480" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001479"></a>
+<h3 class="title">Programming on GNU</h3>
+
+看到標題，是不是要談 "How to Program on GNU" 呢？不，只是剛剛無聊，用 GIMP 畫了一張圖：(click to enlarge)<br>
+<center><a href="http://people.debian.org.tw/~jserv/programming-on-gnu.jpg"><img src="http://people.debian.org.tw/~jserv/programming-on-gnu-small.jpg"></a></center><br>
+事實上，要談 "Programming on GNU" (GNU/Linux or GNU/Hurd)，不知道要多少篇幅，不過有個動機與切入點總是好的。<br>
+<br>
+試看，軟體解放自由時，新的生命自程式碼緩緩昇華，Hacker 讀卷撰述吟詩詞， 意愜神情何所似？文情聲韻齊飛，千萬佳作共增輝，乃至花月爭妍，安得捨身離去？ -- Programming on GNU!<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001479.html">05:29 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1479" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 02, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001478"></a>
+<h3 class="title">Realtime Linux 在 Ad Hoc Networking 的應用</h3>
+
+[<a href="http://www.fsmlabs.com/">FSMLabs</a>] 在其  RTLinuxPro 的產品介紹新增了 [<a href="http://www.fsmlabs.com/rtcore-wireless.html">RTCore & Wireless Technology</a>] 的網頁，在這之中，[<a href="http://www.ir.bbn.com/~ramanath/jsac-udaan.pdf">Ad Hoc Networking with Directional Antennas: A Complete System Solution</a>] 是相當特別的案例。[<a href="http://www.ir.bbn.com/">BBN Technologies</a>] 在軍方的應用中，探討在 Ad Hoc networking 中，有向天線使用的能量管制設計。相較於全向天線，有向天線有許多優勢，例如可提昇潛在的空間使用率、更長的傳輸距離，以及在同等能源前提下，作更廣的涵蓋，然而，要善用以上的優勢，天線就必須配合 Ad Hoc protocol stack 的行為作妥善的調整，比方說依據天線的 gain 作傳輸能量的更動。<br><br>
+[<a href="http://www.ir.bbn.com/">BBN Technologies</a>] 的研究單位提出 UDAAN (Utilizing Directional Antennas for Ad Hoc Networking) 的完整系統，用以克服有向天線使用的技術議題。類似的技術也出現於 IEEE 802.11 CSMA/CA，採用有向天線的 TDMA 同樣面臨 Ad Hoc network 與效能的議題，在實做上，即採用 [<a href="http://www.fsmlabs.com/">FSMLabs</a>] 公司的 RTLinuxPro 產品，新聞稿可參考 [<a href="http://www.linuxdevices.com/news/NS6482576322.html">Real-time Linux powers military radio, more</a>] 與 [<a href="http://linuxdevices.com/articles/AT9225524242.html">Three uses of RTLinux in next-generation ad hoc wireless networking</a>]，BBN Technologies 針對 "how the project used relays and separate low- and high-power radios to conserve energy" 做了一份 PowerPoint 簡報 [<a href="http://www.ir.bbn.com/~amedina/Papers/JTP.ppt">Transport Services for
+Energy Constrained Environments</a>]，佐以參考。<br><br>
+當然，[<a href="http://www.fsmlabs.com/rtcore-wireless.html">RTCore & Wireless Technology</a>] 其他羅列的文章，也是 Realtime  Linux 在 Ad Hoc network 應用很好的參考資料。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001478.html">09:54 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1478" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001477"></a>
+<h3 class="title">ToyWM 的建構紀錄</h3>
+
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001467.html">ToyWM : 體驗 ICCCM 與 EWMH 規格的練習</a>]，提到我正在開發的 ToyWM，這過程的確讓我又對 X11 有了更深入的認知。如果不看一般 window manager 的功能性，ToyWM 在顯示處理做了些變化。首先，使用了 Keith Packard 設計的 [<a href="http://keithp.com/~keithp/talks/usenix2001/">XRender extension</a>]，目前 ToyWM 的 icon / window border 以及 anti-aliasing font 都透過 XRender 來作顯示，至於原本規劃的 Cairo-based rendering，可能會放棄，我沒有打算作太複雜的繪圖處理。目前的執行畫面如下：<br>
+<center><img src="http://people.debian.org.tw/~jserv/pcmanfm-on-toywm.png"></center><br>
+前面提到的 XRender extension 還做了陰影的處理，這是一個簡單內建 composite manager 的展示，並且因為與 WM 整合，所以效能還是可以接受的範圍。圖中執行的應用程式就是 PCMan 最近開發的 [<a href="http://pcmanfm.sourceforge.net/">PCMan File Manager</a>]，比較有趣的地方在左上角，小小的 "ToyWM" 字樣，這是透過 SHAPE extension 與 SERVER_OVERLAY_VISUALS 來實現 transparent visual，這部份的實做程式片段如下：<ul>
+<pre class="code" style="margin: 6px;"><span class="keyword">struct</span> overlay_data
+{
+  CARD32 visual_id;
+  CARD32 transparency;  <span class="comment">/**&lt; 
+      0: none;
+      1: pixel; 
+      2: mask (?) */</span>
+  CARD32 value;         <span class="comment">/**&lt; the transparent pixel */</span>
+  CARD32 layer;         <span class="comment">/**&lt; 
+      -1: underlay; 
+      0: normal; 
+      1: popup; 
+      2: overlay */</span>
+};
+
+<span class="keyword">static</span> <span class="keyword">int</span>
+get_overlay_prop (
+    Screen *screen, 
+    <span class="keyword">struct</span> overlay_data **data_ret)
+{
+  <span class="keyword">int</span> result;
+  Atom actual_type;
+  <span class="keyword">int</span> actual_format;
+  <span class="keyword">unsigned</span> <span class="keyword">long</span> nitems, bytes_after;
+  <span class="keyword">struct</span> overlay_data *data = 0;
+  Display *dpy = DisplayOfScreen(screen);
+  Window window = RootWindowOfScreen(screen);
+  Atom XA_SERVER_OVERLAY_VISUALS =
+      XInternAtom (dpy, 
+          <span class="literal">"SERVER_OVERLAY_VISUALS"</span>, False);
+
+  *data_ret = 0;
+  result = XGetWindowProperty (dpy, 
+      window, 
+      XA_SERVER_OVERLAY_VISUALS,
+      0, (65536 / <span class="keyword">sizeof</span> (<span class="keyword">long</span>)), False,
+      XA_SERVER_OVERLAY_VISUALS,
+      &amp;actual_type, &amp;actual_format,
+      &amp;nitems, &amp;bytes_after,
+      (<span class="keyword">unsigned</span> <span class="keyword">char</span> **) &amp;data);
+  <span class="keyword">if</span> (result != Success ||
+      actual_type != XA_SERVER_OVERLAY_VISUALS ||
+      actual_format != 32 ||
+      nitems &lt; 1) {
+      <span class="keyword">if</span> (data) {
+        XFree(data);
+       }
+      <span class="keyword">return</span> 0;
+  }
+  <span class="keyword">else</span> {
+      *data_ret = data;
+      <span class="keyword">return</span> nitems / (<span class="keyword">sizeof</span>(*data) / <span class="keyword">sizeof</span>(CARD32));
+    }
+}
+
+Visual *
+get_overlay_visual (
+    Screen *screen, 
+    <span class="keyword">unsigned</span> <span class="keyword">long</span> *transparent_pixel_ret)
+{
+  <span class="keyword">struct</span> overlay_data *data = 0;
+  <span class="keyword">int</span> n_visuals = get_overlay_prop (screen, &amp;data);
+  Visual *visual = 0;
+  <span class="keyword">int</span> depth = 0;
+  <span class="keyword">unsigned</span> <span class="keyword">long</span> pixel = 0;
+  <span class="keyword">unsigned</span> <span class="keyword">int</span> layer = 0;
+  <span class="keyword">int</span> i;
+
+  <span class="keyword">if</span> (data)
+    <span class="keyword">for</span> (i = 0; i &lt; n_visuals; i++)
+&nbsp;
+      <span class="comment">/* Only accept the ones that 
+          have a transparent pixel. */</span>
+      <span class="keyword">if</span> (data[i].transparency == 1) {
+          XVisualInfo vi_in, *vi_out;
+          <span class="keyword">int</span> out_count;
+          vi_in.visualid = data[i].visual_id;
+          vi_out = XGetVisualInfo(
+              DisplayOfScreen(screen), 
+              VisualIDMask,
+              &amp;vi_in, &amp;out_count);
+          <span class="keyword">if</span> (vi_out) {
+              <span class="comment">/* Prefer the one at the topmost layer; 
+                 after that, prefer the one with the 
+                 greatest depth (most colors.) */</span>
+
+              <span class="keyword">if</span> (layer &lt; data[i].layer ||
+                  (layer == data[i].layer &amp;&amp;
+                   depth &lt; vi_out[0].depth)) {
+                  visual = vi_out[0].visual;
+                  depth  = vi_out[0].depth;
+                  layer  = data[i].layer;
+                  pixel  = data[i].value;
+              }
+              XFree(vi_out);
+          }
+      }
+
+  <span class="keyword">if</span> (data) {
+    XFree(data);
+  }
+  <span class="keyword">if</span> (visual &amp;&amp; transparent_pixel_ret)
+    *transparent_pixel_ret = pixel;
+  <span class="keyword">return</span> visual;
+}</pre>
+</ul>
+還有，XShapeCombineMask 這個 API 的使用也要小心。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001477.html">05:32 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1477" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001476"></a>
+<h3 class="title">Regex Programming 資源</h3>
+
+書到用時方恨少，Regular Expression (簡稱 regexp 或 RE) 在 Unix、字串處理，或者資料分析有很大的應用，以下是很值得一看的中文參考資料：<ul>
+<li>洪朝貴教授 - [<a href="http://www.cyut.edu.tw/~ckhung/b/gnu/regexp.php">一輩子受用的 Regular Expressions -- 兼談另類的電腦學習態度</a>]</li>
+<li>中研院 - [<a href="http://phi.sinica.edu.tw/aspac/reports/96/96004/">Programming with GNU Regex Library</a>]</li>
+<li>八方齋 - [<a href="http://godspeedlee.myweb.hinet.net/regex++.pdf">RegEx++ 介紹</a>] (PDF文件)</li>
+</ul>
+對了，Java 與 Qt 都在其 Class Library / core API 實做了 RegEx (不過 Konqueror 的 khtml engine 還是使用了 PCRE 來實做 ECMAscript)，C++ 的話，有 boost framework，前面提到的 regex++ 就是其中的應用。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001476.html">01:48 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1476" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001474"></a>
+<h3 class="title">DIY 轉換 Skyeye CVS repository 為 Subversion</h3>
+
+[<a href="http://www.skyeye.org/">Skyeye</a>] 是個很優秀的 ARM simulator，原本是北京清華大學的團隊所開發，現在也有許多國外的開發者投入，cvs repository 的更動量也逐漸擴張中。不過，Skyeye 架設於 GRO，並沒有提供 anonymous cvs，但是有提供 [<a href="http://gro.clinux.org/scm/?group_id=327">Nightly CVS Tree Tarball</a>]，所以可以透過 cvs2svn 轉換成 Subversion repository，而我把這樣的過程整理成一個 [<a href="http://people.debian.org.tw/~jserv/resync-with-skyeye.sh">協助轉換的 script</a>]，下載後，務必修改以下兩行：<ul><pre class="code" style="margin: 6px;">
+SVN_REPOS=/experimental
+SVN_CHECKOUT=$HOME/experimental
+</pre></ul>
+SVN_REPOS 是 svn repository 的 URL，而 SVN_CHECKOUT 是 workspace 的目錄 (因為我實在太懶)，接著跑 resync-with-skyeye.sh 這隻 script，就會在 svn repository 建立一個新目錄 "skyeye"，用 svn log 去看，應該會得到類似以下的訊息：<pre class="code" style="margin: 6px;">
+-------------------------------------------------------------------
+r235 | chenyu | 2005-09-14 15:32:24 +0800 (三, 14  9月 2005) | 2 lines
+
+Initial revision
+-------------------------------------------------------------------
+r234 | (no author) | 2005-09-14 15:32:24 +0800 (三, 14  9月 2005) | 1 line
+
+New repository initialized by cvs2svn.
+-------------------------------------------------------------------
+</pre>
+當然，之後就可以快快樂樂的 Hacking 了。<br>
+<br>
+其實我本來只是想看看 SkyEye 處理 LCD 的實做，沒想到竟然還得繞上一圈。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001474.html">04:37 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1474" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001473"></a>
+<h3 class="title">Trolltech Qtopia 大放異彩</h3>
+
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001442.html">新版本的 Qt/Embedded 將改名為 Qtopia Core</a>] 提到這個更名的訊息，通常這會反映一些變化，而 LinuxDevices.com 的新聞 [<a href="http://www.linuxdevices.com/news/NS2820241791.html">2005 a great year for embedded Linux, tools vendor says</a>] 回顧了 2005 年，展示了 Trolltech 傑出的成績單。隨著 Linux-based PDA / SmartPhone / PMP 的成長，Trolltech 公司的 Qtopia 與 Embedded GUI solutions 在這個領域已經是箇中翹楚，在 2005 年，Philips Semiconductors、Motorola、Enteos、Archos，以及 Sharp 等公司以實際的出貨量，給予 Trolltech 正面的肯定，而且 BenQ 手機也採用了 Qtopia Phone Edition 作為設計基礎。<br>
+<br>在去年年初，Trolltech 在中國北京成立研發據點，陸續有不少傑出的研發人員加入，看來未來 CJK 與多國語文的支援，可望有更大的突破，當然，Trolltech 還是秉持 dual-licensing 與 community-promoting 的機制，持續以 GPL/QPL 釋出最新的 Qt 技術，並且累積加值服務，這的確是很好的典範。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001473.html">12:56 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1473" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 01, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001472"></a>
+<h3 class="title">Symphony OS : 以 Web 技術打造的桌面環境</h3>
+
+剛剛閱讀 champ 學長的 blog [<a href="http://tw.myblog.yahoo.com/jw!KK7iL7aRGBZahfOWRo9uPeo-/article?mid=48">Symphony OS</a>]，深深覺得 [<a href="http://www.symphonyos.com/">Symphony OS</a>] 頗獨特，抄一下學長給的介紹：<ul class="code" style="margin: 6px;">
+按照官網的特性介紹，Symphony OS的特點主要是：<ul>
+<li>以Web技術打造桌面環境, 整合Web 2.0到桌面應用 - 這點有別於 KDE / GNOME 以 Desklet 方式來增加一些特別的 eye-candy 或應用</li>
+<li>任何 Web 技術員都能將在 Symphony OS 介面上輕易地開發應用 - 這點是第一點延續的優點</li>
+<li>致力於與所有主流多媒體格式相容</li>
+<li>不只是 Web 應用程式, 也包含家用和辦公所需的程式</li>
+<li>OneClick 軟體安裝技術 - 另一個令人注目的安裝軟體的技術</li>
+</ul>
+</ul>
+看起來真夢幻，[<a href="http://www.symphonyos.com/">Symphony OS</a>] 官方網頁有不少 sexy 的 screenshots，一定要觀賞。這也讓我想到，很多桌面系統的開發者，常常因為一個簡單的功能設計，就必須付出難以想像的開發資源。舉例來說，過去開發 [<a href="http://linetconf.csie.net/">Linetconf</a>] 與 [<a href="http://pcmanx.csie.net/">PCManX</a>] 時，只是想貼心的設計能夠縮到工作匣 (正確的術語應該是 Notification Area)，其實花了不少時間看 code，也跟 PCMan 推敲了一段時間，才透過 workaround 與簡單的修正，避開了問題，這些對於桌面應用，是再基本不過了，或許只是因為某些堅持 (手工寫 Gtk+ 與有效率的 C/C++ Programming)，但整個開發過程的確因此延宕。<br>
+<br>
+所以說，如果能透過一組有效率、高度彈性，以及銜接既有技術的設計，讓桌面環境的開發得以在短期驗證概念、降低維護成本，以及長期來說，提出整合與協同開發的機制，實在是相當迫切的。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001472.html">10:22 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1472" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001471"></a>
+<h3 class="title">KDE 需要您</h3>
+
+KDE.News 的新聞 [<a href="http://dot.kde.org/1138695508/">Launch of SpreadKDE.org Promotional Community Site</a>]  提到最近成立的 [<a href="http://www.spreadkde.org/">SpreadKDE</a>]，主要有以下目標：<ul class="code" style="margin: 6px;">
+<li>Providing a singular portal for KDE marketing materials</li>
+<li>Fostering a community for those interested in promoting KDE</li>
+<li>Aggregating marketing tasks and connecting those that need help with those who can help</li>
+<li>Storing related materials and documentation</li>
+<li>Concentrating and steering future KDE marketing goals</li>
+<li>Assisting and linking regional KDE groups, from new to established</li>
+<li>Coordinating KDE-related events</li>
+</ul>
+不過讓我眼睛為之一亮的是新聞稿中的圖片：<br>
+<center><img src="http://static.kdenews.org/danimo/konqi-wants-you-300.png"></center><br>
+天啊，超可愛，靈感是取自二次大戰時，美國徵招入伍的廣告：<br>
+<center><img src="http://www.sgi-kc.org/content/Images/uncle_sam.png"><br>WE WANT YOU</center><br>
+KDE 的美工與創意實在是沒話說，看來 KDE@Taiwan 或其他台灣團體可以與該計畫聯繫，討論 KDE Promotion 的事宜。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001471.html">12:54 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1471" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+
+</body>
+</html>

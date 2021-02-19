@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 失敗： Resin on Kaffe</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/000810.html" title="GCJ/SWT in Win32" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/000813.html" title="Qt4 初體驗" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/000810.html">« GCJ/SWT in Win32</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/000813.html">Qt4 初體驗 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 20, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">失敗： Resin on Kaffe</h3>
+
+今天的進度是作 Kaffe 的 J2EE 支援，我選定的 JSP/Servlet Container 是 <a href="http://www.caucho.com/">Resin</a>，Resin 3.0 雖然<a href="http://osdir.com/Article1760.phtml">以 GPL 釋出</a>，但是 Kaffe 目前尚未實作出 JDK 1.5 的特徵，所以還不能考慮，不過如果成功的話，GPL'd J2EE container on GPL'd JavaVM on LGPL'd C library on GPL'd Kernel 真的是很吸引人。<br />
+<br />
+好，回到 Resin 2.1.x 系列，在去年我曾經在 Kaffe mailling-list 提到 [<a href="http://www.kaffe.org/pipermail/kaffe/2004-March/045449.html">Resin 2.1.12 runs on Kaffe smoothly</a>]，然而，剛剛用 Resin-2.1 的 cvs snapshot-2005-01-03 時，發現以下問題：<pre class="code" style="margin: 6px;"> 
+$ ./httpd.sh
+Resin 2.1.s050103 (built Mon Jan  3 11:16:04 PST 2005)
+Copyright(c) 1998-2003 Caucho Technology.  All rights reserved.
+
+Starting Resin on Thu, 20 Jan 2005 23:34:37 +0800 (CDT)
+java.lang.reflect.InvocationTargetException
+   at java.lang.reflect.Method.invoke0 (Method.java)
+   at java.lang.reflect.Method.invoke (Method.java:255)
+   at com.caucho.util.BeanUtil.setBeanProperty (BeanUtil.java:537)
+   at com.caucho.util.BeanUtil.configure (BeanUtil.java:370)
+   at com.caucho.util.BeanUtil.createBean (BeanUtil.java:153)
+   at com.caucho.server.http.JndiFactory.initContext (JndiFactory.java:294)
+   at com.caucho.server.http.ClassLoaderContext.init (ClassLoaderContext.java:696)
+   at com.caucho.server.http.ServletServer.initInternal (ServletServer.java:694)
+   at com.caucho.server.http.ServletServer.init (ServletServer.java:538)
+   at com.caucho.server.http.ResinServer.init (ResinServer.java:415)
+   at com.caucho.server.http.ResinServer.main (ResinServer.java:1176)
+   at com.caucho.server.http.HttpServer.main (HttpServer.java:103)
+Caused by: java.lang.StackOverflowError
+   at com.caucho.sql.DBPool.setMaxIdleTime (DBPool.java)
+   at java.lang.reflect.Method.invoke0 (Method.java)
+   ...11 more
+</pre>
+看來有得 hacking 了。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 20, 2005 11:46 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>我記得kaffe 可以 run tomcat 和 jboss? is it?<br />
+BTW, kaffe 所含的 lib 目前 有support 到 sun sdk 多少?? 我看到classpath announcment; classpath的lib好像有道 1.4的某些特徵.</p>
+<span class="comments-post">由 <a href="http://zion.matrix.nirvana">elwe</a> 發表於</MTIfNonEmpty> February  4, 2005 04:47 PM</span>
+</div>
+<div class="comments-body">
+<p>Kaffe 可配合 Tomcat 5.5 運作，也可以配合版本較低的 JBoss，GNU Classpath 已經幾乎實現 J2SDK 1.4 的規格，但是 Kaffe 的 threading model 本身並非完全 Bug-free (事實上 Sun J2SDK 也存在此問題)，所以不見得規格實作出來就代表可以完全無誤的運作。</p>
+
+<p>為何要跑 Resin 呢？Resin 在 standalone 運作的效能非常好，而且採 GPL license (Resin 3.0.x)。</p>
+<span class="comments-post">由 <a href="http://jserv.sayya.org/">jserv</a> 發表於</MTIfNonEmpty> February  4, 2005 05:22 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Asho's Blog: January 2007 Archives</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~asho/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~asho/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~asho/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~asho/archives/2006_12.html" title="December 2006" />
+
+<link rel="next" href="http://blog.linux.org.tw/~asho/archives/2007_03.html" title="March 2007" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~asho/" accesskey="1">Asho's Blog</a></h1>
+<span class="description">一個喜歡研究的傻小子 :-)</span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~asho/archives/2006_12.html">&laquo; December 2006</a> |
+
+<a href="http://blog.linux.org.tw/~asho/">Main</a>
+| <a href="http://blog.linux.org.tw/~asho/archives/2007_03.html">March 2007 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">January 03, 2007</h2>
+
+
+<div class="blogbody">
+<a name="001867"></a>
+<h3 class="title">在Debian下安裝SVN(subversion)</h3>
+
+<p>最近project也在使用svn了，所以我架設一台讓大家使用，並且記錄一下以免自已忘記。</p>
+
+<p>假定條件<br />
+專案名稱：foo<br />
+使用人：<ul>project_leader</ul>：唯讀<br />
+<ul>project_coder</ul>：讀寫</p>
+
+<p>1:安裝"apache2"和"subversion"<br />
+apt-get install libapache2-svn apache2 subversin</p>
+
+<p>2:建立subversion和專案的檔案庫<br />
+mkdir /home/svn<br />
+mkdir /home/svn/foo<br />
+svnadmin create /home/svn/foo</p>
+
+<p>3:更改該目錄的擁有者為網頁讀取者<br />
+chown -R www-data.www-data /home/svn/foo</p>
+
+<p>4:修改apache的svn設定檔：/etc/apache2/mods-available/dav_svn.conf<br />
+<pre><br />
+<Location /svn><br />
+DAV svn<br />
+SVNParentPath /home/svn<br />
+AuthType Basic<br />
+AuthName "Subversion Repository"<br />
+AuthUserFile /etc/apache2/dav_svn.passwd<br />
+AuthzSVNAccessFile /etc/apache2/dav_svn.authz <br />
+<LimitExcept GET PROPFIND OPTIONS REPORT><br />
+  Require valid-user<br />
+</LimitExcept><br />
+</Location><br />
+</pre></p>
+
+<p>5:設定使用人的權限：修改/etc/apache2/dev_svn.authz<br />
+[foo:/]<br />
+project_leader = r<br />
+project_coder = rw</p>
+
+<p>6:增加apache連線進來的使用者帳號到/etc/apache2/dev_svn.passwd<br />
+/usr/bin/htpasswd -c /etc/apache2/dev_svn.passwd project_leader<br />
+/usr/bin/htpasswd -c /etc/apache2/dev_svn.passwd project_coder</p>
+
+<p>7:重新啟動apache<br />
+/etc/init.d/apache2 restart</p>
+
+<p>8:執行 svn co http://localhost/svn/foo 就能抓到專案的資料了。</p>
+
+<p>參考資料<br />
+如何使用Subversion 服務：http://rt.openfoundry.org/Foundry/Help/4-02.html<br />
+SVN中文站：http://www.subversion.org.cn/<br />
+SVN英文站：http://subversion.tigris.org/<br />
+在Debian下安裝svn：http://www.matrix.org.cn/thread.shtml?topicId=30723&forumId=45</p>
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/001867.html">01:11 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1867" onclick="OpenComments(this.href); return false">Comments (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

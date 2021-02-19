@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Novel-PinYin : 基於自然語言處理的拼音輸入法</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002069.html" title="新酷音進度報告 6" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002071.html" title="「考量到自由軟體授權的軟體系統規劃 -- 如何借力使力與避開爭議」簡報上線" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002069.html">« 新酷音進度報告 6</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002071.html">「考量到自由軟體授權的軟體系統規劃 -- 如何借力使力與避開爭議」簡報上線 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">October 05, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Novel-PinYin : 基於自然語言處理的拼音輸入法</h3>
+
+前一篇 [<a href="http://blog.linux.org.tw/~jserv/archives/002069.html">新酷音進度報告 6
+</a>] 即提過 [<a href="http://sourceforge.net/projects/novel-pinyin/">Novel-PinYin</a>]，本文再補上一些資訊。Novel-PinYin 的開發者是任職於 Novell 的吳鵬 (Peng Wu，網路代號為 "epico")，與 SCIM 輸入法架構的作者蘇哲共事過，特色是完整的拼音輸入支援，包括不完全拼音的快速比對，採用類似 Sun PinYin 的 bi-gram 的自然語言處理引擎，提昇字詞比對率。<br />
+<br />
+就目前的實做來看，Novel-PinYin 包含以下子項目：<ul>
+  <li>Pinyin Parser : 由蘇哲撰寫的拼音解析器，同時支持若干種雙拼方案，包含 Microsoft 雙拼</li>
+  <li>Storage : 以 Berkeley DB 處理 N-gram 的資料</li>
+  <li>Training : 在實驗原型系統中，透過參數來淬鍊語料庫</li>
+  <li>Lookup : 候選字詞查閱與選擇</li>
+  <li>Self-Learning : 在最終輸入 (commit) 時，學習使用者偏好的字詞</li>
+  <li>novel-imengine : 與 SCIM 銜接的 IMEngine</li>
+</ul>
+為了避開詞庫版權爭議，選用 [<a href="http://www.mandarintools.com/cedict.html">CEDICT</a>] (Chinese-English Dictionary) 詞庫和 scim-pinyin 的字庫，而在 Data Smoothing 的演算法處理上，在實驗原型中實做 Back-off 和 interpolation。語料庫為自然語言統計處理方法提供了更多可能，統計方法則推動了語料庫語言學的發展，所以，在如此的基礎上，我們得以：<ul>
+  <li>發現語言使用的普遍規律</li>
+  <li>進行機器學習，以自動擷取語言知識</li>
+  <li>對未知字詞進行推測</li>
+</ul>
+基於效能考量，前期採用最單純的 cut-off prune (比 Sun PinYin 的模型更加簡化)，後期計畫採用以 distribution 為基礎的演算法。輸入法本身暫無使用者自定義詞庫的功能，但支持自動學習，現有兩個詞庫：gb 和 gbk。<br />
+<br />
+以下是 Novel-PinYin 0.2.3 的 test suite 參考結果：<pre class="code" style="margin: 6px;">
+$ ./test_simple_lookup 
+huangjingqun
+Spent 105324 us for 100 operations, 1053.240000 us/op, 949.451217 times/s.
+
+pos:0,token:16779717    pos:1,token:16780842    pos:2,token:16783543    
+黄敬群
+</pre>
+上為在資料庫中給定拼音，作候選字詞查閱。<pre class="code" style="margin: 6px;">
+$ ./test_parser 
+Input:huangjingqun
+Parsed 12 chars, 3 keys:
+huang jing qun 
+0 5 5 4 9 3 
+ㄏㄨㄤ ㄐㄧㄥ ㄑㄩㄣ 
+Input:
+</pre>
+上為測試拼音解析器，也支援注音符號輸出。<pre class="code" style="margin: 6px;">
+$ ./test_pinyin_index 
+huang
+Spent 4339 us for 1000 operations, 4.339000 us/op, 230467.849735 times/s.
+
+start:16779717  end:16779718
+黄      huang2   20546huang      3
+start:16779698  end:16779703
+荒      huang1   4801huang5      3
+巟      huang1   3
+衁      huang1   3
+慌      huang1   4026huang5      3
+肓      huang1   71
+...
+</pre>
+上為查閱給定的拼音對應的字，包含音調的輸出。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 October  5, 2008 12:29 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>不懂這個，但看看也無妨。</p>
+<span class="comments-post">由 <a href="http://www.macaye.cn">AYE思博網</a> 發表於</MTIfNonEmpty> October  8, 2008 11:48 AM</span>
+</div>
+<div class="comments-body">
+<p>呵呵，最近还有一个ibus呢，要取代scim来着</p>
+<span class="comments-post">由 <a href="http://qiukun.is-programmer.com">邱焜</a> 發表於</MTIfNonEmpty> October 12, 2008 05:00 PM</span>
+</div>
+<div class="comments-body">
+<p>我也看不懂。。。</p>
+<span class="comments-post">由 <a href="http://accounting.wvipo.cn">無名部落格</a> 發表於</MTIfNonEmpty> October 15, 2008 03:47 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2070" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

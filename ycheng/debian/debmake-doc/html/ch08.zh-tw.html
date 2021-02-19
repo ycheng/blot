@@ -1,0 +1,3174 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>章 8. 更多範例</title>
+    <link rel="stylesheet" type="text/css" href="debian.css"/>
+    <meta name="generator" content="DocBook XSL Stylesheets V1.79.1"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="home" href="index.zh-tw.html" title="Debian 維護者指南"/>
+    <link rel="up" href="index.zh-tw.html" title="Debian 維護者指南"/>
+    <link rel="prev" href="ch07.zh-tw.html" title="章 7. 提示"/>
+    <link rel="next" href="apa.zh-tw.html" title="附錄 A. debmake(1) 手冊頁"/>
+  </head>
+  <body>
+    <div class="navheader">
+      <table width="100%" summary="Navigation header">
+        <tr>
+          <th colspan="3" align="center">章 8. 更多範例</th>
+        </tr>
+        <tr>
+          <td align="left"><a accesskey="p" href="ch07.zh-tw.html"><img src="images/prev.png" alt="前一頁"/></a> </td>
+          <th width="60%" align="center"> </th>
+          <td align="right"> <a accesskey="n" href="apa.zh-tw.html"><img src="images/next.png" alt="下一頁"/></a></td>
+        </tr>
+      </table>
+      <hr/>
+    </div>
+    <div class="chapter">
+      <div class="titlepage">
+        <div>
+          <div>
+            <h1 class="title"><a id="more"/>章 8. 更多範例</h1>
+          </div>
+        </div>
+      </div>
+      <div class="toc">
+        <p>
+          <strong>內容目錄</strong>
+        </p>
+        <dl class="toc">
+          <dt>
+            <span class="section">
+              <a href="ch08.zh-tw.html#emptypkg">8.1. 挑選最好的模板</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch08.zh-tw.html#nomakefile">8.2. 無 Makefile（shell，命令列介面）</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch08.zh-tw.html#makefile-sh">8.3. Makefile（shell，命令列介面）</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch08.zh-tw.html#setup-py">8.4. setup.py（Python3，命令列介面）</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch08.zh-tw.html#makefile-sh-gui">8.5. Makefile（shell，圖形介面）</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch08.zh-tw.html#setup-py-gui">8.6. setup.py（Python3，圖形介面）</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch08.zh-tw.html#makefile-single">8.7. Makefile（單個二進位制套件）</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch08.zh-tw.html#configure-single">8.8. Makefile.in + configure（單個二進位制套件）</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch08.zh-tw.html#autotools-single">8.9. Autotools（單個二進位制檔案）</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch08.zh-tw.html#cmake-single">8.10. CMake（單個二進位制套件）</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch08.zh-tw.html#autotools-multi">8.11. Autotools（多個二進位制套件）</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch08.zh-tw.html#cmake-multi">8.12. CMake（多個二進位制套件）</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch08.zh-tw.html#i18n-example">8.13. 國際化</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch08.zh-tw.html#details">8.14. 細節</a>
+            </span>
+          </dt>
+        </dl>
+      </div>
+      <p>有一句古老的拉丁諺語：“<span class="strong"><strong>fabricando fit faber</strong></span>”（“熟能生巧”）。</p>
+      <p>強烈建議使用簡單的包來練習和試驗 Debian 打包的所有步驟。本章為您的練習提供了許多上游案例。</p>
+      <p>這也可以作為許多程式設計主題的介紹範例。</p>
+      <div class="itemizedlist">
+        <ul class="itemizedlist">
+          <li class="listitem">在 POSIX shell，Python3 和 C 中程式設計。</li>
+          <li class="listitem">使用圖示圖形建立桌面 GUI 程式啟動器的方法。</li>
+          <li class="listitem">將 <a class="ulink" href="https://en.wikipedia.org/wiki/Command-line_interface">命令列介面</a> 命令轉換為 <a class="ulink" href="https://en.wikipedia.org/wiki/Graphical_user_interface">圖形介面</a> 命令。</li>
+          <li class="listitem">轉化程式以使用 <span class="strong"><strong>gettext</strong></span> 來為 POSIX shell、Python3 和 C 原始碼的程式進行 <a class="ulink" href="http://en.wikipedia.org/wiki/Internationalization_and_localization">國際化和本地化</a>。</li>
+          <li class="listitem">構建系統概述：Makefile、Python distutils、Autotools 以及 CMake。</li>
+        </ul>
+      </div>
+      <p>請注意，Debian 對以下事項非常注意：</p>
+      <div class="itemizedlist">
+        <ul class="itemizedlist">
+          <li class="listitem">自由軟體</li>
+          <li class="listitem">作業系統的穩定性與安全性</li>
+          <li class="listitem">
+            <p class="simpara">通過以下方式以實現通用作業系統：</p>
+            <div class="itemizedlist">
+              <ul class="itemizedlist">
+                <li class="listitem">上游原始碼的自由選擇，</li>
+                <li class="listitem">CPU架構的自由選擇，以及</li>
+                <li class="listitem">使用者介面語言的自由選擇。</li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <p>在 <a class="xref" href="ch04.zh-tw.html" title="章 4. 簡單例子">章 4, <em>簡單例子</em></a> 中介紹的典型打包範例是本章節的先決條件。</p>
+      <p>在以下數小節中，有些細節被刻意模糊。請嘗試閱讀相關檔案，並且嘗試自行釐清它們。</p>
+      <div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;">
+        <table border="0" summary="Tip">
+          <tr>
+            <td rowspan="2" align="center" valign="top">
+              <img alt="[提示]" src="images/tip.png"/>
+            </td>
+            <th align="left">提示</th>
+          </tr>
+          <tr>
+            <td align="left" valign="top">
+              <p>打包範例的最佳來源就是目前的 Debian 歸檔本身。請使用 “<a class="ulink" href="https://codesearch.debian.net/">Debian 程式碼搜尋</a>” 服務來查找相關範例。</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="emptypkg"/>8.1. 挑選最好的模板</h2>
+            </div>
+          </div>
+        </div>
+        <p>以下是一個從空目錄由零開始構建簡單的 Debian 套件的範例。</p>
+        <p>這是一個很棒的平臺，可以使您獲得所有的模板檔案，而不會使您正在處理的上游原始碼樹變得一團糟。</p>
+        <p>讓我們假設這個空目錄為 <span class="strong"><strong>debhello-0.1</strong></span>。</p>
+        <pre class="screen"> $ mkdir debhello-0.1
+mkdir: 無法建立目錄‘debhello-0.1’: 檔案已存在
+ $ tree
+.
+└── debhello-0.1
+
+1 directory, 0 files</pre>
+        <p>讓我們通過指定 <span class="strong"><strong>-x4</strong></span> 選項來生成最大數量的模板檔案。</p>
+        <p>此外，讓我們使用 “<span class="strong"><strong>-p</strong></span> <span class="emphasis"><em>debhello</em></span> <span class="strong"><strong>-t -u</strong></span> <span class="emphasis"><em>0.1</em></span> <span class="strong"><strong>-r</strong></span> <span class="emphasis"><em>1”</em></span> 選項來製作遺失的上游原始碼包。</p>
+        <pre class="screen"> $ debmake -t -p debhello -u 0.1 -r 1 -x4
+I: set parameters
+ ...
+I: debmake -x "4" ...
+I: creating =&gt; debian/control
+I: creating =&gt; debian/copyright
+I: substituting =&gt; /usr/share/debmake/extra0/changelog
+ ...
+I: creating =&gt; debian/license-examples/Artistic-1.0
+I: substituting =&gt; /usr/share/debmake/extra4/Expat
+I: creating =&gt; debian/license-examples/Expat
+I: substituting =&gt; /usr/share/debmake/extra4/LGPL-2.1+
+I: creating =&gt; debian/license-examples/LGPL-2.1+
+I: $ wrap-and-sort</pre>
+        <p>我們來檢查一下自動產生的模板檔案。</p>
+        <pre class="screen"> $ cd ..
+ $ tree
+.
+├── debhello-0.1
+│   └── debian
+│       ├── README.Debian
+│       ├── changelog
+│       ├── clean
+│       ├── compat
+│       ├── control
+│       ├── copyright
+│       ├── debhello.bug-control.ex
+│       ├── debhello.bug-presubj.ex
+│       ├── debhello.bug-script.ex
+│       ├── debhello.conffiles.ex
+ ...
+│       └── watch
+├── debhello-0.1.tar.gz
+└── debhello_0.1.orig.tar.gz -&gt; debhello-0.1.tar.gz
+
+5 directories, 51 files</pre>
+        <p>現在，您可以複製 <span class="emphasis"><em>debhello-0.1/</em></span><span class="strong"><strong>debian/</strong></span> 目錄下所有生成的模板檔案到您的套件中。</p>
+        <div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;">
+          <table border="0" summary="Tip">
+            <tr>
+              <td rowspan="2" align="center" valign="top">
+                <img alt="[提示]" src="images/tip.png"/>
+              </td>
+              <th align="left">提示</th>
+            </tr>
+            <tr>
+              <td align="left" valign="top">
+                <p>通過使用 <span class="strong"><strong>-T</strong></span> 選項（教材模式）呼叫 <span class="strong"><strong>debmake</strong></span> 命令，可以使生成的模板檔案更加詳細。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="nomakefile"/>8.2. 無 Makefile（shell，命令列介面）</h2>
+            </div>
+          </div>
+        </div>
+        <p>此處是一個從 POSIX shell 命令列介面程式建立簡單的 Debian 套件的範例，我們假設它沒有使用任何構建系統。</p>
+        <p>讓我們假設上游的原始碼包為 <span class="strong"><strong>debhello-0.2.tar.gz</strong></span>。</p>
+        <p>此類原始碼不具有自動化方法，所以必須手動安裝檔案。</p>
+        <pre class="screen"> $ tar -xzmf debhello-0.2.tar.gz
+ $ cd debhello-0.2
+ $ sudo cp scripts/hello /bin/hello
+ ...</pre>
+        <p>讓我們取得原始碼並製作 Debian 套件。</p>
+        <p><strong>下載 <span class="strong"><strong>debhello-0.2.tar.gz</strong></span>. </strong>
+</p>
+        <pre class="screen"> $ wget http://www.example.org/download/debhello-0.2.tar.gz
+ ...
+ $ tar -xzmf debhello-0.2.tar.gz
+ $ tree
+.
+├── debhello-0.2
+│   ├── LICENSE
+│   ├── data
+│   │   ├── hello.desktop
+│   │   └── hello.png
+│   ├── man
+│   │   └── hello.1
+│   └── scripts
+│       └── hello
+└── debhello-0.2.tar.gz
+
+4 directories, 6 files</pre>
+        <p>
+</p>
+        <p>這裡的 POSIX shell 指令碼 <span class="strong"><strong>hello</strong></span> 非常的簡單。</p>
+        <p><strong><span class="strong"><strong>hello</strong></span>（v=0.2）. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-0.2/scripts/hello
+#!/bin/sh -e
+echo "Hello from the shell!"
+echo ""
+echo -n "Type Enter to exit this program: "
+read X</pre>
+        <p>
+</p>
+        <p>此處的 <span class="strong"><strong>hello.desktop</strong></span> 支援 <a class="ulink" href="https://www.freedesktop.org/wiki/Specifications/desktop-entry-spec/">桌面項（Desktop Entry）規範</a>。</p>
+        <p><strong><span class="strong"><strong>hello.desktop</strong></span>（v=0.2）. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-0.2/data/hello.desktop
+[Desktop Entry]
+Name=Hello
+Name[fr]=Bonjour
+Comment=Greetings
+Comment[fr]=Salutations
+Type=Application
+Keywords=hello
+Exec=hello
+Terminal=true
+Icon=hello.png
+Categories=Utility;</pre>
+        <p>
+</p>
+        <p>此處的 <span class="strong"><strong>hello.png</strong></span> 是圖示的影象檔案。</p>
+        <p>讓我們使用 <span class="strong"><strong>debmake</strong></span> 命令來打包。這裡使用 <span class="strong"><strong>-b':sh'</strong></span> 選項來指明生成的二進位制包是一個 shell 指令碼。</p>
+        <pre class="screen"> $ cd debhello-0.2
+ $ debmake -b':sh'
+I: set parameters
+I: sanity check of parameters
+I: pkg="debhello", ver="0.2", rev="1"
+I: *** start packaging in "debhello-0.2". ***
+I: provide debhello_0.2.orig.tar.gz for non-native Debian package
+I: pwd = "/path/to"
+I: $ ln -sf debhello-0.2.tar.gz debhello_0.2.orig.tar.gz
+I: pwd = "/path/to/debhello-0.2"
+I: parse binary package settings: :sh
+I: binary package=debhello Type=script / Arch=all M-A=foreign
+...</pre>
+        <p>讓我們來檢查一下自動產生的模板檔案。</p>
+        <p><strong>執行基本的 <span class="strong"><strong>debmake</strong></span> 命令後的原始碼樹。（v=0.2）. </strong>
+</p>
+        <pre class="screen"> $ cd ..
+ $ tree
+.
+├── debhello-0.2
+│   ├── LICENSE
+│   ├── data
+│   │   ├── hello.desktop
+│   │   └── hello.png
+│   ├── debian
+│   │   ├── README.Debian
+│   │   ├── changelog
+│   │   ├── compat
+│   │   ├── control
+│   │   ├── copyright
+│   │   ├── patches
+│   │   │   └── series
+│   │   ├── rules
+│   │   ├── source
+│   │   │   ├── format
+│   │   │   └── local-options
+│   │   └── watch
+│   ├── man
+│   │   └── hello.1
+│   └── scripts
+│       └── hello
+├── debhello-0.2.tar.gz
+└── debhello_0.2.orig.tar.gz -&gt; debhello-0.2.tar.gz
+
+7 directories, 17 files</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>debian/rules</strong></span>（模板檔案，v=0.2）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-0.2/debian/rules
+#!/usr/bin/make -f
+# You must remove unused comment lines for the released package.
+#export DH_VERBOSE = 1
+
+%:
+        dh $@</pre>
+        <p>
+</p>
+        <p>這基本上是帶有 <span class="strong"><strong>dh</strong></span> 命令的標準 <span class="strong"><strong>debian/rules</strong></span> 檔案。因為這是個指令碼套件，所以這個 <span class="strong"><strong>debian/rules</strong></span> 模板檔案沒有與構建標記（build flag）相關的內容。</p>
+        <p><strong><span class="strong"><strong>debian/control</strong></span>（模板檔案，v=0.2）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-0.2/debian/control
+Source: debhello
+Section: unknown
+Priority: optional
+Maintainer: "Firstname Lastname" &lt;email.address@example.org&gt;
+Build-Depends: debhelper (&gt;=11~)
+Standards-Version: 4.1.4
+Homepage: &lt;insert the upstream URL, if relevant&gt;
+
+Package: debhello
+Architecture: all
+Multi-Arch: foreign
+Depends: ${misc:Depends}
+Description: auto-generated package by debmake
+ This Debian binary package was auto-generated by the
+ debmake(1) command provided by the debmake package.</pre>
+        <p>
+</p>
+        <p>因為這是個 shell 指令碼包，所以 <span class="strong"><strong>debmake</strong></span> 命令設定了“<span class="strong"><strong>Architecture: all</strong></span>”和“<span class="strong"><strong>Multi-Arch: foreign</strong></span>”。此外，它還將所需的 <span class="strong"><strong>substvar</strong></span> 引數設定為“<span class="strong"><strong>Depends: ${misc:Depends}</strong></span>”。<a class="xref" href="ch05.zh-tw.html" title="章 5. 基本內容">章 5, <em>基本內容</em></a> 對此進行了解釋。</p>
+        <p>因為這個上游原始碼缺少上游的 <span class="strong"><strong>Makefile</strong></span>，所以這個功能需要由維護者提供。這個上游原始碼僅包含指令碼檔案和資料檔案，沒有 C 的源碼檔案，因此 <span class="strong"><strong>構建（build）</strong></span> 的過程可以被跳過，但是需要實現 <span class="strong"><strong>安裝（install）</strong></span> 的過程。對於這種情況，通過新增 <span class="strong"><strong>debian/install</strong></span> 和 <span class="strong"><strong>debian/manpages</strong></span> 檔案可以很好地實現這一功能，且不會使 <span class="strong"><strong>debian/rules</strong></span> 檔案變得複雜。</p>
+        <p>作為維護者，我們要把這個 Debian 套件做得更好。</p>
+        <p><strong><span class="strong"><strong>debian/rules</strong></span>（維護者版本，v=0.2）：. </strong>
+</p>
+        <pre class="screen"> $ vim debhello-0.2/debian/rules
+ ... hack, hack, hack, ...
+ $ cat debhello-0.2/debian/rules
+#!/usr/bin/make -f
+export DH_VERBOSE = 1
+
+%:
+        dh $@</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>debian/control</strong></span>（維護者版本，v=0.2）：. </strong>
+</p>
+        <pre class="screen"> $ vim debhello-0.2/debian/control
+ ... hack, hack, hack, ...
+ $ cat debhello-0.2/debian/control
+Source: debhello
+Section: devel
+Priority: optional
+Maintainer: Osamu Aoki &lt;osamu@debian.org&gt;
+Build-Depends: debhelper (&gt;=11~)
+Standards-Version: 4.3.0
+Homepage: https://salsa.debian.org/debian/debmake-doc
+
+Package: debhello
+Architecture: all
+Multi-Arch: foreign
+Depends: ${misc:Depends}
+Description: example package in the debmake-doc package
+ This is an example package to demonstrate Debian packaging using
+ the debmake command.
+ .
+ The generated Debian package uses the dh command offered by the
+ debhelper package and the dpkg source format `3.0 (quilt)'.</pre>
+        <p>
+</p>
+        <div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+          <table border="0" summary="Warning">
+            <tr>
+              <td rowspan="2" align="center" valign="top">
+                <img alt="[警告]" src="images/warning.png"/>
+              </td>
+              <th align="left">警告</th>
+            </tr>
+            <tr>
+              <td align="left" valign="top">
+                <p>如果您對 <span class="strong"><strong>debian/control</strong></span> 模板檔案中的“<span class="strong"><strong>Section: unknown</strong></span>”部分不作修改的話，後續的 <span class="strong"><strong>lintian</strong></span> 錯誤可能導致構建失敗。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <p><strong><span class="strong"><strong>debian/install</strong></span>（維護者版本，v=0.2）：. </strong>
+</p>
+        <pre class="screen"> $ vim debhello-0.2/debian/install
+ ... hack, hack, hack, ...
+ $ cat debhello-0.2/debian/install
+data/hello.desktop usr/share/applications
+data/hello.png usr/share/pixmaps
+scripts/hello usr/bin</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>debian/manpages</strong></span>（維護者版本，v=0.2）：. </strong>
+</p>
+        <pre class="screen"> $ vim debhello-0.2/debian/manpages
+ ... hack, hack, hack, ...
+ $ cat debhello-0.2/debian/manpages
+man/hello.1</pre>
+        <p>
+</p>
+        <p>在 <span class="strong"><strong>debian/</strong></span> 目錄下還有一些其它的模板文件。它們也需要進行更新。</p>
+        <p><strong><span class="strong"><strong>debian/</strong></span> 目錄下的模板檔案。（v=0.2）：. </strong>
+</p>
+        <pre class="screen"> $ tree debhello-0.2/debian
+debhello-0.2/debian
+├── README.Debian
+├── changelog
+├── compat
+├── control
+├── copyright
+├── install
+├── manpages
+├── patches
+│   └── series
+├── rules
+├── source
+│   ├── format
+│   └── local-options
+└── watch
+
+2 directories, 12 files</pre>
+        <p>
+</p>
+        <p>您可以在此原始碼樹中使用 <span class="strong"><strong>debuild</strong></span> 命令（或其等效命令）建立非原生的 Debian 套件。如下所示，該命令的輸出非常詳細，並且解釋了它所做的事。</p>
+        <pre class="screen"> $ cd debhello-0.2
+ $ debuild
+ dpkg-buildpackage -us -uc -ui -i
+ ...
+ fakeroot debian/rules clean
+dh clean
+ ...
+ debian/rules build
+dh build
+   dh_update_autotools_config
+   dh_autoreconf
+   create-stamp debian/debhelper-build-stamp
+ fakeroot debian/rules binary
+dh binary
+   dh_testroot
+   dh_prep
+        rm -f -- debian/debhello.substvars
+        rm -fr -- debian/.debhelper/generated/debhello/ debian/debhello/ debi...
+ ...
+ fakeroot debian/rules binary
+dh binary
+ ...</pre>
+        <p>現在我們來看看成果如何。</p>
+        <p><strong>通過 <span class="strong"><strong>debuild</strong></span> 生成的第 <span class="strong"><strong>0.2</strong></span> 版的 <span class="strong"><strong>debhello</strong></span> 檔案：. </strong>
+</p>
+        <pre class="screen"> $ cd ..
+ $ tree -FL 1
+.
+├── debhello-0.2/
+├── debhello-0.2.tar.gz
+├── debhello_0.2-1.debian.tar.xz
+├── debhello_0.2-1.dsc
+├── debhello_0.2-1_all.deb
+├── debhello_0.2-1_amd64.build
+├── debhello_0.2-1_amd64.buildinfo
+├── debhello_0.2-1_amd64.changes
+└── debhello_0.2.orig.tar.gz -&gt; debhello-0.2.tar.gz
+
+1 directory, 8 files</pre>
+        <p>
+</p>
+        <p>您可以看見生成的全部檔案。</p>
+        <div class="itemizedlist">
+          <ul class="itemizedlist">
+            <li class="listitem"><span class="strong"><strong>debhello_0.2.orig.tar.gz</strong></span> 是指向上游原始碼包的符號連結。</li>
+            <li class="listitem"><span class="strong"><strong>debhello_0.2-1.debian.tar.xz</strong></span> 包含了維護者生成的內容。</li>
+            <li class="listitem"><span class="strong"><strong>debhello_0.2-1.dsc</strong></span> 是 Debian 原始碼包的元資料檔案。</li>
+            <li class="listitem">The <span class="strong"><strong>debhello_0.2-1_all.deb</strong></span> 是 Debian 二進位制套件。</li>
+            <li class="listitem"><span class="strong"><strong>debhello_0.2-1_amd64.build</strong></span> 是 Debian 二進位制套件。</li>
+            <li class="listitem"><span class="strong"><strong>debhello_0.2-1_amd64.buildinfo</strong></span> 檔案是由 <span class="strong"><strong>dpkg-genbuildinfo</strong></span>(1) 自動生成的元檔案。</li>
+            <li class="listitem"><span class="strong"><strong>debhello_0.2-1_amd64.changes</strong></span> 是 Debian 二進位制套件的元資料檔案。</li>
+          </ul>
+        </div>
+        <p><span class="strong"><strong>debhello_0.2-1.debian.tar.xz</strong></span> 包含了 Debian 對上游原始碼的修改，具體如下所示。</p>
+        <p><strong>壓縮過的歸檔檔案 <span class="strong"><strong>debhello_0.2-1.debian.tar.xz</strong></span> 中的內容物：. </strong>
+</p>
+        <pre class="screen"> $ tar -tzf debhello-0.2.tar.gz
+debhello-0.2/
+debhello-0.2/data/
+debhello-0.2/data/hello.desktop
+debhello-0.2/data/hello.png
+debhello-0.2/man/
+debhello-0.2/man/hello.1
+debhello-0.2/LICENSE
+debhello-0.2/scripts/
+debhello-0.2/scripts/hello
+ $ tar --xz -tf debhello_0.2-1.debian.tar.xz
+debian/
+debian/README.Debian
+debian/changelog
+debian/compat
+debian/control
+debian/copyright
+debian/install
+debian/manpages
+debian/patches/
+debian/patches/series
+debian/rules
+debian/source/
+debian/source/format
+debian/watch</pre>
+        <p>
+</p>
+        <p><span class="strong"><strong>debhello_0.2-1_amd64.deb</strong></span> 包含了將要安裝至系統中的檔案，如下所示。</p>
+        <p><strong><span class="strong"><strong>debhello_0.2-1_all.deb</strong></span> 二進位制套件中的內容：. </strong>
+</p>
+        <pre class="screen"> $ dpkg -c debhello_0.2-1_all.deb
+drwxr-xr-x root/root ...  ./
+drwxr-xr-x root/root ...  ./usr/
+drwxr-xr-x root/root ...  ./usr/bin/
+-rwxr-xr-x root/root ...  ./usr/bin/hello
+drwxr-xr-x root/root ...  ./usr/share/
+drwxr-xr-x root/root ...  ./usr/share/applications/
+-rw-r--r-- root/root ...  ./usr/share/applications/hello.desktop
+drwxr-xr-x root/root ...  ./usr/share/doc/
+drwxr-xr-x root/root ...  ./usr/share/doc/debhello/
+-rw-r--r-- root/root ...  ./usr/share/doc/debhello/README.Debian
+-rw-r--r-- root/root ...  ./usr/share/doc/debhello/changelog.Debian.gz
+-rw-r--r-- root/root ...  ./usr/share/doc/debhello/copyright
+drwxr-xr-x root/root ...  ./usr/share/man/
+drwxr-xr-x root/root ...  ./usr/share/man/man1/
+-rw-r--r-- root/root ...  ./usr/share/man/man1/hello.1.gz
+drwxr-xr-x root/root ...  ./usr/share/pixmaps/
+-rw-r--r-- root/root ...  ./usr/share/pixmaps/hello.png</pre>
+        <p>
+</p>
+        <p>此處是生成的 <span class="strong"><strong>debhello_0.2-1_all.deb</strong></span> 的依賴項列表。</p>
+        <p><strong><span class="strong"><strong>debhello_0.2-1_all.deb</strong></span> 的依賴項列表：. </strong>
+</p>
+        <pre class="screen"> $ dpkg -f debhello_0.2-1_all.deb pre-depends depends recommends conflicts br...</pre>
+        <p>
+</p>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="makefile-sh"/>8.3. Makefile（shell，命令列介面）</h2>
+            </div>
+          </div>
+        </div>
+        <p>下面是從 POSIX shell 命令列介面程式建立簡單的 Debian 套件的範例，我們假設它使用 <span class="strong"><strong>Makefile</strong></span> 作為構建系統。</p>
+        <p>讓我們假設上游的原始碼包為 <span class="strong"><strong>debhello-1.0.tar.gz</strong></span>。</p>
+        <p>這一類原始碼設計可以用這樣的方式安裝成為非系統檔案：</p>
+        <pre class="screen"> $ tar -xzmf debhello-1.0.tar.gz
+ $ cd debhello-1.0
+ $ make install</pre>
+        <p>Debian 的打包需要對“<span class="strong"><strong>make install</strong></span>”流程進行改變，從而將檔案安裝至目標系統映象所在位置，而非通常使用的 <span class="strong"><strong>/usr/local</strong></span> 下的位置。</p>
+        <p>讓我們取得原始碼並製作 Debian 套件。</p>
+        <p><strong>下載 <span class="strong"><strong>debhello-1.0.tar.gz</strong></span>. </strong>
+</p>
+        <pre class="screen"> $ wget http://www.example.org/download/debhello-1.0.tar.gz
+ ...
+ $ tar -xzmf debhello-1.0.tar.gz
+ $ tree
+.
+├── debhello-1.0
+│   ├── LICENSE
+│   ├── Makefile
+│   ├── data
+│   │   ├── hello.desktop
+│   │   └── hello.png
+│   ├── man
+│   │   └── hello.1
+│   └── scripts
+│       └── hello
+└── debhello-1.0.tar.gz
+
+4 directories, 7 files</pre>
+        <p>
+</p>
+        <p>這裡的 <span class="strong"><strong>Makefile</strong></span> 正確使用 <span class="strong"><strong>$(DESTDIR)</strong></span> 和 <span class="strong"><strong>$(prefix)</strong></span>。其他的所有檔案都和 <a class="xref" href="ch08.zh-tw.html#nomakefile" title="8.2. 無 Makefile（shell，命令列介面）">節 8.2, “無 Makefile（shell，命令列介面）”</a> 中的一樣，並且大多數的打包工作也都一樣。</p>
+        <p><strong><span class="strong"><strong>Makefile</strong></span>（v=1.0）. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.0/Makefile
+prefix = /usr/local
+
+all:
+        : # do nothing
+
+install:
+        install -D scripts/hello \
+                $(DESTDIR)$(prefix)/bin/hello
+        install -m 644 -D data/hello.desktop \
+                $(DESTDIR)$(prefix)/share/applications/hello.desktop
+        install -m 644 -D data/hello.png \
+                $(DESTDIR)$(prefix)/share/pixmaps/hello.png
+        install -m 644 -D man/hello.1 \
+                $(DESTDIR)$(prefix)/share/man/man1/hello.1
+
+clean:
+        : # do nothing
+
+distclean: clean
+
+uninstall:
+        -rm -f $(DESTDIR)$(prefix)/bin/hello
+        -rm -f $(DESTDIR)$(prefix)/share/applications/hello.desktop
+        -rm -f $(DESTDIR)$(prefix)/share/pixmaps/hello.png
+        -rm -f $(DESTDIR)$(prefix)/share/man/man1/hello.1
+
+.PHONY: all install clean distclean uninstall</pre>
+        <p>
+</p>
+        <p>讓我們使用 <span class="strong"><strong>debmake</strong></span> 命令來打包。這裡使用 <span class="strong"><strong>-b':sh'</strong></span> 選項來指明生成的二進位制包是一個 shell 指令碼。</p>
+        <pre class="screen"> $ cd debhello-1.0
+ $ debmake -b':sh'
+I: set parameters
+I: sanity check of parameters
+I: pkg="debhello", ver="1.0", rev="1"
+I: *** start packaging in "debhello-1.0". ***
+I: provide debhello_1.0.orig.tar.gz for non-native Debian package
+I: pwd = "/path/to"
+I: $ ln -sf debhello-1.0.tar.gz debhello_1.0.orig.tar.gz
+I: pwd = "/path/to/debhello-1.0"
+I: parse binary package settings: :sh
+I: binary package=debhello Type=script / Arch=all M-A=foreign
+...</pre>
+        <p>讓我們來檢查一下自動產生的模板檔案。</p>
+        <p><strong><span class="strong"><strong>debian/rules</strong></span>（模板檔案，v=1.0）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.0/debian/rules
+#!/usr/bin/make -f
+# You must remove unused comment lines for the released package.
+#export DH_VERBOSE = 1
+
+%:
+        dh $@
+
+#override_dh_auto_install:
+#       dh_auto_install -- prefix=/usr
+
+#override_dh_install:
+#       dh_install --list-missing -X.pyc -X.pyo</pre>
+        <p>
+</p>
+        <p>作為維護者，我們要把這個 Debian 套件做得更好。</p>
+        <p><strong><span class="strong"><strong>debian/rules</strong></span>（維護者版本，v=1.0）：. </strong>
+</p>
+        <pre class="screen"> $ vim debhello-1.0/debian/rules
+ ... hack, hack, hack, ...
+ $ cat debhello-1.0/debian/rules
+#!/usr/bin/make -f
+export DH_VERBOSE = 1
+
+%:
+        dh $@
+
+override_dh_auto_install:
+        dh_auto_install -- prefix=/usr</pre>
+        <p>
+</p>
+        <p>因為上游原始碼含有正確的上游 <span class="strong"><strong>Makefile</strong></span> 文件，所以沒有必要再去建立 <span class="strong"><strong>debian/install</strong></span> 和 <span class="strong"><strong>debian/manpages</strong></span> 檔案。</p>
+        <p><span class="strong"><strong>debian/control</strong></span> 檔案和 <a class="xref" href="ch08.zh-tw.html#nomakefile" title="8.2. 無 Makefile（shell，命令列介面）">節 8.2, “無 Makefile（shell，命令列介面）”</a> 中的完全一致。</p>
+        <p>在 <span class="strong"><strong>debian/</strong></span> 目錄下還有一些其它的模板文件。它們也需要進行更新。</p>
+        <p><strong><span class="strong"><strong>debian/</strong></span> 目錄下的模板檔案。（v=1.0）：. </strong>
+</p>
+        <pre class="screen"> $ tree debhello-1.0/debian
+debhello-1.0/debian
+├── README.Debian
+├── changelog
+├── compat
+├── control
+├── copyright
+├── patches
+│   └── series
+├── rules
+├── source
+│   ├── format
+│   └── local-options
+└── watch
+
+2 directories, 10 files</pre>
+        <p>
+</p>
+        <p>其餘的打包操作基本上和 <a class="xref" href="ch08.zh-tw.html#nomakefile" title="8.2. 無 Makefile（shell，命令列介面）">節 8.2, “無 Makefile（shell，命令列介面）”</a> 中的相同。</p>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="setup-py"/>8.4. setup.py（Python3，命令列介面）</h2>
+            </div>
+          </div>
+        </div>
+        <p>此處是一個從 Python3 命令列介面程式建立簡單的 Debian 套件的範例，我們假設程序使用 <span class="strong"><strong>setup.py</strong></span> 作為它的構建系統。</p>
+        <p>讓我們假設上游的原始碼包為 <span class="strong"><strong>debhello-1.1.tar.gz</strong></span>。</p>
+        <p>這一類原始碼設計可以用這樣的方式安裝成為非系統檔案：</p>
+        <pre class="screen"> $ tar -xzmf debhello-1.1.tar.gz
+ $ cd debhello-1.1
+ $ python3 setup.py install</pre>
+        <p>Debian 打包要求將最後一行更改為 “<span class="strong"><strong>python3 setup.py install --install-layout=deb</strong></span>” 以將檔案安裝到目標系統映象所在位置。使用 <span class="strong"><strong>dh</strong></span> 命令進行 Debian 打包時會自動解決此問題。</p>
+        <p>讓我們取得原始碼並製作 Debian 套件。</p>
+        <p><strong>下載 <span class="strong"><strong>debhello-1.1.tar.gz</strong></span>. </strong>
+</p>
+        <pre class="screen"> $ wget http://www.example.org/download/debhello-1.1.tar.gz
+ ...
+ $ tar -xzmf debhello-1.1.tar.gz
+ $ tree
+.
+├── debhello-1.1
+│   ├── LICENSE
+│   ├── MANIFEST.in
+│   ├── PKG-INFO
+│   ├── hello_py
+│   │   └── __init__.py
+│   ├── scripts
+│   │   └── hello
+│   └── setup.py
+└── debhello-1.1.tar.gz
+
+3 directories, 7 files</pre>
+        <p>
+</p>
+        <p>此處的 <span class="strong"><strong>hello</strong></span> 指令碼和它所關聯的 <span class="strong"><strong>hello_py</strong></span> 模組如下所示。</p>
+        <p><strong><span class="strong"><strong>hello</strong></span>（v=1.1）. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.1/scripts/hello
+#!/usr/bin/python3
+import hello_py
+
+if __name__ == '__main__':
+    hello_py.main()</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>hello_py/__init__.py</strong></span>（v=1.1）. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.1/hello_py/__init__.py
+#!/usr/bin/python3
+def main():
+    print('Hello Python3!')
+    input("Press Enter to continue...")
+    return
+
+if __name__ == '__main__':
+    main()</pre>
+        <p>
+</p>
+        <p>這些是使用帶有 <span class="strong"><strong>setup.py</strong></span> 和 <span class="strong"><strong>MANIFEST.in</strong></span> 檔案的 Python <a class="ulink" href="https://docs.python.org/3.4/library/distutils.html#module-distutils">distutils</a> 來打包的。</p>
+        <p><strong><span class="strong"><strong>setup.py</strong></span>（v=1.1）. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.1/setup.py
+#!/usr/bin/python3
+# vi:se ts=4 sts=4 et ai:
+from distutils.core import setup
+
+setup(name='debhello',
+    version='4.0',
+    description='Hello Python',
+    long_description='Hello Python program.',
+    author='Osamu Aoki',
+    author_email='osamu@debian.org',
+    url='http://people.debian.org/~osamu/',
+    packages=['hello_py'],
+    package_dir={'hello_py': 'hello_py'},
+    scripts=['scripts/hello'],
+    classifiers = ['Development Status :: 3 - Alpha',
+        'Environment :: Console',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: MIT License',
+        'Natural Language :: English',
+        'Operating System :: POSIX :: Linux',
+        'Programming Language :: Python :: 3',
+        'Topic :: Utilities',
+    ],
+    platforms   = 'POSIX',
+    license     = 'MIT License'
+)</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>MANIFEST.in</strong></span>（v=1.1）. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.1/MANIFEST.in
+include MANIFEST.in
+include LICENSE</pre>
+        <p>
+</p>
+        <div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;">
+          <table border="0" summary="Tip">
+            <tr>
+              <td rowspan="2" align="center" valign="top">
+                <img alt="[提示]" src="images/tip.png"/>
+              </td>
+              <th align="left">提示</th>
+            </tr>
+            <tr>
+              <td align="left" valign="top">
+                <p>許多現代的 Python 套件使用 <a class="ulink" href="https://setuptools.pypa.io/en/latest/setuptools.html">setuptools</a> 來分發。因為 setuptools 是 disutils 的增強替代品，因此該範例對它們也很有用。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <p>讓我們使用 <span class="strong"><strong>debmake</strong></span> 命令來打包。這裡使用 <span class="strong"><strong>-b':py3'</strong></span> 選項來指明生成的二進位制包包含 Python3 指令碼和模組檔案。</p>
+        <pre class="screen"> $ cd debhello-1.1
+ $ debmake -b':py3'
+I: set parameters
+I: sanity check of parameters
+I: pkg="debhello", ver="1.1", rev="1"
+I: *** start packaging in "debhello-1.1". ***
+I: provide debhello_1.1.orig.tar.gz for non-native Debian package
+I: pwd = "/path/to"
+I: $ ln -sf debhello-1.1.tar.gz debhello_1.1.orig.tar.gz
+I: pwd = "/path/to/debhello-1.1"
+I: parse binary package settings: :py3
+I: binary package=debhello Type=python3 / Arch=all M-A=foreign
+...</pre>
+        <p>讓我們來檢查一下自動產生的模板檔案。</p>
+        <p><strong><span class="strong"><strong>debian/rules</strong></span>（模板檔案，v=1.1）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.1/debian/rules
+#!/usr/bin/make -f
+# You must remove unused comment lines for the released package.
+#export DH_VERBOSE = 1
+
+%:
+        dh $@ --with python3 --buildsystem=pybuild</pre>
+        <p>
+</p>
+        <p>這基本上是帶有 <span class="strong"><strong>dh</strong></span> 命令的標準 <span class="strong"><strong>debian/rules</strong></span> 檔案。</p>
+        <p>使用“<span class="strong"><strong>--with python3</strong></span>”選項會呼叫 <span class="strong"><strong>dh_python3</strong></span> 來計算 Python 依賴項、將維護者指令碼新增到位元組碼檔案等。參見 <span class="strong"><strong>dh_python3</strong></span>(1)。</p>
+        <p>使用“<span class="strong"><strong>--buildsystem=pybuild</strong></span>”選項會為要求的 Python 版本呼叫各種構建系統，以便構建模組和擴充套件。參見 <span class="strong"><strong>pybuild</strong></span>(1)。</p>
+        <p><strong><span class="strong"><strong>debian/control</strong></span>（模板檔案，v=1.1）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.1/debian/control
+Source: debhello
+Section: unknown
+Priority: optional
+Maintainer: "Firstname Lastname" &lt;email.address@example.org&gt;
+Build-Depends: debhelper (&gt;=11~), dh-python, python3-all
+Standards-Version: 4.1.4
+Homepage: &lt;insert the upstream URL, if relevant&gt;
+X-Python3-Version: &gt;= 3.2
+
+Package: debhello
+Architecture: all
+Multi-Arch: foreign
+Depends: ${misc:Depends}, ${python3:Depends}
+Description: auto-generated package by debmake
+ This Debian binary package was auto-generated by the
+ debmake(1) command provided by the debmake package.</pre>
+        <p>
+</p>
+        <p>因為這是 Python3 套件，<span class="strong"><strong>debmake</strong></span> 命令會設定“<span class="strong"><strong>Architecture: all</strong></span>”和“<span class="strong"><strong>Multi-Arch: foreign</strong></span>”。此外，它還將所需的 <span class="strong"><strong>substvar</strong></span> 引數設定為“<span class="strong"><strong>Depends: ${python3:Depends}, ${misc:Depends}</strong></span>”。<a class="xref" href="ch05.zh-tw.html" title="章 5. 基本內容">章 5, <em>基本內容</em></a> 對這些做出瞭解釋。</p>
+        <p>作為維護者，我們要把這個 Debian 套件做得更好。</p>
+        <p><strong><span class="strong"><strong>debian/rules</strong></span>（維護者版本，v=1.1）：. </strong>
+</p>
+        <pre class="screen"> $ vim debhello-1.1/debian/rules
+ ... hack, hack, hack, ...
+ $ cat debhello-1.1/debian/rules
+#!/usr/bin/make -f
+export DH_VERBOSE = 1
+
+%:
+        dh $@ --with python3 --buildsystem=pybuild</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>debian/control</strong></span>（維護者版本，v=1.1）：. </strong>
+</p>
+        <pre class="screen"> $ vim debhello-1.1/debian/control
+ ... hack, hack, hack, ...
+ $ cat debhello-1.1/debian/control
+Source: debhello
+Section: devel
+Priority: optional
+Maintainer: Osamu Aoki &lt;osamu@debian.org&gt;
+Build-Depends: debhelper (&gt;= 12~), dh-python, python3-all
+Standards-Version: 4.3.0
+Homepage: https://salsa.debian.org/debian/debmake-doc
+X-Python3-Version: &gt;= 3.2
+
+Package: debhello
+Architecture: all
+Multi-Arch: foreign
+Depends: ${misc:Depends}, ${python3:Depends}
+Description: example package in the debmake-doc package
+ This is an example package to demonstrate Debian packaging using
+ the debmake command.
+ .
+ The generated Debian package uses the dh command offered by the
+ debhelper package and the dpkg source format `3.0 (quilt)'.</pre>
+        <p>
+</p>
+        <p><span class="strong"><strong>hello</strong></span> 命令沒有附帶上游提供的手冊頁。讓我們這些維護者給它添上。</p>
+        <p><strong><span class="strong"><strong>debian/manpages</strong></span> 等。（維護者版本，v=1.1）：. </strong>
+</p>
+        <pre class="screen"> $ vim debhello-1.1/debian/hello.1
+ ... hack, hack, hack, ...
+ $ vim debhello-1.1/debian/manpages
+ ... hack, hack, hack, ...
+ $ cat debhello-1.1/debian/manpages
+debian/hello.1</pre>
+        <p>
+</p>
+        <p>在 <span class="strong"><strong>debian/</strong></span> 目錄下還有一些其它的模板文件。它們也需要進行更新。</p>
+        <p>其餘的打包工作與 <a class="xref" href="ch08.zh-tw.html#makefile-sh" title="8.3. Makefile（shell，命令列介面）">節 8.3, “Makefile（shell，命令列介面）”</a> 中的幾乎一致。</p>
+        <p><strong><span class="strong"><strong>debian/</strong></span> 目錄下的模板檔案。（v=1.1）：. </strong>
+</p>
+        <pre class="screen"> $ tree debhello-1.1/debian
+debhello-1.1/debian
+├── README.Debian
+├── changelog
+├── compat
+├── control
+├── copyright
+├── hello.1
+├── manpages
+├── patches
+│   └── series
+├── rules
+├── source
+│   ├── format
+│   └── local-options
+└── watch
+
+2 directories, 12 files</pre>
+        <p>
+</p>
+        <p>此處是生成的 <span class="strong"><strong>debhello_1.1-1_all.deb</strong></span> 包的依賴項列表。</p>
+        <p><strong><span class="strong"><strong>debhello_1.1-1_all.deb</strong></span> 的依賴項列表：. </strong>
+</p>
+        <pre class="screen"> $ dpkg -f debhello_1.1-1_all.deb pre-depends depends recommends conflicts br...
+Depends: python3:any (&gt;= 3.2~)</pre>
+        <p>
+</p>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="makefile-sh-gui"/>8.5. Makefile（shell，圖形介面）</h2>
+            </div>
+          </div>
+        </div>
+        <p>此處是一個從 POSIX shell 圖形介面程式構建簡單的 Debian 套件的範例，我們假設程式使用 <span class="strong"><strong>Makefile</strong></span> 作為構建系統。</p>
+        <p>上游是基於 <a class="xref" href="ch08.zh-tw.html#makefile-sh" title="8.3. Makefile（shell，命令列介面）">節 8.3, “Makefile（shell，命令列介面）”</a> 中的原始碼，並帶有增強的圖形介面支持。</p>
+        <p>讓我們假設上游的原始碼包為 <span class="strong"><strong>debhello-1.2.tar.gz</strong></span>。</p>
+        <p>讓我們取得原始碼並製作 Debian 套件。</p>
+        <p><strong>下載 <span class="strong"><strong>debhello-1.2.tar.gz</strong></span>. </strong>
+</p>
+        <pre class="screen"> $ wget http://www.example.org/download/debhello-1.2.tar.gz
+ ...
+ $ tar -xzmf debhello-1.2.tar.gz
+ $ tree
+.
+├── debhello-1.2
+│   ├── LICENSE
+│   ├── Makefile
+│   ├── data
+│   │   ├── hello.desktop
+│   │   └── hello.png
+│   ├── man
+│   │   └── hello.1
+│   └── scripts
+│       └── hello
+└── debhello-1.2.tar.gz
+
+4 directories, 7 files</pre>
+        <p>
+</p>
+        <p>此處的 <span class="strong"><strong>hello</strong></span> 已經被重寫以便使用 <span class="strong"><strong>zenity</strong></span> 命令來使其成為 GTK+ 圖形介面程序。</p>
+        <p><strong><span class="strong"><strong>hello</strong></span>（v=1.2）. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.2/scripts/hello
+#!/bin/sh -e
+zenity --info --title "hello" --text "Hello from the shell!"</pre>
+        <p>
+</p>
+        <p>這裡，作為圖形介面程式，桌面檔案被更新為 <span class="strong"><strong>Terminal=false</strong></span>。</p>
+        <p><strong><span class="strong"><strong>hello.desktop</strong></span>（v=1.2）. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.2/data/hello.desktop
+[Desktop Entry]
+Name=Hello
+Name[fr]=Bonjour
+Comment=Greetings
+Comment[fr]=Salutations
+Type=Application
+Keywords=hello
+Exec=hello
+Terminal=false
+Icon=hello.png
+Categories=Utility;</pre>
+        <p>
+</p>
+        <p>其餘的所有檔案都與 <a class="xref" href="ch08.zh-tw.html#makefile-sh" title="8.3. Makefile（shell，命令列介面）">節 8.3, “Makefile（shell，命令列介面）”</a> 中的一致。</p>
+        <p>讓我們使用 <span class="strong"><strong>debmake</strong></span> 命令來打包。這裡使用 <span class="strong"><strong>-b':sh'</strong></span> 選項來指明生成的二進位制包是一個 shell 指令碼。</p>
+        <pre class="screen"> $ cd debhello-1.2
+ $ debmake -b':sh'
+I: set parameters
+I: sanity check of parameters
+I: pkg="debhello", ver="1.2", rev="1"
+I: *** start packaging in "debhello-1.2". ***
+I: provide debhello_1.2.orig.tar.gz for non-native Debian package
+I: pwd = "/path/to"
+I: $ ln -sf debhello-1.2.tar.gz debhello_1.2.orig.tar.gz
+I: pwd = "/path/to/debhello-1.2"
+I: parse binary package settings: :sh
+I: binary package=debhello Type=script / Arch=all M-A=foreign
+...</pre>
+        <p>讓我們來檢查一下自動產生的模板檔案。</p>
+        <p><strong><span class="strong"><strong>debian/control</strong></span>（模板檔案，v=1.2）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.2/debian/control
+Source: debhello
+Section: unknown
+Priority: optional
+Maintainer: "Firstname Lastname" &lt;email.address@example.org&gt;
+Build-Depends: debhelper (&gt;=11~)
+Standards-Version: 4.1.4
+Homepage: &lt;insert the upstream URL, if relevant&gt;
+
+Package: debhello
+Architecture: all
+Multi-Arch: foreign
+Depends: ${misc:Depends}
+Description: auto-generated package by debmake
+ This Debian binary package was auto-generated by the
+ debmake(1) command provided by the debmake package.</pre>
+        <p>
+</p>
+        <p>作為維護者，我們要把這個 Debian 套件做得更好。</p>
+        <p><strong><span class="strong"><strong>debian/control</strong></span>（維護者版本，v=1.2）：. </strong>
+</p>
+        <pre class="screen"> $ vim debhello-1.2/debian/control
+ ... hack, hack, hack, ...
+ $ cat debhello-1.2/debian/control
+Source: debhello
+Section: devel
+Priority: optional
+Maintainer: Osamu Aoki &lt;osamu@debian.org&gt;
+Build-Depends: debhelper (&gt;=11~)
+Standards-Version: 4.3.0
+Homepage: https://salsa.debian.org/debian/debmake-doc
+
+Package: debhello
+Architecture: all
+Multi-Arch: foreign
+Depends: zenity, ${misc:Depends}
+Description: example package in the debmake-doc package
+ This is an example package to demonstrate Debian packaging using
+ the debmake command.
+ .
+ The generated Debian package uses the dh command offered by the
+ debhelper package and the dpkg source format `3.0 (quilt)'.</pre>
+        <p>
+</p>
+        <p>請注意，這裡需要手動新增 <span class="strong"><strong>zenity</strong></span> 依賴。</p>
+        <p><span class="strong"><strong>debian/rules</strong></span> 檔案與 <a class="xref" href="ch08.zh-tw.html#makefile-sh" title="8.3. Makefile（shell，命令列介面）">節 8.3, “Makefile（shell，命令列介面）”</a> 中的完全一致。</p>
+        <p>在 <span class="strong"><strong>debian/</strong></span> 目錄下還有一些其它的模板文件。它們也需要進行更新。</p>
+        <p><strong><span class="strong"><strong>debian/</strong></span> 目錄下的模板檔案。（v=1.2）：. </strong>
+</p>
+        <pre class="screen"> $ tree debhello-1.2/debian
+debhello-1.2/debian
+├── README.Debian
+├── changelog
+├── compat
+├── control
+├── copyright
+├── patches
+│   └── series
+├── rules
+├── source
+│   ├── format
+│   └── local-options
+└── watch
+
+2 directories, 10 files</pre>
+        <p>
+</p>
+        <p>其餘的打包工作與 <a class="xref" href="ch08.zh-tw.html#makefile-sh" title="8.3. Makefile（shell，命令列介面）">節 8.3, “Makefile（shell，命令列介面）”</a> 中的幾乎一致。</p>
+        <p>此處是 <span class="strong"><strong>debhello_1.2-1_all.deb</strong></span> 的依賴項列表。</p>
+        <p><strong><span class="strong"><strong>debhello_1.2-1_all.deb</strong></span> 的依賴項列表：. </strong>
+</p>
+        <pre class="screen"> $ dpkg -f debhello_1.2-1_all.deb pre-depends depends recommends conflicts br...
+Depends: zenity</pre>
+        <p>
+</p>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="setup-py-gui"/>8.6. setup.py（Python3，圖形介面）</h2>
+            </div>
+          </div>
+        </div>
+        <p>此處是一個從 Python3 圖形介面程式構建簡單的 Debian 套件的範例，我們假設程式使用 <span class="strong"><strong>setup.py</strong></span> 作為自身的構建系統。</p>
+        <p>上游是基於 <a class="xref" href="ch08.zh-tw.html#setup-py" title="8.4. setup.py（Python3，命令列介面）">節 8.4, “setup.py（Python3，命令列介面）”</a> 中的原始碼，並帶有增強的圖形介面、桌面圖示、手冊頁。</p>
+        <p>讓我們假設上游原始碼包為 <span class="strong"><strong>debhello-1.3.tar.gz</strong></span>。</p>
+        <p>讓我們取得原始碼並製作 Debian 套件。</p>
+        <p><strong>下載 <span class="strong"><strong>debhello-1.3.tar.gz</strong></span>. </strong>
+</p>
+        <pre class="screen"> $ wget http://www.example.org/download/debhello-1.3.tar.gz
+ ...
+ $ tar -xzmf debhello-1.3.tar.gz
+ $ tree
+.
+├── debhello-1.3
+│   ├── LICENSE
+│   ├── MANIFEST.in
+│   ├── PKG-INFO
+│   ├── data
+│   │   ├── hello.desktop
+│   │   └── hello.png
+│   ├── hello_py
+│   │   └── __init__.py
+│   ├── man
+│   │   └── hello.1
+│   ├── scripts
+│   │   └── hello
+│   └── setup.py
+└── debhello-1.3.tar.gz
+
+5 directories, 10 files</pre>
+        <p>
+</p>
+        <p>以下是上游原始碼。</p>
+        <p><strong><span class="strong"><strong>hello</strong></span>（v=1.3）. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.3/scripts/hello
+#!/usr/bin/python3
+import hello_py
+
+if __name__ == '__main__':
+    hello_py.main()</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>hello_py/__init__.py</strong></span>（v=1.3）. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.3/hello_py/__init__.py
+#!/usr/bin/python3
+from gi.repository import Gtk
+
+class TopWindow(Gtk.Window):
+
+    def __init__(self):
+        Gtk.Window.__init__(self)
+        self.title = "Hello World!"
+        self.counter = 0
+        self.border_width = 10
+        self.set_default_size(400, 100)
+        self.set_position(Gtk.WindowPosition.CENTER)
+        self.button = Gtk.Button(label="Click me!")
+        self.button.connect("clicked", self.on_button_clicked)
+        self.add(self.button)
+        self.connect("delete-event", self.on_window_destroy)
+
+    def on_window_destroy(self, *args):
+        Gtk.main_quit(*args)
+
+    def on_button_clicked(self, widget):
+        self.counter += 1
+        widget.set_label("Hello, World!\nClick count = %i" % self.counter)
+
+def main():
+    window = TopWindow()
+    window.show_all()
+    Gtk.main()
+
+if __name__ == '__main__':
+    main()</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>setup.py</strong></span>（v=1.3）. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.3/setup.py
+#!/usr/bin/python3
+# vi:se ts=4 sts=4 et ai:
+from distutils.core import setup
+
+setup(name='debhello',
+    version='4.1',
+    description='Hello Python',
+    long_description='Hello Python program.',
+    author='Osamu Aoki',
+    author_email='osamu@debian.org',
+    url='http://people.debian.org/~osamu/',
+    packages=['hello_py'],
+    package_dir={'hello_py': 'hello_py'},
+    scripts=['scripts/hello'],
+    data_files=[
+        ('share/applications', ['data/hello.desktop']),
+        ('share/pixmaps', ['data/hello.png']),
+        ('share/man/man1', ['man/hello.1']),
+    ],
+    classifiers = ['Development Status :: 3 - Alpha',
+        'Environment :: Console',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: MIT License',
+        'Natural Language :: English',
+        'Operating System :: POSIX :: Linux',
+        'Programming Language :: Python :: 3',
+        'Topic :: Utilities',
+    ],
+    platforms   = 'POSIX',
+    license     = 'MIT License'
+)</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>MANIFEST.in</strong></span>（v=1.3）. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.3/MANIFEST.in
+include MANIFEST.in
+include LICENSE
+include data/hello.deskto
+include data/hello.png
+include man/hello.1</pre>
+        <p>
+</p>
+        <p>讓我們使用 <span class="strong"><strong>debmake</strong></span> 命令來打包。這裡使用 <span class="strong"><strong>-b':py3'</strong></span> 選項來指明生成的二進位制包包含 Python3 指令碼和模組檔案。</p>
+        <pre class="screen"> $ cd debhello-1.3
+ $ debmake -b':py3'
+I: set parameters
+I: sanity check of parameters
+I: pkg="debhello", ver="1.3", rev="1"
+I: *** start packaging in "debhello-1.3". ***
+I: provide debhello_1.3.orig.tar.gz for non-native Debian package
+I: pwd = "/path/to"
+I: $ ln -sf debhello-1.3.tar.gz debhello_1.3.orig.tar.gz
+I: pwd = "/path/to/debhello-1.3"
+I: parse binary package settings: :py3
+I: binary package=debhello Type=python3 / Arch=all M-A=foreign
+...</pre>
+        <p>其餘的步驟與 <a class="xref" href="ch08.zh-tw.html#setup-py" title="8.4. setup.py（Python3，命令列介面）">節 8.4, “setup.py（Python3，命令列介面）”</a> 中的基本一致。</p>
+        <p>作為維護者，我們要把這個 Debian 套件做得更好。</p>
+        <p><strong><span class="strong"><strong>debian/rules</strong></span>（維護者版本，v=1.3）：. </strong>
+</p>
+        <pre class="screen"> $ vim debhello-1.3/debian/rules
+ ... hack, hack, hack, ...
+ $ cat debhello-1.3/debian/rules
+#!/usr/bin/make -f
+export DH_VERBOSE = 1
+
+%:
+        dh $@ --with python3 --buildsystem=pybuild</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>debian/control</strong></span>（維護者版本，v=1.3）：. </strong>
+</p>
+        <pre class="screen"> $ vim debhello-1.3/debian/control
+ ... hack, hack, hack, ...
+ $ cat debhello-1.3/debian/control
+Source: debhello
+Section: devel
+Priority: optional
+Maintainer: Osamu Aoki &lt;osamu@debian.org&gt;
+Build-Depends: debhelper (&gt;=11~), dh-python, python3-all
+Standards-Version: 4.3.0
+Homepage: https://salsa.debian.org/debian/debmake-doc
+X-Python3-Version: &gt;= 3.2
+
+Package: debhello
+Architecture: all
+Multi-Arch: foreign
+Depends: gir1.2-gtk-3.0, python3-gi, ${misc:Depends}, ${python3:Depends}
+Description: example package in the debmake-doc package
+ This is an example package to demonstrate Debian packaging using
+ the debmake command.
+ .
+ The generated Debian package uses the dh command offered by the
+ debhelper package and the dpkg source format `3.0 (quilt)'.</pre>
+        <p>
+</p>
+        <p>請注意，此處需要手動新增 <span class="strong"><strong>python3-gi</strong></span> 和 <span class="strong"><strong>gir1.2-gtk-3.0</strong></span> 依賴。</p>
+        <p>因為上游原始碼已經提供手冊頁，並且其餘的檔案在 <span class="strong"><strong>setup.py</strong></span> 檔案中都有對應條目，就沒有必要再去建立 <a class="xref" href="ch08.zh-tw.html#setup-py" title="8.4. setup.py（Python3，命令列介面）">節 8.4, “setup.py（Python3，命令列介面）”</a> 中所要求的 <span class="strong"><strong>debian/install</strong></span> 和 <span class="strong"><strong>debian/manpages</strong></span> 檔案。</p>
+        <p>其餘的打包工作與 <a class="xref" href="ch08.zh-tw.html#setup-py" title="8.4. setup.py（Python3，命令列介面）">節 8.4, “setup.py（Python3，命令列介面）”</a> 中的幾乎完全一致。</p>
+        <p>此處是 <span class="strong"><strong>debhello_1.3-1_all.deb</strong></span> 的依賴項列表。</p>
+        <p><strong><span class="strong"><strong>debhello_1.3-1_all.deb</strong></span> 的依賴項列表：. </strong>
+</p>
+        <pre class="screen"> $ dpkg -f debhello_1.3-1_all.deb pre-depends depends recommends conflicts br...
+Depends: gir1.2-gtk-3.0, python3-gi, python3:any (&gt;= 3.2~)</pre>
+        <p>
+</p>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="makefile-single"/>8.7. Makefile（單個二進位制套件）</h2>
+            </div>
+          </div>
+        </div>
+        <p>這裡給出了從簡單的 C 語言原始碼建立簡單的 Debian 套件的例子，並假設上游使用了 <span class="strong"><strong>Makefile</strong></span> 作為構建系統。</p>
+        <p>此處的上游原始碼是 <a class="xref" href="ch04.zh-tw.html" title="章 4. 簡單例子">章 4, <em>簡單例子</em></a> 中的原始碼的增強版本。它帶有手冊頁、桌面檔案和桌面圖示。並且為了更加貼合實際，它還有一個外部程式庫檔案 <span class="strong"><strong>libm</strong></span>。</p>
+        <p>讓我們假設上游原始碼包為 <span class="strong"><strong>debhello-1.4.tar.gz</strong></span>。</p>
+        <p>這一類原始碼設計可以用這樣的方式安裝成為非系統檔案：</p>
+        <pre class="screen"> $ tar -xzmf debhello-1.4.tar.gz
+ $ cd debhello-1.4
+ $ make
+ $ make install</pre>
+        <p>Debian 的打包需要對“<span class="strong"><strong>make install</strong></span>”流程進行改變，從而將檔案安裝至系統映象所在位置，而非通常使用的 <span class="strong"><strong>/usr/local</strong></span> 下的位置。</p>
+        <p>讓我們取得原始碼並製作 Debian 套件。</p>
+        <p><strong>下載 <span class="strong"><strong>debhello-1.4.tar.gz</strong></span>. </strong>
+</p>
+        <pre class="screen"> $ wget http://www.example.org/download/debhello-1.4.tar.gz
+ ...
+ $ tar -xzmf debhello-1.4.tar.gz
+ $ tree
+.
+├── debhello-1.4
+│   ├── LICENSE
+│   ├── Makefile
+│   ├── data
+│   │   ├── hello.desktop
+│   │   └── hello.png
+│   ├── man
+│   │   └── hello.1
+│   └── src
+│       ├── config.h
+│       └── hello.c
+└── debhello-1.4.tar.gz
+
+4 directories, 8 files</pre>
+        <p>
+</p>
+        <p>此處的原始碼如下所示。</p>
+        <p><strong><span class="strong"><strong>src/hello.c</strong></span>（v=1.4）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.4/src/hello.c
+#include "config.h"
+#include &lt;math.h&gt;
+#include &lt;stdio.h&gt;
+int
+main()
+{
+        printf("Hello, I am " PACKAGE_AUTHOR "!\n");
+        printf("4.0 * atan(1.0) = %10f8\n", 4.0*atan(1.0));
+        return 0;
+}</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>src/config.h</strong></span>（v=1.4）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.4/src/config.h
+#define PACKAGE_AUTHOR "Osamu Aoki"</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>Makefile</strong></span>（v=1.4）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.4/Makefile
+prefix = /usr/local
+
+all: src/hello
+
+src/hello: src/hello.c
+        $(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ $^ -lm
+
+install: src/hello
+        install -D src/hello \
+                $(DESTDIR)$(prefix)/bin/hello
+        install -m 644 -D data/hello.desktop \
+                $(DESTDIR)$(prefix)/share/applications/hello.desktop
+        install -m 644 -D data/hello.png \
+                $(DESTDIR)$(prefix)/share/pixmaps/hello.png
+        install -m 644 -D man/hello.1 \
+                $(DESTDIR)$(prefix)/share/man/man1/hello.1
+
+clean:
+        -rm -f src/hello
+
+distclean: clean
+
+uninstall:
+        -rm -f $(DESTDIR)$(prefix)/bin/hello
+        -rm -f $(DESTDIR)$(prefix)/share/applications/hello.desktop
+        -rm -f $(DESTDIR)$(prefix)/share/pixmaps/hello.png
+        -rm -f $(DESTDIR)$(prefix)/share/man/man1/hello.1
+
+.PHONY: all install clean distclean uninstall</pre>
+        <p>
+</p>
+        <p>請注意，此 <span class="strong"><strong>Makefile</strong></span> 含有正確的手冊頁、桌面檔案、桌面圖示的 <span class="strong"><strong>install</strong></span> 物件。</p>
+        <p>讓我們使用 <span class="strong"><strong>debmake</strong></span> 命令打包。</p>
+        <pre class="screen"> $ cd debhello-1.4
+ $ debmake
+I: set parameters
+I: sanity check of parameters
+I: pkg="debhello", ver="1.4", rev="1"
+I: *** start packaging in "debhello-1.4". ***
+I: provide debhello_1.4.orig.tar.gz for non-native Debian package
+I: pwd = "/path/to"
+I: $ ln -sf debhello-1.4.tar.gz debhello_1.4.orig.tar.gz
+I: pwd = "/path/to/debhello-1.4"
+I: parse binary package settings:
+I: binary package=debhello Type=bin / Arch=any M-A=foreign
+...</pre>
+        <p>其餘的工作與 <a class="xref" href="ch04.zh-tw.html#step-debmake" title="4.5. 第二步：使用 debmake 產生模板檔案">節 4.5, “第二步：使用 debmake 產生模板檔案”</a> 中的幾乎一致。</p>
+        <p>像 <a class="xref" href="ch04.zh-tw.html#step-maintainer" title="4.6. 第三步：編輯模板檔案">節 4.6, “第三步：編輯模板檔案”</a> 中所寫的一樣，讓我們這些維護者來把這個 Debian 套件做的更好。</p>
+        <p>如果環境變數 <span class="strong"><strong>DEB_BUILD_MAINT_OPTIONS</strong></span> 沒有在 <span class="strong"><strong>debian/rules</strong></span> 檔案中進行匯出，lintian 會在連結 <span class="strong"><strong>libm</strong></span> 時丟擲警告：“W: debhello: hardening-no-relro usr/bin/hello”。</p>
+        <p><span class="strong"><strong>debian/control</strong></span> 檔案與 <a class="xref" href="ch04.zh-tw.html#step-maintainer" title="4.6. 第三步：編輯模板檔案">節 4.6, “第三步：編輯模板檔案”</a> 中的完全一致，因為 <span class="strong"><strong>libm</strong></span> 程式庫是 <span class="strong"><strong>libc6</strong></span> 程式庫的一部分，所以它總是可獲得的（優先順序：必需 / Priority: required）。</p>
+        <p>在 <span class="strong"><strong>debian/</strong></span> 目錄下還有一些其它的模板文件。它們也需要進行更新。</p>
+        <p><strong><span class="strong"><strong>debian/</strong></span> 目錄下的模板檔案。（v=1.4）：. </strong>
+</p>
+        <pre class="screen"> $ tree debhello-1.4/debian
+debhello-1.4/debian
+├── README.Debian
+├── changelog
+├── compat
+├── control
+├── copyright
+├── patches
+│   └── series
+├── rules
+├── source
+│   ├── format
+│   └── local-options
+└── watch
+
+2 directories, 10 files</pre>
+        <p>
+</p>
+        <p>其餘的打包步驟與 <a class="xref" href="ch04.zh-tw.html#step-debuild" title="4.7. 第四步：使用 debuild 構建套件">節 4.7, “第四步：使用 debuild 構建套件”</a> 中的基本一致。</p>
+        <p>此處是生成的二進位制包的依賴項列表。</p>
+        <p><strong>生成的二進位制包的依賴項列表（v=1.4）：. </strong>
+</p>
+        <pre class="screen"> $ dpkg -f debhello_1.4-1_amd64.deb pre-depends depends recommends conflicts ...
+Depends: libc6 (&gt;= 2.3.4)</pre>
+        <p>
+</p>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="configure-single"/>8.8. Makefile.in + configure（單個二進位制套件）</h2>
+            </div>
+          </div>
+        </div>
+        <p>這裡給出了從簡單的 C 語言原始碼建立簡單的 Debian 套件的例子，並假設上游使用了 <span class="strong"><strong>Makefile.in</strong></span> 和 <span class="strong"><strong>configure</strong></span> 作為構建系統。</p>
+        <p>此處的原始碼範例是 <a class="xref" href="ch08.zh-tw.html#makefile-single" title="8.7. Makefile（單個二進位制套件）">節 8.7, “Makefile（單個二進位制套件）”</a> 中的原始碼的增強版本。它也有一個外部連結程式庫 <span class="strong"><strong>libm</strong></span>，並且它的原始碼可以使用 <span class="strong"><strong>configure</strong></span> 指令碼進行配置，然後生成相應的 <span class="strong"><strong>Makefile</strong></span>、<span class="strong"><strong>src/config.h</strong></span> 檔案。</p>
+        <p>讓我們假設上游原始碼包為 <span class="strong"><strong>debhello-1.5.tar.gz</strong></span>。</p>
+        <p>此型別的原始碼旨在作為非系統檔案安裝，例如：</p>
+        <pre class="screen"> $ tar -xzmf debhello-1.5.tar.gz
+ $ cd debhello-1.5
+ $ ./configure --with-math
+ $ make
+ $ make install</pre>
+        <p>讓我們取得原始碼並製作 Debian 套件。</p>
+        <p><strong>下載 <span class="strong"><strong>debhello-1.5.tar.gz</strong></span>. </strong>
+</p>
+        <pre class="screen"> $ wget http://www.example.org/download/debhello-1.5.tar.gz
+ ...
+ $ tar -xzmf debhello-1.5.tar.gz
+ $ tree
+.
+├── debhello-1.5
+│   ├── LICENSE
+│   ├── Makefile.in
+│   ├── configure
+│   ├── data
+│   │   ├── hello.desktop
+│   │   └── hello.png
+│   ├── man
+│   │   └── hello.1
+│   └── src
+│       └── hello.c
+└── debhello-1.5.tar.gz
+
+4 directories, 8 files</pre>
+        <p>
+</p>
+        <p>此處的原始碼如下所示。</p>
+        <p><strong><span class="strong"><strong>src/hello.c</strong></span>（v=1.5）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.5/src/hello.c
+#include "config.h"
+#ifdef WITH_MATH
+#  include &lt;math.h&gt;
+#endif
+#include &lt;stdio.h&gt;
+int
+main()
+{
+        printf("Hello, I am " PACKAGE_AUTHOR "!\n");
+#ifdef WITH_MATH
+        printf("4.0 * atan(1.0) = %10f8\n", 4.0*atan(1.0));
+#else
+        printf("I can't do MATH!\n");
+#endif
+        return 0;
+}</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>Makefile.in</strong></span>（v=1.5）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.5/Makefile.in
+prefix = @prefix@
+
+all: src/hello
+
+src/hello: src/hello.c
+        $(CC) @VERBOSE@ \
+                $(CPPFLAGS) \
+                $(CFLAGS) \
+                $(LDFLAGS) \
+                -o $@ $^ \
+                @LINKLIB@
+
+install: src/hello
+        install -D src/hello \
+                $(DESTDIR)$(prefix)/bin/hello
+        install -m 644 -D data/hello.desktop \
+                $(DESTDIR)$(prefix)/share/applications/hello.desktop
+        install -m 644 -D data/hello.png \
+                $(DESTDIR)$(prefix)/share/pixmaps/hello.png
+        install -m 644 -D man/hello.1 \
+                $(DESTDIR)$(prefix)/share/man/man1/hello.1
+
+clean:
+        -rm -f src/hello
+
+distclean: clean
+
+uninstall:
+        -rm -f $(DESTDIR)$(prefix)/bin/hello
+        -rm -f $(DESTDIR)$(prefix)/share/applications/hello.desktop
+        -rm -f $(DESTDIR)$(prefix)/share/pixmaps/hello.png
+        -rm -f $(DESTDIR)$(prefix)/share/man/man1/hello.1
+
+.PHONY: all install clean distclean uninstall</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>configure</strong></span>（v=1.5）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.5/configure
+#!/bin/sh -e
+# default values
+PREFIX="/usr/local"
+VERBOSE=""
+WITH_MATH="0"
+LINKLIB=""
+PACKAGE_AUTHOR="John Doe"
+
+# parse arguments
+while [ "${1}" != "" ]; do
+  VAR="${1%=*}" # Drop suffix =*
+  VAL="${1#*=}" # Drop prefix *=
+  case "${VAR}" in
+  --prefix)
+    PREFIX="${VAL}"
+    ;;
+  --verbose|-v)
+    VERBOSE="-v"
+    ;;
+  --with-math)
+    WITH_MATH="1"
+    LINKLIB="-lm"
+    ;;
+  --author)
+    PACKAGE_AUTHOR="${VAL}"
+    ;;
+  *)
+    echo "W: Unknown argument: ${1}"
+  esac
+  shift
+done
+
+# setup configured Makefile and src/config.h
+sed -e "s,@prefix@,${PREFIX}," \
+    -e "s,@VERBOSE@,${VERBOSE}," \
+    -e "s,@LINKLIB@,${LINKLIB}," \
+    &lt;Makefile.in &gt;Makefile
+if [ "${WITH_MATH}" = 1 ]; then
+echo "#define WITH_MATH" &gt;src/config.h
+else
+echo "/* not defined: WITH_MATH */" &gt;src/config.h
+fi
+echo "#define PACKAGE_AUTHOR \"${PACKAGE_AUTHOR}\"" &gt;&gt;src/config.h</pre>
+        <p>
+</p>
+        <p>請注意，<span class="strong"><strong>configure</strong></span> 命令替換 <span class="strong"><strong>Makefile.in</strong></span> 檔案中的 <span class="strong"><strong>@…@</strong></span> 字串以生成 <span class="strong"><strong>Makefile</strong></span> 與 <span class="strong"><strong>src/config.h</strong></span>。</p>
+        <p>讓我們使用 <span class="strong"><strong>debmake</strong></span> 命令打包。</p>
+        <pre class="screen"> $ cd debhello-1.5
+ $ debmake
+I: set parameters
+I: sanity check of parameters
+I: pkg="debhello", ver="1.5", rev="1"
+I: *** start packaging in "debhello-1.5". ***
+I: provide debhello_1.5.orig.tar.gz for non-native Debian package
+I: pwd = "/path/to"
+I: $ ln -sf debhello-1.5.tar.gz debhello_1.5.orig.tar.gz
+I: pwd = "/path/to/debhello-1.5"
+I: parse binary package settings:
+I: binary package=debhello Type=bin / Arch=any M-A=foreign
+...</pre>
+        <p>結果與 <a class="xref" href="ch04.zh-tw.html#step-debmake" title="4.5. 第二步：使用 debmake 產生模板檔案">節 4.5, “第二步：使用 debmake 產生模板檔案”</a> 中的相似，但是並不完全一致。</p>
+        <p>讓我們來檢查一下自動產生的模板檔案。</p>
+        <p><strong><span class="strong"><strong>debian/rules</strong></span>（模板檔案，v=1.5）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.5/debian/rules
+#!/usr/bin/make -f
+# You must remove unused comment lines for the released package.
+#export DH_VERBOSE = 1
+#export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+#export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+#export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+
+%:
+        dh $@</pre>
+        <p>
+</p>
+        <p>作為維護者，我們要把這個 Debian 套件做得更好。</p>
+        <p><strong><span class="strong"><strong>debian/rules</strong></span>（維護者版本，v=1.5）：. </strong>
+</p>
+        <pre class="screen"> $ vim debhello-1.5/debian/rules
+ ... hack, hack, hack, ...
+ $ cat debhello-1.5/debian/rules
+#!/usr/bin/make -f
+export DH_VERBOSE = 1
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+
+%:
+        dh $@
+
+override_dh_auto_configure:
+        dh_auto_configure -- \
+                --with-math \
+                --author="Osamu Aoki"</pre>
+        <p>
+</p>
+        <p>在 <span class="strong"><strong>debian/</strong></span> 目錄下還有一些其它的模板文件。它們也需要進行更新。</p>
+        <p>其餘的打包步驟與 <a class="xref" href="ch04.zh-tw.html#step-debuild" title="4.7. 第四步：使用 debuild 構建套件">節 4.7, “第四步：使用 debuild 構建套件”</a> 中的基本一致。</p>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="autotools-single"/>8.9. Autotools（單個二進位制檔案）</h2>
+            </div>
+          </div>
+        </div>
+        <p>這裡給出了從簡單的 C 語言原始碼建立簡單的 Debian 套件的例子，並假設上游使用了 Autotools = Autoconf （<span class="strong"><strong>Makefile.am</strong></span> 和 <span class="strong"><strong>configure.ac</strong></span>） 作為構建系統。參見 <a class="xref" href="ch05.zh-tw.html#autotools" title="5.16.1. Autotools">節 5.16.1, “Autotools”</a>。</p>
+        <p>此種原始碼通常也帶有上游自動生成的 <span class="strong"><strong>Makefile.in</strong></span> 和 <span class="strong"><strong>configure</strong></span> 檔案。在 <span class="strong"><strong>autotools-dev</strong></span> 套件的幫助下，我們可以按 <a class="xref" href="ch08.zh-tw.html#configure-single" title="8.8. Makefile.in + configure（單個二進位制套件）">節 8.8, “Makefile.in + configure（單個二進位制套件）”</a> 中所介紹的，使用這些檔案進行打包。</p>
+        <p>更好的做法是，如果上游提供的 <span class="strong"><strong>Makefile.am</strong></span> 和 <span class="strong"><strong>configure.ac</strong></span> 相容最新版本，我們可以使用最新的 Autoconf 和 Automake 套件重新生成這些（Makefile 和 configure）檔案。這麼做有利於移植到新的 CPU 架構上等優勢。此項工作可以使用帶有 “<span class="strong"><strong>--with autoreconf</strong></span>” 選項的 <span class="strong"><strong>dh</strong></span> 命令來自動化。</p>
+        <p>讓我們假設上游的原始碼包為 <span class="strong"><strong>debhello-1.6.tar.gz</strong></span>。</p>
+        <p>此型別的原始碼旨在作為非系統檔案安裝，例如：</p>
+        <pre class="screen"> $ tar -xzmf debhello-1.6.tar.gz
+ $ cd debhello-1.6
+ $ autoreconf -ivf # optional
+ $ ./configure --with-math
+ $ make
+ $ make install</pre>
+        <p>讓我們取得原始碼並製作 Debian 套件。</p>
+        <p><strong>下載 <span class="strong"><strong>debhello-1.6.tar.gz</strong></span>. </strong>
+</p>
+        <pre class="screen"> $ wget http://www.example.org/download/debhello-1.6.tar.gz
+ ...
+ $ tar -xzmf debhello-1.6.tar.gz
+ $ tree
+.
+├── debhello-1.6
+│   ├── Makefile.am
+│   ├── configure.ac
+│   ├── data
+│   │   ├── hello.desktop
+│   │   └── hello.png
+│   ├── man
+│   │   ├── Makefile.am
+│   │   └── hello.1
+│   └── src
+│       ├── Makefile.am
+│       └── hello.c
+└── debhello-1.6.tar.gz
+
+4 directories, 9 files</pre>
+        <p>
+</p>
+        <p>此處的原始碼如下所示。</p>
+        <p><strong><span class="strong"><strong>src/hello.c</strong></span>（v=1.6）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.6/src/hello.c
+#include "config.h"
+#ifdef WITH_MATH
+#  include &lt;math.h&gt;
+#endif
+#include &lt;stdio.h&gt;
+int
+main()
+{
+        printf("Hello, I am " PACKAGE_AUTHOR "!\n");
+#ifdef WITH_MATH
+        printf("4.0 * atan(1.0) = %10f8\n", 4.0*atan(1.0));
+#else
+        printf("I can't do MATH!\n");
+#endif
+        return 0;
+}</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>Makefile.am</strong></span>（v=1.6）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.6/Makefile.am
+SUBDIRS = src man
+ $ cat debhello-1.6/man/Makefile.am
+dist_man_MANS = hello.1
+ $ cat debhello-1.6/src/Makefile.am
+bin_PROGRAMS = hello
+hello_SOURCES = hello.c</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>configure.ac</strong></span>（v=1.6）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.6/configure.ac
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+AC_PREREQ([2.69])
+AC_INIT([debhello],[2.1],[foo@example.org])
+AC_CONFIG_SRCDIR([src/hello.c])
+AC_CONFIG_HEADERS([config.h])
+echo "Standard customization chores"
+AC_CONFIG_AUX_DIR([build-aux])
+AM_INIT_AUTOMAKE([foreign])
+# Add #define PACKAGE_AUTHOR ... in config.h with a comment
+AC_DEFINE(PACKAGE_AUTHOR, ["Osamu Aoki"], [Define PACKAGE_AUTHOR])
+echo "Add --with-math option functionality to ./configure"
+AC_ARG_WITH([math],
+  [AS_HELP_STRING([--with-math],
+    [compile with math library  @&lt;:@default=yes@:&gt;@])],
+  [],
+  [with_math="yes"]
+  )
+echo "==== withval   := \"$withval\""
+echo "==== with_math := \"$with_math\""
+# m4sh if-else construct
+AS_IF([test "x$with_math" != "xno"],[
+  echo "==== Check include: math.h"
+  AC_CHECK_HEADER(math.h,[],[
+    AC_MSG_ERROR([Couldn't find math.h.] )
+  ])
+  echo "==== Check library: libm"
+  AC_SEARCH_LIBS(atan, [m])
+  #AC_CHECK_LIB(m, atan)
+  echo "==== Build with LIBS := \"$LIBS\""
+  AC_DEFINE(WITH_MATH, [1], [Build with the math library])
+],[
+  echo "==== Skip building with math.h."
+  AH_TEMPLATE(WITH_MATH, [Build without the math library])
+])
+# Checks for programs.
+AC_PROG_CC
+AC_CONFIG_FILES([Makefile
+                 man/Makefile
+                 src/Makefile])
+AC_OUTPUT</pre>
+        <p>
+</p>
+        <div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;">
+          <table border="0" summary="Tip">
+            <tr>
+              <td rowspan="2" align="center" valign="top">
+                <img alt="[提示]" src="images/tip.png"/>
+              </td>
+              <th align="left">提示</th>
+            </tr>
+            <tr>
+              <td align="left" valign="top">
+                <p>如果沒有像上述例子中，在 <span class="strong"><strong>AM_INIT_AUTOMAKE()</strong></span> 中指定嚴格級別（strictness level）為 “<span class="strong"><strong>foreign</strong></span>”，那麼 <span class="strong"><strong>automake</strong></span> 會預設嚴格級別為 “<span class="strong"><strong>gnu</strong></span>”，並需要在頂級目錄中有若干檔案。參見 <span class="strong"><strong>automake</strong></span> 文件的 “3.2 Strictness”。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <p>讓我們使用 <span class="strong"><strong>debmake</strong></span> 命令打包。</p>
+        <pre class="screen"> $ cd debhello-1.6
+ $ debmake
+I: set parameters
+I: sanity check of parameters
+I: pkg="debhello", ver="1.6", rev="1"
+I: *** start packaging in "debhello-1.6". ***
+I: provide debhello_1.6.orig.tar.gz for non-native Debian package
+I: pwd = "/path/to"
+I: $ ln -sf debhello-1.6.tar.gz debhello_1.6.orig.tar.gz
+I: pwd = "/path/to/debhello-1.6"
+I: parse binary package settings:
+I: binary package=debhello Type=bin / Arch=any M-A=foreign
+...</pre>
+        <p>結果與 <a class="xref" href="ch08.zh-tw.html#configure-single" title="8.8. Makefile.in + configure（單個二進位制套件）">節 8.8, “Makefile.in + configure（單個二進位制套件）”</a> 中的類似，但是並不完全一致。</p>
+        <p>讓我們來檢查一下自動產生的模板檔案。</p>
+        <p><strong><span class="strong"><strong>debian/rules</strong></span>（模板檔案，v=1.6）: </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.6/debian/rules
+#!/usr/bin/make -f
+# You must remove unused comment lines for the released package.
+#export DH_VERBOSE = 1
+#export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+#export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+#export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+
+%:
+        dh $@ --with autoreconf
+
+#override_dh_install:
+#       dh_install --list-missing -X.la -X.pyc -X.pyo</pre>
+        <p>
+</p>
+        <p>作為維護者，我們要把這個 Debian 套件做得更好。</p>
+        <p><strong><span class="strong"><strong>debian/rules</strong></span>（維護者版本，v=1.6）：. </strong>
+</p>
+        <pre class="screen"> $ vim debhello-1.6/debian/rules
+ ... hack, hack, hack, ...
+ $ cat debhello-1.6/debian/rules
+#!/usr/bin/make -f
+export DH_VERBOSE = 1
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+
+%:
+        dh $@ --with autoreconf
+
+override_dh_auto_configure:
+        dh_auto_configure -- \
+                --with-math</pre>
+        <p>
+</p>
+        <p>在 <span class="strong"><strong>debian/</strong></span> 目錄下還有一些其它的模板文件。它們也需要進行更新。</p>
+        <p>其餘的打包步驟與 <a class="xref" href="ch04.zh-tw.html#step-debuild" title="4.7. 第四步：使用 debuild 構建套件">節 4.7, “第四步：使用 debuild 構建套件”</a> 中的基本一致。</p>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="cmake-single"/>8.10. CMake（單個二進位制套件）</h2>
+            </div>
+          </div>
+        </div>
+        <p>此處是一個從簡單的 C 語言原始碼程式生成簡單的 Debian 套件的範例，我們假設上游使用 CMake（<span class="strong"><strong>CMakeLists.txt</strong></span> 和若干形似 <span class="strong"><strong>config.h.in</strong></span> 的檔案）作為構建系統。參見 <a class="xref" href="ch05.zh-tw.html#cmake" title="5.16.2. CMake">節 5.16.2, “CMake”</a>。</p>
+        <p><span class="strong"><strong>cmake</strong></span> 命令根據 <span class="strong"><strong>CMakeLists.txt</strong></span> 檔案和它的 <span class="strong"><strong>-D</strong></span> 選項來生成 <span class="strong"><strong>Makefile</strong></span> 檔案。此外，它還會根據 <span class="strong"><strong>configure_file(…)</strong></span> 中指定的條目來替換帶有 <span class="strong"><strong>@…@</strong></span> 的字串、更改 <span class="strong"><strong>#cmakedefine …</strong></span>。</p>
+        <p>讓我們假設上游的原始碼包為 <span class="strong"><strong>debhello-1.7.tar.gz</strong></span>。</p>
+        <p>此型別的原始碼旨在作為非系統檔案安裝，例如：</p>
+        <pre class="screen"> $ tar -xzmf debhello-1.7.tar.gz
+ $ cd debhello-1.7
+ $ mkdir obj-x86_64-linux-gnu # for out-of-tree build
+ $ cd obj-x86_64-linux-gnu
+ $ cmake ..
+ $ make
+ $ make install</pre>
+        <p>讓我們取得原始碼並製作 Debian 套件。</p>
+        <p><strong>下載 <span class="strong"><strong>debhello-1.7.tar.gz</strong></span>. </strong>
+</p>
+        <pre class="screen"> $ wget http://www.example.org/download/debhello-1.7.tar.gz
+ ...
+ $ tar -xzmf debhello-1.7.tar.gz
+ $ tree
+.
+├── debhello-1.7
+│   ├── CMakeLists.txt
+│   ├── data
+│   │   ├── hello.desktop
+│   │   └── hello.png
+│   ├── man
+│   │   ├── CMakeLists.txt
+│   │   └── hello.1
+│   └── src
+│       ├── CMakeLists.txt
+│       ├── config.h.in
+│       └── hello.c
+└── debhello-1.7.tar.gz
+
+4 directories, 9 files</pre>
+        <p>
+</p>
+        <p>此處的原始碼如下所示。</p>
+        <p><strong><span class="strong"><strong>src/hello.c</strong></span>（v=1.7）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.7/src/hello.c
+#include "config.h"
+#ifdef WITH_MATH
+#  include &lt;math.h&gt;
+#endif
+#include &lt;stdio.h&gt;
+int
+main()
+{
+        printf("Hello, I am " PACKAGE_AUTHOR "!\n");
+#ifdef WITH_MATH
+        printf("4.0 * atan(1.0) = %10f8\n", 4.0*atan(1.0));
+#else
+        printf("I can't do MATH!\n");
+#endif
+        return 0;
+}</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>src/config.h.in</strong></span>（v=1.7）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.7/src/config.h.in
+/* name of the package author */
+#define PACKAGE_AUTHOR "@PACKAGE_AUTHOR@"
+/* math library support */
+#cmakedefine WITH_MATH</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>CMakeLists.txt</strong></span>（v=1.7）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.7/CMakeLists.txt
+cmake_minimum_required(VERSION 2.8)
+project(debhello)
+set(PACKAGE_AUTHOR "Osamu Aoki")
+add_subdirectory(src)
+add_subdirectory(man)
+ $ cat debhello-1.7/man/CMakeLists.txt
+install(
+  FILES ${CMAKE_CURRENT_SOURCE_DIR}/hello.1
+  DESTINATION share/man/man1
+)
+ $ cat debhello-1.7/src/CMakeLists.txt
+# Always define HAVE_CONFIG_H
+add_definitions(-DHAVE_CONFIG_H)
+# Interactively define WITH_MATH
+option(WITH_MATH "Build with math support" OFF)
+#variable_watch(WITH_MATH)
+# Generate config.h from config.h.in
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/config.h.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/config.h"
+)
+include_directories("${CMAKE_CURRENT_BINARY_DIR}")
+add_executable(hello hello.c)
+install(TARGETS hello
+  RUNTIME DESTINATION bin
+)</pre>
+        <p>
+</p>
+        <p>讓我們使用 <span class="strong"><strong>debmake</strong></span> 命令打包。</p>
+        <pre class="screen"> $ cd debhello-1.7
+ $ debmake
+I: set parameters
+I: sanity check of parameters
+I: pkg="debhello", ver="1.7", rev="1"
+I: *** start packaging in "debhello-1.7". ***
+I: provide debhello_1.7.orig.tar.gz for non-native Debian package
+I: pwd = "/path/to"
+I: $ ln -sf debhello-1.7.tar.gz debhello_1.7.orig.tar.gz
+I: pwd = "/path/to/debhello-1.7"
+I: parse binary package settings:
+I: binary package=debhello Type=bin / Arch=any M-A=foreign
+...</pre>
+        <p>結果與 <a class="xref" href="ch08.zh-tw.html#configure-single" title="8.8. Makefile.in + configure（單個二進位制套件）">節 8.8, “Makefile.in + configure（單個二進位制套件）”</a> 中的類似，但是並不完全一致。</p>
+        <p>讓我們來檢查一下自動產生的模板檔案。</p>
+        <p><strong><span class="strong"><strong>debian/rules</strong></span>（模板檔案，v=1.7）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.7/debian/rules
+#!/usr/bin/make -f
+# You must remove unused comment lines for the released package.
+#export DH_VERBOSE = 1
+#export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+#export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+#export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+
+%:
+        dh $@
+
+#override_dh_auto_configure:
+#       dh_auto_configure -- \
+#             -DCMAKE_LIBRARY_ARCHITECTURE="$(DEB_TARGET_MULTIARCH)"</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>debian/control</strong></span>（模板檔案，v=1.7）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-1.7/debian/control
+Source: debhello
+Section: unknown
+Priority: optional
+Maintainer: "Firstname Lastname" &lt;email.address@example.org&gt;
+Build-Depends: cmake, debhelper (&gt;=11~)
+Standards-Version: 4.1.4
+Homepage: &lt;insert the upstream URL, if relevant&gt;
+
+Package: debhello
+Architecture: any
+Multi-Arch: foreign
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: auto-generated package by debmake
+ This Debian binary package was auto-generated by the
+ debmake(1) command provided by the debmake package.</pre>
+        <p>
+</p>
+        <p>作為維護者，我們要把這個 Debian 套件做得更好。</p>
+        <p><strong><span class="strong"><strong>debian/rules</strong></span>（維護者版本，v=1.7）：. </strong>
+</p>
+        <pre class="screen"> $ vim debhello-1.7/debian/rules
+ ... hack, hack, hack, ...
+ $ cat debhello-1.7/debian/rules
+#!/usr/bin/make -f
+export DH_VERBOSE = 1
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+
+%:
+        dh $@
+
+override_dh_auto_configure:
+        dh_auto_configure -- -DWITH-MATH=1</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>debian/control</strong></span>（維護者版本，v=1.7）：. </strong>
+</p>
+        <pre class="screen"> $ vim debhello-1.7/debian/control
+ ... hack, hack, hack, ...
+ $ cat debhello-1.7/debian/control
+Source: debhello
+Section: devel
+Priority: optional
+Maintainer: Osamu Aoki &lt;osamu@debian.org&gt;
+Build-Depends: cmake, debhelper (&gt;=11~)
+Standards-Version: 4.3.0
+Homepage: https://salsa.debian.org/debian/debmake-doc
+
+Package: debhello
+Architecture: any
+Multi-Arch: foreign
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: example package in the debmake-doc package
+ This is an example package to demonstrate Debian packaging using
+ the debmake command.
+ .
+ The generated Debian package uses the dh command offered by the
+ debhelper package and the dpkg source format `3.0 (quilt)'.</pre>
+        <p>
+</p>
+        <p>在 <span class="strong"><strong>debian/</strong></span> 目錄下還有一些其它的模板文件。它們也需要進行更新。</p>
+        <p>其餘的打包工作與 <a class="xref" href="ch08.zh-tw.html#configure-single" title="8.8. Makefile.in + configure（單個二進位制套件）">節 8.8, “Makefile.in + configure（單個二進位制套件）”</a> 中的近乎一致。</p>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="autotools-multi"/>8.11. Autotools（多個二進位制套件）</h2>
+            </div>
+          </div>
+        </div>
+        <p>此處是從一個簡單的 C 語言原始碼程式建立一個包含可執行套件、共享程式庫包、開發檔案包和除錯符號包的一系列 Debian 二進位制包的範例，我們假設上游使用 Autotools = Autoconf 和 Automake （使用 <span class="strong"><strong>Makefile.am</strong></span> 和 <span class="strong"><strong>configure.ac</strong></span> 作為輸入檔案）作為構建系統。參見 <a class="xref" href="ch05.zh-tw.html#autotools" title="5.16.1. Autotools">節 5.16.1, “Autotools”</a>。</p>
+        <p>讓我們用與 <a class="xref" href="ch08.zh-tw.html#autotools-single" title="8.9. Autotools（單個二進位制檔案）">節 8.9, “Autotools（單個二進位制檔案）”</a> 中的相同的方式打包。</p>
+        <p>讓我們假設上游原始碼包為 <span class="strong"><strong>debhello-2.0.tar.gz</strong></span>。</p>
+        <p>此型別的原始碼旨在作為非系統檔案安裝，例如：</p>
+        <pre class="screen"> $ tar -xzmf debhello-2.0.tar.gz
+ $ cd debhello-2.0
+ $ autoreconf -ivf # optional
+ $ ./configure --with-math
+ $ make
+ $ make install</pre>
+        <p>讓我們取得原始碼並製作 Debian 套件。</p>
+        <p><strong>下載 <span class="strong"><strong>debhello-2.0.tar.gz</strong></span>. </strong>
+</p>
+        <pre class="screen"> $ wget http://www.example.org/download/debhello-2.0.tar.gz
+ ...
+ $ tar -xzmf debhello-2.0.tar.gz
+ $ tree
+.
+├── debhello-2.0
+│   ├── Makefile.am
+│   ├── configure.ac
+│   ├── data
+│   │   ├── hello.desktop
+│   │   └── hello.png
+│   ├── lib
+│   │   ├── Makefile.am
+│   │   ├── sharedlib.c
+│   │   └── sharedlib.h
+│   ├── man
+│   │   ├── Makefile.am
+│   │   └── hello.1
+│   └── src
+│       ├── Makefile.am
+│       └── hello.c
+└── debhello-2.0.tar.gz
+
+5 directories, 12 files</pre>
+        <p>
+</p>
+        <p>此處的原始碼如下所示。</p>
+        <p><strong><span class="strong"><strong>src/hello.c</strong></span>（v=2.0）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-2.0/src/hello.c
+#include "config.h"
+#include &lt;stdio.h&gt;
+#include &lt;sharedlib.h&gt;
+int
+main()
+{
+        printf("Hello, I am " PACKAGE_AUTHOR "!\n");
+        sharedlib();
+        return 0;
+}</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>lib/sharedlib.h</strong></span> 與 <span class="strong"><strong>lib/sharedlib.c</strong></span>（v=1.6）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-2.0/lib/sharedlib.h
+int sharedlib();
+ $ cat debhello-2.0/lib/sharedlib.c
+#include &lt;stdio.h&gt;
+int
+sharedlib()
+{
+        printf("This is a shared library!\n");
+        return 0;
+}</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>Makefile.am</strong></span>（v=2.0）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-2.0/Makefile.am
+# recursively process `Makefile.am` in SUBDIRS
+SUBDIRS = lib src man
+ $ cat debhello-2.0/man/Makefile.am
+# manpages (distributed in the source package)
+dist_man_MANS = hello.1
+ $ cat debhello-2.0/lib/Makefile.am
+# libtool librares to be produced
+lib_LTLIBRARIES = libsharedlib.la
+
+# source files used for lib_LTLIBRARIES
+libsharedlib_la_SOURCES = sharedlib.c
+
+# C pre-processor flags used for lib_LTLIBRARIES
+#libsharedlib_la_CPPFLAGS =
+
+# Headers files to be installed in &lt;prefix&gt;/include
+include_HEADERS = sharedlib.h
+
+# Versioning Libtool Libraries with version triplets
+libsharedlib_la_LDFLAGS = -version-info 1:0:0
+ $ cat debhello-2.0/src/Makefile.am
+# program executables to be produced
+bin_PROGRAMS = hello
+
+# source files used for bin_PROGRAMS
+hello_SOURCES = hello.c
+
+# C pre-processor flags used for bin_PROGRAMS
+AM_CPPFLAGS = -I$(srcdir) -I$(top_srcdir)/lib
+
+# Extra options for the linker for hello
+# hello_LDFLAGS =
+
+# Libraries the `hello` binary to be linked
+hello_LDADD = $(top_srcdir)/lib/libsharedlib.la</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>configure.ac</strong></span>（v=2.0）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-2.0/configure.ac
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+AC_PREREQ([2.69])
+AC_INIT([debhello],[2.2],[foo@example.org])
+AC_CONFIG_SRCDIR([src/hello.c])
+AC_CONFIG_HEADERS([config.h])
+echo "Standard customization chores"
+AC_CONFIG_AUX_DIR([build-aux])
+
+AM_INIT_AUTOMAKE([foreign])
+
+# Set default to --enable-shared --disable-static
+LT_INIT([shared disable-static])
+
+# find the libltdl sources in the libltdl sub-directory
+LT_CONFIG_LTDL_DIR([libltdl])
+
+# choose one
+LTDL_INIT([recursive])
+#LTDL_INIT([subproject])
+#LTDL_INIT([nonrecursive])
+
+# Add #define PACKAGE_AUTHOR ... in config.h with a comment
+AC_DEFINE(PACKAGE_AUTHOR, ["Osamu Aoki"], [Define PACKAGE_AUTHOR])
+# Checks for programs.
+AC_PROG_CC
+
+# only for the recursive case
+AC_CONFIG_FILES([Makefile
+                 lib/Makefile
+                 man/Makefile
+                 src/Makefile])
+AC_OUTPUT</pre>
+        <p>
+</p>
+        <p>讓我們用 <span class="strong"><strong>debmake</strong></span> 命令將這些打包到多個包中：</p>
+        <div class="itemizedlist">
+          <ul class="itemizedlist">
+            <li class="listitem"><span class="strong"><strong>debhello</strong></span>: type = <span class="strong"><strong>bin</strong></span></li>
+            <li class="listitem"><span class="strong"><strong>libsharedlib1</strong></span>: type = <span class="strong"><strong>lib</strong></span></li>
+            <li class="listitem"><span class="strong"><strong>libsharedlib-dev</strong></span>: type = <span class="strong"><strong>dev</strong></span></li>
+          </ul>
+        </div>
+        <p>此處的 <span class="strong"><strong>-b',libsharedlib1,libsharedlib-dev'</strong></span> 選項是用以指明生成的二進位制包。</p>
+        <pre class="screen"> $ cd debhello-2.0
+ $ debmake -b',libsharedlib1,libsharedlib-dev'
+I: set parameters
+I: sanity check of parameters
+I: pkg="debhello", ver="2.0", rev="1"
+I: *** start packaging in "debhello-2.0". ***
+I: provide debhello_2.0.orig.tar.gz for non-native Debian package
+I: pwd = "/path/to"
+I: $ ln -sf debhello-2.0.tar.gz debhello_2.0.orig.tar.gz
+I: pwd = "/path/to/debhello-2.0"
+I: parse binary package settings: ,libsharedlib1,libsharedlib-dev
+I: binary package=debhello Type=bin / Arch=any M-A=foreign
+I: binary package=libsharedlib1 Type=lib / Arch=any M-A=same
+I: binary package=libsharedlib-dev Type=dev / Arch=any M-A=same
+I: analyze the source tree
+I: build_type = Autotools with autoreconf
+...</pre>
+        <p>結果與 <a class="xref" href="ch08.zh-tw.html#configure-single" title="8.8. Makefile.in + configure（單個二進位制套件）">節 8.8, “Makefile.in + configure（單個二進位制套件）”</a> 中的相似，但是這個具有更多的模板檔案。</p>
+        <p>讓我們來檢查一下自動產生的模板檔案。</p>
+        <p><strong><span class="strong"><strong>debian/rules</strong></span>（模板檔案，v=2.0）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-2.0/debian/rules
+#!/usr/bin/make -f
+# You must remove unused comment lines for the released package.
+#export DH_VERBOSE = 1
+#export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+#export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+#export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+
+%:
+        dh $@ --with autoreconf
+
+#override_dh_install:
+#       dh_install --list-missing -X.la -X.pyc -X.pyo</pre>
+        <p>
+</p>
+        <p>作為維護者，我們要把這個 Debian 套件做得更好。</p>
+        <p><strong><span class="strong"><strong>debian/rules</strong></span>（維護者版本，v=2.0）：. </strong>
+</p>
+        <pre class="screen"> $ vim debhello-2.0/debian/rules
+ ... hack, hack, hack, ...
+ $ cat debhello-2.0/debian/rules
+#!/usr/bin/make -f
+export DH_VERBOSE = 1
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+
+%:
+        dh $@ --with autoreconf
+
+override_dh_install:
+        dh_install --list-missing -X.la</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>debian/control</strong></span>（維護者版本，v=2.0）：. </strong>
+</p>
+        <pre class="screen"> $ vim debhello-2.0/debian/control
+ ... hack, hack, hack, ...
+ $ cat debhello-2.0/debian/control
+Source: debhello
+Section: devel
+Priority: optional
+Maintainer: Osamu Aoki &lt;osamu@debian.org&gt;
+Build-Depends: debhelper (&gt;=11~), dh-autoreconf
+Standards-Version: 4.3.0
+Homepage: https://salsa.debian.org/debian/debmake-doc
+
+Package: debhello
+Architecture: any
+Multi-Arch: foreign
+Depends: libsharedlib1 (= ${binary:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends}
+Description: example executable package
+ This is an example package to demonstrate Debian packaging using
+ the debmake command.
+ .
+ The generated Debian package uses the dh command offered by the
+ debhelper package and the dpkg source format `3.0 (quilt)'.
+ .
+ This package provides the executable program.
+
+Package: libsharedlib1
+Section: libs
+Architecture: any
+Multi-Arch: same
+Pre-Depends: ${misc:Pre-Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: example shared library package
+ This is an example package to demonstrate Debian packaging using
+ the debmake command.
+ .
+ The generated Debian package uses the dh command offered by the
+ debhelper package and the dpkg source format `3.0 (quilt)'.
+ .
+ This package contains the shared library.
+
+Package: libsharedlib-dev
+Section: libdevel
+Architecture: any
+Multi-Arch: same
+Depends: libsharedlib1 (= ${binary:Version}), ${misc:Depends}
+Description: example development package
+ This is an example package to demonstrate Debian packaging using
+ the debmake command.
+ .
+ The generated Debian package uses the dh command offered by the
+ debhelper package and the dpkg source format `3.0 (quilt)'.
+ .
+ This package contains the development files.</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>debian/*.install</strong></span>（維護者版本，v=2.0）：. </strong>
+</p>
+        <pre class="screen"> $ vim debhello-2.0/debian/debhello.install
+ ... hack, hack, hack, ...
+ $ cat debhello-2.0/debian/debhello.install
+usr/bin/*
+usr/share/man/*
+ $ vim debhello-2.0/debian/libsharedlib1.install
+ ... hack, hack, hack, ...
+ $ cat debhello-2.0/debian/libsharedlib1.install
+usr/lib/*/*.so.*
+ $ vim debhello-2.0/debian/libsharedlib-dev.install
+ ... hack, hack, hack, ...
+ $ cat debhello-2.0/debian/libsharedlib-dev.install
+###usr/lib/*/pkgconfig/*.pc
+usr/include
+usr/lib/*/*.so</pre>
+        <p>
+</p>
+        <p>因為上游原始碼已經具有正確的自動生成的 <span class="strong"><strong>Makefile</strong></span> 檔案，所以沒有必要再去建立 <span class="strong"><strong>debian/install</strong></span> 和 <span class="strong"><strong>debian/manpages</strong></span> 文件。</p>
+        <p>在 <span class="strong"><strong>debian/</strong></span> 目錄下還有一些其它的模板文件。它們也需要進行更新。</p>
+        <p><strong><span class="strong"><strong>debian/</strong></span> 目錄下的模板檔案。（v=2.0）：. </strong>
+</p>
+        <pre class="screen"> $ tree debhello-2.0/debian
+debhello-2.0/debian
+├── README.Debian
+├── changelog
+├── compat
+├── control
+├── copyright
+├── debhello.install
+├── libsharedlib-dev.install
+├── libsharedlib1.install
+├── libsharedlib1.symbols
+├── patches
+│   └── series
+├── rules
+├── source
+│   ├── format
+│   └── local-options
+└── watch
+
+2 directories, 14 files</pre>
+        <p>
+</p>
+        <p>其餘的打包工作與 <a class="xref" href="ch08.zh-tw.html#configure-single" title="8.8. Makefile.in + configure（單個二進位制套件）">節 8.8, “Makefile.in + configure（單個二進位制套件）”</a> 中的近乎一致。</p>
+        <p>此處是生成的二進位制包的依賴項列表。</p>
+        <p><strong>生成的二進位制包的依賴項列表（v=2.0）：. </strong>
+</p>
+        <pre class="screen"> $ dpkg -f debhello_2.0-1_amd64.deb pre-depends depends recommends conflicts ...
+Depends: libsharedlib1 (= 2.0-1), libc6 (&gt;= 2.2.5)
+ $ dpkg -f libsharedlib-dev_2.0-1_amd64.deb pre-depends depends recommends co...
+Depends: libsharedlib1 (= 2.0-1)
+ $ dpkg -f libsharedlib1_2.0-1_amd64.deb pre-depends depends recommends confl...
+Depends: libc6 (&gt;= 2.2.5)</pre>
+        <p>
+</p>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="cmake-multi"/>8.12. CMake（多個二進位制套件）</h2>
+            </div>
+          </div>
+        </div>
+        <p>此處是從一個簡單的 C 語言原始碼程式建立一系列包含可執行套件、共享程式庫包、開發文件包和除錯符號包的 Debian 二進位制包的範例，我們假設上游使用 CMake（<span class="strong"><strong>CMakeLists.txt</strong></span> 和其他形如 <span class="strong"><strong>config.h.in</strong></span> 的檔案）作為構建系統。參見 <a class="xref" href="ch05.zh-tw.html#cmake" title="5.16.2. CMake">節 5.16.2, “CMake”</a>。</p>
+        <p>讓我們假設上游原始碼包為 <span class="strong"><strong>debhello-2.1.tar.gz</strong></span>。</p>
+        <p>此型別的原始碼旨在作為非系統檔案安裝，例如：</p>
+        <pre class="screen"> $ tar -xzmf debhello-2.1.tar.gz
+ $ cd debhello-2.1
+ $ mkdir obj-x86_64-linux-gnu
+ $ cd obj-x86_64-linux-gnu
+ $ cmake ..
+ $ make
+ $ make install</pre>
+        <p>讓我們取得原始碼並製作 Debian 套件。</p>
+        <p><strong>下載 <span class="strong"><strong>debhello-2.1.tar.gz</strong></span>. </strong>
+</p>
+        <pre class="screen"> $ wget http://www.example.org/download/debhello-2.1.tar.gz
+ ...
+ $ tar -xzmf debhello-2.1.tar.gz
+ $ tree
+.
+├── debhello-2.1
+│   ├── CMakeLists.txt
+│   ├── data
+│   │   ├── hello.desktop
+│   │   └── hello.png
+│   ├── lib
+│   │   ├── CMakeLists.txt
+│   │   ├── sharedlib.c
+│   │   └── sharedlib.h
+│   ├── man
+│   │   ├── CMakeLists.txt
+│   │   └── hello.1
+│   └── src
+│       ├── CMakeLists.txt
+│       ├── config.h.in
+│       └── hello.c
+└── debhello-2.1.tar.gz
+
+5 directories, 12 files</pre>
+        <p>
+</p>
+        <p>此處的原始碼如下所示。</p>
+        <p><strong><span class="strong"><strong>src/hello.c</strong></span>（v=2.1）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-2.1/src/hello.c
+#include "config.h"
+#include &lt;stdio.h&gt;
+#include &lt;sharedlib.h&gt;
+int
+main()
+{
+        printf("Hello, I am " PACKAGE_AUTHOR "!\n");
+        sharedlib();
+        return 0;
+}</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>src/config.h.in</strong></span>（v=2.1）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-2.1/src/config.h.in
+/* name of the package author */
+#define PACKAGE_AUTHOR "@PACKAGE_AUTHOR@"</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>lib/sharedlib.c</strong></span> 與 <span class="strong"><strong>lib/sharedlib.h</strong></span>（v=2.1）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-2.1/lib/sharedlib.h
+int sharedlib();
+ $ cat debhello-2.1/lib/sharedlib.c
+#include &lt;stdio.h&gt;
+int
+sharedlib()
+{
+        printf("This is a shared library!\n");
+        return 0;
+}</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>CMakeLists.txt</strong></span>（v=2.1）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-2.1/CMakeLists.txt
+cmake_minimum_required(VERSION 2.8)
+project(debhello)
+set(PACKAGE_AUTHOR "Osamu Aoki")
+add_subdirectory(lib)
+add_subdirectory(src)
+add_subdirectory(man)
+ $ cat debhello-2.1/man/CMakeLists.txt
+install(
+  FILES ${CMAKE_CURRENT_SOURCE_DIR}/hello.1
+  DESTINATION share/man/man1
+)
+ $ cat debhello-2.1/src/CMakeLists.txt
+# Always define HAVE_CONFIG_H
+add_definitions(-DHAVE_CONFIG_H)
+# Generate config.h from config.h.in
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/config.h.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/config.h"
+  )
+include_directories("${CMAKE_CURRENT_BINARY_DIR}")
+include_directories("${CMAKE_SOURCE_DIR}/lib")
+
+add_executable(hello hello.c)
+target_link_libraries(hello sharedlib)
+install(TARGETS hello
+  RUNTIME DESTINATION bin
+)</pre>
+        <p>
+</p>
+        <p>讓我們使用 <span class="strong"><strong>debmake</strong></span> 命令打包。</p>
+        <pre class="screen"> $ cd debhello-2.1
+ $ debmake -b',libsharedlib1,libsharedlib-dev'
+I: set parameters
+I: sanity check of parameters
+I: pkg="debhello", ver="2.1", rev="1"
+I: *** start packaging in "debhello-2.1". ***
+I: provide debhello_2.1.orig.tar.gz for non-native Debian package
+I: pwd = "/path/to"
+I: $ ln -sf debhello-2.1.tar.gz debhello_2.1.orig.tar.gz
+I: pwd = "/path/to/debhello-2.1"
+I: parse binary package settings: ,libsharedlib1,libsharedlib-dev
+I: binary package=debhello Type=bin / Arch=any M-A=foreign
+...</pre>
+        <p>結果與 <a class="xref" href="ch08.zh-tw.html#configure-single" title="8.8. Makefile.in + configure（單個二進位制套件）">節 8.8, “Makefile.in + configure（單個二進位制套件）”</a> 中的類似，但是並不完全一致。</p>
+        <p>讓我們來檢查一下自動產生的模板檔案。</p>
+        <p><strong><span class="strong"><strong>debian/rules</strong></span>（模板檔案，v=2.1）：. </strong>
+</p>
+        <pre class="screen"> $ cat debhello-2.1/debian/rules
+#!/usr/bin/make -f
+# You must remove unused comment lines for the released package.
+#export DH_VERBOSE = 1
+#export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+#export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+#export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+
+%:
+        dh $@
+
+#override_dh_auto_configure:
+#       dh_auto_configure -- \
+#             -DCMAKE_LIBRARY_ARCHITECTURE="$(DEB_TARGET_MULTIARCH)"</pre>
+        <p>
+</p>
+        <p>作為維護者，我們要把這個 Debian 套件做得更好。</p>
+        <p><strong><span class="strong"><strong>debian/rules</strong></span>（維護者版本，v=2.1）：. </strong>
+</p>
+        <pre class="screen"> $ vim debhello-2.1/debian/rules
+ ... hack, hack, hack, ...
+ $ cat debhello-2.1/debian/rules
+#!/usr/bin/make -f
+export DH_VERBOSE = 1
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+
+%:
+        dh $@
+
+override_dh_auto_configure:
+        dh_auto_configure -- \
+              -DCMAKE_LIBRARY_ARCHITECTURE="$(DEB_HOST_MULTIARCH)"
+
+override_dh_install:
+        dh_install --list-missing</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>debian/control</strong></span>（維護者版本，v=2.1）：. </strong>
+</p>
+        <pre class="screen"> $ vim debhello-2.1/debian/control
+ ... hack, hack, hack, ...
+ $ cat debhello-2.1/debian/control
+Source: debhello
+Section: devel
+Priority: optional
+Maintainer: Osamu Aoki &lt;osamu@debian.org&gt;
+Build-Depends: cmake, debhelper (&gt;=11~)
+Standards-Version: 4.3.0
+Homepage: https://salsa.debian.org/debian/debmake-doc
+
+Package: debhello
+Architecture: any
+Multi-Arch: foreign
+Depends: libsharedlib1 (= ${binary:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends}
+Description: example executable package
+ This is an example package to demonstrate Debian packaging using
+ the debmake command.
+ .
+ The generated Debian package uses the dh command offered by the
+ debhelper package and the dpkg source format `3.0 (quilt)'.
+ .
+ This package provides the executable program.
+
+Package: libsharedlib1
+Section: libs
+Architecture: any
+Multi-Arch: same
+Pre-Depends: ${misc:Pre-Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: example shared library package
+ This is an example package to demonstrate Debian packaging using
+ the debmake command.
+ .
+ The generated Debian package uses the dh command offered by the
+ debhelper package and the dpkg source format `3.0 (quilt)'.
+ .
+ This package contains the shared library.
+
+Package: libsharedlib-dev
+Section: libdevel
+Architecture: any
+Multi-Arch: same
+Depends: libsharedlib1 (= ${binary:Version}), ${misc:Depends}
+Description: example development package
+ This is an example package to demonstrate Debian packaging using
+ the debmake command.
+ .
+ The generated Debian package uses the dh command offered by the
+ debhelper package and the dpkg source format `3.0 (quilt)'.
+ .
+ This package contains the development files.</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>debian/*.install</strong></span>（維護者版本，v=2.1）：. </strong>
+</p>
+        <pre class="screen"> $ vim debhello-2.1/debian/debhello.install
+ ... hack, hack, hack, ...
+ $ cat debhello-2.1/debian/debhello.install
+usr/bin/*
+usr/share/man/*
+ $ vim debhello-2.1/debian/libsharedlib1.install
+ ... hack, hack, hack, ...
+ $ cat debhello-2.1/debian/libsharedlib1.install
+usr/lib/*/*.so.*
+ $ vim debhello-2.1/debian/libsharedlib-dev.install
+ ... hack, hack, hack, ...
+ $ cat debhello-2.1/debian/libsharedlib-dev.install
+###usr/lib/*/pkgconfig/*.pc
+usr/include
+usr/lib/*/*.so</pre>
+        <p>
+</p>
+        <p>需要對上游的 CMakeList.txt 進行修補，以便應對多架構的路徑。</p>
+        <p><strong><span class="strong"><strong>debian/patches/</strong></span>*（維護者版本，v=2.1）：. </strong>
+</p>
+        <pre class="screen"> ... hack, hack, hack, ...
+ $ cat debhello-2.1/debian/libsharedlib1.symbols
+libsharedlib.so.1 libsharedlib1 #MINVER#
+ sharedlib@Base 2.1</pre>
+        <p>
+</p>
+        <p>因為上游原始碼已經具有正確的自動生成的 <span class="strong"><strong>Makefile</strong></span> 檔案，所以沒有必要再去建立 <span class="strong"><strong>debian/install</strong></span> 和 <span class="strong"><strong>debian/manpages</strong></span> 文件。</p>
+        <p>在 <span class="strong"><strong>debian/</strong></span> 目錄下還有一些其它的模板文件。它們也需要進行更新。</p>
+        <p><strong><span class="strong"><strong>debian/</strong></span> 目錄下的模板檔案。（v=2.1）：. </strong>
+</p>
+        <pre class="screen"> $ tree debhello-2.1/debian
+debhello-2.1/debian
+├── README.Debian
+├── changelog
+├── compat
+├── control
+├── copyright
+├── debhello.install
+├── libsharedlib-dev.install
+├── libsharedlib1.install
+├── libsharedlib1.symbols
+├── patches
+│   ├── 000-cmake-multiarch.patch
+│   └── series
+├── rules
+├── source
+│   ├── format
+│   └── local-options
+└── watch
+
+2 directories, 15 files</pre>
+        <p>
+</p>
+        <p>其餘的打包工作與 <a class="xref" href="ch08.zh-tw.html#configure-single" title="8.8. Makefile.in + configure（單個二進位制套件）">節 8.8, “Makefile.in + configure（單個二進位制套件）”</a> 中的近乎一致。</p>
+        <p>此處是生成的二進位制包的依賴項列表。</p>
+        <p><strong>生成的二進位制包的依賴項列表（v=2.1）：. </strong>
+</p>
+        <pre class="screen"> $ dpkg -f debhello_2.1-1_amd64.deb pre-depends depends recommends conflicts ...
+Depends: libsharedlib1 (= 2.1-1), libc6 (&gt;= 2.2.5)
+ $ dpkg -f libsharedlib-dev_2.1-1_amd64.deb pre-depends depends recommends co...
+Depends: libsharedlib1 (= 2.1-1)
+ $ dpkg -f libsharedlib1_2.1-1_amd64.deb pre-depends depends recommends confl...
+Depends: libc6 (&gt;= 2.2.5)</pre>
+        <p>
+</p>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="i18n-example"/>8.13. 國際化</h2>
+            </div>
+          </div>
+        </div>
+        <p>此處是更新 <a class="xref" href="ch08.zh-tw.html#autotools-multi" title="8.11. Autotools（多個二進位制套件）">節 8.11, “Autotools（多個二進位制套件）”</a> 中提供的簡單上游 C 語言原始碼 <span class="strong"><strong>debhello-2.0.tar.gz</strong></span> 以便進行國際化（i18n）並建立更新後的上游 C 語言原始碼 <span class="strong"><strong>debhello-2.0.tar.gz</strong></span> 的範例。</p>
+        <p>在實際情況中，此套件應該已被國際化過。所以此範例用作幫助您瞭解國際化的具體實現方法。</p>
+        <div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;">
+          <table border="0" summary="Tip">
+            <tr>
+              <td rowspan="2" align="center" valign="top">
+                <img alt="[提示]" src="images/tip.png"/>
+              </td>
+              <th align="left">提示</th>
+            </tr>
+            <tr>
+              <td align="left" valign="top">
+                <p>負責維護國際化的維護者的日常活動就是將通過缺陷追蹤系統（BTS）反饋給您的 po 翻譯檔案新增至 <span class="strong"><strong>po/</strong></span> 目錄，然後更新 <span class="strong"><strong>po/LINGUAS</strong></span> 檔案的語言列表。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <p>讓我們取得原始碼並製作 Debian 套件。</p>
+        <p><strong>下載 <span class="strong"><strong>debhello-2.0.tar.gz</strong></span>（國際化版）. </strong>
+</p>
+        <pre class="screen"> $ wget http://www.example.org/download/debhello-2.0.tar.gz
+ ...
+ $ tar -xzmf debhello-2.0.tar.gz
+ $ tree
+.
+├── debhello-2.0
+│   ├── ABOUT-NLS
+│   ├── ChangeLog
+│   ├── Makefile.am
+│   ├── configure.ac
+│   ├── data
+│   │   ├── hello.desktop
+│   │   └── hello.png
+│   ├── lib
+│   │   ├── Makefile.am
+│   │   ├── sharedlib.c
+│   │   └── sharedlib.h
+│   ├── man
+│   │   ├── Makefile.am
+│   │   └── hello.1
+│   ├── po
+│   │   ├── ChangeLog
+│   │   ├── Makefile.in.in
+│   │   ├── Makevars.template
+│   │   ├── POTFILES.in
+│   │   ├── Rules-quot
+│   │   ├── boldquot.sed
+│   │   ├── en@boldquot.header
+│   │   ├── en@quot.header
+│   │   ├── insert-header.sin
+│   │   ├── quot.sed
+│   │   └── remove-potcdate.sin
+│   └── src
+│       ├── Makefile.am
+│       └── hello.c
+└── debhello-2.0.tar.gz
+
+6 directories, 25 files</pre>
+        <p>
+</p>
+        <p>使用 <span class="strong"><strong>gettextize</strong></span> 命令將此原始碼樹國際化，並刪除由 Autotools 自動生成的檔案。</p>
+        <p><strong>執行 <span class="strong"><strong>gettextize</strong></span>（國際化版）：. </strong>
+</p>
+        <pre class="screen"> $ cd debhello-2.0
+ $ gettextize
+Creating po/ subdirectory
+Creating build-aux/ subdirectory
+Copying file ABOUT-NLS
+Copying file build-aux/config.rpath
+Not copying intl/ directory.
+Copying file po/Makefile.in.in
+Copying file po/Makevars.template
+Copying file po/Rules-quot
+Copying file po/boldquot.sed
+Copying file po/en@boldquot.header
+Copying file po/en@quot.header
+Copying file po/insert-header.sin
+Copying file po/quot.sed
+Copying file po/remove-potcdate.sin
+Creating initial po/POTFILES.in
+Creating po/ChangeLog
+Creating directory m4
+Copying file m4/gettext.m4
+Copying file m4/iconv.m4
+Copying file m4/lib-ld.m4
+Copying file m4/lib-link.m4
+Copying file m4/lib-prefix.m4
+Copying file m4/nls.m4
+Copying file m4/po.m4
+Copying file m4/progtest.m4
+Creating m4/ChangeLog
+Updating Makefile.am (backup is in Makefile.am~)
+Updating configure.ac (backup is in configure.ac~)
+Creating ChangeLog
+
+Please use AM_GNU_GETTEXT([external]) in order to cause autoconfiguration
+to look for an external libintl.
+
+Please create po/Makevars from the template in po/Makevars.template.
+You can then remove po/Makevars.template.
+
+Please fill po/POTFILES.in as described in the documentation.
+
+Please run 'aclocal' to regenerate the aclocal.m4 file.
+You need aclocal from GNU automake 1.9 (or newer) to do this.
+Then run 'autoconf' to regenerate the configure file.
+
+You will also need config.guess and config.sub, which you can get from the CV...
+of the 'config' project at http://savannah.gnu.org/. The commands to fetch th...
+are
+$ wget 'http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/config/config/conf...
+$ wget 'http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/config/config/conf...
+
+You might also want to copy the convenience header file gettext.h
+from the /usr/share/gettext directory into your package.
+It is a wrapper around &lt;libintl.h&gt; that implements the configure --disable-nl...
+option.
+
+Press Return to acknowledge the previous 6 paragraphs.
+ $ rm -rf m4 build-aux *~</pre>
+        <p>
+</p>
+        <p>讓我們確認一下 <span class="strong"><strong>po/</strong></span> 目錄下生成的檔案。</p>
+        <p><strong><span class="strong"><strong>po</strong></span> 目錄下的檔案（國際化版）：. </strong>
+</p>
+        <pre class="screen"> $ ls -l po
+/home/ycheng/debian/debmake-doc/debhello-2.0-pkg2/step151.cmd: 列 2: SOURCE_DA...
+總計 60
+-rw-r--r-- 1 ycheng ycheng   494 Aug 21 10:55 ChangeLog
+-rw-r--r-- 1 ycheng ycheng 17577 Aug 21 10:55 Makefile.in.in
+-rw-r--r-- 1 ycheng ycheng  3376 Aug 21 10:55 Makevars.template
+-rw-r--r-- 1 ycheng ycheng    59 Aug 21 10:55 POTFILES.in
+-rw-r--r-- 1 ycheng ycheng  2203 Aug 21 10:55 Rules-quot
+-rw-r--r-- 1 ycheng ycheng   217 Aug 21 10:55 boldquot.sed
+-rw-r--r-- 1 ycheng ycheng  1337 Aug 21 10:55 en@boldquot.header
+-rw-r--r-- 1 ycheng ycheng  1203 Aug 21 10:55 en@quot.header
+-rw-r--r-- 1 ycheng ycheng   672 Aug 21 10:55 insert-header.sin
+-rw-r--r-- 1 ycheng ycheng   153 Aug 21 10:55 quot.sed
+-rw-r--r-- 1 ycheng ycheng   432 Aug 21 10:55 remove-potcdate.sin</pre>
+        <p>
+</p>
+        <p>讓我們在 <span class="strong"><strong>configure.ac</strong></span> 檔案中新增 “<span class="strong"><strong>AM_GNU_GETTEXT([external])</strong></span>” 等條目。</p>
+        <p><strong><span class="strong"><strong>configure.ac</strong></span>（國際化版）：. </strong>
+</p>
+        <pre class="screen"> $ vim configure.ac
+ ... hack, hack, hack, ...
+ $ cat configure.ac
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+AC_PREREQ([2.69])
+AC_INIT([debhello],[2.2],[foo@example.org])
+AC_CONFIG_SRCDIR([src/hello.c])
+AC_CONFIG_HEADERS([config.h])
+echo "Standard customization chores"
+AC_CONFIG_AUX_DIR([build-aux])
+
+AM_INIT_AUTOMAKE([foreign])
+
+# Set default to --enable-shared --disable-static
+LT_INIT([shared disable-static])
+
+# find the libltdl sources in the libltdl sub-directory
+LT_CONFIG_LTDL_DIR([libltdl])
+
+# choose one
+LTDL_INIT([recursive])
+#LTDL_INIT([subproject])
+#LTDL_INIT([nonrecursive])
+
+# Add #define PACKAGE_AUTHOR ... in config.h with a comment
+AC_DEFINE(PACKAGE_AUTHOR, ["Osamu Aoki"], [Define PACKAGE_AUTHOR])
+# Checks for programs.
+AC_PROG_CC
+
+# desktop file support required
+AM_GNU_GETTEXT_VERSION([0.19.3])
+AM_GNU_GETTEXT([external])
+
+# only for the recursive case
+AC_CONFIG_FILES([Makefile
+                 po/Makefile.in
+                 lib/Makefile
+                 man/Makefile
+                 src/Makefile])
+AC_OUTPUT</pre>
+        <p>
+</p>
+        <p>讓我們從 <span class="strong"><strong>po/Makevars.template</strong></span> 檔案中創建 <span class="strong"><strong>po/Makevars</strong></span> 檔案。</p>
+        <p><strong><span class="strong"><strong>po/Makevars</strong></span>（國際化版）：. </strong>
+</p>
+        <pre class="screen"> ... hack, hack, hack, ...
+ $ diff -u po/Makevars.template po/Makevars
+--- po/Makevars.template        2019-11-19 08:10:13.603346986 +0800
++++ po/Makevars 2019-11-19 08:10:13.675352380 +0800
+@@ -18,14 +18,14 @@
+ # or entity, or to disclaim their copyright.  The empty string stands for
+ # the public domain; in this case the translators are expected to disclaim
+ # their copyright.
+-COPYRIGHT_HOLDER = Free Software Foundation, Inc.
++COPYRIGHT_HOLDER = Osamu Aoki &lt;osamu@debian.org&gt;
+
+ # This tells whether or not to prepend "GNU " prefix to the package
+ # name that gets inserted into the header of the $(DOMAIN).pot file.
+ # Possible values are "yes", "no", or empty.  If it is empty, try to
+ # detect it automatically by scanning the files in $(top_srcdir) for
+ # "GNU packagename" string.
+-PACKAGE_GNU =
++PACKAGE_GNU = no
+
+ # This is the email address or URL to which the translators shall report
+ # bugs in the untranslated strings:
+ $ rm po/Makevars.template</pre>
+        <p>
+</p>
+        <p>讓我們通過用 <span class="strong"><strong>_(…)</strong></span> 包裹字串的方式來更新國際化版本的 C 語言原始碼。</p>
+        <p><strong><span class="strong"><strong>src/hello.c</strong></span> （國際化版）：. </strong>
+</p>
+        <pre class="screen"> ... hack, hack, hack, ...
+ $ cat src/hello.c
+#include "config.h"
+#include &lt;stdio.h&gt;
+#include &lt;sharedlib.h&gt;
+#define _(string) gettext (string)
+int
+main()
+{
+        printf(_("Hello, I am " PACKAGE_AUTHOR "!\n"));
+        sharedlib();
+        return 0;
+}</pre>
+        <p>
+</p>
+        <p><strong><span class="strong"><strong>lib/sharedlib.c</strong></span>（國際化版）：. </strong>
+</p>
+        <pre class="screen"> ... hack, hack, hack, ...
+ $ cat lib/sharedlib.c
+#include &lt;stdio.h&gt;
+#define _(string) gettext (string)
+int
+sharedlib()
+{
+        printf(_("This is a shared library!\n"));
+        return 0;
+}</pre>
+        <p>
+</p>
+        <p>新版本的 <span class="strong"><strong>gettext</strong></span>（v = 0.19）可以直接處理桌面檔案的國際化版本。</p>
+        <p><strong><span class="strong"><strong>data/hello.desktop.in</strong></span>（國際化版）：. </strong>
+</p>
+        <pre class="screen"> $ fgrep -v '[ja]=' data/hello.desktop &gt; data/hello.desktop.in
+ $ rm data/hello.desktop
+ $ cat data/hello.desktop.in
+[Desktop Entry]
+Name=Hello
+Comment=Greetings
+Type=Application
+Keywords=hello
+Exec=hello
+Terminal=true
+Icon=hello.png
+Categories=Utility;</pre>
+        <p>
+</p>
+        <p>讓我們列出輸入檔案，以便在 <span class="strong"><strong>po/POTFILES.in</strong></span> 中提取可翻譯的字串。</p>
+        <p><strong><span class="strong"><strong>po/POTFILES.in</strong></span>（國際化版）：. </strong>
+</p>
+        <pre class="screen"> ... hack, hack, hack, ...
+ $ cat po/POTFILES.in
+src/hello.c
+lib/sharedlib.c
+data/hello.desktop.in</pre>
+        <p>
+</p>
+        <p>此處是在 <span class="strong"><strong>SUBDIRS</strong></span> 環境變數中新增 <span class="strong"><strong>po</strong></span> 目錄後更新過的根 <span class="strong"><strong>Makefile.am</strong></span> 檔案。</p>
+        <p><strong><span class="strong"><strong>Makefile.am</strong></span> （國際化版）：. </strong>
+</p>
+        <pre class="screen"> $ cat Makefile.am
+# recursively process `Makefile.am` in SUBDIRS
+SUBDIRS = po lib src man
+
+ACLOCAL_AMFLAGS = -I m4
+
+EXTRA_DIST = build-aux/config.rpath m4/ChangeLog</pre>
+        <p>
+</p>
+        <p>讓我們建立一個翻譯模板檔案 <span class="strong"><strong>debhello.pot</strong></span>。</p>
+        <p><strong><span class="strong"><strong>po/debhello.pot</strong></span>（國際化版）：. </strong>
+</p>
+        <pre class="screen"> $ xgettext -f po/POTFILES.in -d debhello -o po/debhello.pot -k_
+ $ cat po/debhello.pot
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR &lt;EMAIL@ADDRESS&gt;, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-11-19 08:10+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME &lt;EMAIL@ADDRESS&gt;\n"
+"Language-Team: LANGUAGE &lt;LL@li.org&gt;\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/hello.c:8
+#, c-format
+msgid "Hello, I am "
+msgstr ""
+
+#: lib/sharedlib.c:6
+#, c-format
+msgid "This is a shared library!\n"
+msgstr ""
+
+#: data/hello.desktop.in:3
+msgid "Hello"
+msgstr ""
+
+#: data/hello.desktop.in:4
+msgid "Greetings"
+msgstr ""
+
+#: data/hello.desktop.in:6
+msgid "hello"
+msgstr ""
+
+#: data/hello.desktop.in:9
+msgid "hello.png"
+msgstr ""</pre>
+        <p>
+</p>
+        <p>讓我們新增法語的翻譯。</p>
+        <p><strong><span class="strong"><strong>po/LINGUAS</strong></span> 與 <span class="strong"><strong>po/fr.po</strong></span>（國際化版）：. </strong>
+</p>
+        <pre class="screen"> $ echo 'fr' &gt; po/LINGUAS
+ $ cp po/debhello.pot po/fr.po
+ $ vim po/fr.po
+ ... hack, hack, hack, ...
+ $ cat po/fr.po
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# FIRST AUTHOR &lt;EMAIL@ADDRESS&gt;, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: debhello 2.2\n"
+"Report-Msgid-Bugs-To: foo@example.org\n"
+"POT-Creation-Date: 2015-03-01 20:22+0900\n"
+"PO-Revision-Date: 2015-02-21 23:18+0900\n"
+"Last-Translator: Osamu Aoki &lt;osamu@debian.org&gt;\n"
+"Language-Team: French &lt;LL@li.org&gt;\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/hello.c:34
+#, c-format
+msgid "Hello, my name is %s!\n"
+msgstr "Bonjour, je m'appelle %s!\n"
+
+#: lib/sharedlib.c:29
+#, c-format
+msgid "This is a shared library!\n"
+msgstr "Ceci est une bibliothèque partagée!\n"
+
+#: data/hello.desktop.in:3
+msgid "Hello"
+msgstr ""
+
+#: data/hello.desktop.in:4
+msgid "Greetings"
+msgstr "Salutations"
+
+#: data/hello.desktop.in:6
+msgid "hello"
+msgstr ""
+
+#: data/hello.desktop.in:9
+msgid "hello.png"
+msgstr ""</pre>
+        <p>
+</p>
+        <p>打包工作與 <a class="xref" href="ch08.zh-tw.html#autotools-multi" title="8.11. Autotools（多個二進位制套件）">節 8.11, “Autotools（多個二進位制套件）”</a> 中的近乎一致。</p>
+        <p>您可以在 <a class="xref" href="ch08.zh-tw.html#details" title="8.14. 細節">節 8.14, “細節”</a> 中尋找更多國際化的例子：</p>
+        <div class="itemizedlist">
+          <ul class="itemizedlist">
+            <li class="listitem">帶有Makefile 的 POSIX shell 指令碼（v=3.0），</li>
+            <li class="listitem">帶有 distutils 的 Python3 指令碼 （v=3.1），</li>
+            <li class="listitem">帶有 Makefile.in + configure 的 C 語言原始碼（v=3.2），</li>
+            <li class="listitem">帶有 Autotools 的 C 語言原始碼（v=3.3），以及</li>
+            <li class="listitem">帶有 CMake 的 C 語言原始碼（v=3.4）。</li>
+          </ul>
+        </div>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="details"/>8.14. 細節</h2>
+            </div>
+          </div>
+        </div>
+        <p>所示範例的實際細節及其變體可通過以下方式獲得。</p>
+        <p><strong>如何取得細節. </strong>
+</p>
+        <pre class="screen"> $ apt-get source debmake-doc
+ $ sudo apt-get install devscripts build-essentials
+ $ cd debmake-doc*
+ $ sudo apt-get build-dep ./
+ $ make</pre>
+        <p>
+</p>
+        <p>帶 <span class="strong"><strong>-pkg[0-9]</strong></span> 字尾的每個目錄都包含 Debian 打包範例。</p>
+        <div class="itemizedlist">
+          <ul class="itemizedlist">
+            <li class="listitem">模擬控制檯命令列活動日誌：<span class="strong"><strong>.log</strong></span> 檔案</li>
+            <li class="listitem">模擬控制檯命令列活動日誌（縮略版）：<span class="strong"><strong>.slog</strong></span> 檔案</li>
+            <li class="listitem">執行 <span class="strong"><strong>debmake</strong></span> 命令後的原始碼樹快照：<span class="strong"><strong>debmake</strong></span> 目錄</li>
+            <li class="listitem">打包後的原始碼樹快照：<span class="strong"><strong>packge</strong></span> 目錄</li>
+            <li class="listitem">執行 <span class="strong"><strong>debuild</strong></span> 命令後的原始碼樹快照：<span class="strong"><strong>test</strong></span> 目錄</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="navfooter">
+      <hr/>
+      <table width="100%" summary="Navigation footer">
+        <tr>
+          <td align="left"><a accesskey="p" href="ch07.zh-tw.html"><img src="images/prev.png" alt="前一頁"/></a> </td>
+          <td align="center"> </td>
+          <td align="right"> <a accesskey="n" href="apa.zh-tw.html"><img src="images/next.png" alt="下一頁"/></a></td>
+        </tr>
+        <tr>
+          <td align="left" valign="top">章 7. 提示 </td>
+          <td align="center">
+            <a accesskey="h" href="index.zh-tw.html">
+              <img src="images/home.png" alt="起始頁"/>
+            </a>
+          </td>
+          <td align="right" valign="top"> 附錄 A. <span class="strong"><strong>debmake</strong></span>(1) 手冊頁</td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

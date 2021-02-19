@@ -1,0 +1,1453 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: May 2006 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2006_04.html" title="April 2006" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2006_06.html" title="June 2006" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/2006_04.html">« April 2006</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/2006_06.html">June 2006 »</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">May 30, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001690"></a>
+<h3 class="title">Apache Harmony 的相容性測試</h3>
+
+由 Intel 主導的 [<a href="http://incubator.apache.org/harmony/">Apache Harmony</a>] 計畫，日前在 JavaOne 由 Intel 員工、Harmony 計畫領導人 Geir Magnusson Jr 做了令人印象深刻的展示：以 Harmony VM 搭配 Intel 的 class library implementation，執行 jEdit 應用程式，而 Intel 也表示，將捐出這部份的 AWT/Swing 實做，詳細的新聞可參考 [<a href="http://lwn.net/Articles/184394/">Swing/AWT Donation Coming...</a>]。而 IBM 也不遑多讓，也捐出一部分的 class library，並提供該公司的 J9 VM/Runtime 作為驗證平台，詳情可參考 [<a href="http://www-128.ibm.com/developerworks/java/jdk/harmony/">IBM Development Package for Apache Harmony</a>]。<br>
+<br>
+在 Free Java 的世界，有一系列驗證相容性的套件與架構，而 Japi 測試也設定好了，所以我們可以看看 [<a href="http://www.kaffe.org/~stuart/japi/htmlout/h-jdk14-harmony">Results of comparison between jdk14 and harmony</a>]，事實上，Intel 的 AWT/Swing implementation 還未 check-in，而 Harmony 以 Apache Foundation Software License 釋出的 class library 完成度也大幅低於 GNU Classpath，該 license 還未能與 GPL v2 相容，雖然在 GPL v3 已經做出修訂，但目前來說，僅能做出有限度的合作。此外，除了 Intel 與 IBM 的員工外，Apache Harmony 計畫也招募了些開發者，可參考 [<a href="http://wiki.apache.org/harmony/People">Harmony::People</a>]，隨著對 Sun JDK 與其 source code 的鬆綁政策，未來的 Java Runtime 也將更多元化，並且朝著針對特定需求作延伸的方向。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001690.html">10:53 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1690" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">May 29, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001689"></a>
+<h3 class="title">KDE 4 核心全面採用 D-Bus</h3>
+
+在 KDE.News 的報導 [<a href="http://dot.kde.org/1148838047/">KDE Commit-Digest for 28th May 2006</a>] 內文中，提到 KDElibs 已經移植到 D-Bus 上，換言之，KDE 4 核心的 IPC 與 service 會以全新、基於 D-Bus 的設計呈現，這也可跟其他遵守 FreeDesktop 規範的資源作進一步交流，又肇因 KDE Framework 優秀的設計，上層的應用程式仍只需要小量的修改，就可順利銜接。<br>
+<br>
+去年三月份，在 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001035.html">KDE 的 IPC 實做該採用 D-Bus？</a>] 提到 KDE 的開發者，面對即將到來的 KDE 4 種種新架構，展開腦力激盪，也以行動來驗證想法。當時，Mathieu Chouinard 對於 KDE 是否該採用 D-Bus，提出了質疑，不過最後還是一一克服技術議題。<br>
+<br>
+由此也可以發現 KDE 作為先進的桌面系統，從過去沒有 IPC (KDE 0.x)、演化出基本的 IPC (KDE 1.x)、經歷採用 CORBA 作為 IPC 解決方案 (KDE 1.9x)，一直到了 KDE 2.x 引入 DCOP，到現在大刀闊斧以 D-Bus 翻修，在 GNOME 陣營也會有類似的轉變，現在 GNOME 核心 IPC 服務逐漸由 CORBA/Mico 移轉到 D-Bus 上，這的確是很驚人的發展。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001689.html">10:44 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1689" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001688"></a>
+<h3 class="title">搜尋 "jserv"</h3>
+
+今天 caleb 在 #dot 提到本 blog 與某個網站的 page ranking 比較，我心血來潮在 Google 搜尋 "jserv"，沒想到，小弟的 blog 與 website 排名首次超越 Apache Jserv 計畫，有圖有真相：<br>
+<center class="code" style="margin: 6px;"><img src="http://jserv.sayya.org/jserv-in-google.png"></center><br>
+在我使用網路的經驗，用過三個 nickname / ID，至於現在常用的這個 "jserv"，一開始除了個人跟 Apache Jserv 計畫有些淵源外，其實還希望自己的資料不要太容易被找到，淹沒於正宗的 Jserv 計畫中...<br>
+<br>
+曾幾何時，"jserv" 成為我的「分身」或「代名詞」，從這個世紀開始，我試著將一部分的日記發表於網路，包含 BBS、news group，乃至於現在這個 blog，可見度也大幅提昇，甚至超越詞源。有時候讀著過去的日記，再比對現況，儘管環境變遷，我還是維持一貫的步調，用自己的方式活著，記得 Purple 曾用相當精準的文字描述：<ul class="code" style="margin: 6px;">
+你讓我想到放在玻璃瓶裡的小船，被放到波濤洶湧的大海裡，好像經歷過了許多事，但其實你毫髮無傷，因為你是被隔在玻璃瓶裡的。
+</ul>
+大起大落的我，這二十餘年，很幸運地存活著，彷彿我與旁人不直接處於同一個環境一般。在我二十歲那年，小時候立下的三個人生目標，奇蹟式地完成了兩個，雖然，在一般人眼中，那是最自然不過，而不屑一顧的項目。在餘生，每日活在不知能否見到隔日太陽的恐懼，與對生命餘暉的珍惜，拜網路科技進步所賜，很容易就可搜尋到自己過去的紀錄，儘管只是片面而零星的，搜尋 "jserv" 的同時，再度陷入回憶與感傷的洪流... 十六世紀的神學家兼詩人 John Donne 的作品〈Meditation XVII〉提到：<ul class="code" style="margin: 6px;">
+any man's death diminishes me, because I am involved in mankind; and therefore never send to know for whom the bell tolls; it tolls for thee.
+</ul>
+我為著人生最後一個夢想而活，抱持如之前 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001533.html">Follow Your Dreams</a>] 的態度，只希望認真地活著，雖知道自己充其量只能作些微不足道的小技倆，但求無愧我心。未來，在 Google 打 "jserv" 當關鍵字，會搜尋到什麼呢？或許，快取紀錄終將消逝，或許，會從斷簡殘篇中找到一個無聊男子的紀錄，他用有限的生命訴說，人生，也可以這樣存在，這就是他的使命...<br>
+<br>
+胸口又陣痛了，先打到這。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001688.html">07:49 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1688" onclick="OpenComments(this.href); return false">迴響 (5)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001687"></a>
+<h3 class="title">ePDFView：輕量級 PDF 瀏覽器</h3>
+
+在 Debian 上，我習慣用 [<a href="http://packages.debian.org/stable/gnome/evince">package::evince</a>] 與 [<a href="http://packages.debian.org/stable/text/xpdf">package::xpdf</a>] 來瀏覽 PDF 文件，特別是前者，功能相當強大，不只能夠瀏覽 PDF 與 PostScript 文件，透過 patch 後，還可以初步看  OpenOffice.org Impress 與 Microsoft PowerPoint 簡報，非常不錯，文字搜尋與複製基本上沒有大問題。不過呢，evince 因為設計比較完整，我們會希望有個輕量級的瀏覽器，可以放到 LiveCD 或者直接編譯成 static-linked 的執行檔，這時候用 [<a href="http://www.emma-soft.com/projects/epdfview/">ePDFView</a>] 就很不錯，以下是執行的畫面：<br>
+<center><img src="http://jserv.sayya.org/misc/epdfview.png"></center><br>
+跟 evince 一樣使用 poppler library，所以顯示的結果是相仿的。對了，之前 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001668.html">Cairo user font API</a>] 提到的問題，在 poppler 新的 release (0.5.2) 已經修正。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001687.html">03:15 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1687" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001686"></a>
+<h3 class="title">專利，作為驚人的產品</h3>
+
+電子工程專輯的報導 [<a href="http://www.eettaiwan.com/ARTP_8800411764_480102.HTM">「專利」成為下一個殺手級產品？</a>] 指出，曾投入近十年開發 Microprocessor 架構的 [<a href="http://www.ptsc.com/">Patriot Scientific</a>] 公司，雖然徒勞無功，但該公司最近鹹魚翻身，因為掌握神秘的資產：專利。僅有六名員工的 [<a href="http://www.ptsc.com/">Patriot Scientific</a>] 公司光靠關於 RISC CPU 基本要素專利的授權，就淨賺超過 2,400 萬美元，該公司 CEO David Pohl 甚至說：<ul>
+「我們公司不需要製造任何東西或行銷任何產品。基本上我們靠著專利授權就能賺錢了。」
+</ul>
+[<a href="http://www.intellectualventures.com/">Intellectual Ventures</a>] 公司副總裁 Brent Frei 表示：<ul>
+「產業中獲利最高的部份是來自於發明。而專利本身則是相當驚人的一種產品。我們的創始人 Nathan Myhrvold 甚至將 IP 稱之為下一代軟體。」</ul>
+然而，Intel 首席專利律師 David Simon 回應：<ul>
+「這其實會分散了對創新的投入。最終，會有許多人把時間花在打官司上而不是研發產品」
+</ul>
+可以想見，我們能見的案例僅是冰山一角，比方說日前 DVD / MPEG-LA (MPEG 專利技術管理機構) 對中國大陸的授權議題方興未艾，一系列標準組織背後的專利訴訟才要開始，這也讓人想到軟體專利的議題。CNET 的新聞 [<a href="http://taiwan.cnet.com/news/software/0,2000064574,20106588,00.htm">歐盟：軟體不得申請專利</a>]，EPO (歐洲專利局) 將依據歐洲議會的決議，對授予軟體專利做出限制，然而，[<a href="http://www.ffii.org/">FFII</a>] (Foundation for a Free Information Infrastructure) 主席 Pieter Hintjens 則表示：<ul>
+「然而，那只有針對民事訴訟，(小公司) 通常難以負擔，仍將迫使他們付錢買授權。因此，尚未鬧上法庭的軟體專利，將對這個產業施加沈重的負擔。」
+</ul>
+就目前來說，除了美國本土可將軟件作專利化之外，大部份的國家對於該議題的態度，還是將軟體歸屬於版權保護，換言之，就是跟電影、廣播、音樂，以及藝術等版權具體項目同類，所以視為對文化創作成果的保護，而非單純的物產，這是在 Community Patent 前普遍的認知。一旦軟體走出版權的範疇，而成為物件產權，擁有人可有絕對的處置權，其產權可作繼承，對岸的 zunix 日前針對這個表示：<ul>
+「版權保障你的作品不會被抄襲，但可以有雷同，而專利郤連雷同也不可以。 ...如果給與軟件專利便會可能導致出現了無數無辜的侵權人，這是無辜者的負擔，是法庭資源的負擔，社會亦會因為這種純遷就商人的法律而產生動蕩。」
+</ul>
+[<a href="http://www.ptsc.com/">Patriot Scientific</a>] 手上握有的專利跟 RISC core 有關，在去年授權的對象包含全球七家世界級大廠，專利有效的門檻原本就比較高，但是如果軟體成為全球性有效的專利，那將是另一種衝擊，可以想見的是，投入官司訴訟將會是無止盡的深淵，別忘了，光是滑鼠的 single-click 與 double-click 都有專利。相關的報導與討論，這裡就不贅述了，畢竟我不具備這方面的背景。回到真實面，許多企業儼然將專利視為最重要的武器，專職的專利工程師也成為資訊科技產業的熱門選項，而小弟我任職的公司也對這方面多作要求，一向反對軟體專利的我，也不得不思索因應之道。<br>
+<ul>
+「或許，專利也可用以作正面用途，就如專利的初衷？」
+</ul>
+獨處時，我反覆圍繞在這個問題上，某些人應該聽過，我正在發展一個跟三級片 (是的，就是充滿情色與肉體的沙文主義商品) 視訊壓縮最佳化的專利，基本的演算法我已經完成了，這裡不會談到過程中對應用四元數運算的細節，也不會談到針對 MPEG-4 video coding 在三級片如何作最佳的 video coding，而，我想說說專利在作正面用途的可能性，至於某位前輩建議我可投 paper 到學術刊物，想也知道退件的機率極大，我就不自取其辱了。<br>
+<br>
+先談談三級片，M. Foucault 大師最後的著作《性史》三大卷，核心的概念就是 "aphrodisia"，也稱為「性活動」或「性快感」，其出發點並非局限於性，而是廣義引起某種形式快感的舉動、行為，或者驅力等，某種形式來說，也視為「性 libido」，然而 "aphrodisia" 更明確著重於慾望力量，這與性活動締結為一體。Foucault 探討了該統一體之解體為肉體倫理與性觀念的基本特徵，視「倫理身體」的自治之於 "aphrodisia" 為「力量的遊戲」，換言之，該論點解釋處於文明中的理性與性活動的動態平衡狀態，而這點也解釋了三級片與 AV 產業的實踐性質。隨著媒體的多元化，數位電視更可能將多元的媒體內容帶到世界多個角落，其中，也包含 Foucault 在《性史》闡述的現象與歷史連續性呈現。我個人並非衛道人士，認為對所謂的三級片色情，應可抱持更開放的態度，然而，我也認為需要作合理、有效的限制，無論是法規，或者技術上的限制。到了目前的公司服務後，廣泛接觸多種 multimedia codec，而我也在 MPEG-4 對人類臉譜的分析與多篇探討人體移動的論文中獲得靈感，事實上，三級片的 video coding 應該可有更有效率且更具彈性的處理方式，所以我開始做了些實驗與演算法層面的推導...<br>
+<br>
+在我的想法，這個專利可應用於頭端 (數位電視用詞，即接收、處理、發射訊號)，作為 MPEG-4 codec algorithm 的補強，當然，是針對三級片的最佳化處理，或許有機會對 bandwidth 的使用帶來助益，然而，授權的對象也會是重點，當今的環境實在太氾濫了。雖然演算法發展告一段落，我也開始作 codec 的驗證，我沒有預期這會有什麼重大突破，只是我想，是否能善用專利技術，對已經氾濫的產業，做出一些約束呢？抑或，專利，作為驚人的產品，是資訊科技產業的必然，連同其爆發成長的訴訟案件亦然？<br>
+<br>
+思考這些議題相當耗時，算了，我還是天真地寫軟體吧。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001686.html">03:13 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1686" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001685"></a>
+<h3 class="title">萬古千秋不斷情</h3>
+
+如之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001595.html">《Hotel Rwanda》</a>] 所提，週六 (May 27) 陪同 ghost 兄與 [<a href="http://sogyang.blogspot.com/">SoG</a>] 學長看了電影，結束後，跟 ghost 兄在附近的咖啡店聊了一段時間，ghost 兄分享他近期的計畫，以及他對於社會公益的想法，在這之中，我也有新的想法。<br>
+<br>
+我的目標很簡單，只想貪婪的活下去，我沒有崇高的理想，只想活在至少跟現在相近的環境品質中，所以我定的計畫是：<ul>
+「讓地球多活一秒：從自身開始」
+</ul>
+其中我將「撿垃圾」列為新的一個要求，就當作日常生活的習慣，記得求學過程中當過九次衛生股長，何嘗不是「學以致用」呢？所以，週日的空檔，一如往常，帶了幾本書出門，騎著淑女車，高興的時候駐足讀個幾頁，很愜意。從內湖騎往汐止，在一條小徑旁停車，開始撿拾垃圾，對了，再說一次，這只是 "Just for Fun"，就跟我寫作自由軟體一樣，可以譏笑我，可冷眼相待，但請別亂製造垃圾，更別隨手拋棄。<br>
+<br>
+無論如何，這個經驗很棒，或許習慣追逐新技術、身處於所謂的「高科技產業」的我們，反而對於這塊我們生長的土地越來越疏離了，彎腰撿拾的當下，感覺距離拉近了... 我在雜草堆中找到類似手帕但部份污損的物品，在收入垃圾袋時，腦際突然浮現客家歌曲〈一條花手巾〉：<ul><pre class="code" style="margin: 6px;">
+一條花手巾呀 舊年用到今
+日來捽汗夜洗身 啊 分妹惜入心
+阿哥送妹履條花手巾
+情意值千金
+手巾上面繡等七隻字
+萬古千秋不斷情
+</pre></ul>
+客家話算是我的母語，儘管我們家族是過著閩南人的節日習俗，而我也泰半忘了，不過很多客家民謠仍讓我難忘，上面那首歌用詞簡單，可是用情卻深入，特別是手巾上的繡字，更是傳神地將男女思念之情表露無遺，而我，剛剛撿拾的物品，是否在背後也有段故事呢？不得而知，但也帶來額外的樂趣。除了中間有某個無聊人士搭訕外，基本上過程是令人欣喜的，這讓我想到，十九世紀俄國哲學家 Peter Kropotikin 曾迷惑於「感動」為何物，他的兄長告訴他：<ul>
+「感動是『善』的東西，在你的身體裡起了作用。」
+</ul>
+這是一種感動，當我們放下身段，撿拾這些原本就不該存在曠野的垃圾，才得以有機會，去體驗這種感覺，而我也哼了另一首客家歌曲〈客家本色〉：<ul><pre class="code" style="margin: 6px;">
+唐山過台灣
+無半點錢
+煞忙打拼耕山耕田
+咬薑啜醋幾十年
+毋識埋怨 
+世世代代就恁樣勤儉傳家
+兩三百年沒改變 
+客家精神莫豁忒
+永遠永遠
+時代在進步
+社會改變
+是非善惡充滿人間 
+奉勸世間客家人
+</pre></ul>
+北上工作兩年多，發現一個有趣的現象，好像只有在選舉時才會出現客家文化的 highlight，其餘時間，鄉土文化反而是遙遠的意象。我是華人，也是土生土長的台灣人，更是個客家人 (即使依據譜系來說不是)，也在年紀的增長中，逐漸理解「客家精神」的奧義。這個社會在改變，如同歌詞所說「是非善惡充滿人間 」，先賢前輩們幫我們打拼這美好的一切、栽培怡人的涼蔭，而這個過程中，「環境保護、生態保育」的項目被忽略了，這是人類史中難以磨滅的罪惡，一味反社會化、反科技化是反智的，相反地，如何讓這些衝擊降到最小，如何做出補救，是當今我們必須面對的議題，對我這個只想貪婪活下去的無名小卒，只想抱持「讓地球多活一秒：從自身開始」的信念，環保是種工程、是種運動，更是種新文化，唯有如此，才得以確保「萬古千秋不斷情」...<br>
+<br>
+我無意唱高調，而我的能力也限於作自身的要求罷了，但至少，我能夠以「精衛填海」的方式，企求人類與環境的永續經營，下筆同時，想到貝聿銘曾說過：<ul>
+「你永無法明確知道你已播種的東西何時可以收割；或許只有一次收成，或許可重複收成。你也許遺忘曾播種了些什麼，一種經驗，一種感受，與某人的關係，抑或一種哲學及一項傳統。然後，忽然間就開花了，被全然不同的環境所喚醒。這種盛開可以衝破藩籬及整個時代。」</ul>
+謹此自勉！<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001685.html">12:41 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1685" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">May 27, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001684"></a>
+<h3 class="title">Windows Media Photo 規格</h3>
+
+早上去面試兩位應試者的空檔，我開始讀 Microsoft 最新的 [<a href="http://www.microsoft.com/whdc/xps/wmphoto.mspx">Windows Media Photo Specification</a>]，手頭拿到的文件版本號為 1.0 final draft，我已經 [<a href="http://jserv.sayya.org/multimedia/WMPhotoSpec_v10.pdf">轉成 PDF 格式</a>]。這份文件規範 Windows Media Photo 的 image data encoding、container layout、tag / header information，當然還有 Microsoft Windows 上的 API。<br>
+<br>
+文件的副標題很有意思："Photographic Still Image File Format"，開發演算法與 image codec 的團隊來自 Microsoft VC-9 team，過去 Windows Media Video codec  設計與實做的經驗對 Windows Media Photo (WMP) 有很大的影響。就同等的視覺品質來說，JPEG 大約達 12:1 的壓縮率，而 WMP 則可到達 25:1，同時，在 codec kernel 的設計來說，其採用對稱性的演算法，容許使用  lossless 與 lossy 的壓縮途徑，就這點來說，WMP 有著跟 JPEG-2000 的高水準，而據 Microsoft 的文獻指出，計算複雜度與記憶體需求卻只有跟 JPEG 相似的要求，這實在令人驚艷！<br>
+<br>
+以下節錄文件中的幾個重點：<ul>
+<li>Windows Media Photo offers image quality comparable to JPEG-2000 with computational and memory performance more closely comparable to JPEG. Windows Media Photo delivers a lossy compressed image of better perceptive quality than JPEG at less than half the file size. The same
+compression algorithm can also deliver mathematically lossless compressed images that are typically 2.5 times smaller than the original uncompressed data.</li>
+<li>                                                                                                 The core compression transform requires at most 3 non-trivial (multiply plus addition) and 7 trivial (addition or shift) operations per pixel (with no divisions) at the highest quality level. In the highest performance mode, only 1 non-trivial and 4 trivial operations per pixel are required. The image is processed in 16x16 macro blocks, allowing a minimal memory footprint for embedded implementations.</li>
+<li>Windows Media Photo provides native support for both RGB and CMYK, providing a reversible color transform for each of these color formats to an internal luminance-dominant format used for optimal compression efficiency. In addition Windows Media Photo supports monochrome and arbitrary n-channel color formats.</li>
+<li>The formats supported by Windows Media Photo are divided into Basic and Advanced formats. The minimum requirements for a decoder for digital photography applications include support for the Basic formats. The Advanced formats can optionally be supported by decoders targeted for other application-specific scenarios including printing, 3D rendering or advanced imagery applications. An encoder need only support the specific formats required for its particular scenarios.</li>
+<li>Windows Media Photo stores image data in a container organized as a table of Image File Directory (IFD) tags, similar to a TIFF 6.0 container.</li>
+<li>Rather than use a series of metadata tags to attempt describe the attributes of an image's structure, Windows Media Photo uses a unique GUID to provide a non-ambiguous definition of the image pixel format.</li>
+</ul>
+後面的 WIC (Windows Image Codec/Component) API 則可作為一個編碼壓縮流程的參考。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001684.html">01:39 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1684" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">May 26, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001683"></a>
+<h3 class="title">Vim7</h3>
+
+這兩天開始用 Vim7，Ubuntu@Taiwan 已經編譯好 debian package 於 repository，稍微調整一下，終於在這台 Ubuntu 的機器上運作了，拍張用 Vim7 hacking 的畫面：<br>
+<center><img src="http://jserv.sayya.org/misc/vim7.png"></center><br>
+紅色標注的地方，像是 Tab 與括弧的配對，實在非常方便，看來終於可以把 Emacs 換掉了，特此留念。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001683.html">03:54 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1683" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001682"></a>
+<h3 class="title">jclock：小小 3D clock 練習</h3>
+
+作 3D Programming 不一定要透過 OpenGL，其實 Xlib 就有許多 primitives 可作繪圖的基礎操作，然後適度透過 3D-2D transform 後，也可得到簡單的呈現。以下是剛剛做的小練習，我將這個 3D clock 稱為 jclock，如下圖：<br>
+<center><img src="http://jserv.sayya.org/misc/jclock.png"></center><br>
+有興趣的朋友可取得 [<a href="http://jserv.sayya.org/misc/jclock.tar.bz2">原始程式碼</a>] 作參考。這個 jclock 運作時，會對空間軸作旋轉，並且更新秒、分、時針，程式展示了 XFillRectangle、XDrawLine、XFillArc、XCopyArea，以及基本 Xlib 處理方式，按下 'q' 鍵可結束程式。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001682.html">12:18 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1682" onclick="OpenComments(this.href); return false">迴響 (5)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001681"></a>
+<h3 class="title">與 Linux/*BSD 相關的 Planet (中文語系)</h3>
+
+Planet 中文的意思是「星球」，而如果用在 blog/rss 上，就相當於 aggregator，在台灣翻譯成「聯播」，比方說我們這些 Free Java 開發者就有個 [<a href="http://planet.classpath.org/">Planet Classpath</a>]，雖然不少人素未謀面，但常常透過類似的形式交流。有時會被問及一個問題：「台灣，或者華人的世界中，到底有多少人玩 Linux/*BSD 呢？」這實在很難回答，我想，交給專業的資訊統計顧問公司去處理吧，而，要看有多少死忠的 Linux/*BSD fans 倒是簡單，看看他們發表的文章或紀錄即可。<br>
+<br>
+以下收集相關的 Planet，以中文語系為主：<ul>
+<li>[<a href="http://planet.debian.org.tw/">Planet DebianTW</a>] - Debian 台灣</li>
+<li>[<a href="http://planet.debian.org.hk/">Planet DebianHK</a>] - Debian 香港</li>
+<li>[<a href="http://planet.linux.org.tw/">Planet Linux of Taiwan</a>] - Linux.org.tw</li>
+<li>[<a href="http://planet.gentoo.tw/">Planet Gentoo Taiwan</a>] - Gentoo 台灣</li>
+<li>[<a href="http://planet.ubuntu.org.tw">Ubuntu 正體中文</a>] - Ubuntu 台灣</li>
+<li>[<a href="http://twemu.no-ip.org/planet/">TWEmu.no-ip.org::Planet</a>] - [<a href="http://twemu.no-ip.org/">DreamerC</a>] 的個人收集，涵蓋以上 planet 與其他 *BSD 相關的 RSS aggregator</li>
+</ul>
+當然，以上只是列舉我平常有閱讀的 planet，至於其他，歡迎補充，謝謝！<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001681.html">08:19 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1681" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">May 25, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001680"></a>
+<h3 class="title">Java 即時程式設計</h3>
+
+在 Realtime Java 領域富有盛名的 [<a href="http://www.aicas.com/">aicas GmbH</a>]，其主力產品為 [<a href="http://www.aicas.com/jamaica.html">JamaicaVM Realtime Java</a>]，該公司部份的工程師也是 [<a href="http://www.classpath.org/">GNU Classpath</a>] 的 developer / committer，產品特徵的 "Libraries compatible with JDK J2SE V1.2 and largely compatible with J2SE 1.3 and J2SE 1.4" 可說是另一項應用 Free / Open Source Softwafre 商業化成功的案例。不過，[<a href="http://www.aicas.com/">aicas GmbH</a>] 最重要的技術當然是 Realtime Java 核心的設計，特別是 Deterministic Garbage Collection 與 Hard Realtime Execution，而該公司的 Dr. James J. Hunt (CEO) 與  Dr. Fridtjof B. Siebert (CTO) 日前於 Embedded.com 發表兩篇短文 [<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=188100696">Realtime programming in Java: Part 1</a>] 與 [<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=188100713">Realtime programming in Java: Part 2</a>]，篇幅不長，但闡述許多重要概念，很值得參考。<br>
+<br>
+文章一開頭就寫到 [Inadequacies of Java for Realtime Programming]：<ul class="code" style="margin: 6px;">
+There are two main kinds of barriers to using Java for realtime and embedded programming: lack of determinism and limited access to the underlying hardware. Both these issue arise in part from the goal of ensuring platform independence.</ul>
+所以，將 Java 應用於 Embedded Systems 會面臨 Java Runtime 本身的可預測精確性與對硬體的掌握度這兩個不足處，而在 RTSJ 中規範了 Realtime GC 的具體要求，文章也就 RTSJ 的規範，展示真實應用上的模式，同時，為了掌握硬體，也就 RTSJ 規範的語意，文章給予一個介紹性的案例。<br>
+<br>
+第二篇提到的 [Open Issues] 相當有意思，文章提到：<ul class="code" style="margin: 6px;">
+The RTSJ is an important step in the development of Java technology; however, the specification still has weaknesses. As mentioned above, the size issue is being addressed by the safety critical Java effort. More fundamentally, there are the issues of device access and control transfer. The Java language collection API is also less than ideal in terms of memory consumption.
+</ul>
+這也是 Realtime Java Programming 需考慮的重要議題。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001680.html">08:40 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1680" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001679"></a>
+<h3 class="title">用 GIMP 繪製 CG 漫畫</h3>
+
+Gentoo@Taiwan 的成員 [<a href="http://palatis.blogspot.com/">Victor Tseng (Palatis)</a>] 做了一份很棒的文件 [<a href="http://www.gentoo.tw/got-doc/gimp_cg_comics.xml">用 GIMP 畫 CG</a>]，該文件生動地解釋 [<a href="http://www.gimp.org/">GIMP</a>] 2.x 引入的 layer (圖層) 的操作方式，大幅提昇繪製圖形的速度，同時也對需要小幅修改 artwork 的開發者來說 (當然，很多計畫一開始進行時，都是 one-man project，得一個人搞定架構設計、系統規劃，以及美工項目)，也是值得一看的參考資料。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001679.html">11:03 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1679" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001678"></a>
+<h3 class="title">Trolltech 於挪威奧斯陸股市掛牌上市</h3>
+
+剛剛閱讀 LinuxDevices.com 的新聞 [<a href="http://www.linuxdevices.com/news/NS7546268147.html">Trolltech goes public</a>]，衷心為 Trolltech 感到高興，經歷十二年的奮鬥，終於在 OSE (Oslo Stock Exchange) 掛牌上市。1994 年，Norwegian University 的兩位畢業生 Eirik Chambe-Eng 與 Haavard Nord 以小博大，當時 Motif 仍是 UNIX 圖形標準，而背後有眾多 UNIX 大廠主推，Qt 秉持一貫開放的態度，後來的 KDE 與 GNOME/GtK+ 出現，都跟 Qt 有些關聯，最後，Qt 儼然成為 UNIX 圖形技術的標竿。<br>
+<br>
+兩年前 Trolltech 成立十週年，我寫了一篇短文 [<a href="http://moto.debian.org.tw/viewtopic.php?t=3038">Trolltech_十歲生日! </a>]，約略提及 Trolltech 如何異軍突起，並且如何以 Free / Open Source Software vendor 的姿態，創造軟體自由發展與市場業務的雙贏，而之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001473.html">Trolltech Qtopia 大放異彩</a>]，也提到部份 Trolltech 成功的案例，也不禁佩服當初這兩位創辦人的格局與堅持，如今，原本一家挪威的小公司，在 OSE (Oslo Stock Exchange) 掛牌上市的 Trolltech 又將創造新紀錄，或許，這就是二十一世紀軟體產業的另一個指標：走出閉門造車、強調知識共享，以及服務導向的新思維。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001678.html">10:32 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1678" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001677"></a>
+<h3 class="title">胸無點墨</h3>
+
+最近好像流行「成語遊戲」，那我也應景有樣學樣，先說好，我可沒受過高等教育，如有謬誤，還請多指教。「胸無點墨」出自唐代杜佑《通典》：「 俚俗謂不能文者為胸中無墨」，之所以有此聯想，是因為之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001675.html">vi / vim 圖解鍵盤指令</a>] 貼出後，在 #dot 上引來 caleb 與 AndrewLee 的討論，仔細看看，vim 的鍵盤圖下文字，小寫的 "i" 與 "j" 上面都沒有「點」，這可尷尬了，古人說「胸無點墨，無以成文；胸無點墨，也無以成畫」，小弟暱稱的 "j" 也缺個點，主角 "vim" 的 "i" 亦然，這是故意的嗎？<br>
+<br>
+非也、非也，其實這是 Ubuntu Dapper (尚未釋出) 的 Bug，以下引用 IRC log 說明：<ul class="code" style="margin: 6px;">
+ 5月 24 15:47:08 [caleb-] jserv--: vi / vim cheat sheet 所有的 i j 上頭小點都不見了~<br>
+ 5月 24 15:47:24 *      caleb- 變成斷頭的 jserv-- ??? XD<br>
+ 5月 24 15:47:46 [Tetralet]       caleb-: update your uming and ukai to fix it.<br>
+ 5月 24 15:48:02 [Tetralet]       caleb-: see uming's changelog<br>
+ 5月 24 15:48:30 [caleb-] Tetralet: png 檔...<br>
+ 5月 24 15:48:46 *      caleb- 手動加上小點?...XD<br>
+ 5月 24 15:49:03 *      caleb- ← 沒在用 uming<br>
+ 5月 24 15:49:14 [Tetralet]       caleb-: 請拿筆在螢幕上自行補上。謝謝！<br>
+ 5月 24 15:49:36 [Lotu1]  caleb 如果數量眾多 可以用鐵樂事噴漆代勞<br>
+ 5月 24 16:05:20 [AndrewLee]      i 旁邊寫插入模式<br>
+ 5月 24 16:05:29 [AndrewLee]      j 旁邊一個往下的箭頭<br>
+ 5月 24 16:06:37 [caleb-] AndrewLee: 繁體版的 png 標題就漏點了...裡面的所有 uming i j 也都漏點<br>
+ 5月 24 16:06:50 [caleb-] AndrewLee: 簡體版沒問題, 繁體的黑體字也沒問題<br>
+ 5月 24 16:07:30 [AndrewLee]      恩，我注意到了<br>
+ 5月 24 16:07:47 [AndrewLee]      聽說 jserv 用的是 dapper, 看來 dapper 還沒修正這個問題<br>
+ 5月 24 16:21:26 [AndrewLee]      jserv--: Arne 說是 pango 的變更導致的，他已經在字型上做了變更(workaround)<br>
+ 5月 24 16:21:39 [AndrewLee]      jserv--: 請更新到最新的版本
+</ul>
+所以，將 apt.debian.org.tw 上更新的 uming 安裝好之後，就修正以上問題了，感謝 Arne 與 AndrewLee。以下引用 ChangeLog  說明之：<ul><pre class="code" style="margin: 6px;">
+$ zcat /usr/share/doc/ttf-arphic-uming/changelog.Debian.gz | head 
+ttf-arphic-uming (0.1.20060513-1) unstable; urgency=low
+
+  * The 'fix for the missing i and j dots under pango' release
+  * no new glyphs, just the fix.
+  * bumped up the standards version to 3.7.2.0
+</pre></ul>
+如今，"i" 與 "j" 終於有了「點墨」，看來又可繼續作文繪畫了。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001677.html">12:24 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1677" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">May 24, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001676"></a>
+<h3 class="title">BodyScapes</h3>
+
+在 [<a href="http://my.opera.com/yunt/blog/show.dml/267167">人體上的藝術</a>] 瞥見藝術家 Allan I. Teger 的作品集 [<a href="http://www.bodyscapes.com/galleries.htm">Bodyscapes Galleries</a>] (警告：該網頁可能涉及道德議題)，這些藝術創作總伴隨幾分驚訝，人體肢體的比例是如此鮮明。同時，也讓我想到以前看過的電影《Talk to Her》，BodyScapes 彷彿用靜態的圖片，生動的描述出如 [<a href="http://column.hkmdb.com/misc/?p=142">香港影庫</a>] 的眉批：<ul class="code" style="margin: 6px;">
+女人總覺得男人自私，他為她喝掉她研製的新藥，表示他給她的信任和犧牲。怎料男人一天一天地變小了。她得到了操控他的所有權利。最後他走進她的陰道，再不出來，把自己生命交給了這個女人，義無反顧。<br>
+<br>
+可是，這些都是愛情嗎？
+</ul>
+物的本質究竟為何，或許，終其一生我們仍懵懵懂懂，下筆之際，腦際浮現德國詩人歌德在巨著《浮士德》完成前夕所作的名句：<ul><pre class="code" style="margin: 6px;">
+Alles Vergaengliche
+Ist nur ein Gleichnis;
+Das Unzulaengliche,
+Hier wird's Ereignis;
+Das Unbeschreibliche,
+Hier ist's getan;
+Das Ewig-Weibliche
+Zieht uns hinan.
+</pre></ul>
+"das Ewig-Weibliche" 是歌德的自創字，這個德文用詞相當特別，可說是「永恆的女性」或「女性的永恆」，不若是 libido，而是反映當時基督思想的新秩序。《浮士德》是歌德畢生智慧的結晶，這是令人驚奇的大作，其結構並非嚴謹，更談不上有對稱形式，然而，尋求創造與理性為基礎的力量，驅使浪漫主義對獨尊理性的反撲、啟蒙思想對宗教桎梏的反噬，換言之，願望與夢想主導了這個世界。而，該字的引申意思即母性的神聖性與昇華的母愛，這與該時代的價值觀有很大的落差。<br>
+<br>
+又，歌德多次提及「存在」之於物之寓意，而也可從這些段落發現，信仰與懷疑的衝突。德文原文前半部的意思是「一切消逝的，不過是表徵。那些不美滿的，在此完成，無可言喻。」，面對社會充斥的逞兇好鬥與人性醜陋，詩人訴諸理想中的新力量：<ul><pre class="code" style="margin: 6px;">
+Das Ewig-Weibliche
+Zieht uns hinan
+(永恆的女性
+帶領我們飛升)
+</ul>
+而，[<a href="http://www.bodyscapes.com/galleries.htm">Bodyscapes Galleries</a>] 所呈現女性胴體，不正鮮明地詮釋「永恆的女性」嗎？唯有放下物化的身段，才得以看清本質，體驗亙古的內在價值，最後轉化為永恆的力量...<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001676.html">08:28 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1676" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001675"></a>
+<h3 class="title">vi / vim 圖解鍵盤指令</h3>
+
+一開始接觸 vim 時，總覺得渾身不對勁，想說，天底下怎麼有如此奇怪的 editor？後來上手後，卻不想更換，這就是 vim 迷人之處。剛剛瞥見 LinuxSir 的文章 [<a href="http://www.linuxsir.org/bbs/showthread.php?t=257834">vi/vim 鍵盤圖</a>]，對岸的朋友分享了精簡明確的 vi / vim 鍵盤示意圖，我順手做了繁體中文翻譯如下圖： (click to enlarge)<br>
+<center><a href="http://jserv.sayya.org/misc/vi-vim-cheat-sheet.png"><img src="http://jserv.sayya.org/misc/vi-vim-cheat-sheet-small.png"></a></center><br>
+也可下載 [<a href="http://jserv.sayya.org/misc/vi-vim-cheat-sheet.svg">原始的 SVG 檔</a>]，如果系統有安裝 CJKUnifont，應該可以正確顯示。<br>
+<br>
+Have Fun!<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001675.html">02:13 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1675" onclick="OpenComments(this.href); return false">迴響 (9)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001674"></a>
+<h3 class="title">「淺談 DRI/GL Acceleration、Xgl、AIGLX 以及相關技術發展」簡報上線</h3>
+
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001657.html">心得分享：Linux 3D 技術 - 淺談 DRI/GL Acceleration、Xgl、AIGLX 以及相關技術發展</a>] 提過週二會去台大附近的 [<a href="http://wiki.tossug.org/CafeLumiere">魯米爺</a>] 作 Linux 3D 技術細節的心得分享，簡報 [<a href="http://jserv.sayya.org/freedesktop/linux-3d-technologies.pdf">已經上線</a>] (PDF 格式)，有興趣的朋友可自行參考，也請多指教，謝謝。<br>
+<br>
+週二晚上的插曲挺多的，因為雨勢實在太大，我只好一路騎淑女車慢慢推進，雨水打得我眼睛睜不開，沒配戴眼鏡的我，一路都膽顫心驚，主要是因為散光與四百度的近視。就算穿了雨衣，最後還是「外面淋濕、裡面冒汗」，下午五點十五分出發，一直到六點五十分才抵達，這之間 ### (加密處理，保留)。整個心得分享的過程還算順暢，參加的人數大出我預期，覺得不可思議，只是我忽略太多基礎的細節，對一般的聽眾來說不易接受，可是，我實在不知道，該怎樣分享這些很「硬」，又新到 Google 也不見得找得到的技術...<br>
+<br>
+尾聲時，跟一些新面孔打招呼，聊了片刻才發現，有人從台中上來，也有人當天從斗六過來 (!!)，雖然是沒有報酬的心得分享，正如莊子所說的「無何有之鄉」，聽者基本上沒有太大負擔的參與 (當然，至少要點杯飲料)，而講者沒有什麼限制，但是想到竟然有朋友從這麼遠的地方前來，總覺得自己似乎準備不足而羞愧...<br>
+<br>
+無論如何，終於把 Linux 3D Graphics 與最新的發展做了介紹，至少又多了一份中文的參考資料，接下來要探討的對象就是「Xorg 嶄新的硬體加速與效能提昇機制」，時間暫定於今年七月份，詳情可參考 [<a href="http://wiki.debian.org.tw/IRCConf">Debian@Taiwan wiki: IRC Conference</a>]。七月份的議題，跟這次的講題相似之處，就是太多技術細節沒有良好的文件化，也缺乏全面性的介紹，中文的資料更是付之闕如，頂多只有片面的新聞稿，而我則希望，能夠多談談這些技術突破。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001674.html">01:42 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1674" onclick="OpenComments(this.href); return false">迴響 (4)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">May 23, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001673"></a>
+<h3 class="title">Qtopia Phone Edition Live-CD</h3>
+
+<center><img src="http://linuxdevices.com/files/misc/trolltech_qpe_launcher-thm.gif"></center><br>
+LiveCD 的風潮實在不容小覷，除了教育性質，拿來當產品的展示或體驗，也是很好的方式。LinuxDevices.com 的新聞 [<a href="http://www.linuxdevices.com/news/NS5718351613.html">Live Linux CD demos Qtopia phone stack</a>] 提到 Trolltech 提供 Qtopia Phone Edition 的 LiveCD，除了 VoIP 的功能外，幾乎都羅列於該 LiveCD 中，可 [<a href="http://www.qtopia.net/iso/">在此取得 ISO image</a>]，包含 Qtopia Phone Edition version 2.2 與 4.1.x，該 image 透過 qemu 或 VMware 即可使用。我在台大做了一份 [<a href="http://kde.linux.org.tw/~jserv/qtopia-4.1.1-2006_04-20_1114.iso">qtopia-4.1.1 LivceCD 的 mirror</a>]，台灣的朋友可抓來玩玩。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001673.html">09:47 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1673" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">May 22, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001672"></a>
+<h3 class="title">charset-detector：自動偵測文件編碼的小程式</h3>
+
+發展程式前，通常會有個動機，而就我剛剛做的這個小程式來說，就是為了透過 [<a href="http://pcmanx.csie.net/">PCManX</a>] 連線到對岸的 BBS 站台，可惜我遇到很麻煩的問題，就是得自己指定編碼，偏偏上週騎腳踏車時，把手握太大力造成輕微受傷，所以一直打錯字... Anyway，我決定要替 [<a href="http://pcmanx.csie.net/">PCManX</a>] 加上自動偵測 BBS 編碼的功能。<br>
+<br>
+自動猜測文件編碼的演算法，在 Mozilla 中已經有不錯的實做，而 Mozilla 官方網頁也提供論文 [<a href="http://www.mozilla.org/projects/intl/UniversalCharsetDetection.html">A composite approach to language/encoding detection</a>] 作參考，對岸的網友提供了簡體中文翻譯 [<a href="http://blog.i5un.com/item/21">一種語言/編碼檢測的復合方法</a>]，相關的實做可參考 Mozilla cvs tree [<a href="http://lxr.mozilla.org/seamonkey/source/extensions/universalchardet/src/">extensions/universalchardet</a>]，而之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001601.html">Mozilla Re-licensing 完畢</a>] 也提到 Mozilla Foundation 日前宣佈，Mozilla codebase 由原本的 MPL (Mozilla Public License) 轉換為 MPL / GPL / LGPL 三重授權模式，這與 [<a href="http://pcmanx.csie.net/">PCManX</a>] 的授權相容，所以當務之急就是如何整合。<br>
+<br>
+我初步將 NSPR (Mozilla Runtime) 一類的包袱去掉，並且用 G++ 的 -fno-rtti、-fno-exceptions，以及 -nostdinc++ compilation flags 來編譯 ，如果將 -lstdc++ 換成 -lsupc++，還可進一步得到 C-only library，目標是作成一個 add-on，讓 [<a href="http://pcmanx.csie.net/">PCManX</a>] 可透過 dlopen 來操控內部實做，初步完成自動偵測文件編碼與測試程式，名為 [<a href="http://jserv.sayya.org/i18n/charset-detector.tar.bz2">charset-detector</a>] (bzip2 tarball)。<br>
+<br>
+以下以測試程式 (放在 test  目錄下) 作範例，看看運作情況，initcall.txt 是個用 Big5 編碼的文件：<ul><pre class="code" style="margin: 6px;">
+charset-detector/test$ file initcall.txt
+initcall.txt: ISO-8859 English text, with CRLF line terminators
+charset-detector/test$ ./test-chardetect ./initcall.txt
+File ./initcall.txt ...
+Charset = Big5
+</pre></ul>
+UNIX 的工具 file 就誤判了，還好咱們的 charset-detector 正確識別編碼，而 charset-detect library 的 API 只有六個，很容易操作。下一步就是 hack [<a href="http://pcmanx.csie.net/">PCManX</a>]，使其建立 BBS connection 後，將 buffer 傳遞給 charset-detect APIs 作編碼的判斷，稍後作適度的畫面重繪動作。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001672.html">05:40 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1672" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001671"></a>
+<h3 class="title">富有智慧的樸素</h3>
+
+俄國作家 Максим Горький 曾說過：「一切出色的東西都是樸素的，它們之令人傾倒，正是由於自己的富有智慧的樸素。」，Sinya 日前在她的 blog [<a href="http://329.blogspot.com/2006/05/coca-cola-cockroach.html"> Coca-Cola + cockroach = ？</a>] 提及，她將以行動驗證「若把一隻蟑螂放入可口可樂中，三天到一個禮拜的時間，再倒出來時就完全看不到蟑螂了。因為蟑螂已經被可樂給溶解了。」的傳言，Sinya 的看法是：<ul class="code" style="margin: 6px;">
+「我知道可樂是屬於強酸性的飲料，但是它的腐蝕性真有強到能把一隻蟑螂給『溶解』的地步嗎？我非常的懷疑！！」
+</ul>
+所以，她展開了實驗，過程是樸素的，那結果如何呢？更新的 blog [<a href="http://329.blogspot.com/2006/05/outcome-of-empiricism.html"> The outcome of the empiricism</a>]，引述內容如下：<ul class="code" style="margin: 6px;">
+我所實驗的主體是隻已乾掉的大蟑螂，當初放入時，還不太容易，有點硬塞的感覺。不過今天當我狠下心，咬著牙，閉著氣，把牠倒到馬桶沖掉時，體型變大的牠，居然一下子就隨著液體流出來，一點也不費力，這點出乎我意料，因為我以為進去瓶子都不容易了，何況是要出來呢！真是『好家在！』不用我煩惱了！
+</ul>
+愛因斯坦也說過：「凡在小事上對真理持輕率態度的人，在大事上也是不足信的。」，這雖然是小事，但有如此的實驗精神值得稱許 :-)<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001671.html">02:39 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1671" onclick="OpenComments(this.href); return false">迴響 (5)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001670"></a>
+<h3 class="title">擁抱 Portland 計畫</h3>
+
+標題的斷詞很有趣，不過本文可不是「擁抱 Portland」的計畫 (這個笑話夠冷)，而是提 FreeDesktop 的 [<a href="http://portland.freedesktop.org/">Portland</a>] 計畫。我一直對 Desktop Component Object Model / Framework 有高度的興趣，之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001534.html">以Qt4 的 QAbstractEventDispatcher 與 Gtk+/GNOME 元件作緊密整合</a>] 算是整理過去一些紀錄，而基本上 KDE 與 GNOME 的整合無可避免會需要在 Component Object Model 與 IPC 機制方面著墨。<br>
+<br>
+刀槍 Blue 寫了兩篇中文介紹： [<a href="http://www.thinknext.net/archives/1381">Project Portland</a>] 與 [<a href="http://www.thinknext.net/archives/1427">Portland 近況</a>]，值得一讀。就技術的角度來說，[<a href="http://portland.freedesktop.org/">Portland</a>]  的 component model 概念上類似之前在 blog 提過的 [<a href="http://blog.linux.org.tw/~jserv/archives/001392.html">GParts - GTK+/GNOME 與 Qt/KDE 應用程式的整合</a>]，不過實做方式則大異其趣，還是圍繞在 IPC 主導的思維，兩者是不同的人馬。話說回來，從 1999 年我開始觀察 Linux Desktop 至今，類似的計畫看過不只五次了 *笑*<br>
+<br>
+當然，現在的情勢不比昔往，無論是哪個陣營，其實現在的 Killer Application 都很明確了，而且在技術上要互通有無，是很有機會的，所以，[<a href="http://portland.freedesktop.org/">Portland</a>] 計畫是否能如承諾，完成那剩下的 5% 開發，順利銜接 "the last mile" 呢？<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001670.html">05:11 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1670" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001669"></a>
+<h3 class="title">Dapper 即將現身</h3>
+
+剛剛 apt-get dist-upgrade 時發現：<ul><pre class="code" style="margin: 6px;">
+正在設定 base-files (3.1.9ubuntu5) ...
+正在安裝新版本的設定檔案 /etc/issue ...
+正在安裝新版本的設定檔案 /etc/issue.net ...
+
+設定檔案“/etc/lsb-release”
+ ==&gt; 在安裝後曾被修改(您或者某個script修改了它)。
+ ==&gt; 套件的提交者提供了一個更新版本。
+</pre></ul>
+有趣，看看 lsb-release 資訊：<ul><pre class="code" style="margin: 6px;">
+# cat /etc/lsb-release 
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=6.06LTS
+DISTRIB_CODENAME=dapper
+DISTRIB_DESCRIPTION="Ubuntu 6.06LTS"
+</pre></ul>
+Dapper (Ubuntu 06.06) 終於要現身了，期待 :-)<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001669.html">04:55 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1669" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001668"></a>
+<h3 class="title">Cairo user font API</h3>
+
+剛剛發現 [<a href="http://poppler.freedesktop.org/">poppler</a>]  無法在我這台 Ubuntu Dapper 的機器編譯，錯誤訊息如下：<ul><pre class="code" style="margin: 6px;">
+CairoFontEngine.cc:82: error: 'cairo_user_font_backend_t' does not name a type
+CairoFontEngine.cc:85: error: 'cairo_user_font_backend_t' does not name a type
+CairoFontEngine.cc: In constructor 
+'CairoType3Font::CairoType3Font(GfxFont*, XRef*)':
+CairoFontEngine.cc:97: error: 'font_backend' was not declared in this scope
+CairoFontEngine.cc:97: error: 'cairo_user_font_face_create' was not declared 
+in this scope
+make[3]: *** [CairoFontEngine.lo] Error 1
+make[3]: Leaving directory `/home/jserv/misc/poppler/poppler'
+</pre></ul>
+而系統安裝的 Cairo 版本為 1.1.1-0ubuntu1，應該很新了，又，查閱 cvs commit log：<ul><pre class="code" style="margin: 6px;">
+revision 1.21
+date: 2006-05-19 19:21:59 +0000;  author: krh;  
+state: Exp;  lines: +311 -36
+2006-05-19  Kristian Høgsberg
+        Memory leak patch from Carlos Garcia Campos (#6947).
+
+        * glib/poppler-action.cc:
+        * glib/poppler-document.cc:
+        * glib/poppler-page.cc:
+        * poppler/CairoFontEngine.cc:
+        * poppler/CairoFontEngine.h:
+        * poppler/CairoOutputDev.cc:
+        * poppler/CairoOutputDev.h:
+        * poppler/Gfx.cc:
+        * poppler/TextOutputDev.cc:  Fix various memory leaks.
+</pre></ul>
+似乎沒有太特別之處，到底是怎麼一回事呢？<br>
+<br>
+Kristian Høgsberg (poppler 計畫維護人與 Cairo/GTK+ 相關軟體的開發者) 在 Cairo mailing-list 提出過 [<a href="http://lists.freedesktop.org/archives/cairo/2006-May/006849.html">User font take 2</a>] 的提案，引入一系列新的 API 與 structure 來作 Type3 的 user font rendering，Keith Packard 在 [<a href="http://lists.freedesktop.org/archives/cairo/2006-May/006867.html">回覆的文章</a>] 提到：<ul>
+It seems like something very similar to the PS Type3 mechanism would work nicely and avoid a huge pile of application and cairo complexity / locking issues.
+</ul>
+Kristian Høgsberg 則在 [<a href="http://lists.freedesktop.org/archives/cairo/2006-May/006888.html">隨後的文章</a>] 做了補充：<ul>
+So thinking about this, yeah, this might just work.  I was working with different assumptions, though; that the API should support on demand loading of glyphs (to support fonts with a large number of
+glyphs) and that we would want to do hinting.  However, none of the custom document fonts (ps and pdf type3 font, svg fonts) that would use this feature support hinting and it's probably a safe assumption that none of these font formats will be used for big fonts.  In the event that we need to support a new full featured font format, that's
+better done as a full cairo font backend or in freetype anyway.
+</ul>
+該 thread 系列文章對釐清 Cairo user font 新的 API 的概念很有幫助，commit log 可參考 Cairo git log 與 PDF Type3 相關的細節。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001668.html">04:12 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1668" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001667"></a>
+<h3 class="title">FOX Toolkit 與中文支援</h3>
+
+這兩天 [<a href="http://pcman.sayya.org/">PCMan</a>] 在玩 [<a href="http://www.fox-toolkit.org/">FOX Toolkit</a>]，剛剛在 BBS 上，他跟我提到使用的感想與 hacking，以下節錄 PCMan 發表於 BBS 的文章：(僅作排版的修改)<ul class="code" style="margin: 6px;">
+ 作者  PCMan (PCMan X Project)<br>
+ 標題  [閒聊]FOX toolkit 好棒！<br>                                   
+ 時間  Sun May 21 23:42:52 2006<br>                                               
+─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ <br>
+雖然被考試防守，但這兩天還是都在看 <a href="http://www.fox-toolkit.org/">FOX toolkit</a>，這是目前為止我最寄予厚望的 GUI toolkit。<br>
+<br>
+經過一段時間的使用，對 gtk+ 累積了許多不滿，最主要是效能問題，其次是程式碼真的很冗長。雖然 gtk+ 的 API 是我看過架構最漂亮的，也有很多很了不起的設計，而且他們用純 C 這沒 OO 的語言寫出來的 OO，甚至勝過不少用 C++ 開發的 lib，但是效能實在讓我沒辦法忍受，尤其是 gtk+ win32，只能用「超爛」來形容。<br>
+<br>
+與其寄望 gtk+ win32 能有什麼大幅度的改善，不如評估換 toolkit 的可能性。<br>
+<br>
+以 gtk+ 目前的設計，要在 win32 做到可接受的水準，幾乎是不可能的事情。而一些在 compile-time 就該處理好的東西，因為語言限制變成 runtime 的，這點也讓我很不滿意，而 gtkmm 竟然只是 gtk+ wrapper，而且還更複雜...<br>
+<br>
+所以我一直在考慮換其他 toolkit 的可能性。<br>
+<br>
+Qt 滿棒的，但是我對 moc 真的非常感冒，還有現在 Qt4 其實用得人好像不多，看看 KDE 4 出來後會怎樣再說。  而且 Qt Win32 的效能和體積，我非常有意見。<br>
+<br>
+本來.... FLTK 超小超快，但是實在是簡陋得過頭了，大部分情況根本不夠用。<br>
+<br>
+FOX toolkit 一直都被我排除在外，因為沒有 i18n 支援，又不能打中文。可是... 這兩天才看到，在最新 1.6 版，已經換用 utf-8，經測試可顯示中文!! 輕巧、快速、而且是用 C++ 寫的  這幾乎就快要是我理想中的 toolkit。目前只剩下幾個「致命」缺點，讓我還不能改用他：<ul>
+<li>在 Windows 版不支援 IME，中文可以顯示，但完全不能輸入，source code  裡面有看到被註解起來的 IME 程式碼，看來他們有打算支援，且這部份我有能力送 patch</li>
+<li>X11 下號稱支援 XIM，但經測試，跟本不能用。 hack 過 source code 後發現的確有啟用 XIM 的 code，但是根本就沒有寫完整，導致無法發揮功能。<ul>
+有 XOpenIM，並且有取得 xim，有 XmbLookupString 但是沒有做 XFilter???(忘了)，導致無法切換到中文輸入法。 幫他補上去之後，可以叫出輸入法打字，但是 enter    後打出的字無法被收到，不知道出了什麼問題。 我不會 XIM，只是參考 gtk+ 的 hack 後仍然不能用，但我相信 FOX 能輸入中文是早晚的事情，看看 jserv 願不願意來 hack 一下，我 hack 過，看來很簡單，有 jserv 出馬一定能立刻搞定。</ul></li>
+<li>目前有 i18n utf-8 顯示，但還不支援 bidi，作者已放話 1.7 版要優先支援 bidi</li>
+<li>完全不能換 theme，整個介面元件，寫死了都是 Win 98 的樣式，這真是最大敗筆：跑在 X11 底下，不知道的人還以為是用 wine 在跑 win32 程式。這個不知道有沒有希望 hack 成能有 theme 的支援，除非 themable，否則 FOX 開發的程式看起來永遠像是外星人。</li>
+</ul>
+不像 gtk+，不像 Qt，也不像 xp style，在 Linux & Win32 都長得不像 native App，這是我最忌諱的事情。但我認為支援的可能性不高，作者認為在所有平台，都長一樣行為一致是「優點」。而且這個 toolkit 的設計目標就是快速輕巧，我不認為他會向視覺效果妥協，不過... 如果有人能成功 hack 出可換 theme，並讓他搭上 ClearLook theme。我想 FOX Community 一定會出現加上 configure option 讓他能換 theme 的呼聲，何況這個只是麻煩而已，技術難度不高，所以是有可能 hack 出來。<br>
+<br>
+總結，以上各點如果解決了，我認為 FOX 可能會是現階段最理想的 GUI toolkit 之一，真的是相當輕巧，提供的 widget set 也已經很完整，可說只欠完整的 i18n support，只要這個支援了 (v 1.7 應該會做到)，就可以替代 gtk+ 了！等到我寫完 gtk+ 的書的時候，FOX toolkit 應該已經到了成熟的階段.... 然後 gtk+ 的書已經出完，那時候我自己就可以換用 FOX 了，真是太棒了！<br>
+<br>
+開始陷入使用 FOX toolkit 開發輕巧快速的 GUI 程式的幻想當中....
+</ul>
+看到 PCMan 兄這麼興奮，上個世紀 (1999 年) hack 過 [<a href="http://www.fox-toolkit.org/">FOX Toolkit</a>] 的我，實在不好意思不幫忙，剛剛小改了一部分，運作畫面如下：<br>
+<center><img src="http://jserv.sayya.org/misc/fox-toolkit-xim.png"></center><br>
+至少，目前 SCIM (XIM frontend) 搭配我剛剛的 hack，在中文輸入上面應該沒有太大的問題，等釐清相關的議題後，找個時間提交。對了，圖片展示的小程式，用 Gtk+ 來寫的話也是百餘行就寫出來了，不過可以比較看看光是 UI latency 的差異，只能說 FOX Toolkit 真是飛快阿。<br>
+<br>
+如果有空的話，我可能會來實做 bidi 的支援，之前弄 kBrowser 的時候作過，不過 [<a href="http://www.fox-toolkit.org/">FOX Toolkit</a>] 的 Coding Style 對我來說，有點難接受阿，看起來太密集了 :P<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001667.html">01:47 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1667" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">May 21, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001666"></a>
+<h3 class="title">工讀生的工作環境 (2)</h3>
+
+有鑑於某位網友對我真實生活的工作內容相當好奇，而每次三緘其口似乎也不禮貌，所以，這裡再來貼兩張在辦公室的照片： (click to enlarge)<br>
+<center><a href="http://jserv.sayya.org/gallery/jserv-in-cci-2.jpg"><img src="http://jserv.sayya.org/gallery/jserv-in-cci-2-small.jpg"></a></center><br>
+<br>
+<center><a href="http://jserv.sayya.org/gallery/jserv-in-cci-3.jpg"><img src="http://jserv.sayya.org/gallery/jserv-in-cci-3-small.jpg"></a></center><br>
+最近工作項目比較雜，桌面看起來頗亂，筆記或草稿就攤在桌面，怕隔日上班時忘了。桌上擺放的書與資料跟工作當然有關，所以對我工作項目好奇的人，稍微臆測就知道了 (很枯燥，不想說 :P)，當然，咱們大老闆寫的書一定也放在上面。至於，那些裝飾性的明信片，主要是要增加學習德文的樂趣，所以...<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001666.html">12:27 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1666" onclick="OpenComments(this.href); return false">迴響 (9)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001665"></a>
+<h3 class="title">ATMEL 新 chip 的廣告</h3>
+
+ATMEL 最近主打新 chip [<a href="http://www.atmel.com/products/AVR32/">AVR32</a>] 系列，這顆 32-bit MCU/DSP 功能看來不錯，而且價格很有競爭力，不過我手頭沒有 engineering sample，所以先略過技術細節。然而，ATMEL 的廣告文宣相當有趣，以下是刊載於電子工程專輯的廣告 copy (click to enlarge)<br>
+<center><a href="http://jserv.sayya.org/gallery/atmel-new-chip.jpg"><img src="http://jserv.sayya.org/gallery/atmel-new-chip-small.jpg"></a></center><br>
+AVR 超人看起來好威風 *笑*<br>
+<br>
+漫畫風格的廣告似乎越來越風行了？<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001665.html">12:03 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1665" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001664"></a>
+<h3 class="title">sushi.c</h3>
+
+話說上次參加 OSDC 2006 後，跟 in2、tumi，以及 csardas 一同步行到晚上的宴會，途中看到這家特別的店： (click to enlarge)<br>
+<center><a href="http://jserv.sayya.org/gallery/sushi_c.jpg"><img src="http://jserv.sayya.org/gallery/sushi_c-small.jpg"></a></center><br>
+sushi.c 耶，讓我好想 hack 唷！所以，原料是 sushi.c (壽司便)，經過饕客 compiling 後，就變成 sushi.o (壽司... 便？)，也就是一堆看不懂的怪東西？ *笑*<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001664.html">11:48 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1664" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">May 20, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001663"></a>
+<h3 class="title">清楚思維</h3>
+
+昨天 Cheyi 來信問到一個跟 IEEE Standard 754 Floating-Point 有關的問題，內容就不贅述，或許有空再來整理，而回信時，讓我想起之前在 Embedded.com 讀過的短文 [<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=186700638">Right-brained programming</a>]，作者 Niall Murphy 在業界耕耘許久，也發表過多篇技術文件，不過這篇短文不談深入的技術，而如標題所言，探討程式設計時該有的 "Right-brained"。<br>
+<br>
+除了圖學，Niall Murphy 對嵌入式系統的 RTOS 有深入的看法與經驗。即使在 32-bit 甚至是 64-bit CPU 風行的今日，還有很多應用採用 8-bit MCP，不乏消費性電子裝置，整體的軟體開發門檻降低了，但是關鍵性的程式設計還是存在許多技術性的議題。首先，Niall Murphy 用 DDJ 上 Robert D. Grappel 發表的文章 [<a href="http://www.ddj.com/article/printableArticle.jhtml?articleID=184410967">Rotating a Weather Map</a>] 作點題，乍看對圖片作旋轉動作似乎是每個研習過圖學的工程師都該熟悉的操作，何難之有？問題是，今天要處理的對象是低階的硬體 (486/25MHz Embedded PC) 上面的圖形資料庫，這的確是個挑戰，所以，Robert 發展了一個 in-place 的演算法，透過數學的技巧來作最佳化處理，而 Naill 則給了以下的眉批：<ul class="code" style="margin: 6px;">
+That was a perfect example of solving a problem backwards. Ask yourself, "If I had the answer, would I be able to discover the question?" Other mathematical challenges are amenable to this sort of approach. Finding the square root of a number is fiendishly complex. If you already had the answer, however, checking it by squaring it is a simple case of multiplying it by itself. So if we guess at the answer we can check it. If the guess is too large, the result of squaring it is larger than the original value. We can iteratively improve our guesses as we get the result of each trial.
+</ul>
+的確，我們不該捨近求遠，妥善使用既有的技術是相當重要的，而這正是「清楚思維」的第一步。<br>
+<br>
+再來，作者以其豐富的 RTOS 經驗，談到 watchdog timer 的設計與 multi-tasking 的考量，在他之前的文章 [<a href="http://www.embedded.com/2000/0011/0011feat4.htm">Watchdog Timers</a>] 做了很好的闡述，事實上，出發點只是很單純的動機，一個 system-wide 的 monitor 竟然會涉及潛在的致命問題，這讓許多嵌入式系統的開發者，會不自覺膽顫心驚。於是，Naill 用很簡單的話說明這個議題：<ul class="code" style="margin: 6px;">
+Whenever you're trying to establish a design limit, as well as asking what is the smallest that limit can be, remember to look at the other direction, in case the answer at that extreme might be more useful.
+</ul>
+這個說法在軟體工程的書籍也多次提過，基本上只是用詞的不同，然而，特別在 Realtime system 的領域，更是不可輕忽，就如之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001299.html">Priority inversion 簡介</a>] 所提，同樣是 watchdog timer 設計的效應，就讓 NASA 的火星探測計畫幾乎徹底失敗，面對這種災難性的錯誤，一個程式設計師怎能不三思「清楚思維」的重要性呢？<br>
+<br>
+接著就以許多人小時候玩過的 ZX Spectrum 遊戲為例，以這個僅有 48 kb 記憶體的硬體裝置來探討電腦遊戲設計上，必須做出的妥協，而事實也告訴我們，在十幾二十年前，當時的程式設計師就可做到的事情，反倒在今日卻常無法達到？不得不讓我們反省，是否具備「清楚思維」。<br>
+<br>
+後半的篇幅中，[Every fault is a fashion] 是最讓我有深刻感觸的地方，也跟 Cheyi 來信指教的問題有些關聯。以下節錄原文的描述：<ul class="code" style="margin: 6px;">
+Consider a voltage that corresponds to a value of 127.2 when converted to a digital value by an ADC. An 8-bit converter is only going to provide the value 127, since the decimal place is not supported by the converter. In a noise-free environment every reading will be 127. But if there's random noise the signal will vary, while still averaging 127.2. Successive readings would be 127 most of the time, but 128 will appear often enough to raise the average above 127. There's no decimal place in a single reading, but the average of multiple readings can have that decimal place. While we want to eliminate most noise, some of it is good for us.
+</ul>
+這簡單的文字並沒有高深的術語，何以讓我有深刻體悟呢？身處於電子數位化的時代，當我們使用任何一種消費性電子裝置時，實在會有超出「一日之所需，百工斯為備」的感觸，而數位與類比、連續與離散系統之間，並非存有鴻溝，卻是有巧妙的關聯性，之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001485.html">再探羅塞達碑石 : 連續時間系統與離散系統的橋樑</a>] 提過這之間，工程數學的種種「魔法」。特別在設計 device driver、instrumenting，或者是 signal controlling 時，ADC (類比數位轉換) 牽涉的議題，實在不容小覷，同時，也得考慮到數位系統本身精密度與離散性質，這些，都該是一個工程人員，最基本的「清楚思維」。<br>
+<br>
+[Back to basics] 與 [Keep thinking] 兩小節提到的內容，可說是 [<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=186700638">Right-brained programming</a>] 一文的核心概念。一般人覺得再簡單不過的語音信箱與留言系統，也充滿了學問，Niall 舉的例子相當清楚明暸，文中的技術細節原理很簡單，問題是，我們有「清楚思維」去思考嗎？<br>
+<br>
+當然，在高度分化的今日，事實上對於程式設計師的要求也變得多元，或許「清楚思維」的重要性只侷限特定領域，但是，沒有「清楚思維」卻讓我們困於應用的類型與技術的深度，而無法獲得進一步的成長，謹此自勉！<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001663.html">09:42 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1663" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">May 18, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001662"></a>
+<h3 class="title">訪客用哪些作業系統看 Blog 呢？</h3>
+
+用餐後，心血來潮來查看系統的統計資訊，其中有一項很有趣，就是本 blog 對訪客所使用的作業系統分類統計，呈現以下分佈：<br>
+<center><img src="http://jserv.sayya.org/misc/blog-stats.png"></center><br>
+在 Linux 上瀏覽本 blog 的訪客佔了全部的 11%，有趣。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001662.html">07:30 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1662" onclick="OpenComments(this.href); return false">迴響 (7)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">May 17, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001661"></a>
+<h3 class="title">展示 glade 的彈性</h3>
+
+去年 [<a href="http://pcman.sayya.org/">PCMan</a>] 在台大給了一場關於 Gtk+ 的 talk，介紹以 [<a href="http://glade.gnome.org/">glade</a>] 作快速 UI 設計的方式，相關的會後整理可參考 Jouston 的 blog [<a href="http://tossug.blogspot.com/2005/12/pcman-gtk-xd-programming.html"> PCman 大爆滿的 GTK+ XD programming會後資料整理</a>]。不過，以 XML 作為呈現設計的 glade 不全然是 UI builder / code generator， 事實上，glade 的彈性相當大，可參考 [<a href="http://www.gnome-cn.org/resources/blog/yangh/userlist-of-xchat-gnome/blogentry_view">借助 glade 帶來的便利按息的想法修改 Xchat-gnome 的界面</a>]，[<a href="http://www.gnome-cn.org/Members/yangh">YangH</a>] 展示如何在不修改任何一行 xchat-gnome 的 C 語言程式碼前提下，只用 glade 對整個 UI 呈現作調整。<br>
+<br>
+在 [<a href="http://www.gnome-cn.org/Members/yangh">YangH</a>] 的修改下，原本的 UI 呈現如下： (click to enlarge)<br>
+<center><a href="http://xchat-gnome.navi.cx/wp-content/uploads/2006/01/main.png"><img src="http://xchat-gnome.navi.cx/wp-content/uploads/2006/01/main.png" width="382" height="268"></a></center><br>
+透過呼叫 glade 來修改 xchat-gnome 的 .glade 檔案後，原本隱藏的 User List 就看得到了： (click to enlarge)<br>
+<center><a href="http://www.gnome-cn.org/resources/blog/yangh/userlist-of-xchat-gnome/screenshot-linuxfans-linuxfire-irc.png"><img src="http://www.gnome-cn.org/resources/blog/yangh/userlist-of-xchat-gnome/screenshot-linuxfans-linuxfire-irc.png" width="407" height="269"></a></center><br>
+詳細的操作方式，文章很清楚提過，值得試試看。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001661.html">07:28 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1661" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">May 16, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001660"></a>
+<h3 class="title">大自然、數學，魔術</h3>
+
+晚間閱讀 Blake 的 blog [<a href="http://greenisland.csie.nctu.edu.tw/wp/2006/05/13/644/">《大自然的數學遊戲》</a>]，讓我想到上週去台中的途中，在客運閱讀的書籍《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010265292">黃金比例：1.61803......的祕密</a>》，這幾天身體不太舒服，所以暫時不評論，不過這兩本書給我的啟發，喔不，應該說「震撼」，就如 Blake 提到的：<ul class="code" style="margin: 6px;">
+古人說天人合一，陰陽五行，但這對現代人來說好像很形而上，很抽象。而古人為什麼要用五行的模型？這些雖然在這本書裡面不會去解釋，也看不到天人合一陰陽五行這八個字，但是卻可以感覺到它們之間的相呼應。
+</ul>
+黃金比例 Φ，計算值為 1.6180339887…，我們不甚意外，這只是個無理數，但卻巧妙牽連兔子的生育、玫瑰花瓣、鸚鵡螺的外殼、鳳梨的外皮鱗片、《蒙娜麗莎的微笑》、股市指數的波動、... 等微妙的關聯性，作者 Mario Livio 更旁徵博引，透過大自然巧妙的安排，以數學原理闡述這些現象，數學之美除了引人入勝外，更讓人對大自然的崇敬，加強並昇華。<br>
+<br>
+黃金比例如此，其他簡約成希臘符號的數亦然，《大自然的數學遊戲》則是更廣泛地介紹，行文中，好似魔術師的揮舞...<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001660.html">11:58 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1660" onclick="OpenComments(this.href); return false">迴響 (4)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001659"></a>
+<h3 class="title">opensource.Motorola.com</h3>
+
+Motorola 日前宣佈其 open source 計畫網站 [<a href="https://opensource.motorola.com/">opensource.motorola.com</a>] 的成立，釋出 Linux smartphone 產品線的 kernel tree (A1200 / A780-E680 kernel)、SD-MMC drivers，以及
+ Gatling Test Framework，未來還有 JSR 271 / MIDP 3.0 的計畫。<br>
+<br>
+儘管 Motorola 一直對於 free / open source software 投入相當程度的支持，但是過去有些令人詬病的行徑，讓許多開發者不禁懷疑該公司的策略，不過這次卯起來搞個 [<a href="https://opensource.motorola.com/">opensource.motorola.com</a>]，就是希望更貼近開發者社群。OpenEZX 的開發者 Harald Welte，在 blog [<a href="http://gnumonks.org/~laforge/weblog/2006/05/15/#20060515-motorola-opensource">Motorola launching opensource.motorola.com</a>] 提到釋出的 A1200 kernel tree 相較於之前在 sourceforge 上的 A780 linux kernel source code，有以下的差異：<ul>
+<li>FOTA (Flash on-the-air) - 可讓 network operator 修改手機中的 flash 記憶體，這使得自動軟體升級成為可行</li>
+<li>改善的 PM (power management) 能力，讓電池使用更有效率</li>
+<li>SE Linux - 用以 OMA DRM 一類的機制</li>
+</ul>
+繼 Nokia 後，Motorola 也開放胸襟，對 open source 釋出善意，這讓我想到今天讀到 Jack G. Ganssle 發表於 Embedded.com 的文章 [<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=187203243">Five Technologies You Need to Know About</a>]，該文提及：<ul class="code" style="margin: 6px;">
+The open source movement will continue to grow, of course, but with the release of GPL 3.0 a business-driven backlash will spawn new licensing arrangements. GPL 3.0, though still in draft form, is creating considerable controversy due to its strong stand on DRM and patents.<br>
+<br>
+Without getting into the debate about software patents, companies will continue to view these as important assets. The recording and movie industries will fill politicians’ purses with campaign contributions to require hardware DRM enforcement in home entertainment devices. Licenses more generous than GPL 3.0 or even 2.0 will proliferate to satisfy business needs to use OSS while protecting proprietary code. An extant example is that for eCos). 
+</ul>
+究竟 Motorola 近來將這些貢獻公開，會激起什麼漣漪呢？咱們拭目以待。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001659.html">11:02 PM</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">May 15, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001658"></a>
+<h3 class="title">Type in SCIM-chewing</h3>
+
+SCIM-chewing 已經於稍早釋出新版本，而我之前在 #dot 曾經貼了一張有趣的圖片：<br>
+<center><img src="http://jserv.sayya.org/misc/type-in-scim-chewing.gif"></center><br>
+這個 GIF 動畫是用 [<a href="http://tools.fodey.com/generators/animated/ninjatext.asp">The Ninja Text Generator</a>] 產生的，很可愛，只可惜不吃中文。<br>
+<br>
+開發輸入法是條漫長的路，不過也從中學習到許多，更認識來自不同領域、族群，或者文化背景的朋友，這真是奇妙的經驗呢，可以自己去調整輸入法實做更是美妙的事情：<ul>
+I Type in SCIM-chewing.</ul>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001658.html">06:42 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1658" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001657"></a>
+<h3 class="title">心得分享：Linux 3D 技術 - 淺談 DRI/GL Acceleration、Xgl、AIGLX 以及相關技術發展</h3>
+
+下週二 (May 23)，我會去 [<a href="http://wiki.tossug.org/">台北開放原始碼軟體使用者社群 / Taipei Open Source Software User Group</a>] 作心得分享，題目是「Linux 3D 技術：淺談 DRI / GL Acceleration、Xgl、AIGLX 以及相關技術發展」，詳情可參考 [<a href="http://wiki.tossug.org/%E5%BF%83%E5%BE%97%E5%88%86%E4%BA%AB">TOSSUG::心得分享</a>]，有興趣的朋友可前來指教與討論。<br>
+<br>
+基本上，涵蓋三個大方向：<ul>
+<li>快速釐清觀念：Mesa/GL、DRI / DRM / Framebuffer、GLX、Direct/Indirect GL、3D Acceleration</li>
+<li>Xgl、AIGLX 與相關技術探討</li>
+<li>3D：究竟是 Eye-candy 還是未來？</li>
+</ul>
+觀念釐清的部份，僅可能用簡單的術語與圖表帶過，希望能協助一些朋友。有不少朋友透過 Email 與 IRC 跟我討論到 3D 或 GLX 一類的議題，其實連基本的概念都不甚正確了，所以問題很難切入，這就比較可惜了，畢竟，這三年中，許多 X Window System 與 Linux Graphics 的技術大躍進都圍繞在這些基礎建設上。當然，我只是作心得分享，就我所知的部份作分享，還是有太多充滿神奇的技術等著我們去挖掘呢 :-)<br>
+<br>
+免費參加，不過記得要點餐或飲料，然後也歡迎先送信件跟我打聲招呼，或許預先寫下一些議題，避免到時候聽得頭昏腦脹，忘記提出。從去年開始一系列跟 Linux Graphics 或 X Window System 相關的演講與心得分享，詳細的內容都會在我的書中出現，所以歡迎指教，謝謝！<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001657.html">05:26 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1657" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001656"></a>
+<h3 class="title">SCIM-chewing 0.3.0 與 libchewing 0.3.0 釋出</h3>
+
+睽違許久的 [<a href="http://chewing.csie.net/">新酷音計畫</a>] 發展版本終於釋出了，核心的 libchewing 0.3.0 與應用層 SCIM-chewing 0.3.0 的釋出資訊，可參考 [<a href="http://chewing.csie.net/news.html">Chewing::News</a>]。同時，因為過去的 mailing-list 主機已經失效，所以現在 [<a href="http://chewing.csie.net/">新酷音計畫</a>] 改用 Google Groups [<a href="http://groups.google.com.tw/group/chewing-devel">Chewing IM Development</a>]，這兩份 release 的公告可參考 [<a href="http://groups.google.com.tw/group/chewing-devel/browse_thread/thread/ce007cba49e85b6a">libchewing 0.3.0 Released</a>] 與 [<a href="http://groups.google.com.tw/group/chewing-devel/browse_thread/thread/48e49f5d241941e5/1e45c7842fab1067#1e45c7842fab1067">SCIM-chewing 0.3.0 Released</a>]。<br>
+<br>
+參與討論或開發行列的方式，可參考 [<a href="http://chewing.csie.net/mailinglists.html">Chewing::Mailinglists</a>]：<br>
+<table style="border:1px solid #aa0033; font-size:small" align=center>
+  <tr> 
+    <td rowspan=2>
+     <img src="http://groups.google.com.tw/groups/img/groups_medium_zh-TW.gif" height=58 width=150 alt="Google Groups">
+    </td>
+    <td align=center><b>Chewing IM Development</b></td>
+  </tr>
+  <tr><td align=center>進 <a href="http://groups.google.com.tw">groups.google.com.tw</a> 站内　<a href="http://groups.google.com.tw/group/chewing-devel">瀏覽群組</a> </td></tr>
+</table>
+libchewing 的版本命名會仿效 Linux kernel 的方式，所以 0.2.x 系列視為穩定版本，目前也被多項輸入法計畫所採用，而 0.3.x 則是最新的開發版本，現在已經初步整合之前的 branches，並且會往效能改善、詞庫品質調整，以及功能上的提昇等方向繼續開發。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001656.html">04:13 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1656" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">May 10, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001655"></a>
+<h3 class="title">Embedded SSL Libraries</h3>
+
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001651.html">軟體多樣性對嵌入式系統的影響</a>]，提到 Jim Higgins 的文章，並以 [<a href="http://www.openssl.org/">OpenSSL</a>] 為例，說明軟體多樣性，而就 Embedded 應用來說，以下列舉我用過的 Embedded SSL libraries：<ul>
+<li>[<a href="http://www.cryptlib.com/">Cryptlib</a>]</li>
+<li>[<a href="http://www.matrixssl.org/">MatrixSSL</a>]</li>
+<li>[<a href="http://www.yassl.com/">yaSSL</a>]</li>
+<li>[<a href="http://www.axtls.co.nr/">axTLS</a>]</li>
+</ul>
+面對琳瑯滿目的解決方案與其規格，該如何取捨呢？之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001298.html">從 OpenSSL 談 SSL Programming 的抽象化</a>] 提過 SSL programming model 大致的樣貌。包含 OpenSSL 在內，我用過了以上五個 SSL libraries，授權方式先跳過，因為有 dual-licensing 的情況，但都是自由軟體。就我的認知，[<a href="http://www.cryptlib.com/">Cryptlib</a>] 與 [<a href="http://www.matrixssl.org/">MatrixSSL</a>] 性質較為接近，簡單來說，這兩項都是從實做 Crypto algorithms 作出發，前者的完整度高，就 SSL/TLS 應用來說，可視為 OpenSSL 的替代 library，不過處理 I/O 的部份就沒有 OpenSSL 那樣便利，而 [<a href="http://www.matrixssl.org/">MatrixSSL</a>] 的 API 設計很精簡，其 footprint 也適合 Embedded 應用，不過軟體整合時，還得一併處理瑣碎的 I/O，這兩者都有商業開發支援。<br>
+<br>
+[<a href="http://www.yassl.com/">yaSSL</a>] 是另一個不錯的解決方案，有 C 與 C++ 的實做，為了降低軟體整合的困難度，還提供了 OpenSSL 的 API subset，footprint 也很精簡，也提供商業開發支援。最後是 [<a href="http://www.axtls.co.nr/">axTLS</a>]，這個專案非常有趣，因為不只有 SSL/TLS library，還提供了 Embedded Web server (名為 Anti-Web)，系統模組化相當不錯，可以透過 menuconfig 挑選合適的組態，另外，內建的 Anti-Web 也支援 CGI/PHP，跟前述的 SSL libraries 相比，[<a href="http://www.axtls.co.nr/">axTLS</a>] 在 SSL crypto algorithm 的功能性是最少的，僅有最基本的實做，但是對功能專一的 Embedded 應用來說，反而是不錯的選擇。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001655.html">11:15 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1655" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">May 07, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001654"></a>
+<h3 class="title">美美的 Debian Tee</h3>
+
+剛剛在 Anthony Wong 的 blog [<a href="http://blog.anthonywong.net/2005/11/01/debian-tee/">Debian Tee</a>] 瞥見以下 Geek Tee 的範例：(click to view whole page)<br>
+<center><a href="http://blog.anthonywong.net/wp-content/upload/debianteeinPCmarket.jpg"><img src="http://blog.anthonywong.net/wp-content/upload/debianteeinPCmarketmodel.jpg"></a></center><br>
+這個造型頗不錯，又到了 Debian@Taiwan 製作 T-shirt 的時間了，說不定會來個變化... :P<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001654.html">12:18 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1654" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001653"></a>
+<h3 class="title">平衡語料庫 + 注音</h3>
+
+昨天 [<a href="http://ljmid.blogspot.com/">ljmid</a>] 與 [<a href="http://b6s.blogspot.com/">b6s</a>] 兩位在 #im-dev 討論幫平衡語料庫標注注音，可得到新的詞庫 (會比 libtabe 裡附的更詳細些) ，此標記過的平衡語料庫可提供給語言學家做些量化的統計，包括統計四聲的詞頻、研究 contour 的規律等，詳情可參考 [<a href="http://ljmid.blogspot.com/">ljmid</a>] 的 blog [<a href="http://ljmid.blogspot.com/2006/05/blog-post.html">幫平衡語料庫加上注音</a>] 與 wiki [<a href="http://ljm.idv.tw/dokuwiki/doku.php?id=nlp:%E6%8A%8A%E5%B9%B3%E8%A1%A1%E8%AA%9E%E6%96%99%E5%BA%AB%E5%8A%A0%E4%B8%8A%E6%B3%A8%E9%9F%B3">完成度和標記標準</a>]。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001653.html">11:05 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1653" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">May 06, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001652"></a>
+<h3 class="title">SCIM-chewing 0.2.91 (0.3.0-Testing1) 與libchewing 0.2.93 (0.3.0-Testing3)  釋出</h3>
+
+之前多次提到 [<a href="http://chewing.csie.net/">新酷音計畫</a>] 的 libchewing-0.3.x development branch，現在終於推出測試版本了，詳細的更動可參考 [<a href="http://chewing.csie.net/news.html#libchewing_0293">Chewing::News</a>]，主要就是 UTF-8 的語言核心、API 的改變、更廣泛的詞庫支援 (整合 CNS11643)、記憶體管理的修正、採用二進位儲存 hash data、實驗性的 memory-mapping 載入資料、改善的漢語拼音支援，以及多項使用方式的改變。<br>
+<br>
+感謝 kanru、pcman、gugod、seamxr、Andy Horng、Tiberius Teng，以及其他熱心的朋友大力協助， libchewing 0.3.x 的正式釋出版本也會在近日完成，同時，提供給 [<a href="http://www.scim-im.org/">SCIM</a>] 的 scim-chewing 也做了些改變，能使用 libchewing 0.3 的新特徵，而隨著 Fedora Core 5、Ubuntu Dapper (06.06)、OpenSuse，與 Mandriva 內建 [<a href="http://www.scim-im.org/">SCIM</a>] 作為輸入法系統，[<a href="http://chewing.csie.net/">新酷音計畫</a>] 的成果得以更廣泛地應用於 Linux 使用者，同時，Solaris 也內建新酷音的支持，衷心期盼 [<a href="http://chewing.csie.net/">新酷音計畫</a>] 未來能有更大的進展，讓我們的中文輸入更加順手 :-)<br>
+<br>
+PS: 測試前，請備份並移除原本的 ~/.chewing/hash.dat，因為系統會建立新的 hash dat，謝謝！<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001652.html">05:35 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1652" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">May 05, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001651"></a>
+<h3 class="title">軟體多樣性對嵌入式系統的影響</h3>
+
+傍晚讀了 Jim Higgins 的文章 [<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=186700629">Diversity protects embedded systems</a>]，他以從事嵌入式網路裝置十年的經驗，探討廣泛應用的嵌入式裝置面臨安全性的高度挑戰，他提到一個有趣的現象：<ul>
+"90% of vulnerability exposure is caused by 10% of critical vulnerabilities. "
+</ul>
+嵌入式系統過去面臨的第一個問題是，對資源錙銖必較，而今，隨著科技的進步，已略為舒緩壓力，也得以透過既有的軟硬體元件來加速開發時程，然而，此舉也間接埋下許多不可知性到產品中，於是 Jim Higgins 還用了一段來描述：<ul class="code" style="margin: 6px;">
+The lack of effective network security is no longer a blameless matter. The Sarbanes-Oxley Act of 2002 and the Health Insurance Portability and Accountability Act of 1996 (HIPPA) have made corporate officers personally accountable for the security of their customers' private information. Exploitation of a vulnerability could lead to leaks of personal information and is a principle reason why the creation of a new corporate position, chief information security officer (CISO), has become prevalent. The CISO is looking to keep the CEO out of jail.
+</ul>
+最後一句看似有些誇大，然而對很多只有一種主力產品的公司，面對自家產品眾多不可知性，到底有多少籌碼來面對種種挑戰呢？此外，文章的 "Choosing diversity" 提到一個有趣的觀點，使用開放系統已經是無法抗拒的趨勢，不過這招致許多 hacker/cracker 的覬覦，作者提到 [<a href="http://www.cryptlib.com/">CyptLib</a>] 對 [<a href="http://www.openssl.org/">OpenSSL</a>] 的替換性，而就既有的自由軟體來說，還有不少可作為替代的解決方案，這也就是軟體的多樣性，而 Jim Higgins 提出此特性有助於嵌入式系統的安全性。<br>
+<br>
+就 [<a href="http://www.cryptlib.com/">CyptLib</a>] 與 [<a href="http://www.openssl.org/">OpenSSL</a>] 來說，後者主要是針對 SSL/TLS protocol 的實做，而且相當完整，相關的 Crypto Algorithm 則是個別模組，相較之下，[<a href="http://www.cryptlib.com/">CyptLib</a>] 專注於 Crypto Algorithm 與相關標準的實做。但作為軟體，以發明 shortest path routing 的 Dijkstra 就表示過：<ul>
+「測試可以證明臭蟲的存在，但卻無法證明它們的不存在。」
+</ul>
+可以想見，超過一定規模的系統軟體，勢必會有 bug / security issues，只是其衝擊程度的不同，然而，軟體的多樣性，對一個嵌入式系統的開發來說，就如前述文章提到：<ul class="code" style="margin: 6px;">
+Embedded systems developers can mitigate the exploitation risk dramatically by considering "security through diversity" when selecting software components for their products. Diversity is particularly critical for embedded systems since their software components are generally more opaque to an IT professional than those of an ordinary server. Further, the methods for upgrading most embedded systems are nonstandard and can be time consuming for the IT staff. These factors may delay the deployment of critical patches and increase the risk that unknown vulnerabilities exist on the network.
+</ul>
+當然，這也不可能最佳的作法，然而這可視為有限程度的安全性策略。<br>
+
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001651.html">08:07 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1651" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">May 04, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001650"></a>
+<h3 class="title">讀《深夜小狗神祕習題》</h3>
+
+上週從台北搭乘火車回苗栗渡假的途中，將《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010287346">深夜小狗神祕習題</a>》閱讀完畢，以數學為主題的書籍一直都很吸引我，這本亦然，不過我實在不太懂，在我看來，作者 Mark Haddon 刻劃的主人翁少年克里斯多弗其實是活潑的，行徑還幾分相似以前在台中一中就學時，資優班的某幾位同學，當然，所謂的「自閉症」是相對的。<br>
+<br>
+我覺得數學最美的地方，在於幾何與代數，而《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010287346">深夜小狗神祕習題</a>》在這兩個主題有不錯的詮釋，另外，排列組合與機率問題也引人入勝，質數頁碼 (本書特色之一) 101 頁提到「三門問題」(The Monty Hall Problem)，書中則是以電視娛樂節目作比喻，面對這些抉擇，往往我們會陷入非理性的直覺判斷，即便是哲學家，似乎也只能做到「純粹理性批判」，而非即時理性「判斷」，書中故意營造來自多方權威的投書，這些投書有 92% 都支持直觀的結論，然而書中以兩頁篇幅列出所有可能結果，我們可以發現直觀的認知不見得可靠，這也讓數學演繹多了許多趣味。<br>
+<br>
+克里斯多弗搭乘火車前往倫敦的路途，試著心算一元二次方程式的細節，讓我不禁發出會心一笑。以前在空軍雷達站服務時，要監控全天候、全涵蓋的飛報與戰演訓任務機的動態，即使在大雨紛飛、機場關閉的情況亦然，但是明文規定不得攜出資料 (管制中心的資料泰半屬於極機密等級) 且不得持入非列管的書籍 (為了紀律)，所以雖然有時候可鬆一氣，但可能就發呆七個小時到下班，人家說，當兵容易令人變笨，就是如此，所以我試著默誦經史子集、英詩，以及英文片語，而每個值勤人員都分發若干蠟筆，供臨時標記使用，這下就成為我推導數學的利器。一方面複習經典方程式的推導，比方說海龍三角面積公式與三次方程式根式解，另一方面假裝統計雷情資料，計算回歸曲線，並且用貝氏三次曲線修正，不久後，甚至可看天候與預計訓練空域分配的情況，預先計算並描繪出航跡資料 (我可沒造假，只是算太快了)，然後得以好整以暇地寫日記與小說...<br>
+<br>
+雖然我現在的工作跟數學有很大的關係，然只局限於特定工程數學的應用，雖然也有一定的深度，但是原創性與數學的抽象性就相當少了，頂多從一些 paper 中獲得一絲靈感，試著用程式碼驗證罷了，同樣是算數學，現在用四元數對整個運算的處理有大的提昇，而以前在空軍雷達站內也遇到類似的問題，就在指揮儀面板上用蠟筆慢慢地算 matrix trace，並思考其規律性，那種感覺與發掘知識的美妙，實在難以形容。<br>
+<br>
+如今，閱讀《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010287346">深夜小狗神祕習題</a>》，讓我在字裡行間中，除了體驗豐富的想像力與數學的奇妙，也讓我重溫過去那些感動，然，書中也暴露著家庭倫理的議題。讀者 gloria 的書評中，有句話非常有意思：<ul>
+「要破案就必須和人溝通──這是代價亦或挑戰？他卻因此而不慎踏入成人世界的愛恨情仇。 」
+</ul>
+或許有人會說作者 Mark Haddon 特意製造懸疑感，然而對一個自閉兒來說，這是何等諷刺呢？原本的生活步調變了，為了解開種種疑雲，這個自閉兒得與周遭的人們溝通，獲取足夠的資訊，而這是原本的社會期待，但真相又是如何呢？介入這些變化，到底有無辦法抽身呢？<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001650.html">12:03 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1650" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">May 03, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001649"></a>
+<h3 class="title">關於休假</h3>
+
+晚間閱讀 Embedded.com 上 Jack Ganssle 的文章 [<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=187002292">Vacation</a>]，"Vacation" 這個字很容易看成 "Vocation"，意義卻截然不同。Jack Ganssle 引用了 Wall Street Journal 的統計數據與 [<a href="http://en.wikipedia.org/wiki/Vacation">Wikipeida::Vacation</a>] 的各國法規，就台灣的勞動基準法來說，就保障至少七天的休假，西歐的福利更不在話下，德國為最："24 work days off per year, plus 9 to 13 bank holidays"，不過文後丟出的問題很有意思：<ul>
+How does your vacation time affect your job performance?
+</ul>
+捫心自問，休假對我來說，能在後續工作效能的提昇應該很有限，但是絕對是重要的進修機會。沒有意外的話，今年七月也會如去年一般，有一整個月的休假，屆時會比照 [<a href="http://blog.linux.org.tw/~jserv/archives/001245.html">2005 下半年計畫</a>]，整理下半年的計畫清單，試著往這些目標邁進。同時，我也會試著作心得分享，主要會是 Embedded Linux、Realtime System、Graphics (2D/3D/Mobile)，以及 X Window System 相關的，一方面整理資料，另一方面也作為《揭開 X Window System 神秘面紗》撰書計畫的參考。<br>
+<br>
+對於怎樣的 Talk 才算成功呢？有朋友說：「如果你的演講可以讓每個聽眾都想購買你的新書，那就成功了」，顯然，我離這個目標還很遠，雖然《揭開 X Window System 神秘面紗》的複雜度已超乎想像 (到底有多怪呢？為了寫這本書，我竟然著手練習設計 BIOS，只為了理解底層的機制)，但是，應該有機會的 :-)<br>
+<br>
+預祝未來的休假順利！<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001649.html">08:52 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1649" onclick="OpenComments(this.href); return false">迴響 (4)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001648"></a>
+<h3 class="title">software validation 小記</h3>
+
+"software validation" 是非常複雜的領域，但邁入更廣泛的應用時，是不可忽略的重要議題。今年農曆年間 (Feb 2)，跟 ghost 兄在聊天，提到 software validation 的議題。我是這個領域的門外漢，於是當作作業，回家找了一個晚上。雖然我的想法不太符合 ghost 兄預期，不過這個主題該用力思考，特別像是我現在已經很少需要寫 code (定義是，不需要從零寫到有、不需要一手包辦提案、系統分析、設計、實做，以及驗證的種種程序)，反倒是問題在於：<ul>
+<li>Optimization Approaches</li>
+<li>Testing Plans & Verifications</li>
+<li>Software Validation</li>
+<li>Integrating & Re-usabilty</li>
+<li>Value-added</li>
+</ul>
+第三項絕對是很重要的議題，並且我對於這方面的理論沒有高度的認知，這是相當嚴重的問題。<br>
+<br>
+早上讀 LinuxDevices.com 的新聞 [<a href="http://www.linuxdevices.com/news/NS5139055101.html">Major X security hole found, plugged</a>]，提到 [<a href="http://www.coverity.com/">Coverity Inc.</a>] 針對 X Window System 做了軟體品質與安全性的分析，詳情可參考 Daniel Stone 的 post [<a href="http://lists.freedesktop.org/archives/xorg/2006-March/013992.html">X.Org Security Advisory: privilege escalation and DoS in X11R6.9, X11R7.0</a>]，節錄該  vulnerability 的原理：<ul class="code" style="margin: 6px;">
+When parsing arguments, the server takes care to check that only root can pass the options -modulepath, which determines the location to load
+many modules providing server functionality from, and -logfile, which determines the location of the logfile.  Normally, these locations cannot be changed by unprivileged users.<br>
+<br>
+This test was changed to test the effective UID as well as the real UID in X.Org.  The test is defective in that it tested the address of the geteuid function, not the result of the function itself.  As a result, given that the address of geteuid() is always non-zero, an unpriviliged user can load modules from any location on the filesystem with root
+privileges, or overwrite critical system files with the server log.</ul>
+即便是發展二十餘年的軟體計畫，還是有此安全性缺陷，同時，我們也可以發現，從 X.org 在 2004 年重新組織後，許多新式的安全性或軟體品質的議題被提出，很多已經不是典型的模式，[<a href="http://www.coverity.com/">Coverity Inc.</a>] 公司著墨於 Software Validation 領域有不錯的建樹，現在隨便一個知名的軟體專案，程式碼都已經跨越百萬行的門檻，面對這些大怪物，要如何證明並在有限條件內檢驗，就是當今最重要的課題之一。<br>
+<br>
+此外，University of Szeged 的 [<a href="http://www.inf.u-szeged.hu/osqm/">Open Source Quality Measurements</a>] 則以 Mozilla 為探討對象，發展一系列驗證軟體品質的技術，其論文 [<a href="http://www.inf.u-szeged.hu/~ferenc/research/ferencr_extracting_facts.pdf">Extracting Facts from Open Source Software</a>] (PDF 格式) 提及 Columbus Framework 這個 reverse engineering framework，這是 University of Szeged 與 Nokia Research 合作發展以 C/C++ preprocessor/Linker/Filter 為基礎的 static analysis，包含 CANPP、CAN、CANLink，以及 CANFilter 等工具，論文中也提到 Mozilla 1.0 (Aug 2002) 到 Mozilla 1.6 (Jan 2004) 這些版本更動中，透過 Columbus Framework 的實驗與分析結果，並且引入若干指標作探討。其實，在這之前，Mozilla Milestone-9 發展時，M. W. Godfrey 與 E. H. S. Lee 就作過類似的分析，可參考論文 [<a href="http://plg.uwaterloo.ca/~migod/papers/coset00.pdf">Secrets from the Monster: Extracting Mozilla’s Software Architecture</a>] (PDF 格式)，標題真是取得貼切，M. W. Godfrey 與 E. H. S. Lee 兩人的途徑是透過 PBS 與 Acacia 來作 fact extraction 與 virtualization，在他們規範的 11 個 top-level system 又切割成若干子系統，並且還對軟體元件的相依性做了分析與品質方面的探討。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001648.html">01:29 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1648" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001647"></a>
+<h3 class="title">Vim 配合 Doxygen 的彩度提示</h3>
+
+剛剛在 [<a href="http://www.jeffhung.net/blog/">JeffHung</a>] 的 blog [<a href="http://www.jeffhung.net/blog/articles/jeffhung/447/">Doxygen syntax coloring in Vim</a>] 找到非常實用的技巧，透過 Vim 傲人的 color syntax highlightening 機制，對 Doxygen-ized 的程式碼作美化，細節就不贅述了，如果搭配之前提到的 [<a href="http://blog.linux.org.tw/~jserv/archives/001608.html">Tip: vim + ctags + taglist + cscope + cppcomplete + global</a>]，運作的畫面如下圖：<br><center><img src="http://jserv.sayya.org/misc/vim_tag_doxygen.png"></center><br>看起來舒服多了，讓人不自覺就想 coding 了耶 :P<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001647.html">12:45 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1647" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+
+</body>
+</html>

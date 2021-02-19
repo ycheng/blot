@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: C-style 字串的最佳化</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001396.html" title="新酷音進度報告5" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001398.html" title="32% evil, 68% good" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001396.html">« 新酷音進度報告5</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001398.html">32% evil, 68% good »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">December 17, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">C-style 字串的最佳化</h3>
+
+C-style 字串的最佳化有許多途徑，Timo Sirainen 撰寫的 [<a href="http://irccrew.org/~cras/security/c-guide.html">Secure, Efficient and Easy C programming</a>] 是相當值得一看的文章，在實務應用上，不僅要避免 string operation 引來的 buffer overflow 外，又得避免大量的小段記憶體配置片段，這會造成 memory leaking，再來，針對特定的應用場合，如 heavy traffic networking 的環境，勢必需要發展一系列的機制來克服以上的議題。[<a href="http://www.and.org/vstr/">Vstr</a>] 這個最佳化的字串處理函式實做，有許多相當值得一看的資訊，如 [<a href="http://www.and.org/vstr/comparison">String library comparison</a>] 比較了許多開放的實做，並且在 [<a href="http://www.and.org/vstr/speed">Speed comparison of Vstr vs. other string APIs</a>] 提及其比較的方法與參考實做，然而，選對 library，就意味著解決問題了？當然不是。<br><br>
+
+「最佳化」是個複雜的議題，但是這裡不打算提 global optimization，而在 gtk-devel mailing-list 上，Daniel Marjamäki 提出一個想法： [<a href="http://mail.gnome.org/archives/gtk-devel-list/2005-December/msg00187.html">RFC: String cleanup</a>]，敘及原本的：
+<ul>
+const char *str
+</ul>
+更換成：
+<ul>
+const char str[]
+</ul>
+可產生比較直覺的機械碼，可提昇 CPU 效能與記憶體使用。這引來 iolo 的進一步思考： [<a href="http://hellocity.net/~iolo/moniwiki/wiki.php/HackingBlog/2005#1217">Isn't C wonderful?</a>]，他舉出以下的程式碼片段：<ul><pre>
+static const char *str1 = "azerty";
+static const char str2[] = "azerty";
+void f(const char *x);
+void try(void) {
+        f(str1);
+        f(str2);
+}
+</pre></ul>
+透過 GCC 產生組譯碼：<ul>
+gcc -O3 -S const_char.c
+</ul>
+我將輸出用 OpenOffice Impress 做了對應比較：<br>
+<img src="http://jserv.sayya.org/misc/const_char.png"><br>
+在組譯碼可以發現，C compiler 對於 const char [] 會生成直接的輸出，並且字串的操作也較直覺，相對的，const char * 在語意上是 pointer，而 C compiler 則予以 indirect access，這需要留意。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 December 17, 2005 11:40 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

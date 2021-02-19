@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: B#：作為嵌入式系統的輕量級程式語言</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001590.html" title="Kernel Driver 2.4 -&gt; 2.6.x" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001592.html" title="〈PORTING UNIX TO THE 386〉十五週年" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001590.html">« Kernel Driver 2.4 -> 2.6.x</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001592.html">〈PORTING UNIX TO THE 386〉十五週年 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 23, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">B#：作為嵌入式系統的輕量級程式語言</h3>
+
+閱讀 [<a href="http://www.deepobjectknowledge.com/">DeepObjectKnowledge, Inc.</a>] 首席科學家 Michel de Champlain 與加拿大 Trent University 助理教授 Brian G. Patrick 刊載於 Embedded.com 的文章 [<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=183700818">B# - A programming language for small footprint embedded systems applications: Part 1</a>] 得知他們最近針對嵌入式系統應用，而設計出新的物件導向、應用導向程式語言 -- B#。<br>
+<br>
+專長於物件導向分析訓練的 [<a href="http://www.deepobjectknowledge.com/">DeepObjectKnowledge, Inc.</a>] 已經提供許多 C# 相關的顧問服務，而許多嵌入式系統，比方說 Feature phone、MCP，或者是中低階應用來說，會期望能延伸熟悉的 C 語言，並以物件導向設計來規劃系統架構，但是 C++ 這種 meta-language 的負擔實在太沈重了，更別說難以掌握的 C++ ABI。C# 是個很成功的語言，取鏡於 Java 成功的經驗，雖然個別技術並非劃時代的創新，但是提供整體性的解決方案，而且以「簡單」與「物件」作為核心思考方式，B# 並非 C# 的簡化，其語言規範還考慮到絕大多數 ISO/IEC standard 的硬體架構的應用，提供了 Device Registers 與 Interrupt Handlers 等語法上的支援，這些如果要在 C 語言層面實現的話，就得像 Linux kernel 一般依賴 GNU Extensions，並佐以一系列的 macro 與 programming manner。<br>
+<br>
+所以，B# 的提出就是希望一勞永逸地 (至少有限度的) 解決這種問題，設計 Device driver 不免會有 HAL (Hardware Abstract Layer)，無論哪個作業系統，基本上都會採用 Object-based 的思維 (記得二十年前，用 COBOL 設計的某作業系統也是引入 object 的概念來處理 transaction 與 storage)。以 C 語言實做的系統來說，比方說 Linux 或 WinCE，都會有一堆相似的 header，規範 primitive type 與對應到 hardware platform 的 primitives，雖然 C99 針對這個議題，引入了新的 header 來包裝，不過顯然還是不足以簡化 device driver 設計的難度與加強系統的可維護性，這篇文章舉了一個再清楚不過的例子：<br>
+<center><img src="http://i.cmpnet.com/embedded/insights/2006/03/BSharpCode5.jpg"></center><br>
+<center><img src="http://i.cmpnet.com/embedded/insights/2006/03/BSharpCode6.jpg"></center><br>
+所以這裡的 ioreg 即可「所見即所得」地對應到 hardware register，並且可加諸特定屬性作操控，在後續的文章還會提到更詳細的內容。[<a href="http://www.deepobjectknowledge.com/">DeepObjectKnowledge, Inc.</a>] 官方網頁也提及 B# 相關訓練資訊，可作參考。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March 23, 2006 07:16 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

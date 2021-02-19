@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 演講：快快樂樂學 GNU Debugger (gdb) Part  I + II [台中]</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002036.html" title="追憶似水年華" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002038.html" title="httping : 針對 HTTP Request 的仿 ping 程式" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002036.html">« 追憶似水年華</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002038.html">httping : 針對 HTTP Request 的仿 ping 程式 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">July 01, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">演講：快快樂樂學 GNU Debugger (gdb) Part  I + II [台中]</h3>
+
+幾個月前，在台南舉辦演講：快快樂樂學 GNU Debugger (gdb) [<a href="http://blog.linux.org.tw/~jserv/archives/001951.html">Part I</a>] 與 [<a href="http://blog.linux.org.tw/~jserv/archives/001967.html">Part II</a>]，現在也有台中的場次，詳情可見酷！學園的 [<a href="http://phorum.study-area.org/index.php/topic,52508.0.html">討論區</a>]，摘錄如下：<ul class="code" style="margin: 6px;">
+<li>簡介：期望使聽者得以透過 GNU Debugger (gdb) 來加速系統開發與分析，讓這個臥在硬碟深處許久的強力程式，激發其威力。本議程捨棄過往教條式的介紹形式，延續「深入淺出 HelloWorld」系列的「作中學」途徑逐一探討使用情境與案例分析</li>
+<li>議程主題：<ul>
+  <li>Why - 為何我們該善用 Debugger？</li>
+  <li>Who - 誰會因為熟悉 Debugger 而受益？</li>
+  <li>What - 史上最強大的 Debugger -- gdb 與一系列系統軟體</li>
+  <li>Where - 利用 Debugger 的場合</li>
+  <li>How - 還用說嗎？來就對了！</li>
+</ul></li>
+<li>涵蓋項目：<ul>
+  <li>實用 GDB 指令</li>
+  <li>macro 與技巧</li>
+  <li>當 GDB 遇上 C/C++：具體的範例</li>
+</ul></li>
+<li>參考資訊：<ul>
+  <li>簡報與範例檔案： <a href="http://jserv.sayya.org/debugger/">http://jserv.sayya.org/debugger/</a></li>
+  <li>GNU Debugger: <a href="http://sourceware.org/gdb/">http://sourceware.org/gdb/</a></ul></li>
+<li>時間：七月 12 日 10:00-12:00 (Part I),  13:30-17:00 (Part II)</li>
+<li>地點：亞洲大學 (台中縣霧峰鄉柳豐路500號) 管理大樓 B1 M009 教室</li>
+<li>費用： 0 –</li>
+<li>人數限制：無限制</li>
+<li>報名網站：<a href="http://registrano.com/events/sataichung080712">http://registrano.com/events/sataichung080712</a></li>
+<li>交通： <a href="http://www.asia.edu.tw/information/information_06/information_06_01.htm">自行開車</a>； 搭乘客運或公車至台中火車站--前站（建國路）對面搭乘100號公車往省諮議會方向--最後一站 亞洲大學</li>
+</ul>
+歡迎指教，也請多利用討論區事先提問或者分享建言，謝謝！<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 July  1, 2008 10:05 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2037" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

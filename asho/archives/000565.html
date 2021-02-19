@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Asho's Blog: nv_drv.o || nvidia_drv.o</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~asho/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~asho/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~asho/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~asho/archives/000562.html" title="Kernel 2.6 in Debian" />
+
+<link rel="next" href="http://blog.linux.org.tw/~asho/archives/000566.html" title="YA...成功使用 kernel-2.6" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~asho/" accesskey="1">Asho's Blog</a></h1>
+<span class="description">一個喜歡研究的傻小子 :-)</span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~asho/archives/000562.html">&laquo; Kernel 2.6 in Debian</a> |
+
+<a href="http://blog.linux.org.tw/~asho/">Main</a>
+| <a href="http://blog.linux.org.tw/~asho/archives/000566.html">YA...成功使用 kernel-2.6 &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 11, 2004</h2>
+
+<div class="blogbody">
+
+<h3 class="title">nv_drv.o || nvidia_drv.o</h3>
+
+<p>昨天在使用 nvidia 官方 driver 播放影片的時候，只要是大流量(>1500k) 的影片，用 MPlayer 會稍微頓一下下。</p>
+
+<p>本來以為是外掛 artsd 的關係，改用 oss 依然不解，最後把 nvidia 官方 driver 移除，改用 XFree86-4.2.1 內附的 nv_drv.o，果然變順了，畫面變得比較穩定，有一點點柔和，失去了銳利的感覺，但這對我來說還滿舒服的。</p>
+
+<p>但有一個更棘手的事情沒辦法解決，就是 Sid 的 XFree86-4.2.1 的 nv 卻無法提供 DualHead，應該是 Bug，所以無法使用雙螢幕...sighed...難過阿，可憐的 NVS200 無用武之處。</p>
+
+<p>nv_drv.o 如果使用了滑鼠加速的功能，會造成指標畫面出錯，請在設定檔中加入</p>
+
+<p>Option  "HWCursor"      "off"</p>
+
+<p>重新開啟 X-Win 之後，指標就會正常了。</p>
+
+<a name="more"></a>
+
+
+<span class="posted">Posted by asho at January 11, 2004 04:13 PM
+
+<br /></span>
+
+</div>
+
+
+</div>
+</div>
+</body>
+</html>

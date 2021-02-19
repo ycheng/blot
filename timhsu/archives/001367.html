@@ -1,0 +1,294 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>timhsu: Encrypted PEM key</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~timhsu/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~timhsu/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~timhsu/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~timhsu/archives/001362.html" title="[好書推薦] HACKER DEBUGGING UNCOVERED" />
+
+<link rel="next" href="http://blog.linux.org.tw/~timhsu/archives/001373.html" title="奇怪的 Zyxel P-330W" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+<!--
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="http://blog.linux.org.tw/~timhsu/archives/001367.html">
+<dc:title>Encrypted PEM key</dc:title>
+<dc:description>$ openssl rsa -in encrypted.pem -out uncrypted.pem</dc:description>
+<dc:creator></dc:creator>
+<dc:date>2005-11-18T17:29:34+08:00</dc:date>
+<license rdf:resource="http://creativecommons.org/licenses/by-nc-sa/1.0/" />
+</Work>
+<License rdf:about="http://creativecommons.org/licenses/by-nc-sa/1.0/">
+<requires rdf:resource="http://web.resource.org/cc/Attribution" />
+<requires rdf:resource="http://web.resource.org/cc/Notice" />
+<requires rdf:resource="http://web.resource.org/cc/ShareAlike" />
+<permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+<permits rdf:resource="http://web.resource.org/cc/Distribution" />
+<permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+<prohibits rdf:resource="http://web.resource.org/cc/CommercialUse" />
+</License>
+</rdf:RDF>
+-->
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~timhsu/" accesskey="1">timhsu</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~timhsu/archives/001362.html">&laquo; [好書推薦] HACKER DEBUGGING UNCOVERED</a> |
+
+<a href="http://blog.linux.org.tw/~timhsu/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~timhsu/archives/001373.html">奇怪的 Zyxel P-330W &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">November 18, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Encrypted PEM key</h3>
+
+<p>昨天遇到一個 PEM 格式如下:<br />
+-----BEGIN RSA PRIVATE KEY-----<br />
+Proc-Type: 4,ENCRYPTED<br />
+DEK-Info: DES-CBC,44CD3CBDEBDBDA7B</p>
+
+<p>代表著是被 encrypted。當要使用時必須輸入密碼。<br />
+利用 openssl 工具即可容易處理。</p>
+
+<p>$ openssl rsa -in encrypted.pem -out uncrypted.pem<br />
+Enter pass phrase for encrypted.pem<br />
+writing RSA key<br />
+$ </p>
+
+<p>可是我忍不住要抱怨一下。<br />
+機車喔，這麼容易的事為什麼高級的 XXXXX 設備不自動處理也不跳個視窗告訴我格式不符的原因。</p>
+
+<p>關於 openssl 更多使用範例可參考 <a href="http://www.iu.hio.no/~mark/WebCourse/node25.html">SSL and secure servers<br />
+</a></p>
+
+<a name="more"></a>
+
+
+<span class="posted">由  發表於 November 18, 2005 05:29 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>hi [url=http://home-equity-loan-application.blogspot.com]home equity loan[/url] home equity loan</p>
+<span class="comments-post">Posted by: <a href="http://home-equity-loan-application.blogspot.com">home equity loan</a> 發表於 June  6, 2006 07:18 AM</span>
+</div>
+<div class="comments-body">
+<p>Great work!<br />
+My homepage | Please visit</p>
+<span class="comments-post">Posted by: <a href="http://jzangcyh.com/jtpf/bjii.html">Ann</a> 發表於 July  8, 2006 01:30 PM</span>
+</div>
+<div class="comments-body">
+<p>Well done!</p>
+<span class="comments-post">Posted by: <a href="http://bloghof.net/pub/blogHof/gambling/keno.html">Rex</a> 發表於 July 11, 2006 04:55 AM</span>
+</div>
+<div class="comments-body">
+<p>Nice site!</p>
+<span class="comments-post">Posted by: <a href="http://hometown.aol.de/mp3milk/crazy-frog-mp3.html">Ivan</a> 發表於 August  2, 2006 10:49 AM</span>
+</div>
+<div class="comments-body">
+<p>Thank you!</p>
+<span class="comments-post">Posted by: <a href="http://satisfaction.cs.uchicago.edu:8080/HyperNews/get/Courses/CS221/Autumn_2001/classwork/197.html">Emily</a> 發表於 August  6, 2006 05:16 AM</span>
+</div>
+<div class="comments-body">
+<p>Nice site!</p>
+<span class="comments-post">Posted by: <a href="http://satisfaction.cs.uchicago.edu:8080/HyperNews/get/Courses/CS221/Autumn_2001/classwork/166.html">Abby</a> 發表於 August  6, 2006 05:18 AM</span>
+</div>
+<div class="comments-body">
+<p>Thank you!</p>
+<span class="comments-post">Posted by: <a href="http://egovlex1.fokus.fhg.de/iaail/space/samueljustin/bingo.html">Barbara</a> 發表於 August  6, 2006 05:20 AM</span>
+</div>
+<div class="comments-body">
+<p>Thank you!</p>
+<span class="comments-post">Posted by: <a href="http://www.vip-blog.com/vip/article/2023905.html">Victor</a> 發表於 August  9, 2006 05:29 AM</span>
+</div>
+<div class="comments-body">
+<p>Thank you!</p>
+<span class="comments-post">Posted by: <a href="http://karenangie.rmcinfo.fr/">Ian</a> 發表於 August 14, 2006 09:36 AM</span>
+</div>
+<div class="comments-body">
+<p>Great work!</p>
+<span class="comments-post">Posted by: <a href="http://www.powerdesigners.com/InfoWeb/forums/drive/posts/1564.html">Ruth</a> 發表於 August 15, 2006 11:30 AM</span>
+</div>
+<div class="comments-body">
+<p>Good design!</p>
+<span class="comments-post">Posted by: <a href="http://forum.chemie.de/HyperNews/get/forums/chemstarter/7380/2.html">Lisa</a> 發表於 August 15, 2006 11:42 AM</span>
+</div>
+<div class="comments-body">
+<p>Good design!</p>
+<span class="comments-post">Posted by: <a href="http://joytina.forumer.pl/">Maggie</a> 發表於 August 16, 2006 11:11 AM</span>
+</div>
+<div class="comments-body">
+<p>Good design!</p>
+<span class="comments-post">Posted by: <a href="http://chadfelix.xhostar.com/bingo-2.html">Lori</a> 發表於 August 17, 2006 11:23 AM</span>
+</div>
+<div class="comments-body">
+<p>Good design!</p>
+<span class="comments-post">Posted by: <a href="http://www.vip-blog.com/vip/article/2061507.html">Tammy</a> 發表於 August 17, 2006 11:29 AM</span>
+</div>
+<div class="comments-body">
+<p>Great work!</p>
+<span class="comments-post">Posted by: <a href="http://return2india.com/HyperNews/get/forums/shipping/1835/15.html">Sarah</a> 發表於 August 21, 2006 02:32 AM</span>
+</div>
+<div class="comments-body">
+<p>Thank you!</p>
+<span class="comments-post">Posted by: <a href="http://idachristi.forumer.pl/">Troy</a> 發表於 August 22, 2006 02:09 AM</span>
+</div>
+<div class="comments-body">
+<p>Nice site!</p>
+<span class="comments-post">Posted by: <a href="http://www.beanabean.com/cgi-bin/beanbean/config.pl?read=7383">Veronica</a> 發表於 August 26, 2006 10:55 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1367" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響數量:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+</div>
+</div>
+</body>
+</html>

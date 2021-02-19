@@ -1,0 +1,817 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Asho's Blog: Promise和 high-point的SATA2卡</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~asho/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~asho/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~asho/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~asho/archives/000703.html" title="Divergence Eve:女神候補生" />
+
+<link rel="next" href="http://blog.linux.org.tw/~asho/archives/000705.html" title="YaST2 porting for Debian" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~asho/" accesskey="1">Asho's Blog</a></h1>
+<span class="description">一個喜歡研究的傻小子 :-)</span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~asho/archives/000703.html">&laquo; Divergence Eve:女神候補生</a> |
+
+<a href="http://blog.linux.org.tw/~asho/">Main</a>
+| <a href="http://blog.linux.org.tw/~asho/archives/000705.html">YaST2 porting for Debian &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">November 23, 2004</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Promise和 high-point的SATA2卡</h3>
+
+<p>巴德鋪貨了。</p>
+
+<p>HighPoint<br />
+ RocketRaid 1820A SATA 8通道 磁碟陣列卡 (Raid0,1,10,5) <br />
+8,300</p>
+
+<p>Promise<br />
+FastTrak TX2200 2PortSATA 磁碟陣列卡 (Raid0.1.0+1)支援NCQ/TCQ <br />
+3,600</p>
+
+<p>Promise<br />
+FastTrak TX4200 4PortSATA 磁碟陣列卡 (Raid0.1.0+1)支援NCQ/TCQ <br />
+5,900</p>
+
+<p>由於我最近想要將小黑組成小型的 file server，供自己區網使用，版子上有兩個 PCI64/66mhz的差槽，目前是希望用兩顆 ide raid1，然後再買張 S-ata 4port 的卡作 raid5(四顆硬碟)。</p>
+
+<p>目前小黑上面是兩顆 Althon MP1800+，打算拿掉其中一顆，因為不需要那麼龐大的運算，1顆就夠了。但實際情況也要等我願意組好再說。</p>
+
+<p>上面三張卡的感覺是....有夠貴的!!!!都沒有 SI 3114 的擴充卡，真夠嘔的。</p>
+
+<p>未來的 file server 我會使用 Intel 的 pci-e 的主機板，因為南北橋有 2G 的資料寬，且 pci-e 和內建的 1000Mbps 網路都是走 pci-e (500MB) 的通道，不會有堵塞的問題。但前提是...還要等 Intel 先把好的 CPU 做出來，越作越退步了。現在 Opteron 已經是至手可熱，燒的很捏...其實我夢想的平台是 AMD opteron + AMD 南橋 + pci-e 的 file server...:-D...</p>
+
+<p>至於工作站呢...當然是 Dual Opteron  + Tyan 摟...!!!</p>
+
+<a name="more"></a>
+
+
+<span class="posted">Posted by asho at November 23, 2004 05:01 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>Comments</div>
+
+<div class="comments-body">
+<p>http://www.monsiteadulte.com/lesbienne/atseka/mature/nylons.html beckonframedrotating</p>
+<span class="comments-post">Posted by: <a href="http://www.femmesdenudees.com/lesbienne/hosenda/toonporn/ymunpjg/index.html">richie</a> at January 25, 2006 12:17 AM</span>
+</div>
+<div class="comments-body">
+<p>Diamonds can be heated and enhanced or irridated. The rest of the ore is then used for industrial purposes monsterjanitorial.com. So then why would a diamond merchant discount the price on a genuinely good quality diamond that is a billion years old. Regardless of the shape, you really need to look at the cut and if there is any damage to the diamond. Also watch out for cosmetic enhancements or synthetic diamonds. homemarketingnews.com  http://www.homemarketingnews.com/linkpartners1.html  </p>
+<span class="comments-post">Posted by: <a href="http://www.homemarketingnews.com/linkpartners1.html">homemarketingnews.com</a> at March 16, 2006 10:58 PM</span>
+</div>
+<div class="comments-body">
+<p>Spyware eliminator 4.0 microsoft anti spyware free download microsoft anti spyware download spyware removal" "free trial" microsoft spyware freeware. Free spyware removal kit free adware spyware removal spyware download free shareware spyware remover microsoft anti spyware trojen adwaheck virus spyware that is free online spyware scan and removal spyware program Adware Spyware, yahoo virus scan spyware remover spyware free downloads free scan programs  free adware software. Remover free spyware, trojan virus removeal free spyware removable! Virus remover Spyware Blaster adaware se status! Spyware and free microsoft free spyware free scan programs adaware6.0 microsoft free spyware downloads adware 6.1 msn security free scan spyware free msn free microsoft anti virus download adware 5.1 spyware spybot blaster addware free scan program.</p>
+<span class="comments-post">Posted by: <a href="http://www.free-removal-spyware.com/anti-Spyware-scan.html">msn spyware</a> at April  1, 2006 05:23 AM</span>
+</div>
+<div class="comments-body">
+<p>Free downloads spyware remover adware download microsoft spyware removal tool free. 100 ree anti spyware trial how to delete virus for free anti spyware gratuit spyware protection for mac free anti-spyware spyware remover, freeware free spyware from msn free spyware detector program. Free virus removers free adaware ad adware, free msn spyware delete! Spyware blaster microsoft adware removal tools. Free anti virus free spyware blaster software! Free shareware spyware remover adware spyware remover! Java cool software spyware blaster html statblaster viru free spyware to download spyware adware free adware software free virus scan download and removal free spyware detection free anti virus! Free microsoft spyware removal microsoft spyware free virus remover tool, totally free spyware removers available spyware scan adware 5.1 pestpatrol down load<br />
+free addware spyware remover spy bot.com free adware and spyware remover<br />
+free anti spyware programs. Adware 6 free. Msn virus protection free downloads. Spyware scan.</p>
+<span class="comments-post">Posted by: <a href="http://www.free-remover-spyware.com/Adware-and-Spyware-Removal-program.html">anti-spyware</a> at April  1, 2006 05:29 AM</span>
+</div>
+<div class="comments-body">
+<p>Free virus removal rate online spyware scan and removal spyware removal! Online spyware scan and removal spyware blocker free anti virus remover free spyware stormer spyware eliminator spyware free spyware removal trial version msn free spyware Free Spyware Remover free scan and eliminate spyware javacools adaware se free. Msn security free scan adware for free\ free adware software. Free virus detector and delete. Totally free spyware remover. Adaware6.0 se<br />
+free online spyware remover adware free spyware, free spyware cleaner adware lavasoft free virus/spyware eliminator spyware for mac free spyware to download yahoo free spyware msn addware free spyware from msn adware removers adware free downloads free virus remover tool free virus detector and delete. Statblaster viru msn spyware downloads free spyware "<br />
+free virus removers free anti trojan virus ware. Yahoo free spyware. Spyware spybot blaster? Download free spyware remover. Free blaster adaware free spyware and adware programs adware 6 software. Free microsoft anti virus download addware. Microsoft spy blaster free removal tool, spyware removal tool free online spyware scan free toolbar removal spyware software free trial spyware removal spyware removers adaware free spyware removal free spyware removal softwar free anti spyware removal spyware protection. Free spyware load microsoft free virus program spyware blaster 3.4 totally free registry microsoft cleaner download free adaware free spyware" spy stormer? Spyware eliminator 4.0 remove spyware for free!</p>
+<span class="comments-post">Posted by: <a href="http://www.free-removal-spyware.com/Spyware-Remover.html ">spyware protection</a> at April  1, 2006 05:33 AM</span>
+</div>
+<div class="comments-body">
+<p>Www.free adware spyware removal free trojan removal software msn spyware-adware free virus scan and removal msn spyware download trogen hunter msn free spyware java cools spyware blaster free anti spyware download removing spyware free pop-up remover spyware remover for mac free anti spyware the best anti-spyware programs anti spyware microsoft free-removal-spyware.com and-aware se personal free download spyware programs. Anti spyware download, spyware adware remover v7.2 spyware doctor free<br />
+microsoft virus remover free ad-adware se spyware review. Free spyware cleaning free virus removal rate adware remover free microsoft spyware! Free downloads for spyware free spyware blocker software free trial spyware removal spyware doctor with crack, adware doctor free download free spyware " free anti virus free anti virus ware?</p>
+<span class="comments-post">Posted by: <a href="http://www.free-removal-spyware.com/Free-Spyware-Scan.html">free anti virus ware</a> at April  1, 2006 05:35 AM</span>
+</div>
+<div class="comments-body">
+<p>What is spyware anti free alexa adware removal free spyware downloads" free blaster msn anti virus/spyware destroyer adaware free mac free anti spyware java blaster free online spyware remover free virus/spyware eliminator free spyware remover downloads free software to remove spy blocker and adware? Ad-adware lavasoft free free download" anti spyware microsoft anti spyware free spyware removal softwar free online virus scan and remover adware-free spyware list free spyware removal tools free adware remove microsoft spyware removal tool free. Free spyware remover download? Spy stormer spyware cleaner freeware free norton spyware scan microsoft free spyware free spyware and adware free online spyware scan free downloads for spyware free about blank remover! Mac free microsoft anti virus download scanner and remover spyware list microsoft giant anti spy free spyware blocker?</p>
+<span class="comments-post">Posted by: <a href="http://www.free-remover-spyware.com/Adware-and-Spyware-Removal-tool.html">spyware remover</a> at April  1, 2006 05:38 AM</span>
+</div>
+<div class="comments-body">
+<p>Msn virus protection free downloads freeware spyware free spyware detection spyware yahoo free spyware programs i can download spyware free delete! Adware doctor free download free spyware cleaner free spyware downloadable software free spyware removal programs Free Spyware Downloads Spyware free spyware eliminator, free download scan, free adware/spyware Spyware Stormer spyware free programs yahoo virus! Free spyware blaster software free scan program free scan and eliminate spyware, free spyware anti virus removal free virus and spyware remover free adware free remover on spyware best spyware free spyware remover from microsoft free addware downloads? Msn security free scan? Free spyware " yahoo anti spyware Adware Download adware remover. Free spyware removal trial free spyware downloads yahoo spyware.com download scanner and remover free online virus scan and remover free pop-up remover totally free spyware removal adware download completely free spyware automatically delete all detected infections spyware blaster free spyware remover for mac adaware download, free spyware downloadable software, spyware free software.</p>
+<span class="comments-post">Posted by: <a href="http://stop-adware.net/spyware/Microsoft-Spyware-Removal.html">spyware stormer</a> at April  1, 2006 05:42 AM</span>
+</div>
+<div class="comments-body">
+<p>Free spyware removal trial version microsoft spyware, free adaware remover free anti-spyware free shareware spyware remover Free Spyware Protection. Microsoft anti-spyware free online spyware scan<br />
+free spyware scanner free virus removers instant spyware remover free spyware programs microsoft virus scanner? Free spyware removal tool spyware fre adware download msn addware free spyware detection spyware blocker. Free software to remove spy blocker and adware msn adware! Microsoft adware protection?</p>
+<span class="comments-post">Posted by: <a href="http://stop-adware.net/spyware/Alexa-Spyware-Manual-Removal.html">trojen adwaheck virus</a> at April  1, 2006 05:46 AM</span>
+</div>
+<div class="comments-body">
+<p>Spyware protection for mac free spyware microsoft free virus program free microsoft anti virus download microsoft anti spyware download msn spyware protection spyware free msn download scanner and remover spyware scanner spy bot.com spyware blaster 3.4 virus remover free downloads spyware remover free spyware remover downloads spyware adware remover v7.2 free spyware and adware programs free spyware program  free spyware or adware downloads free online spyware scan yahoo antispy error remover msn free spyware removers free adware download free spyware remover remove spyware for free msn spyware download Spyware Stormer spyware review free trojan removal<br />
+free scan and eliminate spyware totally free virus removal free spyware scan free addware spyware remover free computer virus removers free trial version of anti virus and anti spyware virus protection free doctor<br />
+Msn Anti Spyware. Free anti virus down load, blaster adware se free spyware scan free registry removers www.free spyware removal free spyware killer free norton spyware scan anti-spyware freedom free freeware spyware remove adware.look2me spyware download free download remove spyware free trial free adware removel Free Spyware Downloads pyware hunter, spyware free software free spyware addware removal remove spyware free trial?</p>
+<span class="comments-post">Posted by: <a href="http://stop-adware.net/spyware/Detection-Spyware.html">spyware protection</a> at April  1, 2006 05:49 AM</span>
+</div>
+<div class="comments-body">
+<p>Remover blaster adaware download best spyware free spyware programs free online virus scan and remover msn spyware block free anti spyware programs best anti spyware programs free anti spyware download free adware software. Adware-se? Free spyware.com, ree anti virus and removal adaware download spyware/shareware protection spyware virus removers error remover addware? Microsoft giant anti spy free spyware remove free spyware remover from microsoft spyware doctor with crack, adaware download adware-free spyware doctor free msn free virus and spam removal free spyware blocker software free online virus removers Free Adware Removal download spyware free microsoft spyware spyware blaster download. Free adware protection anti-spyware free spyware free delete free spyware scan and removal spyware blockers free spyware removal programs. And-aware se personal. Javacools java cool software spyware blaster html best free spyware remover free download spyware programs microsoft free msn virus protection anti spyware msn spy ware remover free spyware remover www.free adware spyware review best free spyware remover free spyware removal kit completely free spyware! Free spyware doctor download free-anti-spyware adware-free? Spyware virus removers microsoft tools spyware remover free, download free spyware removal<br />
+free spyware cleaning, free spyware detector program free spyware removal trial. Adware for free\. Spyware download free trojan removal software msn free trojan destroyer free spyware blaster software spyware free download download free spyware remover totally free spyware removal, microsoft spyware remover? Microsoft spyware remover msn spyware protection free anti spyware program spyware reviews free spyware"<br />
+ad addware free adware 5.1 free online spyware remover Free Anti Spyware, free spyware to download msn.free downloads spyware free trial messenger blocker spyware blaster free spyware remover for mac adware 6.1 free spyware remover tools adware lavasoft msn addware free spyware from msn spyware remover free. Free trial messenger blocker. Free spyware remover adware spyware remover spyware blockers spyware download free download free spyware destroyer norton free spyware adware and spyware adware free virus removeal blaster free download free adware protection. Ad aware virus remover java cool free anti spyware free addware downloads adaware6.0 blaster free download Free Spyware Software free downloadable trojan and spyware removal! Spyware blaster free adware and spyware downloads, free spyware". Spyware/ spyware programs free microsoft spyware removal yahoo virus scan anti-spyware. Free virus removers<br />
+remove spyware for free msn anti spyware! Free spyware remover msn virus remover free spyware.com! Java blaster anti spyware review msn security free scan cheap download virus scan yahoo spyware.com! Www.free spyware removal free addware downloads javacools download scanner and remover anti spyware adaware se free free scan spyware remover free free scan and eliminate spyware spyware removal free download. adaware download anti spyware share ware! Msn.free downloads spyware free removal spyware spyware free software microsoft free spyware downloads spyware remover free adware and spyware remover free adware removal free spyware downloadable software, 100 ree anti spyware trial anti spyware share ware free spyware.com virus removing rating adaware se status msn virus protection best anti spyware programs spyware protection totally free spyware removers available giant anti spyware free software to remove spy blocker and adware anti spyware microsoft adaware for mac msn virus remover anti-spyware freedom free cheap download virus scan spyware removal" "free trial" spyware free software completely free spyware best spyware microsoft -winfixer removal microsoft adware scan adware for free\! Free shareware spyware remover free down load of spyware free spyware blocker free about blank remover free addware remover free removal virus free spyware anti virus removal. Free spyware removable free anti spyware programs free anti spyware downloads.</p>
+<span class="comments-post">Posted by: <a href="http://stop-adware.net/spyware/Spyware-Doctor-Free-Download.html">spyware removal</a> at April  1, 2006 06:10 AM</span>
+</div>
+<div class="comments-body">
+<p>Spyware eliminator automatically delete all detected infections free spyware ad -aware free pop-up remover, Spyware Blocker spyware free downloads free" "virus removal" free spyware tool removal trogen hunter free spyware remover from microsoft crack for spyware doctor free scan and eliminate spyware java cools spyware blaster! Free spyware remover from microsoft free anti virus free down load. Spyware inoculator review microsoft spyware. Free online virus removers free anti virus.</p>
+<span class="comments-post">Posted by: <a href="http://spyware-remover.spyware-spyware.net/Spyware-Remover.html">Spyware</a> at April  1, 2006 06:48 AM</span>
+</div>
+<div class="comments-body">
+<p>Freeware spyware remover msn spyware remover freeware spyware remover totally free spyware remover<br />
+spyware removal free download.. Anti-spyware blocker review free adware remove? Msn.free downloads spyware spyware blaster free spyware download! Spyware detection addware microsoft spy blaster virus remover www.free spyware removal.</p>
+<span class="comments-post">Posted by: <a href="http://spyware-stormer.spyware-spyware.net/Spyware-Stormer.html">Spyware</a> at April  1, 2006 06:53 AM</span>
+</div>
+<div class="comments-body">
+<p>Java cool software spyware blaster html best anti spyware microsoft free spyware free virus protection for macintosh www..free spyware.com Free Spyware Downloads msn spyware remover adware downloads free-anti-spyware Spyware Doctor?</p>
+<span class="comments-post">Posted by: <a href="http://spyware-blaster.spyware-spyware.net/Spyware-Blaster.html">Spyware</a> at April  1, 2006 06:58 AM</span>
+</div>
+<div class="comments-body">
+<p>Adware free adware download adware spyware removal tool lavasoft adware adware adware download adware 6<br />
+adware se adware remover remove adware adware remover<br />
+anti adware adware 6 lavasoft adware free adware remover Adware adware remover free adware removal no adware adware free adware download. Adware remover adware remover adware se, Adware adware se free adware remover lavasoft adware!</p>
+<span class="comments-post">Posted by: <a href="http://spyware-spyware.net/Adware-Spyware.html">Adware</a> at April  1, 2006 07:19 PM</span>
+</div>
+<div class="comments-body">
+<p>Adware se adware remover, adware removal, adware removal, anti adware!</p>
+<span class="comments-post">Posted by: <a href="http://www.free-remover-spyware.com/Spyware-Adware-Remover.html">adware</a> at April  1, 2006 07:26 PM</span>
+</div>
+<div class="comments-body">
+<p>Adware 6 adware spyware remover adware spyware removal Spyware Removal anti adware adware spyware removal, Spyware Remover! Adware 6 adware download? Free adware. Free Spyware Remover adware spyware Spyware Remover! Spyware Removal Microsoft Anti Spyware free adware removal adware se Spyware adware spyware Spyware Removal anti adware adware download Free Spyware Remover Spyware Doctor. Free adware remover adware spyware removal adware spyware removal tool adware? Free Anti Spyware?</p>
+<span class="comments-post">Posted by: <a href="http://spyware-spyware.net/Free-Spyware-Software.html">Free Spyware Remover</a> at April  1, 2006 07:28 PM</span>
+</div>
+<div class="comments-body">
+<p>Adware removal adware removal adware removal anti adware adware 6 adware 6 adware se adware spyware adware download adware spyware remover free adware remover adware spyware?</p>
+<span class="comments-post">Posted by: <a href="http://www.free-remover-spyware.com/Adware-se.html">adware se</a> at April  1, 2006 07:30 PM</span>
+</div>
+<div class="comments-body">
+<p>Adware remove adware remove adware adware remover free adware adware spyware!</p>
+<span class="comments-post">Posted by: <a href="http://www.free-remover-spyware.com/Adware-Scan.html">adware</a> at April  1, 2006 07:32 PM</span>
+</div>
+<div class="comments-body">
+<p>Adware removal adware se adware, Adware adware spyware. Adware download adware removal remove adware adware se!</p>
+<span class="comments-post">Posted by: <a href="http://free-remover-spyware.com/adware.htm">Adware</a> at April  1, 2006 07:36 PM</span>
+</div>
+<div class="comments-body">
+<p>Adware download Free Anti Spyware Free Spyware Remover Spyware Blaster<br />
+adware download, Spyware Doctor remove adware, anti adware ad adware Free Spyware Remover adware remover adware spyware removal tool adware se free adware download adware spyware removal remove adware Microsoft Anti Spyware adware se no adware adware spyware remover adware spyware remover Spyware Removal no adware adware spyware no adware Spyware, spyware. Adware remover adware remover<br />
+adware se anti adware adware spyware adware se adware spyware?</p>
+<span class="comments-post">Posted by: <a href="http://spyware-spyware.net/Free-Removal-Of-Spyware.html">Free Spyware Removal</a> at April  1, 2006 07:50 PM</span>
+</div>
+<div class="comments-body">
+<p>Adware adware download free adware remover adware spyware removal tool adware remover ad adware adware remover!</p>
+<span class="comments-post">Posted by: <a href="http://www.free-removal-spyware.com/Adware-anti-Spyware.html">Adware</a> at April  1, 2006 07:54 PM</span>
+</div>
+<div class="comments-body">
+<p>Anti adware free adware download adware removal free adware removal<br />
+adware se adware 6 adware remove adware! Ad adware.</p>
+<span class="comments-post">Posted by: <a href="http://www.free-remover-spyware.com/Adware-Spyware-review-Remover.html">Adware</a> at April  1, 2006 08:00 PM</span>
+</div>
+<div class="comments-body">
+<p> chronic chronic hepatitis c cellulite reduction cellulite infection chronic 2001 chair massager chronic illness cellulite lotion chronic lymphatic leukemia chronic bronchitis symptom chronic gastritis chronic neck pain chronic fatigue symptom chronic yeast infection chronic insomnia chronic halitosis chronic cough body massager chronic pelvic pain chronic hepatitis c chronic back pain exercise cellulite</p>
+<span class="comments-post">Posted by: <a href="http://cellulitis.friedjr.com/chronic-candy/">cellulitis</a> at April  9, 2006 09:33 AM</span>
+</div>
+<div class="comments-body">
+<p>Adult acne acne product acne solution! Acne medicine!</p>
+<span class="comments-post">Posted by: <a href="http://acne.tvev.com/acne-product/">acne medicine</a> at April 13, 2006 11:30 AM</span>
+</div>
+<div class="comments-body">
+<p>Acne solution acne medication acne solution.</p>
+<span class="comments-post">Posted by: <a href="http://acne.tvev.com/acne-medication/">acne skin care</a> at April 13, 2006 11:45 AM</span>
+</div>
+<div class="comments-body">
+<p>Acne acne skin care?</p>
+<span class="comments-post">Posted by: <a href="http://acne.tvev.com/acne-care/">acne skin care</a> at April 13, 2006 12:19 PM</span>
+</div>
+<div class="comments-body">
+<p>Acne treatment acne scar acne skin care proactive acne treatment! Proactive acne treatment, acne medicine adult acne.</p>
+<span class="comments-post">Posted by: <a href="http://acne.tvev.com/acne-skin-care/">acne skin care</a> at April 13, 2006 12:25 PM</span>
+</div>
+<div class="comments-body">
+<p>Acne acne solution proactive acne treatment adult acne adult acne adult acne acne product.</p>
+<span class="comments-post">Posted by: <a href="http://acne.tvev.com/">proactive acne treatment</a> at April 13, 2006 12:26 PM</span>
+</div>
+<div class="comments-body">
+<p>Adult acne acne skin care product Adult Acne?</p>
+<span class="comments-post">Posted by: <a href="http://acne.tvev.com/adult-acne/">adult acne</a> at April 13, 2006 12:26 PM</span>
+</div>
+<div class="comments-body">
+<p>Acne medication acne skin care, acne skin care product acne product!</p>
+<span class="comments-post">Posted by: <a href="http://acne.tvev.com/proactive-acne-treatment/">proactive acne treatment</a> at April 13, 2006 12:29 PM</span>
+</div>
+<div class="comments-body">
+<p>Acne medication acne solution, acne solution acne medicine<br />
+acne skin care product acne acne acne skin care.</p>
+<span class="comments-post">Posted by: <a href="http://acne.tvev.com/acne-medicine/">acne product</a> at April 13, 2006 12:30 PM</span>
+</div>
+<div class="comments-body">
+<p>Acne medication acne skin care product acne medication acne medicine adult acne acne scar best acne treatment.</p>
+<span class="comments-post">Posted by: <a href="http://acne.tvev.com/acne-treatment/">acne treatment</a> at April 13, 2006 12:34 PM</span>
+</div>
+<div class="comments-body">
+<p>Acne care best acne treatment best acne treatment acne skin care product?</p>
+<span class="comments-post">Posted by: <a href="http://acne.tvev.com/acne-skin-care-product/">acne skin care product</a> at April 13, 2006 12:35 PM</span>
+</div>
+<div class="comments-body">
+<p>Acne product acne solution. Acne medicine acne medication acne skin care product?</p>
+<span class="comments-post">Posted by: <a href="http://acne.tvev.com/acne-remedy/">acne remedy</a> at April 13, 2006 12:35 PM</span>
+</div>
+<div class="comments-body">
+<p>Proactive acne treatment acne acne skin care!</p>
+<span class="comments-post">Posted by: <a href="http://acne.tvev.com/best-acne-treatment/">best acne treatment</a> at April 13, 2006 12:35 PM</span>
+</div>
+<div class="comments-body">
+<p>http://www.real4x4.com/wwwboard/messages/29279.shtml complimentwhosewondered</p>
+<span class="comments-post">Posted by: <a href="http://www.juliedubela.net/talktojulie/messages/38961.shtml">infront</a> at April 16, 2006 10:01 AM</span>
+</div>
+<div class="comments-body">
+<p>Thank you!<br />
+[url=http://jlxwzcoh.com/vfqf/odul.html]My homepage[/url] | [url=http://jswvviff.com/trmu/julx.html]Cool site[/url]</p>
+<span class="comments-post">Posted by: <a href="http://jlxwzcoh.com/vfqf/odul.html">Don</a> at May  8, 2006 05:49 AM</span>
+</div>
+<div class="comments-body">
+<p>Thank you!<br />
+[url=http://jlxwzcoh.com/vfqf/odul.html]My homepage[/url] | [url=http://jswvviff.com/trmu/julx.html]Cool site[/url]</p>
+<span class="comments-post">Posted by: <a href="http://jlxwzcoh.com/vfqf/odul.html">Don</a> at May  8, 2006 05:50 AM</span>
+</div>
+<div class="comments-body">
+<p>Great work!<br />
+My homepage | Please visit</p>
+<span class="comments-post">Posted by: <a href="http://jlxwzcoh.com/vfqf/odul.html">Timothy</a> at May  8, 2006 05:52 AM</span>
+</div>
+<div class="comments-body">
+<p>Well done!<br />
+http://jlxwzcoh.com/vfqf/odul.html | http://gfonckic.com/nutw/muhc.html</p>
+<span class="comments-post">Posted by: <a href="http://jlxwzcoh.com/vfqf/odul.html">Chad</a> at May  8, 2006 05:54 AM</span>
+</div>
+<div class="comments-body">
+<p>Great work!</p>
+<span class="comments-post">Posted by: <a href="http://mp3-man.info/060509apochemu/tickets.html">Cassie</a> at May  9, 2006 09:26 PM</span>
+</div>
+<div class="comments-body">
+<p>Roger Gunner Walter Ezekiel Rocky Desmond </p>
+<span class="comments-post">Posted by: <a href="http://www.bwi-hi.com/">Gavyn</a> at May 10, 2006 02:05 AM</span>
+</div>
+<div class="comments-body">
+<p>Thank you!</p>
+<span class="comments-post">Posted by: <a href="http://betty-5.info/ymra01/stools.html">Marla</a> at May 14, 2006 01:35 PM</span>
+</div>
+<div class="comments-body">
+<p>Great work!</p>
+<span class="comments-post">Posted by: <a href="http://viesta.info/ymra02/softball.html">Victor</a> at May 30, 2006 04:51 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.indww.com/YOUR-VIEWS/messages/35856.shtml complimentwhosewondered</p>
+<span class="comments-post">Posted by: <a href="http://www.econ.ohio-state.edu/weinberg/wwwboard/messages/14698.html">conscience</a> at June  3, 2006 05:40 PM</span>
+</div>
+<div class="comments-body">
+<p>Good design!</p>
+<span class="comments-post">Posted by: <a href="http://terry-veronica.info/skanah01/scuba.html">Jill</a> at June 12, 2006 05:24 AM</span>
+</div>
+<div class="comments-body">
+<p>Nice site!</p>
+<span class="comments-post">Posted by: <a href="http://angie-ruth.info/skanah01/american.html">Lisa</a> at June 13, 2006 05:31 AM</span>
+</div>
+<div class="comments-body">
+<p>You guys are the 55808 best, thanks so much for the help.</p>
+<span class="comments-post">Posted by: <a href="mailto&#58;catytota&#64;yahoo&#46;com">Caty Tota</a> at July  7, 2006 02:16 AM</span>
+</div>
+<div class="comments-body">
+<p>http://wbic-newventures.com/wwwboard/messages/72529.html divxpornvideos</p>
+<span class="comments-post">Posted by: <a href="http://sites.redclouds.com/fetishcity/messages/8258.html">free movie sex</a> at August 10, 2006 03:41 AM</span>
+</div>
+<div class="comments-body">
+<p>Clemens' funeral was a small gathering in Elmira, where his wife and daughters were already buried. But to allow his public a chance to pay their respects, his body was first taken to New York City, cathyb ws where thousands saw it in the Presbyterian Brick Church. The viewing was open to the public, but if you had a ticket like the one at left you could be admitted first. healthcare4  http://www.healthcare4.com/links.html</p>
+<span class="comments-post">Posted by: <a href="http://www.healthcare4.com/links.html">healthcare4</a> at August 20, 2006 02:22 AM</span>
+</div>
+<div class="comments-body">
+<p>Are you sure 70044 of this?!?</p>
+<span class="comments-post">Posted by: <a href="http://www.flotser.com">Gezer Gamadi</a> at October  4, 2006 09:36 AM</span>
+</div>
+<div class="comments-body">
+<p>In Oklahoma dogs must have a permit signed by the mayor in order to congregate in groups of three or more on private property</p>
+<span class="comments-post">Posted by: <a href="http://google.btopenworld.com/dynamic/search/google_search.jsp?query=Natalia's+Rings&searchArea=All">4 carat solitare diamond rings</a> at October  5, 2006 12:49 PM</span>
+</div>
+<div class="comments-body">
+<p>kasumi hentai hentai blow job </p>
+<span class="comments-post">Posted by: <a href="http://www.nascarplayonline.com/rape.html">Teebedpa</a> at October  9, 2006 11:17 PM</span>
+</div>
+<div class="comments-body">
+<p>female manga drawings hentai manga sakura </p>
+<span class="comments-post">Posted by: <a href="http://www.partnershipiraq.org/stockings.html">Humqytkept</a> at October 10, 2006 04:14 PM</span>
+</div>
+<div class="comments-body">
+<p>female manga drawings hentai manga sakura </p>
+<span class="comments-post">Posted by: <a href="http://www.partnershipiraq.org/stockings.html">Humqytkept</a> at October 10, 2006 04:17 PM</span>
+</div>
+<div class="comments-body">
+<p>big hairy dick hairy unshaved natural </p>
+<span class="comments-post">Posted by: <a href="http://www.teatteri-imatra.com/manga.html">Vkkdibeizt</a> at October 29, 2006 12:10 PM</span>
+</div>
+<div class="comments-body">
+<p>young lingerie models boys sex young </p>
+<span class="comments-post">Posted by: <a href="http://www.desi-connexion.com/shemale.html">Zbkweunacz</a> at October 30, 2006 05:30 PM</span>
+</div>
+<div class="comments-body">
+<p>housewives in pantyhose hooters girls in pantyhose </p>
+<span class="comments-post">Posted by: <a href="http://www.gmcdubai.com/dogsex.html">Eyoal</a> at October 31, 2006 10:37 AM</span>
+</div>
+<div class="comments-body">
+<p>how to do indian head massage indian cunt </p>
+<span class="comments-post">Posted by: <a href="http://www.woupy.com/milf.html">Elpyao</a> at October 31, 2006 09:16 PM</span>
+</div>
+<div class="comments-body">
+<p>katoey wife cheating wives stories  London-born rapper Sway is to be honoured at the BET Hip-Hop awards in the US...</p>
+<span class="comments-post">Posted by: <a href="http://www.agence-aagir.com">Sergio Holder</a> at November  3, 2006 11:09 PM</span>
+</div>
+<div class="comments-body">
+<p> Alec Baldwin asks for his voice to be removed from an &quot;unfair&quot; documentary about Arnold Schwarzenegger...</p>
+<span class="comments-post">Posted by: <a href="http://www.theinsurrection.org">Andreas Diaz</a> at November 13, 2006 06:47 AM</span>
+</div>
+<div class="comments-body">
+<p> Pop trio Atomic Kitten will reform to play a concert in support of jailed Liverpool football fan Michael Shields...</p>
+<span class="comments-post">Posted by: <a href="http://www.world-links.org/discus/english/messages/10494/hcb-14453.html">Maddox Kellogg</a> at November 17, 2006 01:29 PM</span>
+</div>
+<div class="comments-body">
+<p>anal bottle insertion group anal  Pioneering screenwriter Nigel Kneale, best known for the Quatermass TV serials and films, dies aged 84...</p>
+<span class="comments-post">Posted by: <a href="http://www.world-links.org/discus/english/messages/10494/amature-15135.html">Samson Irons</a> at November 21, 2006 09:35 AM</span>
+</div>
+<div class="comments-body">
+<p>free big cock suckers muscle big cock  The Red Hot Chili Peppers are leading the way at this years MTV Europe music awards with four nominations...</p>
+<span class="comments-post">Posted by: <a href="http://www.world-links.org/discus/english/messages/10494/anal-15138.html">Raymond Hershberger</a> at November 21, 2006 03:26 PM</span>
+</div>
+<div class="comments-body">
+<p> William Styron, whose Holocaust novel Sophie's Choice became a film and an opera, has died, aged 81...</p>
+<span class="comments-post">Posted by: <a href="http://www.utnaonline.com">Trever Valenti</a> at November 23, 2006 06:45 AM</span>
+</div>
+<div class="comments-body">
+<p> Alec Baldwin asks for his voice to be removed from an &quot;unfair&quot; documentary about Arnold Schwarzenegger...</p>
+<span class="comments-post">Posted by: <a href="http://neet.orz.ne.jp/wiki/index.php?plugin=attach&pcmd=open&file=1122-05.html&refer=FileSeeker%2F%A5%D5%A5%A1%A5%A4%A5%EB%C3%D6%A4%AD%BE%EC">Craig Usher</a> at November 24, 2006 08:41 AM</span>
+</div>
+<div class="comments-body">
+<p> The judge who put coded messages in his Da Vinci Code plagiarism trial ruling has written another...</p>
+<span class="comments-post">Posted by: <a href="http://abaco.ya.com/siskimasiski">Kaleb Hoffman</a> at November 24, 2006 03:28 PM</span>
+</div>
+<div class="comments-body">
+<p> Doctor Who takes three prizes at the National Television Awards in a repeat of its success last year...</p>
+<span class="comments-post">Posted by: <a href="http://fansub.andrewlb.com/pukiwiki.php?plugin=attach&pcmd=open&file=1122-02.html&refer=InterWikiName">Nicolas Nelms</a> at November 25, 2006 03:45 AM</span>
+</div>
+<div class="comments-body">
+<p> Jonathan Ross is dubbed &quot;risque&quot; by Ofcom but not in breach of rules over an interview with David Cameron...</p>
+<span class="comments-post">Posted by: <a href="http://eureka.ya.com/maripolubila">Ignacio Moniz</a> at November 25, 2006 03:46 PM</span>
+</div>
+<div class="comments-body">
+<p> Veteran game show host Bob Barker is stepping down from hosting The Price is Right after 35 years...</p>
+<span class="comments-post">Posted by: <a href="http://estadium.ya.com/usb_vulcano">Moises Oldham</a> at November 26, 2006 09:56 PM</span>
+</div>
+<div class="comments-body">
+<p> Veteran game show host Bob Barker is stepping down from hosting The Price is Right after 35 years...</p>
+<span class="comments-post">Posted by: <a href="http://ciberia.ya.com/massacrecool">Khalid Fonseca</a> at November 27, 2006 09:05 AM</span>
+</div>
+<div class="comments-body">
+<p> The judge who put coded messages in his Da Vinci Code plagiarism trial ruling has written another...</p>
+<span class="comments-post">Posted by: <a href="http://www.nurs.or.jp/~calcium/wiki/index.php?plugin=attach&pcmd=open&file=1122-02.html&refer=%BC%C1%CC%E4%A4%B9%A4%EB%C1%B0%A4%CB">Drake Meade</a> at November 27, 2006 10:00 PM</span>
+</div>
+<div class="comments-body">
+<p>male masturbation images female masturbation ejaculation teen girls in training bras teen have an orgasm ebony ladies wrestling ebony kara davis pics  Pioneering screenwriter Nigel Kneale, best known for the Quatermass TV serials and films, dies aged 84...</p>
+<span class="comments-post">Posted by: <a href="http://www.kde.gr.jp/~daisuke/immodule_for_qt/pukiwiki/?plugin=attach&pcmd=open&file=291107.html&refer=ImmoduleForQtDocsForTrolltech">Chaz Albrecht</a> at December  1, 2006 09:08 PM</span>
+</div>
+<div class="comments-body">
+<p>beach masturbation extreme masturbation free ass chubby free pic chubby lesbos zoofilia yaoi zoofilia fotos hombres cogiendose  The Red Hot Chili Peppers are leading the way at this years MTV Europe music awards with four nominations...</p>
+<span class="comments-post">Posted by: <a href="http://fansub.andrewlb.com/pukiwiki.php?plugin=attach&pcmd=open&file=2.html&refer=InterWikiName">Pierre Oconner</a> at December  4, 2006 04:32 PM</span>
+</div>
+<div class="comments-body">
+<p>http://www.stazzz.net/teensexpics.php teen sex pics  </p>
+<span class="comments-post">Posted by: <a href="http://www.stazzz.net/teensexpics.php">teen video</a> at December  4, 2006 10:57 PM</span>
+</div>
+<div class="comments-body">
+<p>http://www.stazzz.net/teensexpics.php teen sex pics  </p>
+<span class="comments-post">Posted by: <a href="http://www.stazzz.net/teensexpics.php">teen video</a> at December  4, 2006 10:59 PM</span>
+</div>
+<div class="comments-body">
+<p>http://www.stazzz.net/teensexpics.php teen sex pics  </p>
+<span class="comments-post">Posted by: <a href="http://www.stazzz.net/teensexpics.php">teens porn</a> at December  4, 2006 10:59 PM</span>
+</div>
+<div class="comments-body">
+<p> The Rolling Stones postpone a show in the US to allow singer Sir Mick Jagger time to rest his voice...</p>
+<span class="comments-post">Posted by: <a href="http://www.kde.gr.jp/~daisuke/immodule_for_qt/pukiwiki/?plugin=attach&pcmd=open&file=291108.html&refer=ImmoduleForQtDocsForTrolltech">Charles Blount</a> at December  6, 2006 02:19 AM</span>
+</div>
+<div class="comments-body">
+<p> The Rolling Stones postpone a show in the US to allow singer Sir Mick Jagger time to rest his voice...</p>
+<span class="comments-post">Posted by: <a href="http://www.kde.gr.jp/~daisuke/immodule_for_qt/pukiwiki/?plugin=attach&pcmd=open&file=291108.html&refer=ImmoduleForQtDocsForTrolltech">Charles Blount</a> at December  6, 2006 02:42 AM</span>
+</div>
+<div class="comments-body">
+<p> The judge who put coded messages in his Da Vinci Code plagiarism trial ruling has written another...</p>
+<span class="comments-post">Posted by: <a href="http://wslab.csie.ntu.edu.tw/wiki/lib/exe/fetch.php?cache=cache&media=1.html">Jarrod Travis</a> at December  6, 2006 03:06 PM</span>
+</div>
+<div class="comments-body">
+<p> Alec Baldwin asks for his voice to be removed from an &quot;unfair&quot; documentary about Arnold Schwarzenegger...</p>
+<span class="comments-post">Posted by: <a href="http://www.statichalo.com/com/aotosz.html">Marlon Grace</a> at December  7, 2006 01:14 AM</span>
+</div>
+<div class="comments-body">
+<p> A musical about the witches from The Wizard of Oz breaks West End box office records, its producers say...</p>
+<span class="comments-post">Posted by: <a href="http://www.wingandrack.com/com/niaagtnniewh.html">Mekhi Clemons</a> at December  7, 2006 03:22 AM</span>
+</div>
+<div class="comments-body">
+<p> A musical about the witches from The Wizard of Oz breaks West End box office records, its producers say...</p>
+<span class="comments-post">Posted by: <a href="http://www.wingandrack.com/com/niaagtnniewh.html">Mekhi Clemons</a> at December  7, 2006 03:23 AM</span>
+</div>
+<div class="comments-body">
+<p> Social networking site MySpace is to block users from uploading  copyrighted music to its pages...</p>
+<span class="comments-post">Posted by: <a href="http://www.tatsubori.net/pukiwiki/index.php?plugin=attach&pcmd=open&file=061203.html&refer=Bookmarks">Gilbert Rooney</a> at December  7, 2006 04:09 AM</span>
+</div>
+<div class="comments-body">
+<p> Colombia's vice president is &quot;baffled&quot; by Kate Moss's success following cocaine allegations...</p>
+<span class="comments-post">Posted by: <a href="http://www.osranch.com/com/asrtsiot.html">Talon Sears</a> at December  7, 2006 04:35 AM</span>
+</div>
+<div class="comments-body">
+<p> Alec Baldwin asks for his voice to be removed from an &quot;unfair&quot; documentary about Arnold Schwarzenegger...</p>
+<span class="comments-post">Posted by: <a href="http://wiki-ureha2.sakura.ne.jp/doubutu_no_mori/index.php?plugin=attach&pcmd=open&file=061202.html&refer=%A5%D5%A5%A7%A5%A4%A5%B9%A5%BF%A5%A4%A5%D7">Semaj Irving</a> at December  7, 2006 05:34 PM</span>
+</div>
+<div class="comments-body">
+<p> Classical singer Russell Watson postpones his forthcoming UK tour after undergoing brain surgery...</p>
+<span class="comments-post">Posted by: <a href="http://www.antiabuse.jp/zilwan/wiki/index.php?plugin=attach&pcmd=open&file=061204.html&refer=FrontPage">Taylor Wingfield</a> at December  7, 2006 06:53 PM</span>
+</div>
+<div class="comments-body">
+<p> Madonna says she may adopt another child from abroad following her proposed adoption of a Malawian boy...</p>
+<span class="comments-post">Posted by: <a href="http://fansub.andrewlb.com/pukiwiki.php?plugin=attach&pcmd=open&file=12074.html&refer=InterWikiSandBox">Travon Babb</a> at December 11, 2006 05:39 PM</span>
+</div>
+<div class="comments-body">
+<p> The Rolling Stones postpone a show in the US to allow singer Sir Mick Jagger time to rest his voice...</p>
+<span class="comments-post">Posted by: <a href="http://laszlo.jp/wiki/index.php?plugin=attach&pcmd=open&file=12074.html&refer=EclipseIDE">Rodrigo Lanier</a> at December 11, 2006 07:17 PM</span>
+</div>
+<div class="comments-body">
+<p> Doctor Who takes three prizes at the National Television Awards in a repeat of its success last year...</p>
+<span class="comments-post">Posted by: <a href="http://xoops.sourceforge.jp/wiki/free/index.php?plugin=attach&pcmd=open&file=12076.html&refer=ETC%2F%A4%E8%A4%AF%A4%A2%A4%EB%BC%C1%CC%E4%A4%C8%B2%F3%C5%FA%28FAQ%29">Omarion Barrios</a> at December 11, 2006 08:12 PM</span>
+</div>
+<div class="comments-body">
+<p> Record company EMI sign a deal with the estate of crooner Dean Martin to use the singer's likeness...</p>
+<span class="comments-post">Posted by: <a href="http://uclinux-h8.sourceforge.jp/pukiwiki/pukiwiki.php?plugin=attach&pcmd=open&file=12056.html&refer=H8%2F300%C8%C7%B8%C7%CD%AD%A4%CE%BB%F6%BE%F0">Arjun Barrera</a> at December 11, 2006 09:40 PM</span>
+</div>
+<div class="comments-body">
+<p> Record company EMI sign a deal with the estate of crooner Dean Martin to use the singer's likeness...</p>
+<span class="comments-post">Posted by: <a href="http://uclinux-h8.sourceforge.jp/pukiwiki/pukiwiki.php?plugin=attach&pcmd=open&file=12056.html&refer=H8%2F300%C8%C7%B8%C7%CD%AD%A4%CE%BB%F6%BE%F0">Arjun Barrera</a> at December 11, 2006 09:41 PM</span>
+</div>
+<div class="comments-body">
+<p> Pioneering screenwriter Nigel Kneale, best known for the Quatermass TV serials and films, dies aged 84...</p>
+<span class="comments-post">Posted by: <a href="http://xoops.sourceforge.jp/wiki/xoops2/index.php?plugin=attach&pcmd=open&file=12072.html&refer=HOWTO">Sean Hannon</a> at December 12, 2006 12:51 AM</span>
+</div>
+<div class="comments-body">
+<p> The judge who put coded messages in his Da Vinci Code plagiarism trial ruling has written another...</p>
+<span class="comments-post">Posted by: <a href="http://uclinux-h8.sourceforge.jp/pukiwiki/pukiwiki.php?plugin=attach&pcmd=open&file=12052.html&refer=uClinux-dist">Joshua Spalding</a> at December 12, 2006 01:07 AM</span>
+</div>
+<div class="comments-body">
+<p> Classical singer Russell Watson postpones his forthcoming UK tour after undergoing brain surgery...</p>
+<span class="comments-post">Posted by: <a href="http://fansub.andrewlb.com/pukiwiki.php?plugin=attach&pcmd=open&file=12075.html&refer=InterWikiSandBox">Esteban Becker</a> at December 12, 2006 01:14 AM</span>
+</div>
+<div class="comments-body">
+<p> Doctor Who takes three prizes at the National Television Awards in a repeat of its success last year...</p>
+<span class="comments-post">Posted by: <a href="http://series60.sakura.ne.jp/6630/pukiwiki.php?plugin=attach&pcmd=open&file=12053.html&refer=FrontPage">Bruno Wiseman</a> at December 12, 2006 04:21 AM</span>
+</div>
+<div class="comments-body">
+<p> Doctor Who takes three prizes at the National Television Awards in a repeat of its success last year...</p>
+<span class="comments-post">Posted by: <a href="http://series60.sakura.ne.jp/6630/pukiwiki.php?plugin=attach&pcmd=open&file=12053.html&refer=FrontPage">Bruno Wiseman</a> at December 12, 2006 04:40 AM</span>
+</div>
+<div class="comments-body">
+<p> London-born rapper Sway is to be honoured at the BET Hip-Hop awards in the US...</p>
+<span class="comments-post">Posted by: <a href="http://wiki.osask.jp/?plugin=attach&pcmd=open&file=12114.html&refer=OsaskWiKi">Terrance Regan</a> at December 12, 2006 07:02 AM</span>
+</div>
+<div class="comments-body">
+<p> Alec Baldwin asks for his voice to be removed from an &quot;unfair&quot; documentary about Arnold Schwarzenegger...</p>
+<span class="comments-post">Posted by: <a href="http://series60.sakura.ne.jp/6630/pukiwiki.php?plugin=attach&pcmd=open&file=12112.html&refer=%B6%DB%B5%DE702NKII%A1%A2W-ZERO3%C8%E6%B3%D3%A5%DA%A1%BC%A5%B8">Nehemiah Babin</a> at December 13, 2006 10:52 AM</span>
+</div>
+<div class="comments-body">
+<p> Classical singer Russell Watson postpones his forthcoming UK tour after undergoing brain surgery...</p>
+<span class="comments-post">Posted by: <a href="http://wiki.osask.jp/?plugin=attach&pcmd=open&file=12115.html&refer=OsaskWiKi">Richard Muse</a> at December 13, 2006 08:26 PM</span>
+</div>
+<div class="comments-body">
+<p> Alec Baldwin asks for his voice to be removed from an &quot;unfair&quot; documentary about Arnold Schwarzenegger...</p>
+<span class="comments-post">Posted by: <a href="http://xoops.sourceforge.jp/wiki/xoops2/index.php?plugin=attach&pcmd=open&file=12116.html&refer=POPULAR">Ulises Hume</a> at December 14, 2006 08:29 AM</span>
+</div>
+<div class="comments-body">
+<p> Madonna says she may adopt another child from abroad following her proposed adoption of a Malawian boy...</p>
+<span class="comments-post">Posted by: <a href="http://www.preston-net.com/wiki/index.php?plugin=attach&openfile=12111.html&refer=TrackbackSpam">Cristian Roark</a> at December 14, 2006 09:31 AM</span>
+</div>
+<div class="comments-body">
+<p> London-born rapper Sway is to be honoured at the BET Hip-Hop awards in the US...</p>
+<span class="comments-post">Posted by: <a href="http://wiki.osask.jp/?plugin=attach&pcmd=open&file=12116.html&refer=OsaskWiKi">Leonard Blum</a> at December 14, 2006 10:46 AM</span>
+</div>
+<div class="comments-body">
+<p> Classical singer Russell Watson postpones his forthcoming UK tour after undergoing brain surgery...</p>
+<span class="comments-post">Posted by: <a href="http://gwsrv.valuenet.co.jp/ValueSQL/pukiwiki.php?plugin=attach&pcmd=open&file=12114.html&refer=FAQ">Kareem Powers</a> at December 14, 2006 11:15 AM</span>
+</div>
+<div class="comments-body">
+<p> Pop trio Atomic Kitten will reform to play a concert in support of jailed Liverpool football fan Michael Shields...</p>
+<span class="comments-post">Posted by: <a href="http://www.hybridomagazine.com/com/okdciorcbgyihb.html">Milton Thomason</a> at December 16, 2006 02:02 AM</span>
+</div>
+<div class="comments-body">
+<p> Pop trio Atomic Kitten will reform to play a concert in support of jailed Liverpool football fan Michael Shields...</p>
+<span class="comments-post">Posted by: <a href="http://www.hybridomagazine.com/com/okdciorcbgyihb.html">Milton Thomason</a> at December 16, 2006 02:23 AM</span>
+</div>
+<div class="comments-body">
+<p> Jonathan Ross is dubbed &quot;risque&quot; by Ofcom but not in breach of rules over an interview with David Cameron...</p>
+<span class="comments-post">Posted by: <a href="http://www.phatphaponline.net/net/heprtuathapm.html">Barry Abell</a> at December 16, 2006 03:11 AM</span>
+</div>
+<div class="comments-body">
+<p> William Styron, whose Holocaust novel Sophie's Choice became a film and an opera, has died, aged 81...</p>
+<span class="comments-post">Posted by: <a href="http://discuss.occc.edu/discuspro/messages/14/0612151-2756.html">Rodrigo Swearingen</a> at December 16, 2006 03:28 AM</span>
+</div>
+<div class="comments-body">
+<p> William Styron, whose Holocaust novel Sophie's Choice became a film and an opera, has died, aged 81...</p>
+<span class="comments-post">Posted by: <a href="http://www.saxess.de/scarab-wiki/attach?page=Main%2F0612153.html">Griffin Wilhite</a> at December 16, 2006 04:27 AM</span>
+</div>
+<div class="comments-body">
+<p> Record company EMI sign a deal with the estate of crooner Dean Martin to use the singer's likeness...</p>
+<span class="comments-post">Posted by: <a href="http://www.gotrmarin.com/calendar/calendar_day/2389242/2004-12-30.htm">Alberto Jolley</a> at December 16, 2006 04:55 AM</span>
+</div>
+<div class="comments-body">
+<p> A musical about the witches from The Wizard of Oz breaks West End box office records, its producers say...</p>
+<span class="comments-post">Posted by: <a href="http://www.phatphaponline.net/net/akhcpotcaghipb.html">Jamil Shields</a> at December 16, 2006 05:19 AM</span>
+</div>
+<div class="comments-body">
+<p> Pioneering screenwriter Nigel Kneale, best known for the Quatermass TV serials and films, dies aged 84...</p>
+<span class="comments-post">Posted by: <a href="http://www.fetish-furniture.com/source/10.html">Josh Mcvay</a> at December 16, 2006 06:24 AM</span>
+</div>
+<div class="comments-body">
+<p> A musical about the witches from The Wizard of Oz breaks West End box office records, its producers say...</p>
+<span class="comments-post">Posted by: <a href="http://www.fetish-furniture.com/com/rhuseittaemfa.html">Johnathon Marroquin</a> at December 16, 2006 07:17 AM</span>
+</div>
+<div class="comments-body">
+<p> Record company EMI sign a deal with the estate of crooner Dean Martin to use the singer's likeness...</p>
+<span class="comments-post">Posted by: <a href="http://www.thelinkletter.com/com/neirluethatm.html">Bryan Straub</a> at December 16, 2006 07:31 AM</span>
+</div>
+<div class="comments-body">
+<p> Colombia's vice president is &quot;baffled&quot; by Kate Moss's success following cocaine allegations...</p>
+<span class="comments-post">Posted by: <a href="http://www.hybridomagazine.com/com/deirrubtyahm.html">Jaron Pepper</a> at December 16, 2006 07:51 AM</span>
+</div>
+<div class="comments-body">
+<p> Colombia's vice president is &quot;baffled&quot; by Kate Moss's success following cocaine allegations...</p>
+<span class="comments-post">Posted by: <a href="http://www.hybridomagazine.com/com/deirrubtyahm.html">Jaron Pepper</a> at December 16, 2006 07:52 AM</span>
+</div>
+<div class="comments-body">
+<p> The Rolling Stones postpone a show in the US to allow singer Sir Mick Jagger time to rest his voice...</p>
+<span class="comments-post">Posted by: <a href="http://www.hybridomagazine.com/com/axmeosdliarmbiynha.html">Rashad Roberts</a> at December 16, 2006 10:22 AM</span>
+</div>
+<div class="comments-body">
+<p> The Rolling Stones postpone a show in the US to allow singer Sir Mick Jagger time to rest his voice...</p>
+<span class="comments-post">Posted by: <a href="http://www.hybridomagazine.com/com/axmeosdliarmbiynha.html">Rashad Roberts</a> at December 16, 2006 10:33 AM</span>
+</div>
+<div class="comments-body">
+<p> Record company EMI sign a deal with the estate of crooner Dean Martin to use the singer's likeness...</p>
+<span class="comments-post">Posted by: <a href="http://fansub.andrewlb.com/pukiwiki.php?plugin=attach&pcmd=open&file=291103.html&refer=%A5%B3%A5%E1%A5%F3%A5%C8%2FFall%202006">Chaz Judkins</a> at December 17, 2006 05:02 PM</span>
+</div>
+<div class="comments-body">
+<p> Classical singer Russell Watson postpones his forthcoming UK tour after undergoing brain surgery...</p>
+<span class="comments-post">Posted by: <a href="http://www.preston-net.com/wiki/index.php?plugin=attach&openfile=12074.html&refer=TrackBack">Darryl Moreau</a> at December 17, 2006 06:43 PM</span>
+</div>
+<div class="comments-body">
+<p> Doctor Who takes three prizes at the National Television Awards in a repeat of its success last year...</p>
+<span class="comments-post">Posted by: <a href="http://laszlo.jp/wiki/index.php?plugin=attach&pcmd=open&file=12112.html&refer=FAQ">Arjun Friedman</a> at December 17, 2006 09:02 PM</span>
+</div>
+<div class="comments-body">
+<p> Jonathan Ross is dubbed &quot;risque&quot; by Ofcom but not in breach of rules over an interview with David Cameron...</p>
+<span class="comments-post">Posted by: <a href="http://www.statichalo.com/com/istnaetest.html">Brody Schaefer</a> at December 17, 2006 10:30 PM</span>
+</div>
+<div class="comments-body">
+<p> Veteran game show host Bob Barker is stepping down from hosting The Price is Right after 35 years...</p>
+<span class="comments-post">Posted by: <a href="http://uclinux-h8.sourceforge.jp/pukiwiki/pukiwiki.php?plugin=attach&pcmd=open&file=12056.html&refer=H8%2F300%C8%C7%B8%C7%CD%AD%A4%CE%BB%F6%BE%F0">Raymond Neil</a> at December 17, 2006 11:36 PM</span>
+</div>
+<div class="comments-body">
+<p> Veteran game show host Bob Barker is stepping down from hosting The Price is Right after 35 years...</p>
+<span class="comments-post">Posted by: <a href="http://uclinux-h8.sourceforge.jp/pukiwiki/pukiwiki.php?plugin=attach&pcmd=open&file=12056.html&refer=H8%2F300%C8%C7%B8%C7%CD%AD%A4%CE%BB%F6%BE%F0">Raymond Neil</a> at December 18, 2006 12:01 AM</span>
+</div>
+<div class="comments-body">
+<p> Microsoft and Peter Jackson postpone the making of a film based on the Halo video game after backers pull out...</p>
+<span class="comments-post">Posted by: <a href="http://gwsrv.valuenet.co.jp/ValueSQL/pukiwiki.php?plugin=attach&pcmd=open&file=12114.html&refer=FAQ">Korbin Coppola</a> at December 18, 2006 03:12 AM</span>
+</div>
+<div class="comments-body">
+<p> Microsoft and Peter Jackson postpone the making of a film based on the Halo video game after backers pull out...</p>
+<span class="comments-post">Posted by: <a href="http://gwsrv.valuenet.co.jp/ValueSQL/pukiwiki.php?plugin=attach&pcmd=open&file=12055.html&refer=ToDo">Ivan Lankford</a> at December 18, 2006 07:12 AM</span>
+</div>
+<div class="comments-body">
+<p> The Rolling Stones cancel a gig in Hawaii and postpone other tour dates as Mick Jagger suffers throat troubles...</p>
+<span class="comments-post">Posted by: <a href="http://xoops.sourceforge.jp/wiki/free/index.php?plugin=attach&pcmd=open&file=12075.html&refer=ETC%2F%A4%E8%A4%AF%A4%A2%A4%EB%BC%C1%CC%E4%A4%C8%B2%F3%C5%FA%28FAQ%29">Ezra Lassiter</a> at December 18, 2006 09:47 AM</span>
+</div>
+<div class="comments-body">
+<p> Social networking site MySpace is to block users from uploading  copyrighted music to its pages...</p>
+<span class="comments-post">Posted by: <a href="http://www.antiabuse.jp/zilwan/wiki/index.php?plugin=attach&pcmd=open&file=12115.html&refer=SPF">Amir Bellamy</a> at December 18, 2006 11:39 AM</span>
+</div>
+<div class="comments-body">
+<p> Jonathan Ross is dubbed &quot;risque&quot; by Ofcom but not in breach of rules over an interview with David Cameron...</p>
+<span class="comments-post">Posted by: <a href="http://www.preston-net.com/wiki/index.php?plugin=attach&openfile=12116.html&refer=%5B%5BShrook%5D%5D">Jason Segura</a> at December 18, 2006 01:38 PM</span>
+</div>
+<div class="comments-body">
+<p> Microsoft and Peter Jackson postpone the making of a film based on the Halo video game after backers pull out...</p>
+<span class="comments-post">Posted by: <a href="http://www.antiabuse.jp/zilwan/wiki/index.php?plugin=attach&pcmd=open&file=12053.html&refer=%C6%B0%C5%AAIP%A5%EC%A5%F3%A5%B8%A4%CE%B3%AB%BC%A8">Mitchell Bolduc</a> at December 18, 2006 07:22 PM</span>
+</div>
+<div class="comments-body">
+<p> Microsoft and Peter Jackson postpone the making of a film based on the Halo video game after backers pull out...</p>
+<span class="comments-post">Posted by: <a href="http://www.antiabuse.jp/zilwan/wiki/index.php?plugin=attach&pcmd=open&file=12053.html&refer=%C6%B0%C5%AAIP%A5%EC%A5%F3%A5%B8%A4%CE%B3%AB%BC%A8">Mitchell Bolduc</a> at December 18, 2006 07:25 PM</span>
+</div>
+<div class="comments-body">
+<p> London-born rapper Sway is to be honoured at the BET Hip-Hop awards in the US...</p>
+<span class="comments-post">Posted by: <a href="http://uclinux-h8.sourceforge.jp/pukiwiki/pukiwiki.php?plugin=attach&pcmd=open&file=12053.html&refer=uClinux-dist">Hudson Justice</a> at December 18, 2006 10:30 PM</span>
+</div>
+<div class="comments-body">
+<p> London-born rapper Sway is to be honoured at the BET Hip-Hop awards in the US...</p>
+<span class="comments-post">Posted by: <a href="http://uclinux-h8.sourceforge.jp/pukiwiki/pukiwiki.php?plugin=attach&pcmd=open&file=12053.html&refer=uClinux-dist">Hudson Justice</a> at December 18, 2006 10:36 PM</span>
+</div>
+<div class="comments-body">
+<p> London-born rapper Sway is to be honoured at the BET Hip-Hop awards in the US...</p>
+<span class="comments-post">Posted by: <a href="http://uclinux-h8.sourceforge.jp/pukiwiki/pukiwiki.php?plugin=attach&pcmd=open&file=12053.html&refer=uClinux-dist">Hudson Justice</a> at December 18, 2006 10:48 PM</span>
+</div>
+<div class="comments-body">
+<p> Classical singer Russell Watson postpones his forthcoming UK tour after undergoing brain surgery...</p>
+<span class="comments-post">Posted by: <a href="http://series60.sakura.ne.jp/6630/pukiwiki.php?plugin=attach&pcmd=open&file=12054.html&refer=%B5%C4%CF%C0BBS">Louis Winn</a> at December 19, 2006 01:12 AM</span>
+</div>
+<div class="comments-body">
+<p> Alec Baldwin asks for his voice to be removed from an &quot;unfair&quot; documentary about Arnold Schwarzenegger...</p>
+<span class="comments-post">Posted by: <a href="http://series60.sakura.ne.jp/6630/pukiwiki.php?plugin=attach&pcmd=open&file=12111.html&refer=%B6%DB%B5%DE702NKII%A1%A2W-ZERO3%C8%E6%B3%D3%A5%DA%A1%BC%A5%B8">Bret Dorris</a> at December 19, 2006 04:24 AM</span>
+</div>
+<div class="comments-body">
+<p> A musical about the witches from The Wizard of Oz breaks West End box office records, its producers say...</p>
+<span class="comments-post">Posted by: <a href="http://www.osranch.com/com/cinaatrnseoh.html">Rohan Flanagan</a> at December 19, 2006 05:08 AM</span>
+</div>
+<div class="comments-body">
+<p> Social networking site MySpace is to block users from uploading  copyrighted music to its pages...</p>
+<span class="comments-post">Posted by: <a href="http://geom.math.metro-u.ac.jp/wiki/index.php?plugin=attach&pcmd=open&file=12071.html&refer=KNOPPIX%2FMath%2FEnglish">Alfredo Harrell</a> at December 19, 2006 05:46 AM</span>
+</div>
+<div class="comments-body">
+<p> Colombia's vice president is &quot;baffled&quot; by Kate Moss's success following cocaine allegations...</p>
+<span class="comments-post">Posted by: <a href="http://www.sw-lab.com/pukiwiki/pukiwiki.php?plugin=attach&pcmd=open&file=061208.html&refer=FrontPage">Dexter Humes</a> at December 19, 2006 06:17 AM</span>
+</div>
+<div class="comments-body">
+<p> A musical about the witches from The Wizard of Oz breaks West End box office records, its producers say...</p>
+<span class="comments-post">Posted by: <a href="http://xoops.sourceforge.jp/wiki/xoops1/index.php?plugin=attach&pcmd=open&file=12075.html&refer=TECH">Luciano Munger</a> at December 19, 2006 06:47 AM</span>
+</div>
+<div class="comments-body">
+<p> Microsoft and Peter Jackson postpone the making of a film based on the Halo video game after backers pull out...</p>
+<span class="comments-post">Posted by: <a href="http://www.oxygentattoo.net/net/nieagtynxeoh.html">Chase Fournier</a> at December 19, 2006 07:33 AM</span>
+</div>
+<div class="comments-body">
+<p> Veteran actor William Franklyn, known for voicing the 1960s Schweppes TV adverts, dies aged 81...</p>
+<span class="comments-post">Posted by: <a href="http://www.oxygentattoo.net/net/esgnyexeot.html">Guadalupe Costa</a> at December 19, 2006 07:59 AM</span>
+</div>
+<div class="comments-body">
+<p> The Rolling Stones cancel a gig in Hawaii and postpone other tour dates as Mick Jagger suffers throat troubles...</p>
+<span class="comments-post">Posted by: <a href="http://www.antiabuse.jp/zilwan/wiki/index.php?plugin=attach&pcmd=open&file=12054.html&refer=Port25%20Block">Davon Allard</a> at December 19, 2006 08:48 AM</span>
+</div>
+<div class="comments-body">
+<p> Singer George Michael lends the piano on which John Lennon wrote Imagine to an anti-war exhibition...</p>
+<span class="comments-post">Posted by: <a href="http://www.oxygentattoo.net/net/nhesgiytxeof.html">Amarion Peoples</a> at December 19, 2006 09:14 AM</span>
+</div>
+<div class="comments-body">
+<p> Social networking site MySpace is to block users from uploading  copyrighted music to its pages...</p>
+<span class="comments-post">Posted by: <a href="http://www.kde.gr.jp/~daisuke/immodule_for_qt/pukiwiki/?plugin=attach&pcmd=open&file=291108.html&refer=ImmoduleForQtDocsForTrolltech">William Aguayo</a> at December 19, 2006 09:31 AM</span>
+</div>
+<div class="comments-body">
+<p> Social networking site MySpace is to block users from uploading  copyrighted music to its pages...</p>
+<span class="comments-post">Posted by: <a href="http://www.kde.gr.jp/~daisuke/immodule_for_qt/pukiwiki/?plugin=attach&pcmd=open&file=291108.html&refer=ImmoduleForQtDocsForTrolltech">William Aguayo</a> at December 19, 2006 09:45 AM</span>
+</div>
+
+
+
+<div class="comments-head">Post a comment</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="704" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">Name:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email Address:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">URL:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+Remember personal info?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">Yes</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">No</label><br style="clear: both;" />
+
+<label for="text">Comments:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;Preview&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;Post&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+</div>
+</div>
+</body>
+</html>

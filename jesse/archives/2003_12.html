@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jesse's Holodeck: December 2003 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jesse/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jesse/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~jesse/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jesse/archives/2003_11.html" title="November 2003" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jesse/archives/2004_01.html" title="January 2004" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jesse/" accesskey="1">Jesse's Holodeck</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jesse/archives/2003_11.html">&laquo; November 2003</a> |
+
+<a href="http://blog.linux.org.tw/~jesse/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jesse/archives/2004_01.html">January 2004 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+<!--
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/">
+<rdf:Description
+    rdf:about="http://blog.linux.org.tw/~jesse/archives/2003_12.html#000554"
+    trackback:ping="http://mt.debian.org.tw/mt-tb.cgi/355"
+    dc:title="udev"
+    dc:identifier="http://blog.linux.org.tw/~jesse/archives/2003_12.html#000554"
+    dc:subject="kernel"
+    dc:description="在 kernel 2.6 中, devfs 被標示為 OBSELETE, 著實嚇了我一大跳... 今天花了點時間看了些 udev 的東西, 還沒實際使用過, 不過怕自己以後要用時又要花時間找, 還是記錄一下好了......"
+    dc:creator="jesse"
+    dc:date="2003-12-30T16:31:52+08:00" />
+</rdf:RDF>
+-->
+
+
+<h2 class="date">December 30, 2003</h2>
+
+
+<div class="blogbody">
+<a name="000554"></a>
+<h3 class="title">udev</h3>
+
+<p>在 kernel 2.6 中, devfs 被標示為 OBSELETE, 著實嚇了我一大跳... 今天花了點時間看了些 udev 的東西, 還沒實際使用過, 不過怕自己以後要用時又要花時間找, 還是記錄一下好了...</p>
+
+<p><a href="http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev-FAQ">這裡</a>是 udev 的 FAQ, 它結合 sysfs 和 hotplug, 提供和 devfs 相似的功能, 當系統中新增或移除裝置時, 會產生 hotplug event, 再由 udev 依 sysfs 的內容生成或是移除對應的 device file。和 devfs 不同的是, devfs 是在 kernel 中完成的, 而 udev 則是完完全全的 userspace 程式。</p>
+
+<p>udev 共分為三個部份:<br />
+<ol><br />
+<li>namedev: 處理 device file naming 及 permission。</li><br />
+<li>libsysfs: 提供統一的 access sysfs 介面。</li><br />
+<li>udev: 處理 /dev 下檔案的生成及移除。</li><br />
+</ol></p>
+
+<p>在 <a href="http://www.kroah.com/linux/talks/ols_2003_udev_talk/ ">http://www.kroah.com/linux/talks/ols_2003_udev_talk/</a> 有 Greg KH 在 OLS 2003 的投影片可以參考。</p>
+
+<p>至於 devfs 被標為 OBSELETE 的原因, 在 udev-FAQ 中也有提到:<br />
+<div class="code"><br />
+Q: Why was devfs marked OBSOLETE if udev is not finished yet?<br />
+A: To quote Al Viro (Linux VFS kernel maintainer):<br />
+	- it was determined that the same thing could be done in userspace<br />
+	- devfs had been shoved into the tree in hope that its quality will<br />
+	  catch up<br />
+	- devfs was found to have fixable and unfixable bugs<br />
+	- the former had stayed around for many months with maintainer<br />
+	  claiming that everything works fine<br />
+	- the latter had stayed, period.<br />
+	- the devfs maintainer/author disappeared and stoped maintaining<br />
+	  the code.<br />
+</div></p>
+
+<p>如果只是要使用的話, 在<a href="http://www.kernel.org/pub/linux/utils/kernel/hotplug/">這裡</a>可以取得 udev, 或是直接在<a href="http://www.bofh.it/~md/debian/">這裡</a>取得 deb 套件包。</p>
+
+
+
+<div class="posted">
+	由 jesse 發表於 <a href="http://blog.linux.org.tw/~jesse/archives/000554.html">04:31 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-comments.cgi?entry_id=554" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+		| <a href="http://mt.debian.org.tw/mt-tb.cgi?__mode=view&amp;entry_id=554" onclick="OpenTrackback(this.href); return false">引用</a>
+	
+</div>
+
+</div>
+
+<!--
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/">
+<rdf:Description
+    rdf:about="http://blog.linux.org.tw/~jesse/archives/2003_12.html#000531"
+    trackback:ping="http://mt.debian.org.tw/mt-tb.cgi/344"
+    dc:title="RSS Reader Panel for Mozilla Firebird"
+    dc:identifier="http://blog.linux.org.tw/~jesse/archives/2003_12.html#000531"
+    dc:subject="network"
+    dc:description="今天在我的 Mozilla Firebird 中裝上了『RSS Reader Pannel Extension』, 不是什麼新東西了, 不過一試之下才知道好用哩... :D..."
+    dc:creator="jesse"
+    dc:date="2003-12-08T20:02:30+08:00" />
+</rdf:RDF>
+-->
+
+
+<h2 class="date">December 08, 2003</h2>
+
+
+<div class="blogbody">
+<a name="000531"></a>
+<h3 class="title">RSS Reader Panel for Mozilla Firebird</h3>
+
+<p>今天在我的 Mozilla Firebird 中裝上了『RSS Reader Pannel Extension』, 不是什麼新東西了, 不過一試之下才知道好用哩... :D</p>
+
+<p>在 "Tools" -> "Options..." -> "Extensions" 中按一下 "Get New Extentions", 就可以它, 按下網頁上的 Install 就可以安裝囉!</p>
+
+<p>安裝好之後, 重開 Firebird, 然後在 Bookmarks 中新增一個 Folder, 把你想看的 RSS 的 url 都 bookmark 到這個 Folder 中, 然後設定 RSS Reader Panel, 把 RSS List Folder 指到這個 Folder 來, 搞定!</p>
+
+<p>怎麼用呢? 選 "View" -> "Sidebar" ->"RSS REader Panel", 就可以看到左邊多了一個 frame, 選你想看的 RSS 就可以在該 frame 的下方看到內容。如果想看詳細內容, 可以把 RSS Reader 的 "View" -> "Open In Contens Area" 勾起來, 這樣就可以在右邊的 frame 中閱讀詳細內容了。附上 screenshot 一枚...</p>
+
+<p><img src="http://blog.linux.org.tw/~jesse/images/20031208_rss_reader.png" /></p>
+
+
+
+<div class="posted">
+	由 jesse 發表於 <a href="http://blog.linux.org.tw/~jesse/archives/000531.html">08:02 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-comments.cgi?entry_id=531" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+		| <a href="http://mt.debian.org.tw/mt-tb.cgi?__mode=view&amp;entry_id=531" onclick="OpenTrackback(this.href); return false">引用</a>
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

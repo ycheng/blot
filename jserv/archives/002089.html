@@ -1,0 +1,256 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: AsmJit : C++ 封裝的 Just-In-Time Assembler</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002088.html" title="BSD License 與 GPL 的相容性案例 -- qemu" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002090.html" title="演講：窮得只剩下 Compiler -- 淺談編譯技術的革命" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002088.html">« BSD License 與 GPL 的相容性案例 -- qemu</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002090.html">演講：窮得只剩下 Compiler -- 淺談編譯技術的革命 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February 03, 2009</h2>
+
+<div class="blogbody">
+
+<h3 class="title">AsmJit : C++ 封裝的 Just-In-Time Assembler</h3>
+
+[<a href="http://code.google.com/p/asmjit/">AsmJit</a>] 是個以 C++ 封裝的 JIT (Just-In-Time) Assembler，目前支援的硬體架構有 x86 與 x86_64，以 MIT X License 釋出。或許讀者對這樣的 Assembler 沒有太大的興趣，但專案卻跟 Google Chrome 瀏覽器引擎有些淵源。怎麼說呢？去年九月，Google 發佈了新一代網路瀏覽器 Chrome，當時幾乎佔據了各大資訊新聞的版面。發佈瀏覽器的同時，還伴隨了一本畫冊，以平實且幽默的和漫畫，闡述新推出的 Chrome 瀏覽器的各功能，包含其中嶄新的 JavaScript (ECMAScript) 執行引擎，搶了風采，讓同等級的瀏覽器頓時失色。由 Google 將其代號命名為 [<a href="http://code.google.com/p/v8/">V8</a>]，強調有如 V8 賽車的高速 JavaScript 執行效率，可見 Google 的開發決心。本文探討的 AsmJit 專案，就是衍生於 V8 的低階 JIT Assembler 實做，而這部份的程式碼，又是根基於 Sun Microsystems 的創作 (1994-2006)。<br />
+<br />
+先回頭看 Google Chrome 最大賣點的 V8 JavaScript 有哪些特點：<ul>
+  <li>動態編譯器：JavaScript 在執行時期會動態編譯為機器碼，而非過往透過解譯器 (interpreter) 執行，在強調 Web 2.0 豐富客戶端的今日，意味著可提昇 Web 應用程式的使用者體驗</li>
+  <li>對 method/function 存取做了大量的優化處理</li>
+  <li>強化的記憶體管理機制，特別是 GC (Garbage Collector)</li>
+</ul>
+其中，要實做動態編譯器，勢必需要有個強健的 machine code emitter，允許適度在執行時期產生優化的機械碼，V8 提供了相當優雅的 C++ 封裝，允許程式設計師以 C++ 的語法，動態生成 x86 的機械碼，捷克的 Petr Kobalicek 認為 V8 中這部份 JIT Assembler 很有重新使用的價值，於是以這些基礎 (整合 Google 與 Sun Microsystems 的創作)，建立 [<a href="http://code.google.com/p/asmjit/">AsmJit</a>] 專案。如此的專案可應用在哪些地方呢？不只是 VM (Virtual Machine)，其實，高階的繪圖處理，為了有效處理複雜的 3D pipeline，得依據硬體架構的特性，動態生成優化處理的機械碼。又，考量到影像處理，往往不免會有新的 pixel format，對應的操作處理若僅透過一般性的 C 程式碼處理，難以確保可導入最佳的路徑，於是，倘若執行時期可得知 SRC (原始) 與 DST (標的) 的影像資訊，即可透過動態編譯器的技術，安插優化的機械碼，以導入較快的執行路徑，因為此類操作動輒大量地被執行，整體的效益相當可觀。最近，知名的 [<a href="http://www.mesa3d.org/">Mesa 3D</a>] 專案，也加入了此等透過 JIT Compiler/Assembler，提昇效能的高階技術。設計編譯器不容易，更何況要動態生成機械碼，遑論複雜的 x86 硬體架構呢？還好，情況沒這麼糟糕，因為 AsmJit 早就很優雅地封裝這些繁瑣的細節，只要程式設計師熟悉基本的 x86 指令集，即可當作寫 inline assembly 一般操作。<br />
+<br />
+現在的 AsmJit 涵蓋包含 MMX/SSE/SSE2/SSE3/SSE4 等 x86/x86_64 機械碼生成，不過，x86 有個大異於其他硬體架構的特性，就是 addressing (定址) 處理，比方說簡單像 "[eax]"，或是複雜一些像 "[eax + 4*edx + 16]"，透過 C++ 的封裝，可透過 operator overriding 來存取，相當便利，當然，箇中免不了有 magic code 以處理這些 offset / addressing 議題。AsmJit 的 test/ 目錄下，提供一個簡單的範例測試程式，筆者以 Debian GNU/Linux 為例，可如下進行測試 (請先準備 cmake 與必要的編譯環境)：<pre class="code" style="margin: 6px;">
+# patch -p0 &lt; <a href="http://jserv.sayya.org/misc/asmjit-plat-defs.patch">asmjit-plat-defs.patch</a>
+# cd test
+# sh configure-linux-debug.sh
+# make
+# ./jittest 
+Result from jit function: 1024
+</pre>
+由上可見，在 x86 (IA32) 硬體平台上，預期的執行輸出為 "1024"。至於第一行，是筆者提交給作者的一個 patch，若收錄後，應該不需要施加。以下是測試程式 test/jittest.cpp 的內容，可感受到 AsmJit 的威力：
+<pre class="code" style="margin: 6px;" id="codemain"><span class="keyword">#include</span> &lt;stdio.h><span class="keyword">
+#include</span> &lt;stdlib.h><span class="keyword">
+#include</span> &lt;string.h>
+&nbsp;<span class="keyword">
+#include</span> <span class="literal">"../AsmJit/AsmJitX86.h"</span><span class="keyword">
+#include</span> <span class="literal">"../AsmJit/AsmJitVM.h"</span>
+
+<span class="comment">// This is type of function we will generate
+</span><span class="keyword">typedef</span> <span class="keyword">int</span> (*VoidFn)();
+
+<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])
+{
+  <span class="keyword">using</span> <span class="keyword">namespace</span> AsmJit;
+
+  <span class="comment">// Create function by dynamic way.
+</span>  X86 a;
+
+  <span class="comment">// Prolog.
+</span>  a.push(nbp);
+  a.mov(nbp, nsp);
+
+  <span class="comment">// Mov 1024 to EAX/RAX, EAX/RAX is also return value.
+</span>  a.mov(nax, 1024);
+
+  <span class="comment">// Epilog.
+
+</span>  a.mov(nsp, nbp);
+  a.pop(nbp);
+  a.ret();
+
+  <span class="comment">// Alloc execute enabled memory and call generated function.
+</span>  SysUInt vsize;
+  <span class="keyword">void</span> *vmem = VM::alloc(a.codeSize(), &amp;vsize, <span class="keyword">true</span>);
+  memcpy(vmem, a.pData, a.codeSize());
+
+  <span class="comment">// Cast vmem to our function and call the code.
+</span>  <span class="keyword">int</span> result = ( <span class="keyword">reinterpret_cast</span>&lt;VoidFn>(vmem)() );
+
+  <span class="comment">// Memory should be freed, but use VM::free() to do that.
+</span>  VM::free(vmem, vsize);
+
+  printf(<span class="literal">"Result from jit function: %d\n"</span>, result);
+  <span class="keyword">return</span> 0;
+}</pre>
+為了配合 C 語言與 IA32 的 Calling Convention，所以必須處理 prolog 與 epilog，在 x86 上，就是堆疊操作，於是，在 AsmJit/C++ 優雅的封裝下，main() 函式中，前面簡短的七行程式碼，即動態生成必要的機械碼，因而具備一個 C 語言函式的特性，所以，物件 a (為 class X86 的 instance) 就包含貨真價實的 JIT Assembled 的機械碼。一旦透過 memcpy() 函式，將物件 a 裡頭的機械碼複製到指定的記憶體位址，隨後透過 function pointer 指向該位址並呼叫，即可得到給定的函式回傳值 "1024"，上述程式碼列表的 "mov(nax, 1024)" 即等價於 "mov eax, 1024"，非常漂亮。<br />
+<br />
+AsmJit 仍在密集開發中，很可能會有巨幅的修改，不過大抵的設計精神是一致的，最後，感謝 AsmJit 作者 Petr Kobalicek 在筆者評估時期給予指導並修正實做的瑕疵。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 February  3, 2009 12:09 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2089" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

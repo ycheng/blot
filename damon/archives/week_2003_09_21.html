@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>damon's notepad: September 21, 2003 - September 27, 2003 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~damon/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~damon/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~damon/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~damon/archives/week_2003_09_14.html" title="September 14, 2003 - September 20, 2003" />
+
+<link rel="next" href="http://blog.linux.org.tw/~damon/archives/week_2003_09_28.html" title="September 28, 2003 - October 04, 2003" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~damon/" accesskey="1">damon's notepad</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~damon/archives/week_2003_09_14.html">&laquo; September 14, 2003 - September 20, 2003</a> |
+
+<a href="http://blog.linux.org.tw/~damon/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~damon/archives/week_2003_09_28.html">September 28, 2003 - October 04, 2003 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">September 27, 2003</h2>
+
+
+<div class="blogbody">
+<a name="000412"></a>
+<h3 class="title">gdm安裝筆記</h3>
+
+<p>今天花了一些時間把FreeBSD , Debian都改用gdm登入並裝上gnome2</p>
+
+<p>FreeBSD:cd /usr/ports/x11/gnome2/;make install clean<br />
+東西很多，要等一陣子<br />
+比較需要注意的是如果是用5.1 release的話，會因為open pam的bug無法正常用gdm登入，所以升級到current吧 :p<br />
+安裝完之後/usr/X11R6/etc/rc.d/裡面的gdm.sh.sample直接複製成gdm.sh吧<br />
+/etc/profile直接加入<br />
+export LC_ALL=zh_TW.Big5<br />
+export LANG=zh_TW.Big5<br />
+export XMODIFIERS="@im=xcin"<br />
+exec /usr/X11R6/bin/xcin2.5 &<br />
+重新開機就可以直接用gdm登入，並自動啟動xcin，作法有點dirty :p</p>
+
+<p>Debian unstable:apt-get install gnome<br />
+/etc/gdm/locale.conf把底下這行改成這樣<br />
+Chinese(Taiwan_R.O.C.)  zh_TW.Big5<br />
+/etc/gdm/Sessions/Gnome加入<br />
+export LC_ALL=zh_TW.Big5<br />
+export LANG=zh_TW.Big5<br />
+export XMODIFIERS="@im=xcin"<br />
+exec /usr/bin/xcin &<br />
+/etc/init.d/gdm加入<br />
+export LANG=zh_TW.Big5<br />
+/etc/init.d/gdm restart<br />
+同樣也是有點dirty的作法，參考chihchun的作法 :p<br />
+enjoy it<br />
+</p>
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000412.html">11:19 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=412" onclick="OpenComments(this.href); return false">迴響 (103)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">September 25, 2003</h2>
+
+
+<div class="blogbody">
+<a name="000399"></a>
+<h3 class="title">FreeBSD 5.1 p6 arp sa patch problem</h3>
+
+<p>今天看到每天跑的cvsup RELENG_5_1有更新，就給他放下去更新，不過下班回到家發現家中nat service掛了@_@</p>
+
+<p>將螢幕接過去server發現console上有錯誤訊息說/etc/hosts裡面有一筆192.168.1.2的記錄，但卻無法透過arp找到這個ip<br />
+Sep 25 19:08:40 damon kernel: arplookup 192.168.1.2 failed: host is not on local network<br />
+登入之後直接編輯/etc/hosts把除了本機nic所用的ip之外都移除，並重新開機終於一切恢復正常，可能是這個patch的bug也可能不是<br />
+詭異的是kernel怎麼會去做arplookup？<br />
+我也不知道，別問我XD</p>
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000399.html">08:16 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=399" onclick="OpenComments(this.href); return false">迴響 (475)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">September 23, 2003</h2>
+
+
+<div class="blogbody">
+<a name="000387"></a>
+<h3 class="title">kdm安裝完成</h3>
+
+<p>今天利用一點休假時間把kdm裝起來了</p>
+
+<p>不過有一些小問題，可能是bug，也可能不是<br />
+修改了按鈕的風格可以，修改了使用的顏色卻不行<br />
+字型沒辦法在清單中選擇中文字型<br />
+其他到是沒問題，只要把能夠正常使用中文kde的.xinitrc直接cp成.xsession<br />
+export LC_ALL=zh_TW.Big5<br />
+export LANG=zh_TW.Big5<br />
+export XMODIFIERS="@im=xcin"<br />
+exec xcin &<br />
+exec startkde<br />
+我的設定檔是這樣.xinitrc .xsession都一樣<br />
+在選擇session的時候選擇default，這樣就能夠正常的讀取.xsession中的設定值了<br />
+題外話，看過gdm , kdm之後，還是覺得gdm比較符合eye candy，對於佈景主題的support也比較完整方便，不過有一些部份需要自己手動調整有點小麻煩，所以還是選擇簡單的kdm<br />
+使用gdm的朋友可以參考chihchun的文章<br />
+http://wiki.debian.org.tw/index.php?page=gdm</p>
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000387.html">12:19 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=387" onclick="OpenComments(this.href); return false">迴響 (114)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">September 22, 2003</h2>
+
+
+<div class="blogbody">
+<a name="000378"></a>
+<h3 class="title">debian重裝筆記</h3>
+
+<p>趁著安裝大會，把機器重整了一次，順便寫一下小筆記好了</p>
+
+<p>安裝系統,一樣用網路安裝,選擇ext3,20g分割成/(400mb) , /var (1g) , /home (1g) , swap (1xx) , /usr (剩下的)<br />
+安裝好woody之後，直接升級到unstable<br />
+/etc/apt/source.list中有提到stable的地方都改成unstable<br />
+apt-get update;apt-get dist-upgrade<br />
+換各kernel,怪異的是2.4.22 for k7的kernel image的apm module無法modprobe，所以換成沒問題的版本<br />
+apt-get install kernel-image-2.4.21-5-k7<br />
+/etc/lilo.conf加入initrd=initrd.img<br />
+cd /;lilo -v -v -v;reboot<br />
+adduser damon audio<br />
+apt-get install x-window-system locales ttf-arphic* xcin xfonts-intl-chinese mozilla-firebird gaim xchat ssh rxvt-ml rcconf xine-ui openoffice.org openoffice.org-l10n-zh-tw openoffice.org-help-zh-tw<br />
+安裝完用rcconf把開機不需要的service全都拿掉<br />
+/etc/init.d/xxxx stop停掉不需要的service<br />
+/etc/apt/source.list把官方的都拿掉改成<br />
+deb http://snapshot.debian.net/archive/2003/08/11/debian unstable main contrib non-free<br />
+日期的部分就試到可以直接跑apt-get install kde的就好，隨便改<br />
+跑完apt-get install kde之後再把/etc/apt/source.list改回來用官方的<br />
+apt-get update;apt-get upgrade升級2003/08/11之後更新的kde相關的東西<br />
+apt-get install kde-i18n-zhtw安裝一下kde中文<br />
+編輯一下平常使用的帳號的.xinitrc<br />
+root跟平常使用的帳號的.bashxxxx檔案，讓目錄跟檔案顏色作用並重新登入<br />
+startx完成<br />
+locales如果沒有產生所要的locale的話就自己手動編輯/etc/locales.gen再重新來吧</p>
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000378.html">11:59 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=378" onclick="OpenComments(this.href); return false">迴響 (631)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">September 21, 2003</h2>
+
+
+<div class="blogbody">
+<a name="000375"></a>
+<h3 class="title">新竹交大debian安裝大會圓滿結束</h3>
+
+<p>今天感謝BBNS感冒還是努力的為安裝大會學員上課m(_._)m</p>
+
+<p>今天下午的新竹天空有點雲，風也很大，騎著車，帶著沈重pc 到交大，好像該買nb了，pc 這樣搬來搬去真是要人命~_~<br />
+交大網路真快，不愧是gb base的網路，用apt-get安裝東西真是超快，可以到2xx kb<br />
+雖然參加的人大約只有10幾位，不過還是有幾位很有興趣的學員參加，感謝大家的參與:)<br />
+離開交大的時候還看到彩虹喔A_Ay<br />
+</p>
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000375.html">10:31 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=375" onclick="OpenComments(this.href); return false">迴響 (842)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

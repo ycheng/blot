@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 程式語言的啟發性與科學史</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001832.html" title="在瓶中生活" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001834.html" title="避免寫出釀造災難的 C/C++ 程式" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001832.html">« 在瓶中生活</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001834.html">避免寫出釀造災難的 C/C++ 程式 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">November 06, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">程式語言的啟發性與科學史</h3>
+
+每次閱讀 Embedded.com 眾多見解精闢的文章，都會有新的感受。早上拜讀 Jack W. Crenshaw 撰文 [<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=193402564">Motivationally speaking</a>]，Jack W. Crenshaw 博士的技術背景主要是計算動力學領域，所以本文也以相關工程應用為主。副標題是 "A vector means many things to many people. Pilot, mathematician, physicist: all of their definitions can help you do your job"，這讓我想到 Thomas Kuhn 的《科學革命的結構》，大量將「典範」(paradigm) 與「革命」等概念套用於科學史中，不僅侷限於科學史，事實上，「典範」的提出，幾乎滿足所有領域的需要。<br>
+<br>
+所謂「典範」，是指一具有內部統一性與穩定性的解釋模式，當一個周密整合的典範某一部份發生了問題，一定導致整個典範的動搖，產生一個新的典範來取代舊的。Jack W. Crenshaw 這篇文章也讓我感到程式語言變遷的歷程中，「典範」概念的落實。C/C++ 無疑是當今使用最廣、跨越多種領域的通用程式語言，但 C 語言的初衷是設計作業系統 (很可惜，許多教材並未強調此點)，其思考模式極難涵蓋於工程數學運算，稍後在 C++ 提出修正，大幅以 template 與 operator overriding 作為補強，也因此，許多通行的代數與數學 class library 也得兼顧效能、平台相容性，以及思維模式對應的便利性，然而，正如文章提到：<ul  class="code" style="margin: 6px;">
+Physicists saw things differently. They recognized the three-dimensional universe thing, and used vectors to describe real, physical quantities like position, velocity, momentum, etc. They used the algebra of the mathematicians, alright, but they only used the parts that related to the real world. And, as you'll see in a moment, they defined some new operations that the mathematicians hadn't thought of. To these physicists, vectors weren't merely a pleasant intellectual exercise. They were useful because they made our computations easier. Their interest in vectors increased tremendously with the discovery of electric and magnetic fields. It's hard to even imagine Maxwell's equations without vectors.
+</ul>
+電子學經典的 Maxwell 方程式若以 C/C++ 表示，絕對相當彆扭且難懂，遑論缺乏 native 3D primitives 的 C/C++ 語言該如何表示空間與時間的轉換，此類「典範」的轉變，可說是當今工程技術的挑戰，這印證了 Thomas Kuhn 的核心觀點：科學發展不是一種直線累積的進步，而是一種革命性的結構轉變。<br>
+<br>
+無論如何，在編譯器技術、SIMD/DSP，與 NUMA 等等技術大幅提昇的今日，已經有很大的改觀，要描述一個分子動力系統，可透過許多 modeling 途徑，最終也可轉換成高效能的計算模式，不啻是結構轉變的例證。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 November  6, 2006 01:26 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>可看看以下這篇文章的說法：<br />
+The "C is Efficient" Language Fallacy<br />
+http://scienceblogs.com/goodmath/2006/11/the_c_is_efficient_language_fa.php</p>
+
+<p>C and C++ suck rocks as languages for numerical computing. They are not the fastest, not by a longshot. In fact, the fundamental design of them makes it pretty much impossible to make really good, efficient code in C/C++. There's a good reason that Fortran is still the language of choice for real, intense scientific applications that require the absolute best performance that can be drawn out of our machines - applications like computational fluid dynamics.<br />
+</p>
+<span class="comments-post">由 <a href="http://william.cswiz.org/blog/">william</a> 發表於</MTIfNonEmpty> November  7, 2006 11:10 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

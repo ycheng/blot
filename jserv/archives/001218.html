@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 快速更換 Win32 的元件變成 XP Style</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001217.html" title="Linux - 原力與你同在" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001219.html" title="Xorg 6.9 and 7.0 Release Candidate Zero" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001217.html">« Linux - 原力與你同在</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001219.html">Xorg 6.9 and 7.0 Release Candidate Zero »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">August 02, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">快速更換 Win32 的元件變成 XP Style</h3>
+
+雖然我是個 Linux 愛用者，不過平常上班的時候還是用 MS-Windows XP，因為某些專業的軟體一定要在上面跑，可能也是因為這些緣故，我對 XP 的視覺呈現不是特別在意，只知道每次 simulation 的速度實在慢到不可思議，只好在一旁的 Linux box 上面作 coding，沒想到都寫出好幾個 test cases 了，回頭看 XP 的畫面，還是僵在那邊 (！)。<br>
+<br>
+我一直有個疑惑，有些應用程式，比方說 [<a href="http://www.tightvnc.com/">TightVNC</a>]，在 Windows XP 下的視覺呈現總是有點不一致，而剛剛閱讀 [<a href="http://www.dev.idv.tw:8080/">Gary's Note</a>] 的這篇 [<a href="http://www.dev.idv.tw:8080/folder.2005-02-27.6191275545/folder.2005-02-14.5124708507/folder.2005-02-14.9700538108/document.2005-02-26.3794749244">讓你的AP上的元件變成XP的Style</a>] 後，才發現這個有趣的技巧，趕緊套用。<br>
+<br>
+咱們先看看原本的 TightVNC Viewer：<br>
+<center><img src="http://jserv.sayya.org/misc/old-vncviewer.png"></center><br>
+而經過這樣的處理後 (就是放一個 <a href="http://jserv.sayya.org/misc/vncviewer.exe.manifest">vncviewer.exe.manifest </a> 檔，很簡單) 的畫面：<br>
+<center><img src="http://jserv.sayya.org/misc/new-vncviewer.png"></center><br>
+後者的 window control 已經變成 XP Style，真有趣 :-)<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 August  2, 2005 04:44 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>我是覺得這種技巧很髒，這根本是 Windows 設計不良所謂 dll 地獄的遺毒。<br />
+因為系統的 common control dll 經常被各種安裝的軟體亂覆蓋<br />
+不同版本之間又有許多不相容，因此造成軟體間大量的衝突<br />
+某些軟體使用新版的 common control，某些使用舊版，<br />
+新舊版不全相容，而他們的檔名和安裝路徑都完全一樣，真要命！<br />
+結果造成後來一些 GUI library (例如 MFC) 內部花不少程式碼<br />
+在檢查現在使用的到底是哪一版的 common control，來避免這些不相容<br />
+不但要避免不相容，還要針對有已知bug的特定版本用一些"撇步"避免問題<br />
+為了稍微改善這個可怕的狀況，M$ 想出利用 Assembly (非指組語)，來讓不同版本的同一 dll 共存，<br />
+應用程式利用 manifest 來指定，可要求使用特定版本的 common control dll<br />
+xp-style 支援包含在 common control 6.0，所以必須透過 manifest 來指定載入 6.0 版的 commctl32.dll，<br />
+而不載入預設的舊版 5.0，就會有新式的外觀。 這不是什麼神奇的技巧，<br />
+只是載入了另一個 dll 而已<br />
+BTW, manifest 除了可用同名的 .manifest 檔案外加，<br />
+也可以用 resource 的形式加入到 exe 檔 (resource type 24)</p>
+<span class="comments-post">由 <a href="http://pcman.ptt.cc/">PCMan</a> 發表於</MTIfNonEmpty> August  2, 2005 11:09 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

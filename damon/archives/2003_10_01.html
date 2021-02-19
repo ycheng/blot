@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>damon's notepad: October 01, 2003 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~damon/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~damon/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~damon/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~damon/archives/2003_09_29.html" title="September 29, 2003" />
+
+<link rel="next" href="http://blog.linux.org.tw/~damon/archives/2003_10_02.html" title="October 02, 2003" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~damon/" accesskey="1">damon's notepad</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~damon/archives/2003_09_29.html">&laquo; September 29, 2003</a> |
+
+<a href="http://blog.linux.org.tw/~damon/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~damon/archives/2003_10_02.html">October 02, 2003 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">October 01, 2003</h2>
+
+
+<div class="blogbody">
+<a name="000439"></a>
+<h3 class="title">another dirty way for gdm2 on FreeBSD</h3>
+
+<p>發信到freebsd-gnome mail list問了一下怎麼在gdm2新增一個session給kde用</p>
+
+<p>今天自己嚐試了一下，在看了gdm的說明網頁(打開gnome2y在選說明找gdm，有說在那裡)<br />
+新版的gdm 2.4已經把這些session設定檔改放在/usr/X11R6/etc/dm/，不過這邊還是沒有定義給gnome2用的session，我猜可能寫死在code裡面，不過也可能不是<br />
+好吧，既然maintainer都說了怎麼作，那就自己手動編輯/usr/X11R6/etc/dm/default.desktop吧，用一點dirty的手段來騙過gdm2<br />
+打開這個檔案會看到<br />
+[Desktop Entry]<br />
+Encoding=UTF-8<br />
+# The names/descriptions should really be better<br />
+Name=Default System Session<br />
+Comment=This is the default system session<br />
+Exec=default<br />
+# The "default" Exec is a very special one and is handled specially in<br />
+# the Xsession script, you could also have "custom" which would just run<br />
+# "~/.xsession" directly<br />
+Icon=<br />
+Type=Application<br />
+長的像這樣的東西<br />
+Name=xxxxx定義了這個session在選單上出現的名字，底下是當使用者選擇某個語系時用那個語系來顯示這個名字<br />
+Comment=xxxxx定義了這個session當滑鼠游標移過去時顯示的文字，底下的那一大串功能更上面講的一樣<br />
+清楚了這些之後，因為我只用gnome2 , kde兩種，所以我也不管他原本這邊定義的default要作些甚麼，直接改成<br />
+[Desktop Entry]<br />
+Encoding=UTF-8<br />
+# The names/descriptions should really be better<br />
+Name=KDE<br />
+Comment=KDE<br />
+Exec=startkde<br />
+# The "default" Exec is a very special one and is handled specially in<br />
+# the Xsession script, you could also have "custom" which would just run<br />
+# "~/.xsession" directly<br />
+Icon=<br />
+Type=Application<br />
+值得注意的是，重跑gdm要用gdm安裝時安裝的指令，不能用kill -HUP or /usr/X11R6/etc/rc.d/gdm.sh來重跑，我這樣用的話有時候會連console都變成停止回應<br />
+指令改用/usr/X11R6/sbin/gdm開頭的那些<br />
+我這樣讓KDE跑起來之後，發覺有一些怪怪的，抓不到系統安裝的true type字型，自己手動在寫一個.xinitrc用startx來啟動kde，改好字型設定之後在重新啟動gdm，這樣選擇kde登入之後就可以正常使用true type字型了</p>
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000439.html">11:40 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=439" onclick="OpenComments(this.href); return false">迴響 (211)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

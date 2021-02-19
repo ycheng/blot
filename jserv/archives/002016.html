@@ -1,0 +1,302 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 非同步 Xlib 處理機制</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002015.html" title="演講：親手打造開放原始程式碼的機器人" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002017.html" title="Unihan (漢統輸入系統) 也採開源發展" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002015.html">« 演講：親手打造開放原始程式碼的機器人</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002017.html">Unihan (漢統輸入系統) 也採開源發展 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">April 22, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">非同步 Xlib 處理機制</h3>
+
+X Window System 大異於傳統的 GUI 之處，在於其核心的設計即把「網路」列入考量。基本上，任何的操作都與 X Protocol 有著密切關聯，與其將 X Window System 視作 GUI，還不如將其比作網路資料庫系統，原因無他，都得考慮到「網路通透性」(network transparency) 的本質。<br />
+<center><img src="http://gallery.debian.org.tw/albums/2004-10-21/x_arch_comparison.png" width="500" height="183" /></center><br />
+上圖可見，無論是 X Protocol (X11) 或 RDA = Remote Data Access (RDBMS)，都是高度非同步處理的設計，此外，顧及 API 與 programming model 考量，這兩者的實做往往得達到 thread-transparent。典型的運作模式為，在 reply-receiving 函式呼叫前，client 端會預先保存 reply data，接著，server 端施行對於 client 要求而生的同步動作，而控制權從 server 重回到 client 的這段期間，稱為 "round-trip" time，可視作作繪圖指令 / 操作的往返。本文試圖揭開鮮為人知的 X 非同步設計議題，並在用語方面做了一些釐清，多方保留 X 的術語，以避免與常見的用語混淆，如 "request", "event" 等等。<br />
+<br />
+USENIX 2003 上，由 X.org 的 Keith Packard 與 Jim Gettys 共同發表 [<a href="http://www.sagecertification.org/events/usenix03/tech/freenix03/full_papers/packard/packard_html/">X Window System Network Performance</a>] 論文舉出往返於 X Protocol 的封包範例：<br />
+<center><img src="http://www.sagecertification.org/events/usenix03/tech/freenix03/full_papers/packard/packard_html/img2.png" width="748" height="388" /></center>
+上圖左側是 timestamp，每個 packet 的 message 都有對應的 X sequence number 與其 length，而 client 的 Request 則包含 equest id, events, 與對應的 errors code。專注於 thin-client / remote X desktop 的 [<a href="http://www.nomachine.com/">NoMachine</a>] 公司表示，在 modem 連線的情境中，不同主機之間的每個 round-trip 大約需要 200 milliseconds (在本機端的
+X client-server 可透過 fast IPC/RPC 實現，不在這個探討範圍內)，所以若一個 X client 要求 5 個 reply，最終，我們會得到 10 bytes/second 的 bit rate。<br />
+<br />
+自 XOrg 7.2 起，與 X server 溝通的 Xlib 實做被更換為以 [<a href="http://xcb.freedesktop.org/">XCB</a>] 為核心的新設計，並於 XCB 維持 Xlib API 相容性，有別於過往的設計，XCB 可望減少同步 request 與 server 端的 round-trip。不過，倘若有心對系統作全面優化，我們仍有必要去理解 X Window System 的設計。考量到效率，X Protocol 設計是非同步的，一般來說，無論 server 或 client 不會總是等待 reply 才能繼續動作，當然，為此必須要有對應的同步機制，若處理不當，將會有 race condition。X11 定義一組非同步的 protocol：client 傳送包含繪圖與視窗管理 request 的 stream 到 server 那邊，隨後 server 則回傳 event 的 stream 給 client。注意，常態來說，這兩個 stream 並不需要彼此進行同步化，儘管 server 必須依序處理一個 client 所發出的 request，而且，原本的設計中並未規範同時來自不同 client 的交錯 (interleaving) 處理。<br />
+<br />
+因為種種歷史因素，非同步的 X protocol 並未規範特定的視窗管理原則，但提供一些 hooks 讓一個window manager得以監控特定應用程式的 request，作為修正的途徑，X.org 規範了 ICCCM (Inter-Client Communication Conventions Manual) 以避免非同步設計所造成的 race condition。ICCCM 是一系列複雜的規範，只消看看其中幾個 race condition 情況，就知道為何需要如此設計。比方說老字號的 twm，雖然很陽春，但具備了 title bar，也就是所謂的 "window decoration"，為了要正確描繪，需要事先建立夠大的 frame window，以包含 client window 與 title bar，隨後，twm 會要求重新繪製 client window，以便成為該 frame window 的 client (重新建立 window 間的階層從屬關係)。這個動作看似簡易，但是也需要透過 "redirection" 的動作，才可轉譯原本在 client window 的 MapWindow 與 ConfigureWindow request 為 frame window 的 MapWindow/ConfigureWindow request。一個特別的狀況是，若 twm 先等待 nofication event 的話，ConfigureWindow request 會在window manager介入前，導致一片灰色的畫面。<br />
+<br />
+也就是說，"redirection" 的動作可能會造成問題，想像一個應用程式開始處理畫面繪製的過程，稍後將 map 到 window 上。若 MapWindow 並未被 "redirect" 的話，這不會有問題，但若在一個正在 "redirect" 的window manager中，X server 傳遞 map request 到window manager，而 X client 在window manager進行處理 request 前即進行繪製動作，這樣一來，X server 會在window manager完全 map 好 frame window 之前，一律忽略所有繪製的指令。下圖是對應的示意圖：<br />
+<center><img src="http://jserv.sayya.org/wm/map-window-race.png" width="650" height="230" /></center><br />
+圖中的 "Draw rectangle" 是 X client 期望的繪圖操作，但夾雜於window manager的 Reparent / Map client / Map parent 等動作間，X server 僅能完全忽略動作的 request，對使用者來說，就是完全無法看到任何合理的畫面輸出。<br />
+<br />
+為了解決這個議題，X client 應在進行繪製操作前，先等待 MapNotify event (或 Expose event)，如此一來，我們得到以下互動的示意圖：<br />
+<center><img src="http://jserv.sayya.org/wm/map-window-mapnotify.png" width="650" height="326" /></center><br />
+這就是常見的解法。不過，實際上，依據不同window manager的設計，仍可能發生機率頗低的 race condition 議題，這一系列的規範可參見 ICCCM。由以上的例子可見，基於 X 的非同步本質，即便是單純的繪圖操作與視窗管理，也需要格外當心。在 X programming 中，為了釐清 Xlib 操作所造成的種種錯誤，可在命令列傳遞 '-sync' 參數給 X 應用程式，可強制 Xlib 使用同步模式。<br />
+<br />
+又基於設計複雜度的考量，Xlib 在許多設計中引入大量的同步處理元素，儘管 XCB 已著手透過 X 非同步設計來提昇效能，但 Xlib 畢竟仍是目前通用的 X C interface/API。不過，Xlib 內部仍有允許善用非同步處理的地方，比方說我們可改良原本 (同步的) XGetProperty() 的使用，另行實做非同步的版本，轉變成 callback 導向的設計，如此一來，可避免非必要的 round-trip 並集中 request 處理。GNOME 的window manager [<a href="http://en.wikipedia.org/wiki/Metacity">Metacity</a>] 已實現了初步的非同步版本 XGetProperty() 實做，[<a href="http://o-hand.com/">openedhand</a>] 的 Matthew Allum 進一步整理為 Xas (Asynchronous Xlib hack utilties) API，我則做了簡化的修改，可參考 [<a href="http://jserv.sayya.org/wm/xasync.tar.bz2">xasync.tar.bz2</a>]，授權方式為 MIT X License。<br />
+<br />
+在 Xas 中，有兩個重要的概念，一個是 XasContext，另外則是 XasCookie，前者是紀錄整個 X 非同步處理的 context 物件，後者是往返於 X 非同步過程的 cookies (或 session) 物件。以下舉一個範例 (程式碼見前述 <a href="http://jserv.sayya.org/wm/xasync.tar.bz2">xasync.tar.bz2</a> 的 test.c 檔案)，探討如何透過 Xas 來進行 Xlib 為基礎的非同步處理程式設計，我們的目標很單純，想在 [<a href="http://standards.freedesktop.org/wm-spec/wm-spec-latest.html">EWMH/NETWM</a>] 相容的window manager環境下，取得 "_NET_CURRENT_DESKTOP" (目前的桌面位於哪個虛擬桌面？)、"_NET_NUMBER_OF_DESKTOPS" (虛擬桌面數量)，及 "_NET_WM_USER_TIME" (window manager對 window 的 timestamp 值) 等內含值。首先，我們作必要的宣告與初始化，如下程式碼列表：<br />
+<pre class="code" id="codemain" style="margin: 6px;">	Display *xdpy;
+	<span class="keyword">int</span> xscreen;
+	Window xwin_root;
+	Atom atom, atom2, atom3;
+	XasContext *xas_ctx;
+	XasCookie cookie, cookie2, cookie3, cookie4, cookie5;
+	XWindowAttributes wattr;
+
+	<span class="keyword">if</span> ((xdpy = XOpenDisplay(getenv(<span class="literal">"DISPLAY"</span>))) == NULL) {
+		fprintf(stderr, <span class="literal">"failed to open DISPLAY\n"</span>);
+		exit(-1);
+	}
+
+	xscreen   = DefaultScreen(xdpy);
+	xwin_root = RootWindow(xdpy, xscreen); 
+
+	xas_ctx = xas_context_new(xdpy);
+	atom  = XInternAtom(xdpy, <span class="literal">"_NET_CURRENT_DESKTOP"</span>, False);
+	atom2 = XInternAtom(xdpy, <span class="literal">"_NET_NUMBER_OF_DESKTOPS"</span>, False);
+	atom3 = XInternAtom(xdpy, <span class="literal">"_NET_WM_USER_TIME"</span>, False);
+&nbsp;
+	cookie = xas_get_property(xas_ctx,
+			xwin_root,
+			atom,
+			0, 1L,
+			False,
+			XA_CARDINAL);
+
+	XGetWindowAttributes(xdpy, xwin_root, &amp;wattr);
+	... (省略) ...
+</pre>
+由上述程式碼列表，可見我們註冊了 XAtom，對應於若干 XInternAtom，呼叫 xas_context_new() 建立名為 xas_ctx 的物件，爾後，依據所需的回傳資訊，建立對應的 Xas cookies 物件。我們接著模擬一個情境，就是這些非同步的 request 一次被 X server 所處理，這個動作可用以下這行操作：<br />
+<pre class="code" id="codemain" style="margin: 6px;">
+	<span class="comment">/* Make sure all our queued requested get processed 
+	   by server */</span>
+	XSync(xdpy, False);
+</pre>
+一旦 X server 處理之後，X client 就可擷取必要的 reply 資訊，程式碼列表如下：<br />
+<pre class="code" id="codemain" style="margin: 6px;">	{ <span class="comment">/* Now grab various results  */</span>
+		Atom               actual_type;
+		<span class="keyword">int</span>                actual_format;
+		<span class="keyword">unsigned</span> <span class="keyword">long</span>      nitems;
+		<span class="keyword">unsigned</span> <span class="keyword">long</span>      bytesafter;
+		<span class="keyword">int</span>               *result;
+
+		XasWindowAttributes *attr;
+
+		<span class="keyword">int</span>                x_return;
+		<span class="keyword">int</span>                y_return; 
+		<span class="keyword">unsigned</span> <span class="keyword">int</span>       width_return;
+		<span class="keyword">unsigned</span> <span class="keyword">int</span>       height_return;
+		<span class="keyword">unsigned</span> <span class="keyword">int</span>       border_width_return;
+		<span class="keyword">unsigned</span> <span class="keyword">int</span>       depth_return;
+
+		<span class="keyword">int</span>                err;
+		<span class="keyword">char</span>               msg[255];
+
+		xas_get_property_reply(xas_ctx,
+				cookie,
+				&amp;actual_type,
+				&amp;actual_format,
+				&amp;nitems,
+				&amp;bytesafter,
+				(<span class="keyword">char</span>**) &amp;result,
+				NULL);
+
+		printf(<span class="literal">"got %li vs %li %li items ==> %i\n"</span>, 
+				XA_CARDINAL, actual_type, nitems, *result);
+		... (省略) ...
+</pre>
+由程式碼列表，可見到類似 XGetProperty() 的操作，但因為其非同步本質，允許我們挪動一系列的 X client request，並透過 Xas cookie 來追蹤具體的處理情況。這個範例程式的輸出如下：<br />
+<pre class="code" id="codemain" style="margin: 6px;">
+jserv@venux:~/x11/xasync$ ./test-async 
+got 6 vs 6 1 items ==> 1
+got 6 vs 6 1 items ==> 4
+got window attr ok.
+xas_get_geometry_reply() => (0, 0, 1024, 768), border:0, depth:24
+got 6 vs 6 1 items ==> 663bda1
+</pre>
+Xas API 對於若干關鍵的 X 桌面應用程式，如 window manager 與 dock/panel 來說，可減少不必要的同步處理，並提昇反應效率，未來也可銜接 XCB 的非同步處理設計，給予更佳的效能提昇。<br />
+<br />
+參考資料：<ul>
+<li>[<a href="http://www-h.eng.cam.ac.uk/help/tpl/graphics/X/signals.html">X and signals</a>]
+  <ul>由 Tim Love 整理散見於若干新聞群組的討論，不乏原本 X Window System 設計者對非同步設計與 UNIX 平台支援的限制，而做的妥協與改進的途徑等資訊。</ul></li>
+<li>[<a href="http://www.std.org/msm/common/protocol.pdf">Why X Is Not Our Ideal Window System</a>] (PDF)
+  <ul>以系統設計的角度，揭露一個事實：X Protocol 的設計相當洗練，問題出在 X Window System 若干設計本質的瑕疵</ul></li>
+</ul>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 April 22, 2008 04:49 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2016" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

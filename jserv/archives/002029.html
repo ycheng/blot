@@ -1,0 +1,447 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 以 C 語言實做 Functional Language 的 Currying</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002028.html" title="「尋幽訪勝話系統--以 Linux 探索軟硬體整合設計」簡報上線" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002030.html" title="窺探 .bss section" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002028.html">« 「尋幽訪勝話系統--以 Linux 探索軟硬體整合設計」簡報上線</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002030.html">窺探 .bss section »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">June 19, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">以 C 語言實做 Functional Language 的 Currying</h3>
+
+在電腦科學的領域，Functional Language 的 Currying (也譯作「Curry 化」) 的正規定義為：(出自 [<a href="http://zh.wikipedia.org/wiki/Currying">Wikipeida</a>])<ul class="code" style="margin: 6px;">
+「把接受多個參數的函數變換成接受一個單一參數(最初函數的第一個參數)的函數，並且返回接受餘下的參數而且返回結果的新函數的技術。
+</ul>
+此技術的命名係紀念 Christopher Strachey 以邏輯學家 Haskell B. Curry (1900-1982，師法自數學家 David Hilbert，Haskell Funcational Language 也是以他命名)，由 Moses Schönfinkel 和 Gottlob Frege 兩位所提出。本文試著以 C 語言模擬出 Currying 的特性，語法層面較為接近 Lisp 與 Prolog，為避免與 C 語言程序性思維的 function (函式) 用語混淆，當談及 Functional programming 時，本文特別將 "function" 寫作「函數」。<br />
+<br />
+在 functional programming 中，絕大部分都在操作函數，也就是「操作函數的函數」或是「產生函數的函數」一類的行為，而 Currying function 則在當其參數不足時，先行合成另一個函數去處理其他參數，直到參數量足夠時，再行計算結果。舉例來說：<ul class="code" style="margin: 6px;">
+let f x y = x - y
+</ul>
+這裡定義函數 f 有兩個參數：x 與 y，回傳兩者的差值，再行合成新的函數 f' 如下：<ul class="code" style="margin: 6px;">
+let f' = f 3
+</ul>
+這裡的函數 f' 為 (f 3) 的回傳值，只有單一參數，功能為 f'(x) = 3 - x。前者函數 f(x, y) 就是 uncurried function，接受兩個元素的 tuple，那麼，只接受一個參數的函數，也就是不需要 tuple，即函數 f'(x)，就稱為 curried function (Currying 對應的被動態描述)。具體來說，f(3, 2) = 3 - 2 = 1 表示將 (3, 2) 帶入 f(x, y)，而，函數 f' 的回傳值是個函數，先行「記住」了常數 3，而當再接受另一個參數 (如常數 2) 時，會將常數 3 取出與給定的參數作運算 (也就是 3 - 2)。所以整個過程可這麼思考：<pre class="code" style="margin: 6px;">
+[函數定義] f x y = x - y
+f(x, y) = x - y
+[函數定義] f' = f 3
+f'(x) = 3 - x
+f'(2) 的返回值 = f(3, 2)
+</pre>
+看似平凡不過的推導，但在電腦科學的意義卻是非凡，因為這讓簡化的理論模型，如只接受單一參數的 lambda 得以處理多個參數的函數，當談及 Y Combinator 或者隱喻的遞迴操作，皆從此出發，進而開始璀璨的新頁，不過本文無意深入探索 Functional language，先行省略。<br />
+<br />
+關鍵思維就是，上一個 Functor 處理參數的結果產生了下一個 Functor，下一個 Functor 繼續處理下一個參數，產生下一個 Functor，如此推廣下去。我們可進一步思考，Currying 的動作基本上就是讓一個函數得以 partially applied (術語為 partial application)，藉由新合成的函數作為回傳值，事實上，在 C++ STL (Standard Template Library) 與 C++ library [<a href="http://loki-lib.sourceforge.net/">Loki</a>] 中，即大量導入此思維，而在 Functional language 如 Lisp，給定的函數後可有一串參數，如 x, y, z, ...，我們可先行 partially apply 任意數量 (1 到 N 個) 的參數，獲得預期的功能，將功能本身予以抽象化處理。這樣的思維對真實環境下，應用程式的處理有什麼助益呢？舉例來說，檔案系統的操作，可能會有以下的行為：<ul>
+  <li>計算所有檔案長度的總和</li>
+  <li>尋找目錄下最大或最小的檔案</li>
+  <li>尋找重複內容的檔案</li>
+</ul>
+我們可發現，這些操作在探訪目錄結構 (visit directory tree) 的同時，必須參照、累積或修改些中間的資料與資料表示法，倘若一味增加額外的變數，以利在探訪目錄時得以傳遞額外的資訊，雖能解決問題，但，如此一來，會使負責尋訪目錄結構樹的程式變得相當複雜，更難以一般性地使用。那麼，若導入 Currying function 的思維，可更優雅地處理，以下是 Ruby 語言的表示法，Ruby 的設計摻入了 functional programming 的元素在內，支援以函數形式的回傳方式，所以，我們可撰寫如下的通用性目錄樹尋訪：
+<pre class="code" id="codemain" style="margin: 6px;"><span class="keyword">def</span> walk_dir(path_str, fun)
+  path = Pathname.new(path_str)
+  path.children.each <span class="keyword">do</span> |entry|
+    <span class="keyword">if</span> entry.directory?
+      fun = walk_dir(entry, fun)
+    <span class="keyword">elsif</span> entry.file?
+      fun = fun.call(entry)
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+  <span class="keyword">return</span> fun
+<span class="keyword">end</span>
+</pre>
+如此一來，可封裝目錄操作，並一致化的處理，所以，若要實做取得目錄下所有檔案的空間，可這麼寫：
+<pre class="code" id="codemain" style="margin: 6px;"><span class="keyword">def</span> cur_sum(sum)
+ <span class="keyword">return</span> lambda {|file| (file==<span class="keyword">nil</span>) ? sum : cur_sum(sum + file.size)}
+<span class="keyword">end</span></pre>
+稍後再傳遞給尋訪的處理，如下：
+<pre class="code" id="codemain" style="margin: 6px;">puts walk_dir(ARGV[0], cur_sum(0)).call(<span class="keyword">nil</span>)
+</pre>
+同理，我們也可透過相近的手法，處理其他目錄層次的操作。不僅目錄尋訪可採用 Currying function 手法，對於資料庫也可，比方說知名的 Java ORM (Object-relational mapping) framework -- [<a href="http://www.hibernate.org/">hibernate</a>] 裡頭的 Criteria Queries 就能應用 Currying 的形式如下：<pre class="code" id="codemain" style="margin: 6px;">
+SessionFactory.newSession(..).
+    newQuery(…).
+        setParameter(…).
+            setParameter(…)
+</pre>
+即具有 Curry, Factory Chain 的形式特性。C++ 語言層面並未有 functional programming 的成份，但可透過模擬的方式處理，前述的 C++ STL 與 Loki 就是箇中經典範例，為此，台灣知名的技術作家 [<a href="http://jjhou.csdn.net/">jjhou</a>] 曾多次撰文著述探討極其複雜的實作，集結於「泛型程式設計與 STL」主題，不過本文採用另一種輕巧的方式，並採用簡潔的 C 語言來實做。<br />
+<br />
+筆者模仿的對象是 Common Lisp 的語法，可參考其 cookbook 的 [<a href="http://cl-cookbook.sourceforge.net/functions.html">Functions</a>] 一節，筆者期望透過 C 語言模擬的 Currying 可如下操作：
+<pre class="code" id="codemain" style="margin: 6px;">
+<span class="keyword">typedef</span> <span class="keyword">int</span> (*intf)();
+
+<span class="keyword">static</span> <span class="keyword">int</span> add(<span class="keyword">int</span> x, <span class="keyword">int</span> y) { <span class="keyword">return</span> (x + y); }
+<span class="keyword">static</span> <span class="keyword">int</span> sub(<span class="keyword">int</span> x, <span class="keyword">int</span> y) { <span class="keyword">return</span> (x - y); }
+&nbsp;
+<span class="keyword">int</span> main()
+{
+        intf ret;
+
+        ret = curry(add, 1);
+        printf(<span class="literal">"* (funcall (curry #'+ 1) 1)\n"</span>
+               <span class="literal">"%d\n"</span>, (*ret)(1));
+
+        ret = curry(sub, 2);
+        printf(<span class="literal">"* (funcall (curry #'- 2) 3)\n"</span>
+               <span class="literal">"%d\n"</span>, (*ret)(3));
+        <span class="keyword">return</span> 0;
+}
+</pre>
+筆者定義 intf 這個描述整數型態的 function pointer (容筆者囉唆一下，這當然是指 C 語言的語意)，在 main() 中建立一個實體 ret，並試著賦予以下操作：<pre class="code" id="codemain" style="margin: 6px;">
+        ret = curry(add, 1);
+        printf(<span class="literal">"* (funcall (curry #'+ 1) 1)\n"</span>
+               <span class="literal">"%d\n"</span>, (*ret)(1));
+</pre>
+這形式就符合前述「上一個 Functor 處理參數的結果產生了下一個 Functor，下一個 Functor 繼續處理下一個參數，產生下一個 Functor」，而且 curry() 的回傳值就是一個新的 function pointer，用以模擬「函數」的動作。那我們該如何實做這樣將 functional programming 與 C 語言橋接的 curry() function 呢？筆者的作法如下：
+<pre class="code" id="codemain" style="margin: 6px;"><span class="keyword">static</span> <span class="keyword">char</span> code[18] = {
+        0x55,                   <span class="comment">/* push   %ebp */</span>
+        0x89, 0xe5,             <span class="comment">/* mov    %esp, %ebp */</span>
+
+        0xff, 0x75, 0x08,       <span class="comment">/* pushl  0x8(%ebp) */</span>
+        0x6a, 0,                <span class="comment">/* push   $0x0 */</span>
+        0xe8, 0, 0, 0, 0,       <span class="comment">/* call &lt;code+13> */</span>
+        0x83, 0xc4, 0x08,       <span class="comment">/* add $0x8, %esp */</span>
+
+        0xc9,                   <span class="comment">/* leave */</span>
+        0xc3                    <span class="comment">/* ret */</span>
+};
+
+<span class="keyword">int</span> (*curry(intf Func, <span class="keyword">int</span> arg))()
+{
+        *(<span class="keyword">char</span>*)(code + 7) = (<span class="keyword">char</span>) arg;
+        *(<span class="keyword">int</span>*)(code + 9) = (<span class="keyword">int</span>) Func - ((<span class="keyword">int</span>) code + 9 + 4);
+        <span class="keyword">return</span> ((intf) code);
+}
+</pre>
+顯然，這段程式碼僅能在 IA32 上執行，不過要移植到其他平台，應該是相對單純的動作 (RISC 架構的話，stack 處理可簡化)。我們要掌握 Currying function 的形式與語意，所以筆者先建立一段 shellcode 範本，也就是 char code[]，將 Currying 的函數參數在 curry() function 中預先植入，並將函式本身的進入點也寫入 caller。不過，真正的技巧在於 IA32 stack 的處理，兩年前筆者在 [<a href="http://blog.linux.org.tw/~jserv/archives/001844.html">深入淺出 Hello World</a>] Part II 的演講中已有提及，這裡再作簡要複習。<br />
+<center><img src="http://jserv.sayya.org/helloworld/pix/ia32-stack.jpg" width="323" height="400" /></center><br />
+如上圖，IA32 的 stack 是段連續的記憶體空間的陣列表示，透過 stack 可用以支援 C 語言型態的程序呼叫，而所謂的 C 語言 function call，在 IA32 上，就是透過 %ebp 與 %esp 這兩個暫存器的操作來實現，示意圖如下：<br />
+<center><img src="http://jserv.sayya.org/helloworld/pix/ia32-stack-call.jpg" width="320" height="187" /></center><br />
+當有新的項目堆入 (push) 到 IA32 stack 時，%esp 暫存器的內含值將會遞減，並將新項目寫入於 stack 的頂端；反之，當 pop 操作時，%esp 暫存器的內含值會遞增，並屏除頂端的項目。在 IA32 的規範，%ebp 為 frame / base pointer，%esp 為 stack pointer，通用暫存器 %eax 則用以表示 function 的回傳值，詳細的運作模式，可參閱 [<a href="http://www.cs.virginia.edu/~evans/cs216/guides/x86.html">x86 Assembly Guide</a>]。<br />
+<br />
+在筆者的 shellcode 範本：
+<pre class="code" id="codemain" style="margin: 6px;"><span class="keyword">static</span> <span class="keyword">char</span> code[18] = {
+        0x55,                   <span class="comment">/* push   %ebp */</span>
+        0x89, 0xe5,             <span class="comment">/* mov    %esp, %ebp */</span>
+
+        ...
+        0xc9,                   <span class="comment">/* leave */</span>
+        0xc3                    <span class="comment">/* ret */</span>
+};</pre>
+省略的部份是 Currying function 的 function body 呼叫動作，而前半段稱為 prologue，後半段則是 epilogue。將 C 語言的程序呼叫對應到 IA32 stack 時，prologue 顧名思義，就是「序幕」的意思，即程序 / function 的開頭，有兩個動作需優先於其他動作前完成：<ul>
+  <li>保存 caller (呼叫者 function) 的 frame pointer，存放到 IA32 stack，其組合語言就是 "push %ebp"</li>
+  <li>將目前的 stack pointer 設定為 callee (被呼叫的 function) 的 frame pointer，對應的組合語言就是 "movl %esp, %ebp"</li>
+</ul>
+另一方面，epilogue 顧名思義，就是「尾聲」的意思，即程序 / function 的結尾，考量到 C 語言函式呼叫的情境，必須在回傳前，針對 callee 的 stack frame 作處理。通常得進行以下三個動作：<ul>
+  <li>將目前的 frame pointer (也就是 callee 的) 設定為 caller 的 stack pointer，對應的組合語言是 "movl %ebp, %esp"</li>
+  <li>自之前存放於 IA32 stack 的值取出，回復 caller 的 stack frame，對應的組合語言是 "popl %ebp"，不過，在 80286 以後 (含)，這兩個指令可被單一指令取代："leave"</li>
+  <li>當準備妥當後，"ret" 指令就可被執行，以返回 caller。注意，當 "leave" 指令被執行後，stack pointer 會指向 caller function 中透過 "call" 指令所推入 IA32 stack 的返回位址，因此，"ret" 指令實際上是自 IA32 stack 作 pop 出返回位址並跳躍到該位址執行，也就是 "pop eip" 的動作。</li>
+</ul>
+所以，筆者張羅了包含完整 C 語言 function 的 shellcode，並在 curry() function 中作 function pointer / parameter 給定內含值的動作，就是為了「合成函數」形式的模擬。完整的程式碼可參閱 [<a href="http://jserv.sayya.org/helloworld/curry.c">curry.c</a>]，執行結果如下：<pre class="code" id="codemain" style="margin: 6px;">
+$ gcc -xc curry.c && ./a.out
+* (funcall (curry #'+ 1) 1)
+2
+* (funcall (curry #'- 2) 3)
+-1
+</pre>
+當然，這只是一個出發點，實務上可推廣到目錄檔案操作一類的應用。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 June 19, 2008 02:55 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>漂亮的玩法！不愧是 jserv，不過我有個疑問...<br />
+stack 裡面的資料直接可以執行嗎？<br />
+Intel 下 Protected Mode 不是應該會對 page 有些保護?<br />
+至少這樣的 code 在 Windows 上跑我印象中是會 access violation...<br />
+好像需要特別配置一個具有可執行屬性的 page 來放<br />
+</p>
+<span class="comments-post">由 <a href="http://pcman.sayya.org/">PCMan</a> 發表於</MTIfNonEmpty> June 19, 2008 05:06 AM</span>
+</div>
+<div class="comments-body">
+<p>~/work/lab$ linux32 gcc -o curry -xc curry.c<br />
+curry.c: 在函数‘curry’中：<br />
+curry.c:20: 警告： 将一个指针转换为大小不同的整数<br />
+curry.c:20: 警告： 将一个指针转换为大小不同的整数<br />
+~/work/lab$ ./curry <br />
+段错误<br />
+~/work/lab$ </p>
+
+<p>Ubuntu 8.04 64bit<br />
+</p>
+<span class="comments-post">由 <a href="http://crs.computergo.cn">elife</a> 發表於</MTIfNonEmpty> June 19, 2008 09:02 AM</span>
+</div>
+<div class="comments-body">
+<p>@PCMan,<br />
+這是 shellcode，利用 x86 的記憶體管理特性：「可讀寫就可執行」。Linux 下，預設 memory page 的保護限制我們對 code context 作寫入的動作 (data 與 code 是獨立的 section)，要改變預設的行為，可透過 mprotect(2)，範例見前文：<br />
+http://blog.linux.org.tw/~jserv/archives/001773.html</p>
+
+<p>@elife,<br />
+上文提過，本程式僅能在 IA32 上執行，當然 x86_64 上面執行會失敗</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> June 19, 2008 09:52 AM</span>
+</div>
+<div class="comments-body">
+<p>哇咧.. 這算是用 C 實作嗎? 明明就用 assembly/opcode。欺騙我的感情!<br />
+:)</p>
+<span class="comments-post">由 <a href="http://heaven.branda.to/~thinker/GinGin_CGI.py">Thinker</a> 發表於</MTIfNonEmpty> June 19, 2008 09:53 AM</span>
+</div>
+<div class="comments-body">
+<p>『將目前的 stack pointer 設定為 callee (被呼叫的 function) 的 frame pointer，對應的組合語言就是 "movl %ebp, %esp"』</p>
+
+<p>這個地方我覺得有些疑惑（雖然不熟組語），我用C語言寫一個小程式，在 function 的開頭，出現的組合語言是 <br />
+pushl %ebp<br />
+movl %esp, %ebp<br />
+和您所說的不太一樣。<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;Rifurdoma&#64;gmail&#46;com">Rifur</a> 發表於</MTIfNonEmpty> June 19, 2008 10:55 AM</span>
+</div>
+<div class="comments-body">
+<p>@Rifur,</p>
+
+<p>此為筆誤，已修正，謝謝</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> June 19, 2008 11:21 AM</span>
+</div>
+<div class="comments-body">
+<p>FYI,<br />
+http://heaven.branda.to/~thinker/GinGin_CGI.py/show_id_doc/326<br />
+</p>
+<span class="comments-post">由 <a href="http://heaven.branda.to/~thinker/GinGin_CGI.py">Thinker</a> 發表於</MTIfNonEmpty> June 19, 2008 11:51 AM</span>
+</div>
+<div class="comments-body">
+<p>最近在看lisp, 所以看到這篇文章覺得很有趣</p>
+
+<p>從這篇文章我猜curry的意義:<br />
+func1 = curry(op, arg1);<br />
+// func1 能夠將op, arg1 保存在他的私有storage上<br />
+func1([@op, @arg1,] arg2); // 用的時候就只要pass arg2就好了</p>
+
+<p>用"類"C++的pseudo做看看:</p>
+
+<p>typedef int (*op_func) (int, int);<br />
+op_func add(int a, int b) { return a + b; }<br />
+op_func sub(int a, int b) { return a - b; }</p>
+
+<p>class func1 {<br />
+private:<br />
+	func1() {};<br />
+	op_func op;<br />
+	int para1;<br />
+public:<br />
+	func1(op_func a, int b) : op(a), para(b) {}<br />
+	int operator()(int para2) { return op(para1, para2); }<br />
+};</p>
+
+<p>func1 curry(op_type op, int arg) { return func1(op, arg); }</p>
+
+<p>請問這樣子實作可以嗎?</p>
+<span class="comments-post">由 <a href="mailto&#58;cfchou&#64;gmail&#46;com">cf</a> 發表於</MTIfNonEmpty> June 19, 2008 03:19 PM</span>
+</div>
+<div class="comments-body">
+<p>jserv, 「真吸」版完成。</p>
+<span class="comments-post">由 <a href="http://heaven.branda.to/~thinker/GinGin_CGI.py">Thinker</a> 發表於</MTIfNonEmpty> June 19, 2008 04:40 PM</span>
+</div>
+<div class="comments-body">
+<p>@Thinker,</p>
+
+<p>感謝完全使用 C 的「真 C 語言」版本，受教了！</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> June 19, 2008 05:41 PM</span>
+</div>
+<div class="comments-body">
+<p>用macro一樣嗎</p>
+
+<p>#define add(x,y) x+y<br />
+#define addp(y) add(1,y)</p>
+
+<p>int main() {<br />
+printf("%d",addp(2));<br />
+}</p>
+<span class="comments-post">由 <a href="mailto&#58;gd&#64;gd&#46;gd">gd</a> 發表於</MTIfNonEmpty> June 19, 2008 11:47 PM</span>
+</div>
+<div class="comments-body">
+<p>哈，我懂了，第一個參數不一定是1</p>
+<span class="comments-post">由 <a href="mailto&#58;gg&#64;gg&#46;gg">gg</a> 發表於</MTIfNonEmpty> June 19, 2008 11:56 PM</span>
+</div>
+<div class="comments-body">
+<p>發現gtk有<br />
+http://library.gnome.org/devel/gobject/stable/gobject-Closures.html<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;aa&#64;edu&#46;tw">hh</a> 發表於</MTIfNonEmpty> July 11, 2008 12:02 PM</span>
+</div>
+<div class="comments-body">
+<p>jserv 這篇的價值在實做一個處理函式的函式</p>
+
+<p>駑鈍如我只能用 macro 手動搞定。 :-P</p>
+<span class="comments-post">由 <a href="mailto&#58;dchen&#64;redhat&#46;com">definite</a> 發表於</MTIfNonEmpty> November  5, 2008 09:45 AM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2029" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

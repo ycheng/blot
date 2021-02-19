@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: August 2012 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2012_07.html" title="July 2012" />
+
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2012_07.html">« July 2012</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+
+
+<h2 class="date">August 30, 2012</h2>
+
+
+<div class="blogbody">
+<a name="002218"></a>
+<h3 class="title">MPRC 的 UniCore32 架構</h3>
+
+其實不是什麼新聞，只是台灣較少這方面的訊息，我只是稍微紀錄。若說位於台灣新竹的 [<a href="www.andestech.com/en/">晶心科技</a>] 開發出的 Andes CPU/ISA 是「台灣芯」，那麼設址於北京的 [<a href="http://www.pkunity.com/">北大眾志微系統科技</a>] 開發出的 UniCore32 (32-bit 定點 CPU) 與 Unicore-F64 (64-bit 浮點 co-processor) 就是「中國芯」。儘管兩者在設計理念有所不同，但「堅持自行設計、自主開發，擁有自主知識產權的發展思路」這樣的指導原則卻是相同的。<br />
+<br />
+MPRC 的全名為 [<a href="http://mprc.pku.edu.cn/eng/intro.html">Microprocessor Research and Development Center </a>] (北京大學微處理器研究開發中心; 後三個字母恰好是偉大祖國的縮寫)，而北京北大眾志微系統科技有限責任公司則是 MPRC 商業化公司，成立於 2002 年 11 月，是中國專業從事自主 CPU 及系統設計的高新技術企業。在中國國家科技部、信息產業部、教育部等主管部門的重點支持下，北大眾志與 MPRC 提出了自己的 ISA (參考了 ARM 等 RISC)，研製出北大眾志 CPU 系統晶片。日前  Unicore32 架構的支援已經在 Linux Kernel, GNU Toolchain, QEMU 等主流 open source 系統中良好整合。<br />
+<br />
+依據 [<a href="http://www.pkunity.com/pkunity-3-130.asp">網頁的資訊</a>]，PKUNITY-3-130 SoC 的規格如下：<ul>
+  <li>基於 32-bit UniCore-Ⅱ ISA</li>
+  <li>採用 TSMC 0.18 um 製程</li>
+  <li>CPU 主頻為 600 MHz 到 1 GHz</li>
+  <li>SoC 整合 USB 2.0 OTG, IDE 控制器, 10M/100M/1000M Ethernet MAC, DDR-II 控制器, AC'97 控制器</li>
+  <li>具備 MPEG1/2/4 和 H.264 codec 加速器</li>
+</ul>
+<center><img src="http://www.pkunity.com/img/pkunity-3-130-chip.jpg" width="546" height="416" /></center><br />
+UniCore32 ISA 的編碼方式頗類似 ARM，但移除了 conditional execution 的部份。在 Unicore32 中，register specifiers 擴展為 5 bits，而直接表示式為 9 bit / rotated by 5 bit。在 load/store 方面，offset size 對 byte/word 為 14 bit、對 signed byte / half-word 為 10 bit。定義了 32 個通用暫存器，其中兩個被挪用作以下用途：<ul>
+  <li>r30: Link Register</li>
+  <li>r31: Program Counter</li>
+</ul>
+而在不同的執行模式，會有不同的 shadow register (這點根本就是 ARM 的翻版)。詳情可參閱 [<a href="http://mprc.pku.edu.cn/courses/organization/autumn2011/project/UniCore32_Instruction_Set.pdf">Unicore32 指令系統手冊</a>]。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2012/08/mprc_unicore32.html"> 8:08 PM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2218" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+
+</body>
+</html>

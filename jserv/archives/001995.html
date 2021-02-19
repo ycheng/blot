@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 解放你的桌面：LxDE 重裝上陣</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001994.html" title="Xenomai/SOLO：提供 Linux 使用者層級的 RTOS 模擬" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001996.html" title="即將成為 SMPTE VC-2 標準的 Dirac 視訊壓縮技術" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001994.html">« Xenomai/SOLO：提供 Linux 使用者層級的 RTOS 模擬</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001996.html">即將成為 SMPTE VC-2 標準的 Dirac 視訊壓縮技術 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 23, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">解放你的桌面：LxDE 重裝上陣</h3>
+
+<center><img src="http://jserv.sayya.org/misc/lxde-desire.jpg" width="358" height="269" /></center><br />
+一年半前，[<a href="http://pcman.sayya.org/">PCMan</a>] 與我在 COSCUP 研討會分享了 [<a href="http://blog.linux.org.tw/~jserv/archives/001827.html">羽量級桌面</a>] 的議程，並公開了 [<a href="http://lxde.sourceforge.net/">Lightweight X11 Desktops Environment</a>] (LxDE) 專案，作為我們對於 [<a href="http://jerrylovesrebol.blogspot.com/2008/03/blog-post_13.html">日漸癡肥的諸多軟體</a>] 的回應，解救電腦硬體免於來自軟體的荼毒。經過一段時間的沈寂，[<a href="http://fred-zone.blogspot.com/">Fred</a>] 的加入為這個專案注入蓬勃的熱血，現在，LxDE 又回來了，伴隨許多重大翻修，兼具功能與效能至上，依然是最高的指導原則。<br />
+<center><img src="http://lxde.sourceforge.net/images/banner.jpg" width="638" height="354" /></center>
+<br />
+遠遠拋開 KDE 與 GNOME 這兩個癡肥的大怪物，LxDE 甚至比老字號的 [<a href="http://www.xfce.org/">Xfce</a>] 有更好的系統資源使用率，在 Subversion 上的發展中版本包含以下軟體元件：<ul>
+<li>LxPanel - 提供桌面選單、圖示，以及若干桌面應用程式</li>
+<li>[<a href="http://pcmanfm.sourceforge.net/">PCManFM</a>] - 快速輕巧、整合性的檔案管理程式與桌面管理器</li>
+<li>LxSession - 桌面行程管理，紀錄執行狀態</li>
+<li>LxNM - 輕量級的網路管理程式</li>
+<li>LxAppearance - 佈景主題更換程式</li>
+<li>GPicView - 輕巧的圖片瀏覽器</li>
+<li>LXine / LxMusic - 輕巧的媒體播放程式</li>
+<li>LxDE-common - 包含 window manager 設定檔、Icon Theme，與桌布等若干檔案</li>
+</ul>
+稍早 Fred 撰寫短文 [<a href="http://fred-zone.blogspot.com/2008/03/lxde.html">LXDE 近期動態</a>] 對於發展狀況做了簡要的介紹，可大概得知上述核心元件的進展。日前，包含小弟在內的 LxDE 開發者獲得華碩贊助 Eee PC 實體機器，而 LxDE 的開發過程中也 Eee PC 作為參考的硬體環境，引入新功能、視覺效果的同時，謹記在心的仍是對效能與資源使用的考量。由於 LxDE 的軟體設計謹守「可任意抽換」的獨立原則，所以個別項目均是「小而美、小而省」，可很容易整合到既有的桌面應用中，甚至，下個月將在 OSDC.tw 發表的 [<a href="http://blog.linux.org.tw/~jserv/archives/001963.html">Keroro 桌面環境</a>] 也共用了若干軟體元件。<br />
+<br />
+解放你的桌面！[<a href="http://lxde.sourceforge.net/">LxDE</a>] 回來了。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March 23, 2008 04:31 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>从哪能下载deb，gnome太慢了。。。</p>
+<span class="comments-post">由 <a href="mailto&#58;hex87125&#64;gmail&#46;com">hex</a> 發表於</MTIfNonEmpty> March 25, 2008 06:41 PM</span>
+</div>
+<div class="comments-body">
+<p>http://lxde.sourceforge.net/download.html</p>
+<span class="comments-post">由 <a href="mailto&#58;anton&#46;tw&#64;gmail&#46;com">anton</a> 發表於</MTIfNonEmpty> April  5, 2008 04:41 PM</span>
+</div>
+<div class="comments-body">
+<p>請問，lxde 是否有中文網頁呢？<br />
+不太明白何以台灣人自行的開發的專案，官網卻無中文@@~<br />
+雖然勉強查查字典還是看的懂意思~但總覺得少了份親切感呢。</p>
+<span class="comments-post">由 <a href="mailto&#58;neio&#46;lin&#64;gmail&#46;com">neio</a> 發表於</MTIfNonEmpty> May  9, 2008 11:15 PM</span>
+</div>
+<div class="comments-body">
+<p>@neio</p>
+
+<p>LXDE 正快速開發，急需開發者投入，自然得考量到國際化議題，所以儘量採用英文訊息，稍後會需要文件寫作者，屆時提供完整網站的中文化，才有意義。不過，LXDE 程式當然內建有中文語系，毋庸置疑，謝謝！</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> May 10, 2008 12:21 AM</span>
+</div>
+<div class="comments-body">
+<p>确实非常棒，现在已经不用gnome/kde/xfce了，一心一意使用lxde，非常感谢开发这么好的桌面。</p>
+<span class="comments-post">由 <a href="mailto&#58;netviz2002&#64;yahoo&#46;com&#46;cn">tawie</a> 發表於</MTIfNonEmpty> February  1, 2009 06:19 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1995" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: C++ 與 Java 的 ABI 議題</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001315.html" title="NILFS : log-structure FS" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001318.html" title="心得分享：kernel 2.6 與桌面環境的整合" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001315.html">« NILFS : log-structure FS</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001318.html">心得分享：kernel 2.6 與桌面環境的整合 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">October 04, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">C++ 與 Java 的 ABI 議題</h3>
+
+在某個時間點 (姑且稱為 D) 開始，在我從事程式設計時，不再只考慮能否運作或結果是否正確的議題，相反的，必須將效能、擴充性，以及與其他軟體元件的整合議題列入重要考量，而在 D + K 時，我就鮮少從頭撰寫一個應用程式。這之間的落差 (K)，讓我開始思考如何以既有的軟體元件或軟體設計出發，經過「適度」的修改與調整，賦予其新的價值，這說來簡單，但是作起來不容易，很多時候重寫還可能比較快。<br><br>
+
+然而很多時候，因為許多因素，我們根本無法完成充份的修改，比方說使用到 commercial library / framework、想降低 deployment 的成本，或者考量到 ABI (Application Binary Interface) 的議題。從事過 Java VM 實作的開發者一定對於 JLS (Java Language Specification) 的第 13 章相當熟悉，這就是 Sun Microsystems 規範 Java Runtimes 的 binary compatibility 表現，除了 JLS 外，還可以參考 [<a href="http://www.jcp.org/en/resources/tdk">TCK Tools & Info</a>] 與 OpenGroup 的 [<a href="http://www.opengroup.org/certification/testdev/">Test Development Services</a>]。Java 的定義相當嚴謹且完整，ABI 甚至是其規格的必要需求，反過來看，C++ 是種特別的語言，不僅語言層面複雜，實作與實務上更有其難題在。本 blog 多次提到 "C++ sucks"，為何 [<a href="http://jserv.sayya.org/">這個無聊人士</a>] 如此厭惡 C++ Model 呢？<br><br>
+
+事實上，我是 Qt/KDE 的愛好者，也涉獵過 Embedded C++ subset，就語言層面來說，我還算喜歡 C++，但是問題在於在 D + K 時，我所面臨的難題就是軟體元件間的整合。[<a href="http://www.livejournal.com/users/jmmv/">jmmv's weblog</a>] 最近有兩篇很值得一讀的 blog：<ul>
+<li>[<a href="http://www.livejournal.com/users/jmmv/44985.html">C++: Inlined code and the ABI</a>]</li>
+<li>[<a href="http://www.livejournal.com/users/jmmv/45190.html">C++: Templates and the ABI</a>]</li>
+</ul>
+jmmv 從我們常用的最佳化技巧，也是就是善用 C++ 的 inline modifier 做出發，探討在 C++ Compiler 的 object representation 的差異性，進而引發的 ABI 議題，不過呢，jmmy 在第一篇 [<a href="http://www.livejournal.com/users/jmmv/44985.html">C++: Inlined code and the ABI</a>] 也敘及：<ul>
+It's a pity that careless C++ developers make so intensive use of such inlined code. BTW, note that although this has focused on C++, the same is true for, e.g., C99, which provides an inline keyword.
+</ul>
+效能與空間的最佳化一直都是 tradeoff，而 optimization 與 correctness 在某種角度來說亦然，第二篇就更有意思，C++ template 的普遍實作方式是透過展開的形式，引發了一連串的疑惑後，jmmv 說到：<ul>
+I'm now wondering how Java 1.5's templates work or if they suffer from these issues too...
+</ul>
+[<a href="http://www.jjhou.com/">jjhou</a>] 前輩曾在 JavaTwo 2002 發表了 Generics 的實現，同時我們也可看出在 ABI 的考量，不過我感興趣的項目還是 C++ 的 ABI，以下這幾篇可以建立概況：<ul>
+<li>Sun's [<a href="http://developers.sun.com/prodtech/cc/articles/CC_abi/CC_abi_content.html">Stability of the C++ ABI: Evolution of a Programing Language</a>]</li>
+<li>CodeSourcery (GCC / GNU Toolchain 的商業支援公司)'s [<a href="http://www.codesourcery.com/cxx-abi/">C++ ABI Summary</a>]</li>
+<li>Chad Austin's [<a href="http://aegisknight.org/cppinterface.html">Binary-compatible C++ Interfaces</a>]</li>
+</ul>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 October  4, 2005 07:48 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

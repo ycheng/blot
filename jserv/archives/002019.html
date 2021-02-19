@@ -1,0 +1,246 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 演講：我愛 Git - 有效使用分散式版本控制系統</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002018.html" title="「親手打造開放原始程式碼的機器人」簡報上線" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002020.html" title="QGtkStyle : 讓 Qt 應用程式模擬 GtK+ 的外觀" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002018.html">« 「親手打造開放原始程式碼的機器人」簡報上線</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002020.html">QGtkStyle : 讓 Qt 應用程式模擬 GtK+ 的外觀 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">May 15, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">演講：我愛 Git - 有效使用分散式版本控制系統</h3>
+
+本月份 [<a href="http://wiki.tossug.org/">TOSSUG</a>] 的心得分享中，小弟將作主題為 [<a href="http://wiki.tossug.org/%E5%BF%83%E5%BE%97%E5%88%86%E4%BA%AB2008#loving_git">我愛 Git</a>] 的演講，時間是下週二 (May 20) 晚間七點，地點位於「東吳大學城區部 鑄秋大樓 R2523 教室」，詳細資訊可參閱 wiki [<a href="http://wiki.tossug.org/SoochowUniversity">SoochowUniversity</a>]。以下摘錄 TOSSUG wiki 的資訊：<ul class="code" style="margin: 6px;">
+<li>主講人： jserv</li>
+<li>內容簡介：<ul>
+  Git 最早是 Linus Torvalds 用以取代非開源的 BitKeeper 分散式版本控制系統，經快速的開發後，現已被全球眾多知名自由軟體專案採用，儼然是新生代的基礎建設之一。本議程從軟體開發維護的模式，面對典範移轉的挑戰，我們該如何因應，並提及 Git, mercurial, Bazaar 等一系列發展活躍的分散式版本控制系統之核心意義。選定 Git 又有何過人之處？Git 提供豐富的開發工具整合，讓我們得以實現過去難以想像的高度自主性與非寡佔性的軟體開發，分享日適逢 "520" (音近「我愛您」)，希望您也可因此愛上 Git，提高生產力。</ul></li>
+<li>預定提綱：<ul>
+  <li>版本控制的典範移轉 (Paradigm shift)：Why and How</li>
+  <li>分散式版本控制系統與解決方案</li>
+  <li>Git 核心概念與實務</li>
+  <li>案例探討：Linux Kernel 與 XOrg</li>
+</ul></li>
+</ul>
+稍早的文章 [<a href="http://blog.linux.org.tw/~jserv/archives/002007.html">從 Ditz 談針對分散式版本控制的 Issue Tracker</a>] 間接提及 Git 逐漸廣泛地被採用，與在自由軟體蓬勃發展刺激下，我們所面臨典範移轉 (Paradigm shift) 等議題，而理解 Git 儼然就是極重要的考量。於是，小弟就趁著心得分享的機會，探討這系列的議題，歡迎舊雨新知前來指教，謝謝！<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 May 15, 2008 01:14 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>请问jserv兄，在切换branch的时候，git如何处理没有提交的修改？在网上看到好像只有两种选择：提交，或者合并到新的branch里，有没有可能只是保存一下当前branch的状态？等下次切换回来的时候，恢复一下就可以继续工作？git为什么没有提供这种功能，难道是因为大牛们都很专注，搞定了一个branch之后才换到另一个？</p>
+<span class="comments-post">由 <a href="mailto&#58;nkchenz&#64;gmail&#46;com">td</a> 發表於</MTIfNonEmpty> May 18, 2008 02:05 AM</span>
+</div>
+<div class="comments-body">
+<p>Dear jserv:<br />
+ 您好,想請問所謂 版本控制系統 是指 svn 或 csv 這様的東西嗎?<br />
+  如果是的話 分散式 - 版本控制系統 又有什麼不同呢?!<br />
+          Best regards!</p>
+<span class="comments-post">由 <a href="mailto&#58;sinsmilekimo&#64;yahoo&#46;com&#46;tw">micmic3</a> 發表於</MTIfNonEmpty> May 19, 2008 09:56 AM</span>
+</div>
+<div class="comments-body">
+<p>@td<br />
+這是前述 "paradigm shift" 的一個面向，git 讓 branch merge 的難度降低，也預期開發者在 branch 中應專注於特定的功能或需求改進，說「專注」也可。</p>
+
+<p>@micmic3<br />
+版本控制系統即 version control system，至於分散式 (distributed) VCS，會在明日的分享中提及 (slides 也會開放下載)，暫不贅述</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> May 19, 2008 10:29 AM</span>
+</div>
+<div class="comments-body">
+<p>多谢回复，果然是没有提供这样的功能，看来确实是需要在实践中慢慢体会git的设计理念了。</p>
+
+<p>另转两篇介绍版本控制的帖子，觉得不错<br />
+http://betterexplained.com/articles/intro-to-distributed-version-control-illustrated/</p>
+
+<p>http://betterexplained.com/articles/a-visual-guide-to-version-control/</p>
+<span class="comments-post">由 <a href="mailto&#58;nkchenz&#64;gmail&#46;com">td</a> 發表於</MTIfNonEmpty> May 19, 2008 06:25 PM</span>
+</div>
+<div class="comments-body">
+<p>to td:<br />
+有關你說的要暫時存下老的部份，不用commit是有的啦。新的git才行，袛是沒有寫在主文件。可以用git stash --help看看用法</p>
+<span class="comments-post">由 <a href="mailto&#58;roger&#46;esoft&#64;msa&#46;hinet&#46;net">roger</a> 發表於</MTIfNonEmpty> May 20, 2008 10:21 AM</span>
+</div>
+<div class="comments-body">
+<p>@roger,<br />
+感謝分享，過去沒注意到，受教了</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> May 20, 2008 11:26 AM</span>
+</div>
+<div class="comments-body">
+<p>看了这么多介绍<br />
+有了放弃svn的冲动呢</p>
+<span class="comments-post">由 <a href="http://www.omtv.cc">omtv</a> 發表於</MTIfNonEmpty> December 27, 2008 03:24 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2019" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

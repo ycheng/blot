@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Xgl -- New X server on OpenGL/Glitz 現況</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/000914.html" title="X Developer's Meeting" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/000916.html" title="LinuxTW -- 台灣的 Linux 入口站" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/000914.html">« X Developer's Meeting</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/000916.html">LinuxTW -- 台灣的 Linux 入口站 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February 09, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Xgl -- New X server on OpenGL/Glitz 現況</h3>
+
+<p>去年有參加 Debian@Taiwan 舉辦的 [<a href="http://ircconf.debian.org.tw/">IRC Conference</a>] 的朋友，應該會對於我在 [FreeDesktop.org 與 X.org 嶄新發展概況] 提到的 X over GL 的發展感到高度的興趣。在我之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/000809.html">Xgl 研究</a>] 中有提到我最近的涉獵與研究途徑，那麼，近況又是如何？</p>
+
+<p>上一篇 blog [<a href="http://blog.linux.org.tw/~jserv/archives/000914.html">X Developer's Meeting</a>] 提到本週末會舉辦如此的盛會，也會進行 X Window System Rearchitecture Proposal 的審定與討論，而所有的更新部分都置放於 FreeDesktop Xserver cvs repository 的 <a href="http://cvs.freedesktop.org/xserver/xserver/hw/xgl/">xgl</a> 中，"X server on hardware-accelerated GL " 目前還需要努力之處在於 Xglx，然而這涉及許多層面。</p>
+
+<p>我們可以發現 Window content 是直接 GL textures 的形式去 rendering，這是直接對應到 video memory 中，而對於半透明視窗的移動與 region operations 來說，3D Hardware 可勝任此 Compositing 的工作量，為此不再需要耗費額外的 overhead。</p>
+
+<p>實作的規劃與負責人是目前任職於 Novell 的 David Reveman，日前他也展示以下快照：<br />
+<center><a href="http://nat.org/2005/february/xgl-shot.png"><img src="http://nat.org/2005/february/xgl-thumb.png" /></a></center></p>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 February  9, 2005 05:35 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

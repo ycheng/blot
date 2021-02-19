@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 讓 MPlayer 支援原生WMV9</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001544.html" title="善用 GCC builtins 實現 Vectorization" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001546.html" title="思辨邏輯原理道覺悟" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001544.html">« 善用 GCC builtins 實現 Vectorization</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001546.html">思辨邏輯原理道覺悟 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February 28, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">讓 MPlayer 支援原生WMV9</h3>
+
+[<a href="http://www.mplayerhq.hu/">MPlayer</a>] 的功能強大，而且支援的媒體檔案與平台數量都是一流的，對於 Microsoft 專屬的 mpeg-4 與 wmv1/2/3 (這三者分別對應我們常稱呼的 WMV 7/8/9，小寫表示 video coding 的 algorithm，大寫表示 Window Media Player 支援格式)，[<a href="http://www.mplayerhq.hu/">MPlayer</a>] 跟 Xine 或 VLC 一樣，都透過 Win32 DLL loader 強制載入修改過的 win32 codec (用惡行對付 Microsoft 的惡行 :P)。VLC 已初步支援 WMV9 (VC-1)，可參考 [<a href="http://www.nanocrew.net/2005/09/01/compiling-vlc/">Instructions for compiling VLC with VC-1 (WMV9) support under Ubuntu Breezy</a>]，而我在想，是否能夠將這些成果移植到 [<a href="http://www.mplayerhq.hu/">MPlayer</a>] 呢？剛剛 hacking 一段時間，完成了 :-)<br>
+<br>
+以下是參考的編譯流程：<br>
+(1) 取得 cvs tarball 與我做的 patch：<ul><pre class="code" style="margin: 6px;">
+# wget http://jserv.sayya.org/mplayer/mplayer-cvs-snapshot-20060228.tar.bz2
+# wget http://jserv.sayya.org/mplayer/wmv3-support-via-vc1.diff.gz
+</pre></ul>
+(2) 解壓縮並施加 patch：<ul><pre class="code" style="margin: 6px;">
+# tar jxvf mplayer-cvs-snapshot-20060228.tar.bz2 
+# cd mplayer-cvs-snapshot-20060228
+# zcat ../wmv3-support-via-vc1.diff.gz | patch -p1
+</pre></ul>
+(3) 組態配置，以下是我的組態，可作為參考 (請記得把 pentium-m 換成您的 machine)：<ul><pre class="code" style="margin: 6px;">
+CFLAGS="-O5 -march=pentium-m \
+-mmmx -msse -msse2 -mfpmath=sse,387 \
+-fomit-frame-pointer -fforce-mem -fforce-addr \
+-finline-functions -freorder-functions \
+-frename-registers -ftracer -fweb -funit-at-a-time \
+-fbranch-target-load-optimize2" \
+sh configure \
+  --prefix=/usr \
+  --confdir=/etc/mplayer \
+  --disable-gui \
+  --enable-menu \
+  --disable-inet6 \
+  --language=en \
+  --enable-sse2 \
+  --enable-i18n \
+  --disable-gl \
+  --disable-win32 \
+  --enable-dynamic-plugins
+</pre></ul>
+上面的 "--disable-win32" 就是告訴 MPlayer 我不需要邪惡的 win32 dll loader，我用 native WMV9 codec。<br>
+(4) 開始漫長的等待：<ul><pre class="code" style="margin: 6px;">
+make
+</pre></ul>
+這個 hacking 很有趣，在我的電腦運作的畫面如下：<br>
+<img src="http://jserv.sayya.org/mplayer/screenshots/mplayer-wmv9.png"><br>
+所以現在不需要帶有罪惡感的 win32 codecs，也可以播放了，並且 [<a href="http://www.mplayerhq.hu/">MPlayer</a>] 支援的平台眾多，或許在 64-bit 的硬體也可以運作 (？)。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 February 28, 2006 06:47 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>請問一下：</p>
+
+<p>1. gcc 的優化參數不是只有 -O0 ~ -O3 嗎？怎麼會用到 -O5 (官方是 -O4) ？<br />
+2. 有沒有可能把 patch 送到官方呢？</p>
+<span class="comments-post">由 <a href="mailto&#58;fan&#64;fan&#46;com">fan</a> 發表於</MTIfNonEmpty> February 28, 2006 08:14 PM</span>
+</div>
+<div class="comments-body">
+<p>嗨<br />
+我在我的電腦上試了這個patch<br />
+pentium celeron d 2.66 Ghz<br />
+作業系統是 kubuntu dapper amd64<br />
+編譯執行都正常<br />
+mplayer 在64-bit下原本就不支援 win32 codecs<br />
+這個patch的出現真是好極了<br />
+謝謝你</p>
+<span class="comments-post">由 <a href="mailto&#58;dgdunix&#64;gmail&#46;com">dgdunix</a> 發表於</MTIfNonEmpty> March  1, 2006 05:14 PM</span>
+</div>
+<div class="comments-body">
+<p>To fan,<br />
+  1. gcc有-O5的optimization flag<br />
+  2. patchh要進官方或許可能有問題 (稍後再談)</p>
+
+<p>To dgdunix<br />
+  感謝測試，很高興您可在64 bit的機器播放WMV9影片，有興趣寫個note/How-To嗎？</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> March  1, 2006 07:22 PM</span>
+</div>
+<div class="comments-body">
+<p>ㄜ...過程太順利<br />
+就是簡單的patch;make;make install<br />
+完全沒有tweak<br />
+還真沒什麼好寫的<br />
+提供我configure參數:<br />
+--disable-internal-tremor --disable-vidix --diable-esd<br />
+其他都是預設</p>
+
+<p>P.S. 稍微看了libvc1的code<br />
+依授權來看非 free software<br />
+jserv大大是不是對提供這個patch考慮一下</p>
+<span class="comments-post">由 <a href="mailto&#58;dgdunix&#64;gmail&#46;com">dgdunix</a> 發表於</MTIfNonEmpty> March  3, 2006 02:24 PM</span>
+</div>
+<div class="comments-body">
+<p>長久以來在powerpc的問題解決了，我在ppc g4上可以正確解碼</p>
+
+<p>簡單的howto<br />
+http://www.ubuntu.org.tw/modules/newbb/viewtopic.php?topic_id=539&forum=22&post_id=2396#forumpost2396 </p>
+
+<p>謝謝你的努力了....^_^</p>
+<span class="comments-post">由 <a href="mailto&#58;dbtsai&#64;gmail&#46;com">dbtsai</a> 發表於</MTIfNonEmpty> March  7, 2006 03:05 AM</span>
+</div>
+<div class="comments-body">
+<p>本想說這樣一來，在Zaurus上播wmv3應該就有解了。沒想到Zaurus上mplayer的維護人直接就否定掉了：</p>
+
+<p>VC-1リファレンスデコーダの実装は、まさに*リファレンス*です。とてもとても遅くて、1.5GHzぐらいのマシンでも満足に再生出来ないという報告がありました。よって、ザウルス版に実装したところで紙芝居以下の速度にしかならないと思うのでサポートしません。</p>
+
+<p>大意是說，這個VC-1 ref. code真的是『參考用』的，非常非常的龜，至少要1.5GHz以上的機器才跑得順。想用在Zaurus上面應該就是跟放投影片一張張播一樣，所以不用想啦... XD</p>
+<span class="comments-post">由 <a href="mailto&#58;john&#64;ntu&#46;edu&#46;tw">JC</a> 發表於</MTIfNonEmpty> March 21, 2006 04:57 AM</span>
+</div>
+<div class="comments-body">
+<p>libvc1不是GPL，所以不可能进mplayer。</p>
+<span class="comments-post">由 <a href="mailto&#58;bb&#46;zhang&#64;free&#46;fr">bz31</a> 發表於</MTIfNonEmpty> March 24, 2006 05:03 PM</span>
+</div>
+<div class="comments-body">
+<p>我要。</p>
+<span class="comments-post">由 <a href="mailto&#58;lr2001_com&#64;163&#46;com">李锐</a> 發表於</MTIfNonEmpty> June 26, 2006 08:47 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Flirt - an open source, extensible Flash(tm) runtime</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001417.html" title="wmctrl - 對符合  EWMH 的 WM 傳送命令" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001419.html" title="SPECjbb2005 新標準" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001417.html">« wmctrl - 對符合  EWMH 的 WM 傳送命令</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001419.html">SPECjbb2005 新標準 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 10, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Flirt - an open source, extensible Flash(tm) runtime</h3>
+
+Macromedia (已被 Adobe 併購) Shockware Flash 引來許多創意的呈現，豐富了網路的風貌，但是 open source Flash player/renderer 還是受限於規格開放的不足。就目前的實做來說，做得最好的兩個 open source 計畫分別是 [<a href="http://gplflash.sourceforge.net/">GplFlash</a>] 與 [<a href="http://www.schleef.org/swfdec/">SwfDec</a>]，前者有 gplflash-2 branch，目標是 Flash 7 規格的支援，成效也相當好，不僅有 ActionScript 的支援，也成功播放多個 Flash 動畫，不過 library dependency 也變多，目前依賴 OpenGL 與 FFmpeg，並且主體以 C++ 撰寫。而 SwfDec 較為輕巧，穩定性也夠，可惜對於 ActionScript 的支援不是很好，但額外提供了給 Gtk+ 與 GStreamer 的 plugin，對於軟體整合來說，做得比較好。<br><br>
+
+[<a href="http://www.opaque.net/flirt/">flirt</a>] 則是新起之秀，引用 README 內容：<ul>
+Flirt is an SWF rendering library. Flirt contains a parser for reading SWF format files, a rasterizer for rendering the vector shaped into bitmaps, and an actionscript engine. Just hook it up to a timer and you've got a player. Interface your system UI events into the hooks provided and it's interactive. Present your application code to the player as actionscript objects and you've got a scriptable, cross-platform UI.
+</ul>
+以 GNU GPL 授權發行，實際測試後，發現功能與完成度相當高，SDL 的 test program 也才 235k，而 library dependency 有 libjpeg、libpng，以及 libmad (處理 Flash audio streaming，是 MP3 格式)。剛剛以紅樓夢的 Flash 動畫作測試 (來源： http://flash.sp169.com/flashmtv/honglou.swf )，運作畫面如下：<br>
+<center><img src="http://jserv.sayya.org/misc/flirt.png"></center><br>
+這個計畫看來很棒，有人想一起來 hacking 嗎？ :-)<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 10, 2006 04:54 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>http://ria.richtechmedia.com/?p=289</p>
+<span class="comments-post">由 <a href="mailto&#58;barabbas&#64;gmail&#46;com">b6s</a> 發表於</MTIfNonEmpty> January 10, 2006 05:06 PM</span>
+</div>
+<div class="comments-body">
+<p>libFAD是一个基于嵌入式的Flash解码库<br />
+http://fad.sourceforge.net/</p>
+<span class="comments-post">由 <a href="mailto&#58;gtkdict&#64;yahoo&#46;com&#46;cn">jacky</a> 發表於</MTIfNonEmpty> January 10, 2006 06:49 PM</span>
+</div>
+<div class="comments-body">
+<p><br />
+hacking flash player一向不是挺熱門事的，因為它在win/pc/ppc/phone上面都是免錢的，因此會想做這件事的人不外乎只有兩個原因：</p>
+
+<p>1、*nix 愛用者，因為等不及macromedia緩慢又buggy的linux player上市，所以打算自已來。</p>
+
+<p>2、embedded system的廠商(例如settop box或網路設備的管理介面)，因為不想或負擔不起mm的裝置授權費，所以想走open source路線。</p>
+
+<p>簡單幾個結論：</p>
+
+<p>1、現在不是開始 hacking flash player的好時機，主要是因為 Actionscript 3 與 flash player 8.5都快正式定案並推出，等這個規格出來後再下手可能會好一點。</p>
+
+<p>2、AS3/FP8.5有許多根本性/結構性的大改變，它的複雜度與支援的功能都遠較FP7來的高，要做出一個完全compatible 的 flash player 恐怕要花非常非常多心力。(其實就算只想做到 FP7的水準也都已經非常困難，目前檯面上幾個project說實在都還很有很大進步空間)</p>
+
+<p>3、macromedia 這次是採雙軌研發，不再像以前是先做完 win/mac後，隔半年才發表linux版，他們這次一開始就有人用 gcc 在寫 flash player 8.5 for linux，所以理論上今年三月之後兩者會同時發行。</p>
+
+<p>4、如果是基於不想付per device license fee 等經濟因素而想自創相容 player，那就要仔細思考一下到底要做到什麼程度，例如要不要支援actionscript？要不要有影音能力？(如果要，那就得順便把 sorenson/on2 vp6等codec也做進來，或想辦法生出相容的東西)，或是只希望能讓動畫與音效能呈現出來，那事情就簡單一點。</p>
+
+<p>所以重點是在跳下去hacking前要先想清楚到底想做到什麼程度，但我的直覺是難度頗高且最終完成的東西滿意度大概也不會挺好 orz </p>
+
+<p>幾篇參考文章：<br />
+(Tinic Uro是flash player 總工程師，看它的blog最準)</p>
+
+<p>http://www.kaourantin.net/2005/12/flash-player-8-for-linux-update.html</p>
+
+<p>http://www.kaourantin.net/2005/08/porting-flash-player-to-alternative.html<br />
+(從這篇就可以瞭解要生出一個 linux 版player的難處)</p>
+<span class="comments-post">由 <a href="http://ria.richtechmedia.com">jx</a> 發表於</MTIfNonEmpty> January 11, 2006 02:31 AM</span>
+</div>
+<div class="comments-body">
+<p>補充一個網站 GNU版 flash player</p>
+
+<p>http://www.gnu.org/software/gnash/</p>
+
+<p>Open Source Flash Player has been admitted in the FSF high priority list. It will be based in the version 7 of the virtual machine.</p>
+
+<p>To be admitted in the list means that it has been sponsored($$$) and it will be finished in a few months (it's near alpha).</p>
+
+<p>這個希望可能比較大一點。</p>
+<span class="comments-post">由 <a href="mailto&#58;jx&#64;twmug&#46;com">jx</a> 發表於</MTIfNonEmpty> January 11, 2006 02:47 AM</span>
+</div>
+<div class="comments-body">
+<p>gnash , flirt,libFAD? which is the best?</p>
+<span class="comments-post">由 <a href="mailto&#58;gxguan&#64;hotmail&#46;com">mark</a> 發表於</MTIfNonEmpty> February  6, 2006 05:29 PM</span>
+</div>
+<div class="comments-body">
+<p>  Jserv : 你好！<br />
+  <br />
+  SDL 的 test program 能发一份给我吗？</p>
+<span class="comments-post">由 <a href="mailto&#58;laidan&#64;esensen&#46;com&#46;cn">laidan</a> 發表於</MTIfNonEmpty> July 22, 2006 05:10 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

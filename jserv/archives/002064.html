@@ -1,0 +1,290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 「我是軟體 -- 那些處理器教我的事」簡報上線</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002063.html" title="運用色彩點綴 UNIX 環境" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002065.html" title="《The Art of Debugging》第一章開放下載" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002063.html">« 運用色彩點綴 UNIX 環境</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002065.html">《The Art of Debugging》第一章開放下載 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">September 10, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">「我是軟體 -- 那些處理器教我的事」簡報上線</h3>
+
+<center><img src="http://jserv.sayya.org/misc/coscup2008-jserv.jpg" width="308" height="320" /></center><br />
+稍早於 [<a href="http://coscup.org/2008/">COSCUP 2008</a>] 進行以 [<a href="http://blog.linux.org.tw/~jserv/archives/002047.html">我是軟體 -- 那些處理器教我的事 </a>] 為題的演講，簡報已上線，請見 [<a href="http://jserv.sayya.org/embedded/trap-in-processors.pdf">trap-in-processors.pdf</a>]，搭配的範例程式碼打包為 [<a href="http://jserv.sayya.org/embedded/trap-in-processors-samples.tar.gz">trap-in-processors-samples.tar.gz</a>]。<br />
+<br />
+過去我們總有個假設，就是單純的 C 語言程式碼，經過編譯後，能夠輕易在多種軟硬體平台上運作，但實際上，有太多值得我們思索的細節。近年來，透過自由軟體，以提昇產品開發時程與系統完整度，已是大勢所趨，但涉及跨平台開發，其潛藏的問題又難保不是未來系統中的未爆彈。基於這個思維，此議程以 ARM/Linux 為例，由四個簡短的 C 語言程式碼 (約十行內)，點出跨平台整合開發時，PC/x86 與 ARM 環境中迥然不同的落差，期望有助於自由軟體的廣泛應用與深入琢磨。<br />
+<center><img src="http://jserv.sayya.org/misc/coscup2008-jserv-2.jpg" width="500" height="365" /></center><br />
+前述的四個範例為：<ul>
+  <li>alignment.c - 凸顯 x86 與 ARM (或其他 RISC) 處理 data alignment 的行為落差</li>
+  <li>signchar.c - 指出 GNU Toolchain 即使在幾十種硬體平台有良好的支援，但具體實做卻有出入，本範例點出 C 語言中，與平台相依的實做</li>
+  <li>abi.c - 指出 C 語言並未涵蓋的 ABI (Application Binary Interface)，舉凡 struct/data 的長度、function calling convention 等議題，並由精簡的例子，加深聽者對這方面的警覺</li>
+  <li>call.c - 對於 C 語言 (及為了實做考量的擴充) 所內建的函式集來說，在實做上的呈現，依據個別硬體平台，往往有出入</li>
+</ul>
+採用的硬體為：<ul>
+  <li>x86: Lenovo x60 筆記型電腦 / Pentium-M 1.8GHz / Ubuntu 8.04</li>
+  <li>ARM: Openmoko GTA02 (S3C244x ARM
+SoC) / Linux 2.6.24, glibc 2.7</li>
+</ul>
+當然，實際上要考量的議題太多了，像是 packed
+data, soft/hard floating-point, endian, data exception, cache/TLB, ... 等等，所謂「處處留心皆學問」，小弟只是試著在短短的二十分鐘內，透過簡單不過的範例，去凸顯如此的對比。在簡報中不斷出現下圖：<br />
+<center><img src="http://people.debian.org.tw/~jserv/imsoft.jpg" width="264" height="432" /></center><br />
+議程中，透過圖中女子的自白，道出的一番話：「我好天真，現在才看清，其實這一切並非只是 cross compilation 這麼單純」 ，又該是多少從業人員與開發者的感嘆呢？<br />
+<br />
+ARM/Linux 是如此，其他五花八門的「處理器」，想必教了「軟體」無以言表的經驗，希望本議程能作為一個出發點，得以讓更多開發者切磋琢磨，並提昇對軟體的認知。請多指教，謝謝！<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 September 10, 2008 08:15 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>請問jserv大大,<br />
+那alignment範例中,</p>
+
+<p>echo 數字 > /proc/cpu/alignment<br />
+./alignment.arm</p>
+
+<p>是什麼用意呢?<br />
+</p>
+<span class="comments-post">由 <a href="http://NA">小瓜</a> 發表於</MTIfNonEmpty> September 10, 2008 11:08 AM</span>
+</div>
+<div class="comments-body">
+<p>To 小瓜,</p>
+
+<p>基本上，非 x86 的 RISC 處理器傾向不自動處理 alignment 議題，也就是說，此權責交由軟體處理。以 ARM-Linux 的設計來說，當存取 unaligned memory 時，硬體會丟出 trap，ARM-Linux Kernel 內部的 handler 就接手處理。此 handler 包含軟體模擬的 unaligned memory 操作 (當然，會有效能上的衝擊)，也就是讓這個動作，在軟體層面看起來合法。</p>
+
+<p>請參照簡報 Page 15，就是要求 ARM-Linux kernel 的處置方式：<br />
+* 0 :  忽略，不處理<br />
+* 1 : 提出警告，可由 dmesg 觀察<br />
+* 2 : 以軟體模擬修正<br />
+* 3 : 3 = 1 + 2，也就是警告並修正</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> September 10, 2008 11:44 AM</span>
+</div>
+<div class="comments-body">
+<p>相當有意思的一段探討, 確實指出了 cross compiling 的許多陷井.</p>
+
+<p>不過內容所提及的幾個重點項目似乎偏向軟體, compiler. 不同的處理器倒不像是元兇...</p>
+
+<p>Alignment 的問題本應由 compiler 在分配位置時確保每個 symbol 的位址是 sizeof(int) 的倍數解決. 通常也是 project configuration 的一環.</p>
+
+<p>Signed 與 unsigned 也是 compiler 對資料型態的解釋. Compiler 應該依不同的資料型態產生適當的機械碼.<br />
+最終還是歸於 project configuration.</p>
+
+<p>ABI 這個項目更是 compiler 對 struct 的處理. sizeof() 絕對是 compile time 被 compiler 給解釋出來的.</p>
+
+<p>memcpy 比較有意思, 涉及 libc 的部份. 就 symbol table 來看似乎在 ARM 底下被 macro 所取代. 同樣是軟體環境所造成, 硬體並不是元兇.</p>
+
+<p>相信在適當的設定下, 這些問題都有簡單的解決方案. 也許我們被條教得不夠徹底, 所以很多細節上的設定好像不太對...</p>
+<span class="comments-post">由 <a href="mailto&#58;kevinpeng&#64;zycomtech&#46;com&#46;tw">Kevin Peng</a> 發表於</MTIfNonEmpty> September 10, 2008 01:31 PM</span>
+</div>
+<div class="comments-body">
+<p>To Kevin,</p>
+
+<p>感謝指教！</p>
+
+<p>compiler 對 alignment 能做到有限度的處理，但端看實際的行為，仍有許多狀況。比方說，在 event-driven window system 的設計中，傳遞參數給 callback function 是常見的手法，但不合適的參數傳遞，即可讓處理器因而發生 unaligned access trap，對於 gcc 一類的 compiler，很難有效偵測並防治。但非常有意思的是，許多自由軟體邁向跨平台發展，或者引入到消費性電子產品時，不免都會「踩到地雷」(closed source software 就算踩到，大概也聽不到 "Ouch!" 聲)，若吾人能多注意這個概念上的分野，想必可大幅提昇可靠度。</p>
+
+<p>至於取材，與處理器直接相關的議題，如 data serialization barrier (如 ARM Thumb 16-32 bit mixing instructions)，也會反應到系統軟體的層面，若處理不當，不免會生無從破解的難題。這很值得談，不過考量到一般性的聽眾背景，只好找些「軟」的案例切入。</p>
+
+<p>再者，現代的微處理器加入若干先進的特徵，諸如 vectorized math coprocessor (如 Xscale/iWMMXt 與 ARM11)，對系統的衝擊不僅是 assembler 需要加入新的 opcode、compiler 要納入 optimizing 與 instruction scheduling。實際上 core pipeline 的行為也得考慮，所以這一切變得相當複雜，這也是近年來 ARM-Linux 對於支援 softvfp / ABI 多作斟酌的緣故。過去開發 smartphone 平台時，即多次「觸礁」，希望未來能野人獻曝，分享這些經驗。</p>
+
+<p>最後一點，或許可以談談。工具的設計，就是能簡化、去除重複的工作，也無形中引導人們能往更高層次的方向前進，若我們有個 sandbox，讓軟體開發時，不需顧慮硬體架構設計與系統軟體的出入，也就是「適當的設定」，是不是一切都能圓滿呢？ :-)</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> September 10, 2008 02:06 PM</span>
+</div>
+<div class="comments-body">
+<p>我的出發點非常單純從軟體開始. 因為研討中的幾項例子都是簡單的 C 語言, 內容與硬體架構似乎不需要有任何關聯或依賴. 但實際上所得到的結果卻教人跌破眼鏡.</p>
+
+<p>Alignment 這問題處理器已經丟給軟體設計者很久了. 雖然compiler 和 linker 有能力確保所有 DATA 節區中的長整數都被正確到分配位置, 而不安全的長整數存取也應定義與使用 macro, 如 STORE_UINT32_TO_PTR_LE() 進行 byte access. 但這不過是理想, 畢竟還是要尊重事實.</p>
+
+<p>其實最另我驚訝的是 ABI 的例子. 例中 compiler 對資料型態的解釋相去甚遠. 同樣的輸入, 不同的輸出, 不得不令人發想: "天哪, 這東西能用嗎...?" 當然, 我相信最終這是 compiler 內部使用的設定不同所導致, 而 target device 正是導火線.</p>
+
+<p>再回顧 char 的例子, 想到很多 compiler, 尤其是針對 embedded 與單晶片的, 提供將 char 默認為 unsigned char 的 "特色", 真的會狂冒冷汗. 這對那些八位元處理器作 signed integer 的計算與比對的正確性 (尤其是會延展到例如 16-bit 或更大資料單位那種) 簡直是赤裸裸的挑戰呀. 寫好還必需檢查所產生的 assembly 內容是否正確, 好像在監督小朋友唸書一樣, 簡直是不可思議啊.</p>
+
+<p>整個思路最後回到你回應中所提, compiler, linker, library 等等都讓我們產生是工具. 這些工具必需穩定並提供一致的效果. 總不能像周星馳影片中的那把槍, 第一發往後射, 第二發往前射, 這... 工具為輔, 人才是主. 如果處處由人來配合工具, 似乎與理不合. 不過在見到這麼多陷阱與不同的跨平台表現後, 我覺得還是要尊重事實. 如果世界是完美的, 就不會有工程學這不完美中的完美存在.</p>
+
+<p>最後再次感謝你將這些研究心得濃縮整理成簡短有力且一針見血的題目與大家分享. 的確令我獲益良多.</p>
+<span class="comments-post">由 <a href="mailto&#58;kevinpeng&#64;zycomtech&#46;com&#46;tw">Kevin Peng</a> 發表於</MTIfNonEmpty> September 10, 2008 06:04 PM</span>
+</div>
+<div class="comments-body">
+<p>會造成這個問題原因有二:</p>
+
+<p>1. c 語言的語意不是硬體無關, 例如指標記憶體存取為機器層級語意, 語意同時跨越不同的抽象層次彼此很容易發生不一致的現象。<br />
+2. 編譯器跟硬體的行為跟你想的不一樣</p>
+
+<p>這就好像你開了一部車出門, 有的時候是自排有的時候又突然間變成手排, 沒弄好也是會出事的。</p>
+<span class="comments-post">由 <a href="http://sleepnova.blogspot.com/">sleepnova</a> 發表於</MTIfNonEmpty> September 13, 2008 10:32 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2064" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

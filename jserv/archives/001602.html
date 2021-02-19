@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Video Coding 演算法評估的盲點</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001601.html" title="Mozilla Re-licensing 完畢" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001603.html" title="人間四月芳菲盡" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001601.html">« Mozilla Re-licensing 完畢</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001603.html">人間四月芳菲盡 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">April 02, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Video Coding 演算法評估的盲點</h3>
+
+專注於 DSP 設計的 Berkeley Design Technology Inc. 總經理 Jeff Bier 日前撰寫了一篇短文 [<a href="http://www.videsignline.com/showArticle.jhtml?printableArticle=true&articleId=170700514">Scaling video processor power gets squirrelly</a>]，以簡單的概念破除我們評估 Video Coding 演算法複雜度的盲點。EETaiwan 提供了一份該文的繁體中文翻譯 [<a href="http://www.eettaiwan.com/ARTP_8800411686_622964.HTM">視訊演算法常見的設計盲點</a>]，引用如下：<ul class="code" style="margin: 6px;">
+這是相當有趣的問題。當你要建置一個特別的視訊壓縮演算法時，您得考慮要多少的運算效能才夠，雖然網路上有你所需的數據，但其所假設的情況卻往往與你的設計不完全相同，更何況該數據可能是針對比想像中還小的訊框要求。<br>
+<br>
+你或許會想：「雖然沒有我需要的正確數據，但我只要用一個比例因數 (scaling factor) 乘以手中數據，就可以彌補實際運算負載量的差異。」但這種做法，卻往往正是出狀況的主要原因。<br>
+<br>
+假定你的數據是代表小訊框，視訊框卻有四倍大，您只能以四這個因數乘以處理器下載的數據。但要注意，可能較小的訊框適於晶片上記憶容量，較大的未必適合。<u>一旦視訊框超過晶片上的記憶容量，效能即可能遭受巨大打擊。每個情況在那點所需處理的功率可能呈現非線性關係，你的比例因素也就沒多大意義。</u><br>
+<br>
+實際上，由於視訊演算法多半採用極大量的數據，晶片上記憶規模與外部記憶頻寬常會對效能帶來限制。其他因素會更複雜化。例如，在典型的視訊壓縮演算法（如H.264規格）中，大部份區塊(block)是依畫素運作，但人們不了解很重要的一點是：熵編碼（entropy coding）區塊是依係數運作，並非畫素。也因此，其下載處理乃是壓縮位元率的一項函數，並非畫素率。<br>
+<br>
+可能您只是沒注意到這個區塊，但卻是個錯誤。視訊壓縮演算法的熵編碼消耗整個演算法所需處理功率可能高達三分之一。也因此，您若將位元率增加一倍─即使每秒畫素維持不變─還是需要更多的馬力。而且，即使您所發現的效能數據恰好符合情況需求，但也有可能是錯的。許多微妙的因素也會影響視訊演算法的下載處理，您也無法經常擁有足夠的資訊對數據相關性進行評估。<br>
+<br>
+例如，假設您計劃納入H.264 編碼規格 (H.264 Baseline Profile)，該編碼規格提供每秒30訊框的影像圖形陣列(VGA)畫面。同時假定處理器廠商擁有針對某一情況所需的效能數據。那是有助益的，但也要等到其他眾多變數確定後，將您觀察的數據與報告出來的數據相互比較，才不致帶來更多誤導。這些變數包括如視訊品質、解碼視訊內容的型式和外部記憶頻寬。未對各種情況下衍生出來的數據深入了解，將無法準確預測效能。<br>
+<br>
+<u>工程師常習慣於對數據做外插的計算推斷，但就視訊處理而言，得小心處理，要不然就最好不要。</u>
+</ul>
+底線是我自己加入的，在我還沒實地去 implement 與 optimize 手頭那些 video / speech codec 前，我也犯了同樣外插預估的錯誤，後來經過血淋淋的教訓 (包含 coding 到眼睛紅腫、回家的路上還不斷思考 benchmark 的落差，而導致車禍、...)，才得以理解這微言大義。<br>
+<br>
+引用這篇文章的另一個原因是，之前曾與國內某個 codec 大廠有接觸，甚至還跟其 software R&D 的 VP 打交道，可是對方評估系統效能的方式，似乎也...？好吧，是我太嫩了，還是別輕妄置喙，那位前輩研究 Image processing 的時候，我還在吸奶嘴呢。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 April  2, 2006 11:37 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>受教了...</p>
+
+<p>雖然這也不是我的本業，所以有看沒有懂 :p</p>
+
+<p>不過至少多知道一樣地方不能只用外插...</p>
+<span class="comments-post">由 <a href="http://www.blogger.com/profile/5509510">YuKuan</a> 發表於</MTIfNonEmpty> April  4, 2006 12:18 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

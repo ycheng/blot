@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Planex GW-NS54GM 無線網路卡驅動攻略</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001043.html" title="Linetconf (Linux Networking Configurator)" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001048.html" title="C++ 逆向工程提示" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001043.html">« Linetconf (Linux Networking Configurator)</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001048.html">C++ 逆向工程提示 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 14, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Planex GW-NS54GM 無線網路卡驅動攻略</h3>
+
+我不太會寫所謂的 How-To 文章，或許是因為文筆不好，也有部份是因為不拘小節，所以寫出來的文件根本不能看，但是我還試試著紀錄驅動手頭這張 PLANEX 出品的 [<a href="http://www.planex.co.jp/product/bwave/gwns54gm.shtml">GW-NS54GM</a>] 802.11g 無線網路卡的經過：
+<center><img src="http://myweb.hinet.net/home12/ezmobi/pro-pi/wl-pci-ns54gm.jpg" /></center>
+
+這張卡使用 TI 出品的 acx100 系列的晶片組，去年小貓來公司打工的時候 (兩人的 WirelessLAN Kit 發展小組)，整理過 [<a href="http://ccns.ncku.edu.tw/~ct/doc/wirelessTesting.htm">Wireless Card (including Atmel, Prism, and TI acx100) Testing Result & Testing Process</a>] 的文件，有些 Wireless Extension 支援的測試結果，不過當時用的 802.11b D-Link / DWL-120+，這些經驗還挺有幫助的。<br>
+<br>
+acx100 的 open source Linux driver 有份相當好的參考文件 [<a href="http://www.houseofcraig.net/acx100_howto.php">Craig's ACX100/111 Guide for Linux</a>]，基本上「按圖索驥」大概就能驅動，在驅動之前，先來看看硬體資訊：<ul>
+$ lspci | grep ACX<br>
+0000:02:00.0 Network controller: Texas Instruments ACX 111 54Mbps Wireless Interface
+</ul>
+嗯，ACX111 的晶片組，再來看看 PID 與 VID：<ul>
+$ lspci -n | grep 104c<br>
+0000:02:00.0 0280: 104c:9066
+</ul>
+104c 就是 ACX100 系列的 VID (Vendor ID)，所以我們已經可以確認，接下來到 [<a href="http://rhlx01.fht-esslingen.de/~andi/acx100/">Open-Source wireless driver for TI ACX1xx chipsets</a>] 下載最新的 driver，我用的版本是 acx100-0.2.0pre8_plus_fixes_48。<br>
+<br>
+不過，實際動手之前，建議先將上列的網頁 link 都拜讀過，比方說我們可以發現一件很重要的項目，引述網頁：<ul>
+We're still not totally sure about the status of WEP support:<ul>
+<li>ACX100: Many situations should work, but it might still not work properly or fail sometimes.</li>
+<li>ACX111: not working yet.</li>
+</ul>
+</ul>
+所以這張卡就比較抱歉了，沒有 WEP 支援可用。在 tarball 中的 fireware 目錄預設放於 /usr/share/acx，這與 Debian policy 不太合，所以我動手弄個 [<a href="http://jserv.sayya.org/kernel/acx100-debian-firmware-path.diff">修正 firmware 目錄的 patch</a>]。施加這個 patch 後，跑 ./Configure ; make ; sudo make install 即可。<br>
+<br>
+驅動後，應該就沒有大問題了，那怎麼設定呢？之前 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001043.html">Linetconf (Linux Networking Configurator)</a>] 提到我最近在發展的這個網路設定套件，就直接用滑鼠「按幾下」就輕鬆設定好了，wireless-tools 太複雜了，不要問我怎麼用，因為我自己也不會 :-)<br>
+<br>
+Have Fun!<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March 14, 2005 09:24 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

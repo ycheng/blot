@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Tor : 第二代 onion routing</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001485.html" title="再探羅塞達碑石 : 連續時間系統與離散系統的橋樑" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001487.html" title="Novell Linux Desktop 展示影片" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001485.html">« 再探羅塞達碑石 : 連續時間系統與離散系統的橋樑</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001487.html">Novell Linux Desktop 展示影片 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February 05, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Tor : 第二代 onion routing</h3>
+
+剛剛讀 [<a href="http://blog.linuxeden.com/110848">巴蠻子的新破茅屋</a>] 的 blog [<a href="http://blog.linuxeden.com/post/110848/3826">如何解決上不了sf.net的問題</a>]，發現了 [<a href="http://tor.eff.org/">Tor</a>] 這個計畫，引用 [<a href="http://risker.org/files/Tor/index.html">用Tor實現有效和安全的互聯網訪問</a>] 一文的介紹： <ul class="code" style="margin: 6px;">
+Tor 的全稱是 "The Onion Router"，號稱是 "An anonymous Internet communicaton system"，主頁在：<a href="http://tor.eff.org">http://tor.eff.org</a>。<br>
+<br>
+它針對現階段大量存在的流量過濾、嗅探分析等工具，在 JAP 之類軟件基礎上改進的，支持 Socks5，並且支持動態代理鏈（通過 Tor 訪問一個地址時，所經過的節點在 Tor 節點群中隨機挑選，動態變化，由於兼顧速度與安全性，節點數目通常為 2-5 個），因此難於追蹤，有效地保證了安全性。另一方面，Tor 的分布式服務器可以自動獲取，因此省卻了搜尋代理服務器的精力。下圖是一個簡單的 Tor 安全訪問與危險訪問的區別示意圖：<br>
+<center><img src="http://risker.org/files/Tor/images/HowTorWorking.png"></center>
+</ul>
+前面已經介紹過 onion routing 的概念，而 [<a href="http://tor.eff.org/">Tor</a>] 就是一個實做，最早由美國海軍研究實驗室資助，2004 年成為 EFF (Electronic Frontier Foundation，EFF) 的研究計畫。[<a href="http://tor.eff.org/">Tor</a>] 是在 OSI 網路第七層的 application layer 進行加密，而之所以稱為 "onion"(洋蔥) routing，就是因為這個結構類似洋蔥，使用者只能看到表皮，但如何要一窺核心，就得一層又一層的撥開。router 間的傳輸都經過對稱的 key 作加密，形成如洋蔥般有層次的結構，中間所經過的各節點，又好比洋蔥的一層皮，將 client 包覆其中，保護資料來源，這也是 onion router 對於安全性的基本概念。<br>
+<br>
+[<a href="http://tor.eff.org/">Tor</a>] client 需要在 localhost 安裝 onion proxy，會持續的與其他 [<a href="http://tor.eff.org/">Tor</a>] node 交流，從而構成 virtual circuit。onion proxy 採用 Socks5，所以常見的網路應用程式就可以透過 onion proxy，再 virtual circuit 中進行通訊。<br>
+<br>
+官方網頁 [<a href="http://tor.eff.org/overview.html.en">Tor: Overview</a>] 有幾張很清楚的示意圖：<br>
+<center><img src="http://tor.eff.org/images/htw1.png"><br>
+<br>
+<img src="http://tor.eff.org/images/htw2.png"><br>
+<br>
+<img src="http://tor.eff.org/images/htw3.png"><br></center>
+<br>
+[<a href="http://tor.eff.org/">Tor</a>] 以 BSD License 發行，支援 Win32 與 UNIX-like 平台，在 Debian 的使用，可參考 [<a href="http://risker.org/files/Tor/index.html">用Tor實現有效和安全的互聯網訪問</a>] 一文，節錄如下： <ul class="code" style="margin: 6px;">
+在 /etc/apt/sources.list 中增加如下兩行：<ul>
+deb http://mirror.noreply.org/pub/tor stable main<br>
+deb-src http://mirror.noreply.org/pub/tor stable main
+</ul>
+然後執行：<ul>
+apt-get update && apt-get install tor tsocks
+</ul>
+安裝完畢後，系統會建立 Debian-tor 的帳號，並且以該用戶的身份啟動 tor，開機自動起動，可以在 /etc/rc2.d/ 下進行調整。<br>
+<br>
+需要編輯的文件其實只有一份，即 /etc/tsocks.conf，只需要三行即可：<ul>
+server = 127.0.0.1<br>
+server_type = 5<br>
+server_port = 9050
+</ul>
+要用 Tor 進行代理的程序，以 tsocks 啟動，比如，希望用 Tor 代理所有 web 訪問，則可以執行：<ul>
+$ tsocks firefox
+</ul>
+</ul>
+其餘資訊可參考 [<a href="http://tor.eff.org/">Tor</a>] 官方網頁，與維基百科 [<a href="http://zh.wikipedia.org/wiki/Tor">Tor - Wikipedia</a>]。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 February  5, 2006 12:15 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

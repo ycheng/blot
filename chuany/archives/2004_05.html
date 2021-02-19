@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>chuany: May 2004 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~chuany/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~chuany/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~chuany/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~chuany/archives/2004_01.html" title="January 2004" />
+
+<link rel="next" href="http://blog.linux.org.tw/~chuany/archives/2004_07.html" title="July 2004" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~chuany/" accesskey="1">chuany</a></h1>
+<span class="description">:wq chuany</span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~chuany/archives/2004_01.html">&laquo; January 2004</a> |
+
+<a href="http://blog.linux.org.tw/~chuany/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~chuany/archives/2004_07.html">July 2004 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+<!--
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/">
+<rdf:Description
+    rdf:about="http://blog.linux.org.tw/~chuany/archives/2004_05.html#000633"
+    trackback:ping="http://mt.debian.org.tw/mt-tb.cgi/392"
+    dc:title="Connect to IMAP and POP3 with SSL"
+    dc:identifier="http://blog.linux.org.tw/~chuany/archives/2004_05.html#000633"
+    dc:subject="視窗"
+    dc:description="Becky&apos;s author say: &gt;Mon, 18 Nov 2002 17:55: &gt; &gt;Subject: support for ssl with pop3 / imap / smtp ? &gt;Posted By: carty &gt; &gt;Message: Hi, &gt; &gt;Yes, I know many users wishes for SSL support in Becky!. &gt;There is..."
+    dc:creator="chuany"
+    dc:date="2004-05-29T04:45:32+08:00" />
+</rdf:RDF>
+-->
+
+
+<h2 class="date">May 29, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000633"></a>
+<h3 class="title">Connect to IMAP and POP3 with SSL</h3>
+
+<p>Becky's author say:</p>
+
+<p>>Mon, 18 Nov 2002 17:55: <br />
+><br />
+>Subject: support for ssl with pop3 / imap / smtp ? <br />
+>Posted By: carty <br />
+><br />
+>Message: Hi, <br />
+><br />
+>Yes, I know many users wishes for SSL support in Becky!. <br />
+>There is a good SSL library out there, so technically it would not be<br />
+>so hard to implement. <br />
+>However, SSL is based on some encryption algorisms of which some<br />
+>companies holds patents. <br />
+>Becky! is personally developed software after all. I don't really want<br />
+>to deal with any legal issues. <br />
+><br />
+>So, SSL support for Becky! is still a pending issue. I don't know what<br />
+>I am going to do with that in future. <br />
+><br />
+>Sorry.</p>
+
+<p>But we can use Stunnel http://www.stunnel.org/ to run Becky with SSL.</p>
+
+<p>Download stunnel-4.05.exe to C:\Program Files\Stunnel\<br />
+http://www.stunnel.org/download/stunnel/win32/stunnel-4.05.exe</p>
+
+<p>Download llibssl32.dll and libeay32.dll to C:\WINNT\SYSTEM32<br />
+http://www.stunnel.org/download/stunnel/win32/openssl-0.9.7d-zlib/libssl32.dll<br />
+http://www.stunnel.org/download/stunnel/win32/openssl-0.9.7d-zlib/libeay32.dll</p>
+
+<p>Edit a file named stunnel.conf, save it to C:\Program Files\Stunnel</p>
+
+<p>stunnel.conf:<br />
+   client = yes </p>
+
+<p>   [pop3s] <br />
+   accept = localhost:50110 <br />
+   connect = your.pop3s.server.domain.or.ip:995 </p>
+
+<p>   [imaps] <br />
+   accept = localhost:50143 <br />
+   connect = your.imap.server.domain.or.ip:993</p>
+
+<p>Starting C:\Program Files\Stunnel\stunnel-4.05.exe<br />
+Starting Becky and modify(Mailbox Setup):<br />
+ (1)Account-->Server Settings-->IMAP or POP Server : localhost<br />
+ (2)Miscs-->Port Numbers-->POP3/IMAP4 : 50110 and 50143</p>
+
+<p>Enjoy it!</p>
+
+
+
+<div class="posted">
+	由 chuany 發表於 <a href="http://blog.linux.org.tw/~chuany/archives/2004_05.html#000633">04:45 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=633" onclick="OpenComments(this.href); return false">迴響 (109)</a>
+	
+		| <a href="http://mt.debian.org.tw/mt-tb.cgi?__mode=view&amp;entry_id=633" onclick="OpenTrackback(this.href); return false">引用</a>
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

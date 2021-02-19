@@ -1,0 +1,285 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 透過 OpenGL 作 WebKit 網頁描繪</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002008.html" title="對自己好一些：談技術手冊閱讀" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002010.html" title="「許我們一個 Keroro 的桌面」簡報上線" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002008.html">« 對自己好一些：談技術手冊閱讀</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002010.html">「許我們一個 Keroro 的桌面」簡報上線 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">April 11, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">透過 OpenGL 作 WebKit 網頁描繪</h3>
+
+之前的文章 [<a href="http://blog.linux.org.tw/~jserv/archives/001989.html">WebKit + Clutter：以 3D 技術給予網頁瀏覽的新體驗</a>] 提過 [<a href="http://webkit.org/">WebKit</a>] 開始採用 [<a href="http://cairographics.org/">Cairo</a>] 的向量繪圖處理能力，後者允許發揮硬體的 OpenGL 加速，我們也見到將 WebKit 描繪的網頁映射到 2D surface 的 3D 展示，不過那時候是透過 Gtk+/Cairo 先進行描繪，然後透過 [<a href="http://www.clutter-project.org/">clutter</a>] 對 2.5D 場景作進一步處理。現在，[<a href="http://o-hand.com/">openedhand</a>] 的 [<a href="http://blogs.gnome.org/iain/">Iain Holmes</a>] 著手將 WebKit 整個移植到 clutter，也就是新增 clutter platform，免除剛剛繁瑣的對應，讓這一切都能透過 clutter，直接驅動硬體 OpenGL 加速，目前還在開發中，但是給我們頗大的想像空間。<br />
+<br />
+這個 Clutter/WebKit 實驗性的分支維護於 Iain 的 git tree [<a href="http://folks.o-hand.com/iain/git/WebKit/">WebKit</a>]，待發展成熟後，會比照 Gtk+/WebKit 的模式，整合回 WebKit 專案。我做了一些調整，讓 SVN trunk 的 clutter 與 clutter-cairo 得以銜接，可取得這份打包好的 tarball [<a href="http://people.debian.org.tw/~jserv/webkit/webkit-clutter-snap-20080410.tar.bz2">webkit-clutter-snap-20080410.tar.bz2</a>]，先執行 autogen.sh，然後傳遞 '--disable-gtk' '--enable-clutter' 等參數給 configure script，隨後再依據一般的建構程序即可。Clutter/WebKit 的 API 設計相當簡潔漂亮，以下示範如何建立一個純 OpenGL 繪製、WebKit 為基礎的網頁瀏覽器： [<a href="http://people.debian.org.tw/~jserv/webkit/test-webkit.c">test-webkit.c</a>]
+<pre class="code" id="codemain" style="margin: 6px;"><span class="keyword">#include</span> &lt;clutter/clutter.h><span class="keyword">
+#include</span> &lt;webkit/webkit.h>
+
+<span class="keyword">static</span> WebkitAdjustment *hadj, *vadj;
+<span class="keyword">int</span> main (<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)
+{
+	ClutterActor *stage;
+	WebKitWebView *view;
+&nbsp;
+	<span class="keyword">if</span> (argc &lt; 2) <span class="keyword">return</span> 1;
+
+	clutter_init (&amp;argc, &amp;argv);
+&nbsp;
+	hadj = webkit_adjustment_new (0,0,0,0,0,0);
+	vadj = webkit_adjustment_new (0,0,0,0,0,0);
+&nbsp;
+	stage = clutter_stage_get_default ();
+	clutter_actor_set_size (stage, 800, 400);
+&nbsp;
+	view = webkit_web_view_new (800, 400);
+	webkit_web_view_set_scroll_adjustments (view, hadj, vadj);
+&nbsp;
+	clutter_actor_set_position (view, 0, 0);
+	clutter_actor_set_size (view, 800, 400);
+	clutter_actor_set_reactive (view, TRUE);
+	clutter_stage_set_key_focus (stage, view);
+
+	clutter_container_add_actor (CLUTTER_CONTAINER (stage), view);
+&nbsp;
+	webkit_web_view_open (view, argv[1]);
+	clutter_actor_show_all (stage);
+&nbsp;
+	clutter_main ();
+}</pre>
+程式列表最多的地方，主要是 clutter 的布局操作，先建立 ClutterActor，給予適當的尺寸與屬性，再來建立 WebKitWebView 的物件，將之放入剛剛的 clutter 容器中 (clutter 底層採用 GObject/GLib)，最後呼叫關鍵的 webkit_web_view_open() 函式，這樣，一個網頁瀏覽器就完成了，重點是，這個 clutter 容器可任意置放於其他 2.5D 畫面中，要作絢麗的特效也是相當容易。以 Google Maps 來驗證目前開發的進度：<br />
+<center><img src="http://jserv.sayya.org/khtml/screenshots/webkit-clutter-pure-gl.jpg" width="452" height="248" /></center><br />
+現在網頁字型的描繪，是透過 Pango/Freetype，並透過 GLX backend 作顯示。<br />
+<br />
+感謝 Iain 的指導，協助排除許多技術問題，看來好戲正要上場了！<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 April 11, 2008 10:32 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>为什么你的snap运行configure需要clutter0.7?但我看最新的clutter是0.6嘛</p>
+<span class="comments-post">由 <a href="http://wenhsuanhack.spaces.live.com">wenhsuan</a> 發表於</MTIfNonEmpty> April 20, 2008 06:04 PM</span>
+</div>
+<div class="comments-body">
+<p>@wenhsuan,</p>
+
+<p>SVN head 的 clutter 版本為 0.7</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> April 20, 2008 07:57 PM</span>
+</div>
+<div class="comments-body">
+<p>嗯，我看到了，正想来这里说一声</p>
+<span class="comments-post">由 <a href="mailto&#58;wenhsuan526&#64;gmail&#46;com">wenhsuan</a> 發表於</MTIfNonEmpty> April 20, 2008 08:22 PM</span>
+</div>
+<div class="comments-body">
+<p>我把clutter和webkit make&make install后，再编译你的test_webkit.c文件，出现了error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before xxxxxx错误，很怪异，你遇到过这种问题吗？</p>
+<span class="comments-post">由 <a href="http://wenhsuanhack.spaces.live.com">wenhsuan</a> 發表於</MTIfNonEmpty> April 21, 2008 10:01 PM</span>
+</div>
+<div class="comments-body">
+<p>@wenhsuan: 應該是 pkg-config 的設定沒處理好，而且你將關鍵的部份 mask 掉了，看不出所以然</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> April 21, 2008 10:52 PM</span>
+</div>
+<div class="comments-body">
+<p>jserv大大, 可否给出test-webkit.c的编译参数. </p>
+<span class="comments-post">由 <a href="mailto&#58;shuianle&#64;gmail&#46;com">Drip-shui</a> 發表於</MTIfNonEmpty> September 24, 2008 10:49 AM</span>
+</div>
+<div class="comments-body">
+<p> * Build instructions:<br />
+ *   # gcc -o test-webkit \<br />
+ *         test-webkit2.c \<br />
+ *         `pkg-config --cflags --libs webkit-clutter-1.0 \<br />
+ *                                     cairo pangocairo clutter-cairo-0.7`</p>
+
+<p>for clutter 0.7</p>
+
+<p>在 clutter 0.8 後，請修改為 clutter-cairo-0.8</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> September 24, 2008 05:17 PM</span>
+</div>
+<div class="comments-body">
+<p>非常感谢您的帮助</p>
+
+<p>我的实做是clutter-0.8, webkit-clutter-1.0</p>
+
+<p>#!/bin/sh<br />
+LIBS=`pkg-config --libs clutter-0.8 webkit-clutter-1.0`<br />
+INCS=`pkg-config --cflags clutter-0.8 webkit-clutter-1.0`</p>
+
+<p>PKG_CONFIG_PATH="/usr/lib /usr/local/lib"<br />
+gcc -o test-webkit test-webkit2.c ${INCS} ${LIBS}<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;shuianle&#64;gmail&#46;com">Drip-shui</a> 發表於</MTIfNonEmpty> September 25, 2008 10:09 AM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2009" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

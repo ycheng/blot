@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: 爸，我想寫軟體程式</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2010/07/dissy_--_objdum.html" title="dissy -- 好用的 objdump 圖形前端工具" />
+
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2010/07/gcc_nested_func.html" title="GCC 的 nested function 與 trampoline" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2010/07/dissy_--_objdum.html">« dissy -- 好用的 objdump 圖形前端工具</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+| <a href="http://blog.linux.org.tw/~jserv/archives/2010/07/gcc_nested_func.html">GCC 的 nested function 與 trampoline »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">July 26, 2010</h2>
+
+<div class="blogbody">
+
+<h3 class="title">爸，我想寫軟體程式</h3>
+
+之前身體狀況不佳，回苗栗老家休息一段時間，除了家務事外，談了台灣的資訊產業，本應興致勃勃，但家母道出的一席話後，頓時陷入無議無論的噤聲：「寫程式這麼累，就別做了吧」。捫心自問，從業數年，除了偶爾聽聞他人基於禮貌給予的讚揚外，的確是一事無成的狀態，儘管我的工作內容之一，就是說服他人採用敝單位的資訊系統，但我卻沒辦法說服家人，同意我繼續寫程式。<br />
+<br />
+因緣際會，能在國小三、四年級時，就動手寫電腦程式，其動機僅是怕放在客廳的 80386 個人電腦受潮而無法再開機 (靠海的通霄，常吹濕氣頗重的南風，電腦購入不消四年，扣除硬碟的週邊，幾乎都更換過)。至今回憶，那 MS-DOS 命令列提示與 BASIC 直譯器的畫面，仍是最美麗的景緻之一，得以透過螢光幕，瞥見當時工藝的極致，何其幸運？直到高中畢業前夕，從未想過以資訊技術作為己志，畢竟僅是興趣，雖然中學時代，頗受 Bill Gates 的激勵，但家人總冷冷地說，軟體隨便 copy 就拿走了，怎麼賣錢？而且，將興趣轉換為工作，註定要大打折扣的。中學時，自小即相當照顧我的姑姑，因急性白血症病逝，走的那日正是 [<a href="http://blog.linux.org.tw/~jserv/archives/001700.html">六月六日斷腸時</a>]，對此，下了心願要考醫科，試著為醫療科技貢獻一份力量... 但最後，我的意志動搖，雖然成績不惡的我，分數能考上醫科，但始終沒有就讀的勇氣。在通霄國小就學時期，有幸作為知名雕塑家朱銘的學弟，在台灣最有藝術氣息的小學，觀賞著這些由朱銘捐贈的大作，無論是太極系統，抑或人間造型，都反映從自然生命中所領悟出的創作態度，一股自由無拘束的壯闊氣概，最愛徜徉在虎頭山腰，靜靜凝視雕塑與遠方的鐵路，那時，曾不只一次的幻想自己是融合藝術與工程的土木技師。小時過年跟隨母親回娘家，常見到抱著厚重設計圖、不時潛心作設計的舅舅，雖不甚理解土木工程，但那娟麗的字跡穿越著密密麻麻的線條，深深吸引著我，後來我才知道，北二高有一大段工程就是出於舅舅之手，曾有一度想追隨任教於台大土木系的舅舅，用雙手牽起人與人的關聯。<br />
+<br />
+可惜，浪漫的幻想，總是極易戳破，高一的工藝課，無論如何嘗試，就是無法徒手繪出筆直的線條，而三視圖總是充滿瑕疵，「我可能不是作土木建築的料」，默默地承認這個事實。高二選擇第三類組後，則在生物解剖課，徹底粉碎擔任醫療人員的念頭。我還記得，暑假為了提高膽量，逼迫自己切魚的往事，只見雙手的血跡與淚水融為一體，「我真的不是唸醫科的料」，再次接受了真相。當這些選擇一一從志願表刪去時，「資訊工程系」這個倒數第二個選項就浮現了 (最後一個志願是電機系，因為與家父賭氣，不想唸電子電機科系)，在沒有選擇餘地的情況下，懵懵懂懂做出選擇。記得三年前應邀去中正大學演講時，資訊系的老師說：「這裡的學生不像你很早就決定自己的志業，請你就業界從業人員的角度，跟學生分享經驗...」，真不知該如何回應，老實說，我的處境跟該校的學生沒太大的分野，也是先考進資訊工程學系，才開始規劃人生的，只是遇到貴人的時間早了些，挑了些較易有成效的項目來作。<br />
+<br />
+魯迅說過：「哪裡有天才，我是把別人喝咖啡的工夫都用在了工作上了」，堅信此道的我，每每保持同樣是魯迅的名言，人生的旅途上遲緩地踏出步伐：「人類總不會寂寞，以為生命是進步的，是天生的」，雖然，至今仍打零工度日，有什麼立場說自己在實踐志業呢？記得 Romain Rolland 說過：<ul class="code" style="margin: 6px;">
+「一個人的性格決定他的際遇。如果你喜歡保持你的性格，那麼，你就無權拒絕你的際遇」
+</ul>
+大概是當初太短視，唯有在跌跌撞撞幾年後，才能體會這句話。決定離開成功大學時 (家中永遠都有重考唸醫科或其他科系的聲音，也因此，沒能把資訊系唸完，可能也是註定的事)，找當時的導師蘇文鈺教授談過，老師說，只要想清楚, 自己做了選擇, 就不要後悔, 還要注意身體健康。事隔多年，老師來信提到：<ul class="code" style="margin: 6px;">
+「也許你不相信，我時常跟現在的學生提到你，一年至少一次, 我回憶起你的程式功力與執著，當然還有比賽前被送進醫院那件事，我一直相信走自己的路與願意走人煙稀少的路的人，成就的機會比較大」
+</ul>
+這番話，讓我在讀信的當下，控制不住情緒，就在辦公室啜泣起來，是想到這幾年受到的委屈與不平的待遇，無論肇因於學歷、經歷，或者所謂的「大環境」... 只能怪說自己太叛逆，又狂妄地想做些改變現狀的事，這包含在台灣繼續寫作軟體。<br />
+<br />
+<ul class="code" style="margin: 6px;">
+「寫作對於我而言，是在漫長旅程上有一個溫暖的春夢做著，路寬夢窄，並且一直大夢未醒。一個人在世上，總得找一個屬於自己的夢做著，不然，這黑夜就顯得太長。」
+</ul>
+這是大陸作家馮傑的話語，用來描寫此刻我的心境，也相當契合，儘管兩者所謂的「寫作」，還要視真實的「讀者」而定。作家馮傑用「文字還願」，寫作給一塊無言的土地，對那些逝去的親人；愚昧的我用「程式碼許願」，寫給這塊立足的土地，對那些相信臺灣軟體發展機會的人。就這個角度來說，我的寫作才剛開始。不期望能在商業行為之外，說服任何人，只願能堅持下去。「爸，我想寫軟體程式」這句，語出於升國小四年級的暑假，當時家父指向書櫃裡頭的技術書籍，而，近二十年後，抱著滿滿電腦資訊圖書的我，又說了一聲。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 July 26, 2010  9:06 PM
+
+<br /></span>
+
+</div>
+
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2153" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

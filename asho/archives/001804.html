@@ -1,0 +1,622 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Asho's Blog: Etch 的 nvidia driver</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~asho/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~asho/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~asho/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~asho/archives/001801.html" title="終於學會 Kernel Thread 了" />
+
+<link rel="next" href="http://blog.linux.org.tw/~asho/archives/001807.html" title="drivel + openvpn 測試" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~asho/" accesskey="1">Asho's Blog</a></h1>
+<span class="description">一個喜歡研究的傻小子 :-)</span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~asho/archives/001801.html">&laquo; 終於學會 Kernel Thread 了</a> |
+
+<a href="http://blog.linux.org.tw/~asho/">Main</a>
+| <a href="http://blog.linux.org.tw/~asho/archives/001807.html">drivel + openvpn 測試 &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">October 09, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Etch 的 nvidia driver</h3>
+
+<p>Etch 裡面的 Nvidia 的driver 似乎很久沒有修正了，不能像之前直接 aptitude install nvidia-kernel-xxx。</p>
+
+<p>在急著想用 nvidia driver 的關係，我只好到 nvidia.com 下戴，我安裝的方式如下：<br />
+./xxx --x-module-path=/usr/lib/xorg/modules</p>
+
+<p>但這樣以後就得不斷地自已maintain 這個 pkg 的更新...</p>
+
+<a name="more"></a>
+
+
+<span class="posted">Posted by asho at October  9, 2006 09:47 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>Comments</div>
+
+<div class="comments-body">
+<p>Nice!payday loan [url=http://zippedurl.com/7f3w2x/]payday loan[/url]</p>
+<span class="comments-post">Posted by: <a href="http://zippedurl.com/7f3w2x/">payday loan</a> at November 16, 2006 06:41 AM</span>
+</div>
+<div class="comments-body">
+<p>Nice!payday loan [url=http://zippedurl.com/7f3w2x/]payday loan[/url]</p>
+<span class="comments-post">Posted by: <a href="http://zippedurl.com/7f3w2x/">payday loan</a> at November 16, 2006 06:45 AM</span>
+</div>
+<div class="comments-body">
+<p>Nice!payday loan [url=http://zippedurl.com/7f3w2x/]payday loan[/url]</p>
+<span class="comments-post">Posted by: <a href="http://zippedurl.com/7f3w2x/">payday loan</a> at November 16, 2006 06:46 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/adult-dvd.php adult dvd </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/adult-dvd.php">porn dvd</a> at December  1, 2006 07:50 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/blondes.php blonde pornstars </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/blondes.php">pornstar video</a> at December  1, 2006 07:50 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/black.php black teens </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/black.php">black hardcore</a> at December  1, 2006 07:51 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/matures.php matures </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/matures.php">mature pictures</a> at December  1, 2006 07:51 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/brunettes.php brunettes girls </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/brunettes.php">brunettes sex</a> at December  1, 2006 07:52 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/anal.php anal sex </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/anal.php">butt fucking</a> at December  1, 2006 07:52 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/fisting.php fisting </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/fisting.php">fisting pics</a> at December  1, 2006 07:52 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/fem-dom.php fem dom </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/fem-dom.php">bdsm porn</a> at December  1, 2006 07:52 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/voyeur.php voyeur </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/voyeur.php">real voyeur pictures</a> at December  1, 2006 07:52 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/bukkake.php bukkake japan </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/bukkake.php">bukkake porn</a> at December  1, 2006 07:52 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/lesbians.php lesbians </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/lesbians.php">lesbian porn</a> at December  1, 2006 07:52 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/pieeing.php peeing </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/pieeing.php">peeing sex</a> at December  1, 2006 07:53 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/latina.php letina sex </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/latina.php">latina xxx</a> at December  1, 2006 07:53 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/preggo.php preggo </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/preggo.php">preggy porn</a> at December  1, 2006 07:53 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/amateur.php amateur pics </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/amateur.php">amateur hardcore</a> at December  1, 2006 07:53 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/redheads.php redheads </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/redheads.php">redheads sex</a> at December  1, 2006 07:53 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/handjobs.php handjobs </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/handjobs.php">handjobs sex</a> at December  1, 2006 07:53 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/personals.php personals </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/personals.php">online personals</a> at December  1, 2006 07:53 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/cumshot.php cumshot blowjob </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/cumshot.php">cumshots</a> at December  1, 2006 07:55 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/indian-porn.php indian porn </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/indian-porn.php">indian porno</a> at December  1, 2006 07:55 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/sex-chat.php sex chat </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/sex-chat.php">sex cams</a> at December  1, 2006 07:56 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/gang-bang.php gangbang </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/gang-bang.php">orgies video</a> at December  1, 2006 07:57 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/orgy.php group orgies </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/orgy.php">gang bang</a> at December  1, 2006 07:57 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/voyeur.php voyeur </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/voyeur.php">real voyeur pictures</a> at December  1, 2006 07:57 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/big-cocks.php big cocks </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/big-cocks.php">big penis</a> at December  1, 2006 07:57 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/footjobs.php footjobs </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/footjobs.php">foot fetish</a> at December  1, 2006 07:58 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/adult-dvd.php adult dvd </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/adult-dvd.php">porn dvd</a> at December  1, 2006 07:58 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/ebony.php ebony woman </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/ebony.php">ebony sex</a> at December  1, 2006 07:58 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/matures.php matures </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/matures.php">mature pictures</a> at December  1, 2006 07:58 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/fem-dom.php fem dom </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/fem-dom.php">bdsm domination</a> at December  1, 2006 07:58 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com sex toys for sale </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com">sextoys</a> at December  1, 2006 07:58 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/twinks.php twinks </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/twinks.php">twink pics</a> at December  1, 2006 07:58 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/amateur.php amateur pics </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/amateur.php">amateur hardcore</a> at December  1, 2006 07:58 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/black.php black teens </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/black.php">black hardcore</a> at December  1, 2006 07:58 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/brunettes.php brunettes girls </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/brunettes.php">brunettes sex</a> at December  1, 2006 07:59 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/teens.php teens </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/teens.php">girls xxx</a> at December  1, 2006 08:00 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/handjobs.php handjobs </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/handjobs.php">handjobs sex</a> at December  1, 2006 08:01 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/indian-porn.php indian porn </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/indian-porn.php">indian sex</a> at December  1, 2006 08:01 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/lesbians.php lesbians </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/lesbians.php">lesbian porn</a> at December  1, 2006 08:01 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/adult-toys.php adult toys </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/adult-toys.php">buy vibrator</a> at December  1, 2006 08:01 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/pieeing.php peeing </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/pieeing.php">peeing sex</a> at December  1, 2006 08:01 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/voyeur.php voyeur </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/voyeur.php">vouyeur sex</a> at December  1, 2006 08:02 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/fem-dom.php fem dom </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/fem-dom.php">bdsm domination</a> at December  1, 2006 08:02 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/personals.php personals </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/personals.php">online personals</a> at December  1, 2006 08:02 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/cumshot.php cumshot blowjob </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/cumshot.php">cumshots</a> at December  1, 2006 08:02 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/redheads.php redheads </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/redheads.php">nude redheads</a> at December  1, 2006 08:02 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/twinks.php twinks </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/twinks.php">twink pics</a> at December  1, 2006 08:03 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/gang-bang.php gangbang </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/gang-bang.php">orgies video</a> at December  1, 2006 08:03 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/sex-chat.php sex chat </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/sex-chat.php">sex cams</a> at December  1, 2006 08:03 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/footjobs.php footjobs </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/footjobs.php">foot fetish</a> at December  1, 2006 08:04 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/bbw.php bbw fat </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/bbw.php">bbw xxx</a> at December  1, 2006 08:05 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/big-cocks.php big cocks </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/big-cocks.php">big penis</a> at December  1, 2006 08:05 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/brunettes.php brunettes girls </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/brunettes.php">brunettes porn</a> at December  1, 2006 08:05 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/redheads.php redheads </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/redheads.php">nude redheads</a> at December  1, 2006 08:06 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/orgy.php group orgies </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/orgy.php">gang bang</a> at December  1, 2006 08:06 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com sex toys for sale </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com">sextoys</a> at December  1, 2006 08:07 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/blondes.php blonde pornstars </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/blondes.php">pornstar video</a> at December  1, 2006 08:07 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/amateur.php amateur pics </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/amateur.php">amateur xxx</a> at December  1, 2006 08:07 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/indian-porn.php indian porn </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/indian-porn.php">indian sex</a> at December  1, 2006 08:08 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/sex-chat.php sex chat </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/sex-chat.php">sex cams</a> at December  1, 2006 08:08 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/matures.php matures </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/matures.php">mature xxx</a> at December  1, 2006 08:08 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/pieeing.php peeing </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/pieeing.php">pissing girls</a> at December  1, 2006 08:08 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/shemales.php shemales </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/shemales.php">ladyboys pics</a> at December  1, 2006 08:08 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/teens.php teens </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/teens.php">girls xxx</a> at December  1, 2006 08:09 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/handjobs.php handjobs </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/handjobs.php">handjobs porn</a> at December  1, 2006 08:09 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/cumshot.php cumshot blowjob </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/cumshot.php">blowjobs</a> at December  1, 2006 08:09 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/black.php black teens </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/black.php">black porn</a> at December  1, 2006 08:09 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/matures.php matures </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/matures.php">mature xxx</a> at December  1, 2006 08:10 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/gang-bang.php gangbang </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/gang-bang.php">orgies video</a> at December  1, 2006 08:10 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/voyeur.php voyeur </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/voyeur.php">vouyeur sex</a> at December  1, 2006 08:11 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/ebony.php ebony woman </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/ebony.php">ebony sex</a> at December  1, 2006 08:11 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/footjobs.php footjobs </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/footjobs.php">footjob sex</a> at December  1, 2006 08:11 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/bukkake.php bukkake japan </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/bukkake.php">bukkake pics</a> at December  1, 2006 08:11 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/cumshot.php cumshot blowjob </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/cumshot.php">blowjobs</a> at December  1, 2006 08:12 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/amateur.php amateur pics </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/amateur.php">amateur xxx</a> at December  1, 2006 08:13 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/pieeing.php peeing </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/pieeing.php">peeing girls</a> at December  1, 2006 08:13 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com sex toys for sale </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com">sextoys</a> at December  1, 2006 08:13 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/redheads.php redheads </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/redheads.php">redheads sex</a> at December  1, 2006 08:13 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/lesbians.php lesbians </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/lesbians.php">lesbian porn</a> at December  1, 2006 08:13 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/handjobs.php handjobs </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/handjobs.php">handjobs porn</a> at December  1, 2006 08:13 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/shemales.php shemales </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/shemales.php">ladyboys pics</a> at December  1, 2006 08:13 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/matures.php matures </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/matures.php">mature porn</a> at December  1, 2006 08:14 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/indian-porn.php indian porn </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/indian-porn.php">indian porn</a> at December  1, 2006 08:14 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/cumshot.php cumshot blowjob </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/cumshot.php">blowjobs</a> at December  1, 2006 08:14 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/footjobs.php footjobs </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/footjobs.php">footjob sex</a> at December  1, 2006 08:15 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/pieeing.php peeing </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/pieeing.php">peeing girls</a> at December  1, 2006 08:16 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/blondes.php blonde pornstars </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/blondes.php">sex with blondes</a> at December  1, 2006 08:16 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/gang-bang.php gangbang </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/gang-bang.php">orgies video</a> at December  1, 2006 08:17 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/amateur.php amateur pics </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/amateur.php">amateur porn</a> at December  1, 2006 08:17 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/black.php black teens </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/black.php">black porn</a> at December  1, 2006 08:17 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/matures.php matures </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/matures.php">mature porn</a> at December  1, 2006 08:18 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/indian-porn.php indian porn </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/indian-porn.php">indian porn</a> at December  1, 2006 08:18 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/handjobs.php handjobs </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/handjobs.php">handjobs sex</a> at December  1, 2006 08:18 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/lesbians.php lesbians </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/lesbians.php">xxx lesbians</a> at December  1, 2006 08:18 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/personals.php personals </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/personals.php">online personals</a> at December  1, 2006 08:18 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/lesbians.php lesbians </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/lesbians.php">xxx lesbians</a> at December  1, 2006 08:19 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/redheads.php redheads </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/redheads.php">redheads sex</a> at December  1, 2006 08:19 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/blondes.php blonde pornstars </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/blondes.php">sex with blondes</a> at December  1, 2006 08:19 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/cumshot.php cumshot blowjob </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/cumshot.php">blowjobs</a> at December  1, 2006 08:19 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/ebony.php ebony woman </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/ebony.php">ebony sex</a> at December  1, 2006 08:19 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/gang-bang.php gangbang </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/gang-bang.php">gang bang</a> at December  1, 2006 08:20 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/handjobs.php handjobs </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/handjobs.php">handjobs sex</a> at December  1, 2006 08:20 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/amateur.php amateur pics </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/amateur.php">amateur porn</a> at December  1, 2006 08:21 AM</span>
+</div>
+<div class="comments-body">
+<p>http://www.bomji.com/personals.php personals </p>
+<span class="comments-post">Posted by: <a href="http://www.bomji.com/personals.php">online personals</a> at December  1, 2006 08:21 AM</span>
+</div>
+<div class="comments-body">
+<p>Hello.  trpp2  [url=http://www.trahnu3.com] trpp3[/url]  Thanks</p>
+<span class="comments-post">Posted by: <a href="http://www.trahnu1.com">trpp1</a> at December 15, 2006 09:22 AM</span>
+</div>
+
+
+
+<div class="comments-head">Post a comment</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1804" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">Name:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email Address:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">URL:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+Remember personal info?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">Yes</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">No</label><br style="clear: both;" />
+
+<label for="text">Comments:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;Preview&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;Post&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+</div>
+</div>
+</body>
+</html>

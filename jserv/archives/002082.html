@@ -1,0 +1,398 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: CuRT - 精簡易懂的 RTOS - 釋出</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002081.html" title="不給 source 就搗蛋？談 GPL 的適用範疇" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002083.html" title="OSDC.TW 2009 徵稿" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002081.html">« 不給 source 就搗蛋？談 GPL 的適用範疇</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002083.html">OSDC.TW 2009 徵稿 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 09, 2009</h2>
+
+<div class="blogbody">
+
+<h3 class="title">CuRT - 精簡易懂的 RTOS - 釋出</h3>
+
+貫徹「每年練習寫一個作業系統」的小目標，小弟今年準備小小的即時作業系統，作為 2009 年的見面禮，取名為 CuRT，全名是 "Compat Unicellular Real-Time operating system"，目標定於簡潔易懂，算是在 COSCUP 2007 發表的 [<a href="http://blog.linux.org.tw/~jserv/archives/001936.html">Jamei RTOS</a>] 的精簡版本，以 Revised BSD license 釋出，原始程式碼在此：[<a href="http://jserv.sayya.org/kernel/curt-src-v1.tar.bz2">curt-src-v1.tar.bz2</a>]。<br />
+<br />
+感謝 [<a href="http://walkingice.twbbs.org/blog/">WalkingIce</a>] 為 CuRT 貢獻了美麗大方的 logo：<br />
+<center><img src="http://jserv.sayya.org/kernel/curt.png" width="167" height="109" /></center><br />
+依據他的說法是：「因為短短的程式碼給了我很『輕』的感覺，所以在背景加上了一根羽毛」。以下是 CuRT 的特徵：<ul>
+  <li>Preemptive Multi-threading</li>
+  <li>Priority-base Round-Robin Scheduling</li>
+  <li>Simple Threading</li>
+  <li>Semaphore Support</li>
+  <li>IPC: mailbox, message queue</li>
+</ul>
+支援 ARM 的硬體平台，編譯之後，作業系統加上範例程式碼僅有十幾 kb 的空間。同時，希望藉由這個具體而微的 RTOS，能否協助有心探索系統程式設計者理解 ARM
+整個架構進而可掌握其精神，也是 CuRT 的設計背景。<br />
+<br />
+今年的規劃來看，會舉辦至少一場針對 ARM microarchitecture 為主題的的免費教育訓練，探討如何從零到有設計完整的作業系統、如何進行必要的系統初始化、如何動手理解 ARM 的種種關鍵設計，而 CuRT 就是其中的教材。請多指教，謝謝！<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January  9, 2009 03:41 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>寫一個OS實在太猛了o.o..</p>
+<span class="comments-post">由 <a href="mailto&#58;jotarun&#64;gmail&#46;com">jotarun</a> 發表於</MTIfNonEmpty> January 10, 2009 12:02 AM</span>
+</div>
+<div class="comments-body">
+<p>Logo 不錯看XD</p>
+<span class="comments-post">由 <a href="http://lancetw.twgg.org">lancetw</a> 發表於</MTIfNonEmpty> January 10, 2009 01:17 PM</span>
+</div>
+<div class="comments-body">
+<p>看到CuRT讓我想到Kurt Cobain.....好像離題 XD<br />
+總之還是替 Jserv 鼓掌!! <br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;blowfishyeh&#64;gmail&#46;com">bFish</a> 發表於</MTIfNonEmpty> January 12, 2009 12:01 AM</span>
+</div>
+<div class="comments-body">
+<p><br />
+sqlite 的 logo 也是一隻羽毛. <br />
+不過 CuRT 的比較好看</p>
+<span class="comments-post">由 <a href="mailto&#58;jumbler&#64;gmail&#46;com">jumbler</a> 發表於</MTIfNonEmpty> January 12, 2009 01:20 PM</span>
+</div>
+<div class="comments-body">
+<p>hello,jserv:一直很崇拜你,下了curt_v1运行时，为什么cpu一直占到90％以上?<br />
+我看程序也没有某一个线程死循环呀，都挂起了呀？（用你提供的run-on-connex运行)?能否给解释一下?谢谢！</p>
+<span class="comments-post">由 <a href="mailto&#58;yingtaoting&#64;126&#46;com">diyun</a> 發表於</MTIfNonEmpty> January 16, 2009 09:03 PM</span>
+</div>
+<div class="comments-body">
+<p>@diyun,</p>
+
+<p>現在沒有 Tickless scheduling，而依據 QEMU 的仿真行為，這是符合預期的。</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> January 16, 2009 10:31 PM</span>
+</div>
+<div class="comments-body">
+<p>真不错，可是貌似下载不了，估计又是GFW在做怪？</p>
+<span class="comments-post">由 <a href="mailto&#58;bshawk&#64;gmail&#46;com">bshawk</a> 發表於</MTIfNonEmpty> January 17, 2009 07:29 PM</span>
+</div>
+<div class="comments-body">
+<p>jserv,another question,如果我更改了mian函数里创建的几个函数的优先级(把info_tid,stat_tid和help_tid分别改成5,8,21则会出现下面的错误，是qemu的问题吗，如果是，我应该看一些什么资料，最近我特想学习一下OS的原理.能看到你的回复，真的很感谢！</p>
+
+<p>pxa2xx_clkpwr_write: CPU frequency change attempt<br />
+##################################<br />
+#       Start CuRT....           #<br />
+##################################<br />
+$ ps<br />
+ ID        State        Name<br />
+           Ready        idle-thread<br />
+  1        Delay        shell_thread<br />
+  2        Running      info_thread<br />
+  3        Block        statistics_thread<br />
+  4        Block        help_thread<br />
+  5        Delay        hello_thread<br />
+  6        Delay        hello2_thread<br />
+pflash_write: Unimplemented flash cmd sequence (offset 00000004, wcycle 0x0 cmd 0x0 value 0xa008c680<br />
+qemu: fatal: Bad mode 0</p>
+
+<p>R00=00000001 R01=a008c6a8 R02=0000000a R03=00000000<br />
+R04=a008c6a0 R05=a008c6b8 R06=00000000 R07=00000000<br />
+R08=a008c6b0 R09=a008c6c8 R10=00000000 R11=00000000<br />
+R12=a008c6c0 R13=a008c6d8 R14=a008c6d8 R15=00000000<br />
+PSR=000000d3 ---- A svc32<br />
+s00=00000000(       0) s01=00000000(       0) d00=0000000000000000(       0)<br />
+s02=00000000(       0) s03=00000000(       0) d01=0000000000000000(       0)<br />
+s04=00000000(       0) s05=00000000(       0) d02=0000000000000000(       0)<br />
+s06=00000000(       0) s07=00000000(       0) d03=0000000000000000(       0)<br />
+s08=00000000(       0) s09=00000000(       0) d04=0000000000000000(       0)<br />
+s10=00000000(       0) s11=00000000(       0) d05=0000000000000000(       0)<br />
+s12=00000000(       0) s13=00000000(       0) d06=0000000000000000(       0)<br />
+s14=00000000(       0) s15=00000000(       0) d07=0000000000000000(       0)<br />
+s16=00000000(       0) s17=00000000(       0) d08=0000000000000000(       0)<br />
+s18=00000000(       0) s19=00000000(       0) d09=0000000000000000(       0)<br />
+s20=00000000(       0) s21=00000000(       0) d10=0000000000000000(       0)<br />
+s22=00000000(       0) s23=00000000(       0) d11=0000000000000000(       0)<br />
+s24=00000000(       0) s25=00000000(       0) d12=0000000000000000(       0)<br />
+s26=00000000(       0) s27=00000000(       0) d13=0000000000000000(       0)<br />
+s28=00000000(       0) s29=00000000(       0) d14=0000000000000000(       0)<br />
+s30=00000000(       0) s31=00000000(       0) d15=0000000000000000(       0)<br />
+FPSCR: 00000000<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;yingtaoting&#64;126&#46;com">diyun</a> 發表於</MTIfNonEmpty> January 17, 2009 08:15 PM</span>
+</div>
+<div class="comments-body">
+<p>@bshawk</p>
+
+<p>不是因為 GFW，而是網站暫停服務，可改用以下位址取得：<br />
+http://people.debian.org.tw/~jserv/kernel/curt-src-v1.tar.bz2</p>
+
+<p>造成您的不便，請見諒</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> January 17, 2009 08:18 PM</span>
+</div>
+<div class="comments-body">
+<p>@diyun</p>
+
+<p>請將 hello_tid 與 hello2_tid 的 prio 改為 21<br />
+您可以思考一下為何如此 :)</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> January 18, 2009 01:02 AM</span>
+</div>
+<div class="comments-body">
+<p>jserv,今天白天没时间看代码，晚上回来研究了一下，按照你说的我改了一下，还是会出现同样的错误,下面是我的分析过程，请你指点一下:</p>
+
+<p>main函数创建几个线程之后，这几个线程都在各自优先级的ready队列里，当运行到start_curt函数时，系统调度一次,shell线程首先取得运行权，他首先把优先级为1的三个线程从ready队列里删除，放到block队列里，然后等待外部命令,当我输入ps指令时，shell线程执行thread_resume(info_tid)，把info_tid线程从block对列里删除，放到ready队列里，然后shell线程运行thread_delay(1)，就把自己放到delay队列里，系统重新调度，这时ready对列里只有info_tid，所以info_tid取得运行权，开始运行,就开始打印thread_table里的线程状态，然后它把自己挂起放到block队列里，系统重新调度，这时shell线程的thread_delay(1),应该有timer来完成调度重新取得运行权。<br />
+就算我把线程的优先级改掉调度方法也是这样的，也不应该出错.我的分析过程是否有问题?感谢你的指点：)</p>
+<span class="comments-post">由 <a href="mailto&#58;yingtaoting&#64;126&#46;com">diyun</a> 發表於</MTIfNonEmpty> January 18, 2009 11:20 PM</span>
+</div>
+<div class="comments-body">
+<p>CuRT 小的很適合教學用。我打算把它放到下學期的 embedded system design 課程中。下面是針對它的教材內容，有錯誤的話請指教。</p>
+
+<p>http://sites.google.com/site/embedded2009/introduction-to-curt-v1</p>
+<span class="comments-post">由 <a href="mailto&#58;wycca1&#64;yahoo&#46;com">wycc</a> 發表於</MTIfNonEmpty> January 25, 2009 09:29 AM</span>
+</div>
+<div class="comments-body">
+<p>jserv兄，稍微跑過CuRT之後發現他非常有趣，有想要將他移植到x86或是pxa270上面執行看看的衝動，也方便作為教學範例，不知道是否有這個可能性？還是CuRT絕大部分程式碼only for arm，在移植上有困難度，謝謝指教。</p>
+<span class="comments-post">由 <a href="mailto&#58;ys_pan&#64;mail&#46;csie&#46;ncku&#46;edu&#46;tw">koukai</a> 發表於</MTIfNonEmpty> February  4, 2009 04:36 PM</span>
+</div>
+<div class="comments-body">
+<p>@koukai,<br />
+移植到 PXA27x 的話，應該只需要調整 arch/mach-pxa 的部份 SoC 硬體描述，其他應該都照舊即可。要移植到 x86 的話，要下的功夫稍微多一些</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> February  4, 2009 06:52 PM</span>
+</div>
+<div class="comments-body">
+<p>Dear jserv:<br />
+  感謝您分享您的心血結晶.小弟在拜讀之後..有許多的地方不解.特來請教...</p>
+
+<p>  1. /app/sheel/main.c <br />
+     中的 shell thread 中為何要獨留 hello_thread為Ready？<br />
+     其意義何在？</p>
+
+<p>  2. /app/sheel/main.c<br />
+     依架構來看,stat_curt 中會建立一個idle_thread ..並設為 Ready 狀態<br />
+     若無其他 thread Ready 時,將由 idle_thread 動作.<br />
+     亦即, 若將shell thread透過 thread_suspend(current_thread->tid);<br />
+     交出控制權之後, 控制權應交回Idle ... 但為何會遭強之中斷, 回到作業系統的命令列下？<br />
+     但使用thread_delay();則無問題...?<br />
+     Why ?<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;da039978&#64;anet&#46;net&#46;tw">Yu-Cai</a> 發表於</MTIfNonEmpty> March 27, 2009 11:14 AM</span>
+</div>
+<div class="comments-body">
+<p>CuRT 的 preemptive 似乎有些問題，只要將 shell_thread 的 priority 改成 4 就可以看到了。這樣改之後，所有的程式就無法執行了。其原因是 shell 的 context 在 preemptive(call scheduler from interrupt) 時沒有放正確。所以所有在 stack 上的變數都錯掉了。</p>
+
+<p>這似似乎是 context_switch_in_interrupt 的問題，我還在看。</p>
+<span class="comments-post">由 <a href="mailto&#58;wycca1&#64;yahoo&#46;com">wycc</a> 發表於</MTIfNonEmpty> March 29, 2009 09:06 AM</span>
+</div>
+<div class="comments-body">
+<p>jserv 您好</p>
+
+<p>如果想去Trace瞭解這個CuRT OS</p>
+
+<p>要怎麼去著手呢</p>
+
+<p>可否指點一下方向</p>
+
+<p>謝謝 您</p>
+
+<p><br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;guest&#64;gmail&#46;com">guest</a> 發表於</MTIfNonEmpty> April 16, 2009 09:55 AM</span>
+</div>
+<div class="comments-body">
+<p>void insert_before_list(list_node_t *after, list_node_t *pnode)<br />
+{<br />
+	pnode->prev = after;<br />
+	pnode->next = after->next;<br />
+	after->next->prev = pnode;<br />
+	after->next = pnode;<br />
+}</p>
+
+<p>这个函数的实现应该是pnode插入到after的后面，但别的地方很多如: sem_pend()里调用此函数的用意好像是插到after的前面?这个函数名为什么这么取？难道你的意思是把after插入到pnode的前面？</p>
+<span class="comments-post">由 <a href="mailto&#58;cherry2tm&#64;126&#46;com">cherry</a> 發表於</MTIfNonEmpty> May 28, 2009 08:13 PM</span>
+</div>
+<div class="comments-body">
+<p>Jserv 大大</p>
+
+<p>不好意思請教一個問題...<br />
+我在XP的環境下，使用qemu-system-arm 試著去模擬curt。<br />
+可是一直有以下訊息出現：</p>
+
+<p>qemu-0.10.6-windows>qemu-<br />
+system-arm.exe -M connex -pflash flash-image_xp.img -serial COM1<br />
+qemu: fatal: Trying to execute code outside RAM or ROM at 0x01000000</p>
+
+<p>R00=00000000 R01=00000000 R02=00000000 R03=00000000<br />
+R04=00000000 R05=00000000 R06=00000000 R07=00000000<br />
+R08=00000000 R09=00000000 R10=00000000 R11=00000000<br />
+R12=00000000 R13=00000000 R14=00000000 R15=01000000<br />
+PSR=400001d3 -Z-- A svc32</p>
+
+<p>This application has requested the Runtime to terminate it in an unusual way.<br />
+Please contact the application's support team for more information.</p>
+
+<p>請問一下Jserv大大有碰過類似的問題嗎？<br />
+感謝...</p>
+<span class="comments-post">由 <a href="mailto&#58;wchwch&#64;gmail&#46;com">Alleen Wang</a> 發表於</MTIfNonEmpty> October 15, 2009 01:07 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2082" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

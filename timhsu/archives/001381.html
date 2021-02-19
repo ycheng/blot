@@ -1,0 +1,326 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>timhsu: 加密式檔案系統</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~timhsu/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~timhsu/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~timhsu/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~timhsu/archives/001380.html" title="可愛小硬碟" />
+
+<link rel="next" href="http://blog.linux.org.tw/~timhsu/archives/001384.html" title="Enigmail OpenPGP" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+<!--
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="http://blog.linux.org.tw/~timhsu/archives/001381.html">
+<dc:title>加密式檔案系統</dc:title>
+<dc:description>如果你有些敏感資料或很隱私的內容，需要以加密的方式儲存時，Linux 的加密式檔案系統將是一個不錯的選擇。</dc:description>
+<dc:creator></dc:creator>
+<dc:date>2005-12-05T15:19:08+08:00</dc:date>
+<license rdf:resource="http://creativecommons.org/licenses/by-nc-sa/1.0/" />
+</Work>
+<License rdf:about="http://creativecommons.org/licenses/by-nc-sa/1.0/">
+<requires rdf:resource="http://web.resource.org/cc/Attribution" />
+<requires rdf:resource="http://web.resource.org/cc/Notice" />
+<requires rdf:resource="http://web.resource.org/cc/ShareAlike" />
+<permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+<permits rdf:resource="http://web.resource.org/cc/Distribution" />
+<permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+<prohibits rdf:resource="http://web.resource.org/cc/CommercialUse" />
+</License>
+</rdf:RDF>
+-->
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~timhsu/" accesskey="1">timhsu</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~timhsu/archives/001380.html">&laquo; 可愛小硬碟</a> |
+
+<a href="http://blog.linux.org.tw/~timhsu/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~timhsu/archives/001384.html">Enigmail OpenPGP &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">December 05, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">加密式檔案系統</h3>
+
+<p>自從前兩天<a href="http://blog.linux.org.tw/~timhsu/archives/001380.html">可愛小硬碟</a>入手後，我將它放入 USB Mobie Disk，不久，就發現一件悲慘的事情。</p>
+
+<p>我的 USB Mobie Disk 不愛穿衣服！</p>
+
+<p>一但我將 USB Mobie Disk 的上蓋蓋起來，USB 連接線一接上 X31，X31 馬上發瘋似地重開機，履試不爽。現在，只好讓它脫了上蓋，給它一個清涼，但外觀看起來就是沒這麼漂亮有質感啊！</p>
+
+<p>好吧，不愛穿衣服就算了。我又想到萬一某天，這顆備份資料用的小硬碟，不小心遺失了的話，我可不希望裡頭一些私密資料讓人看光光。於是乎，我就想試試 Linux 的加密式檔案系統。</p>
+
+<p>只不過，試了半天才發現，我現在用的 Linux 系統(MDK LE 2005)並不支援 AES Multi Key (V2=64 keys / V3=65 keys)。所以，底下的步驟是建立一個 10G 的加密式檔案系統，並利用 AES 128 加密。</p>
+
+<p>1. 建立一個約 10G 的大型檔案，檔案內容塞滿亂數資料</p>
+
+<p># dd if=/dev/urandom of=mystuff bs=1M count=10000</p>
+
+<p>2. 產生單一 AES Single Key 並用 GPG 加密起來<br />
+# head -c 2925 /dev/urandom | uuencode -m - | head -n 66 | tail -n 1 | gpg --symmetric -a > /etc/fskey.gpg</p>
+
+<p>3. 將 mystuff 檔案利用 aes-128 加密並掛上 /dev/loop0<br />
+# losetup -e aes-128 -K /etc/fskey.gpg /dev/loop0 mystuff</p>
+
+<p>4. 格式化<br />
+# mkfs.ext3 /dev/loop0<br />
+# tune2fs -m0 /dev/loop0</p>
+
+<p>5. 將 aes-128 加密的檔案系統掛載上 /mnt/crypto<br />
+# mkdir /mnt/crypto<br />
+# mount -t ext3 /dev/loop0 /mnt/crypto<br />
+# df-h<br />
+Filesystem            容量  已用 可用 已用% 掛載點<br />
+/dev/loop0            9.7G   33M  9.6G   1% /mnt/crypto</p>
+
+<p>如果你有些敏感資料或很隱私的內容，需要以加密的方式儲存時，Linux 的加密式檔案系統將是一個不錯的選擇。</p>
+
+<p>參考資料：<br />
+1. <a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Cryptoloop-HOWTO.html">Cryptoloop-HOWTO</a><br />
+2. <a href="http://loop-aes.sourceforge.net/loop-AES.README">loop-AES.README</a></p>
+
+<a name="more"></a>
+
+
+<span class="posted">由  發表於 December  5, 2005 03:19 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>bestcrypt也是一个懒人的选择 ：）<br />
+http://www.xfocus.net/tools/200603/1140.html</p>
+<span class="comments-post">Posted by: <a href="http://baoz.net">baoz</a> 發表於 March 12, 2006 06:58 PM</span>
+</div>
+<div class="comments-body">
+<p>csIt is there -  http://dogsex.pornfilmssales.com/teen-bestiality-bestiality.html<br />
+zoo sex clips<br />
+download video zoofilia<br />
+animal sex comics<br />
+http://dogsex.pornfilmssales.com/how-to-have-sex-with-dog.html<br />
+beast sex zoo<br />
+http://dogsex.pornfilmssales.com/brazilian-bestiality.html<br />
+animal sex galleries<br />
+http://dogsex.pornfilmssales.com/bestiality-photos.html<br />
+http://dogsex.pornfilmssales.com/rapidshare-bestiality.html</p>
+<span class="comments-post">Posted by: <a href="http://dogsex.pornfilmssales.com/">irgy</a> 發表於 September  5, 2006 05:12 AM</span>
+</div>
+<div class="comments-body">
+<p>csLook this  http://livecam.searchpaysites.net/yahoo-cam-girls.html<br />
+mardi gras web cams<br />
+live strippers<br />
+female strippers chatrooms<br />
+http://livecam.searchpaysites.net/hot-girl-cams.html<br />
+http://livecam.searchpaysites.net/adult-free-streaming-cams.html<br />
+pool dressing room cam<br />
+good charlotte - i just wanna live<br />
+http://livecam.searchpaysites.net/brownie-camera.html<br />
+http://livecam.searchpaysites.net/tournee-du-chat-noir.html</p>
+<span class="comments-post">Posted by: <a href="http://livecam.searchpaysites.net/">boris</a> 發表於 October  1, 2006 10:00 PM</span>
+</div>
+<div class="comments-body">
+<p>csIt is there -  upskirt creampies<br />
+just cream pies<br />
+http://creamonpussy.donnatos.net/chocolate-cream-pies.html<br />
+sexual cream pies free pictures<br />
+mature asian creampie tgp<br />
+cuckold creampie femdom clips free<br />
+creampie hardcore sex<br />
+heathers amatuer creampie video<br />
+bukkake creampies<br />
+http://creamonpussy.donnatos.net/housewives-creampies.html</p>
+<span class="comments-post">Posted by: <a href="http://creamonpussy.donnatos.net/">nik</a> 發表於 October  6, 2006 02:21 PM</span>
+</div>
+<div class="comments-body">
+<p>csHi. Cool theme, but this is interesting too:  girl bathroom cam<br />
+free sex web cam<br />
+http://livewebcam.hotsitessearch.com/hidden-bathroom-cams.html<br />
+http://livewebcam.hotsitessearch.com/webcam-boobs.html<br />
+free to watch adult web cams<br />
+http://livewebcam.hotsitessearch.com/tg-chat.html<br />
+hot dorm cam<br />
+chat rooms for teens<br />
+sexy cam<br />
+http://livewebcam.hotsitessearch.com/cam-girls-live.html</p>
+<span class="comments-post">Posted by: <a href="http://livewebcam.hotsitessearch.com/">george</a> 發表於 October  7, 2006 01:06 PM</span>
+</div>
+<div class="comments-body">
+<p>csHi. Cool theme, but this is interesting too:  bondage comic|http://hentaiporn.midnightgalls.com/bondage-comic.html<br />
+free flash hentai games|http://hentaiporn.midnightgalls.com/free-flash-hentai-games.html<br />
+sexy comic|http://hentaiporn.midnightgalls.com/sexy-comic.html<br />
+love hina free hentai|http://hentaiporn.midnightgalls.com/love-hina-free-hentai.html<br />
+zoo sex cartoon|http://hentaiporn.midnightgalls.com/zoo-sex-cartoon.html<br />
+xxx comic|http://hentaiporn.midnightgalls.com/xxx-comic.html<br />
+funny adult cartoons|http://hentaiporn.midnightgalls.com/funny-adult-cartoons.html<br />
+sexy cartoon girls|http://hentaiporn.midnightgalls.com/sexy-cartoon-girls.html<br />
+cartoon bitches|http://hentaiporn.midnightgalls.com/cartoon-bitches.html<br />
+anime spanking|http://hentaiporn.midnightgalls.com/anime-spanking.html</p>
+<span class="comments-post">Posted by: <a href="http://hentaiporn.midnightgalls.com/bondage-comic.html">tanita</a> 發表於 October 13, 2006 04:51 AM</span>
+</div>
+<div class="comments-body">
+<p>csMy URLs is  http://supermom.upmba.org/wife-watch-cuckold.html<br />
+http://supermom.upmba.org/wife-voyeur.html<br />
+old ladies naked<br />
+http://supermom.upmba.org/enema-wife-punish.html<br />
+http://supermom.upmba.org/milf-facial.html<br />
+mature dildo<br />
+fiesta readers wives<br />
+http://supermom.upmba.org/horny-older-mothers-women.html<br />
+http://supermom.upmba.org/milf-avenue.html<br />
+santa claus and his old lady</p>
+<span class="comments-post">Posted by: <a href="http://supermom.upmba.org/">alex</a> 發表於 October 13, 2006 08:07 AM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1381" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響數量:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+</div>
+</div>
+</body>
+</html>

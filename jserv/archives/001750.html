@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 分析 GCC 對 Hello World 的重重布幕</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001748.html" title="Mr.6 的趨勢創投 blog" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001751.html" title="IRCConf - Xorg 嶄新的硬體加速與效能提昇機制 - 資料上線" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001748.html">« Mr.6 的趨勢創投 blog</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001751.html">IRCConf - Xorg 嶄新的硬體加速與效能提昇機制 - 資料上線 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">July 06, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">分析 GCC 對 Hello World 的重重布幕</h3>
+
+最近花了些時間準備 [<a href="http://blog.linux.org.tw/~jserv/archives/001728.html">演講：深入淺出 Hello World -- 理解 Linux 上運作 Hello World 的種種機制 (台中場次)</a>]，"Hello World" 可以用許多程式語言撰寫，可參考 [<a href="http://www.ntecs.de/old-hp/uu9r/lang/html/lang.en.html">433 Examples in 132 (or 162*) programming languages</a>]，編譯系統在這幾十年沒有太大的流程改變，但是應用類型與平台環境卻相當多元。<br>
+<br>
+過去在 16-bit x86/DOS 的環境中，用 Turbo C 或 Turbo Pascal 撰寫一個 "Hello World"，執行檔不需要 C runtime，並且也不到 1 kb 的大小，而事隔多年，在 32-bit x86/Win32 或 32-bit x86/Linux 上，隨便用 Microsoft C compiler 或 GNU GCC 編譯，卻有十幾 kb 之譜，重點是，這些執行檔都需要 C runtime 或者類似的 Dynamic Linking，這是怎麼一回事？16-bit 到 32-bit 的變遷中，對 code density 與 expansion 差異竟然如此大？而編譯技術反而退步了？非也、非也。<br>
+<br>
+其實思維的角度已經改變，像 DWARF/ELF 執行檔格式之所以被提出，就是希望能增加一個系統的彈性，以及提昇動態偵錯的能力，面對這些重重布幕，不僅 Embedded System 的開發者需要留意，任何可能會接觸到 System Programming 的環節，也必定會遇到，甚至，許多安全性議題，就是深藏於這些布幕。準備演講內容的同時，試著修改一些工具，並加強輸出與報表的功能，以下是分析一個 C 語言撰寫的 Hello World 的畫面：(click to enlarge)<br>
+<center><a href="http://jserv.sayya.org/helloworld/pix/hello-world-analysis.png"><img src="http://jserv.sayya.org/helloworld/pix/hello-world-analysis.png" width="431" height="335"></a></center><br>
+這是尋幽訪勝的一個方式，再來，我會試著用修改過的 [<a href="http://user-mode-linux.sourceforge.net/">User-Mode-Linux</a>] 搭配 GNU GDB，探索 kernel-space 與 user-space 的互動情況，順便介紹工具的使用。<br>
+<br>
+先提到這邊，另外我想強調的是「處處留心皆學問，落花水面皆文章」，其實 geek 與一般的 user / programmer 的分野並不大，只是專注的範疇與態度有異罷了 :-)<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 July  6, 2006 03:33 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>請問是用哪一個分析工具?? 非常謝謝您.</p>
+<span class="comments-post">由 <a href="mailto&#58;niklelin&#64;yahoo&#46;com&#46;tw">Nikle</a> 發表於</MTIfNonEmpty> July  6, 2006 07:27 PM</span>
+</div>
+<div class="comments-body">
+<p>用 Microsoft C compiler的話, 主要還是由於CRT Init部份的code會被link進去.</p>
+<span class="comments-post">由 <a href="mailto&#58;Kuon&#64;chroot&#46;org">Kuon</a> 發表於</MTIfNonEmpty> July  7, 2006 01:24 AM</span>
+</div>
+<div class="comments-body">
+<p>To Nikle,</p>
+
+<p>我會在演講時公佈，也會在結束後將相關資料 (slides, sample program, tools) 一併放到公開的網站上，謝謝您的關注。</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> July  7, 2006 10:16 AM</span>
+</div>
+<div class="comments-body">
+<p>printf() 不也是 C Runtime 的函式嗎? 我記得在DOS下的Hello World (以Turbo C 編譯)好像也有十幾K, 不是很確定...</p>
+<span class="comments-post">由 <a href="mailto&#58;jamesho8743&#64;msn&#46;com">James</a> 發表於</MTIfNonEmpty> July  7, 2006 11:52 AM</span>
+</div>
+<div class="comments-body">
+<p>James，剛才用庫存的Turbo C 2.01編Hello.c，只有5676 bytes，用upx 壓縮後，變成3856 bytes。用Cygwin是11977 bytes，strip後變成4608 bytes，再用upx壓成3072bytes。</p>
+<span class="comments-post">由 <a href="http://spaces.msn.com/members/tenyi/">鳥毅</a> 發表於</MTIfNonEmpty> July 11, 2006 01:54 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 真的理解 C 語言的 types 嗎？</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001422.html" title="是否 Code Review 的思索" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001424.html" title="Konqueror/Embedded for Qtopia 計畫開張" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001422.html">« 是否 Code Review 的思索</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001424.html">Konqueror/Embedded for Qtopia 計畫開張 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 12, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">真的理解 C 語言的 types 嗎？</h3>
+
+拜讀葉博士的 blog [<a href="http://william.cswiz.org/blog/archives/2005-06-08/twenty-years/">南柯一夢二十年</a>]，那句話總是徘徊於內心深處：<ul>
+遇到這樣的個案：<ul>
+<li>第一堂課：「我有 20 年的工作經驗。」</li>
+<li>最後一堂：「現在我才發現，我只有 1 年的工作經驗，只不過重複了 20 年。」</li>
+</ul>
+但願退休的那一天，我不會發出同樣的喟嘆。
+</ul>
+從國中接觸 C 語言程式設計以來，我知道工具只是協助人們解決問題，重點還是在於如何去克服問題，陸續撰寫了中小型的軟體專案，也包含簡單的 C++ subset compiler，稍加閱讀 ANSI C Standard 後，曾有一度認為自己懂了 C 語言，然而長大後，才知道當時的無知與愚昧。<br><br>
+
+剛剛閱讀 Peter Seebach (ISO C committee) 撰寫的入門文章 [<a href="http://www-128.ibm.com/developerworks/power/library/pa-ctypes1/?ca=dgr-lnxwCTypesP1">Everything you ever wanted to know about C types, Part 1: What's in a type?</a>]，裡面沒有艱澀的技術，只有我們熟悉的 C89/C99 Standard，然而，有些細節甚至讓我花了一段時間查證，我開始懷疑：<ul>
+「是否，我只有一個月的 Programming 經驗，只不過重複了好幾個月？」
+</ul>
+該文從 C types 出發，先提及幾個經典的議題，像是 +/- sign 表示、補數表示、IEEE 浮點表示、在 C89/C99 中負值算術的差異與爭議處、極值表示、影響最佳化的 types、volatile / restrict qualifier，以及在 C 語言中實做資料封裝的概念，篇幅不長，但每個議題後面都可以找到許多引證與陷阱案例。舉例來說，文中提到 C99 中考慮到 compiler optimizations，在 "A new meaning for static" 提到以下的宣告：<ul>
+void foo(int a[static 16]);
+</ul>
+vectorization 在近代的 compilation optimization 是很重要的議題，在之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001397.html">C-style 字串的最佳化</a>] 可以發現 int a[] 的 object layout，而多數的指令集也提供了 16 (含以上) pipelines 的 SIMDs，有很大的最佳化空間。不過 C 語言的常見陷阱就是 array indexing 的範圍，是有高度的自由，當然，在特定的 C compiler 對此會作些規範，比方說 TI DSP core 專用的 compiler 就伴隨了許多描述用的語法，表示 Runtime 的 indexing 坐落範圍。<br><br>
+
+再來是經典的 volitile 與 restrict qualifier，這在多數的 interview 會考到，我甚至可以把 ISO C Standard 裡面的定義背出一部分，然而，我真的懂嗎？在開始 trace Linux kernel device driver 後，才發現 volitile 以及 GCC optimization 造成的影響是相當大的，而且會引來相當 tricky 的效應。打開 /usr/include/string.h 可以發現以下兩個宣告：<ul><pre>
+__BEGIN_NAMESPACE_STD
+/* Copy N bytes of SRC to DEST.  */                                  
+extern void *memcpy (void *__restrict __dest,                
+                     __const void *__restrict __src, size_t __n)
+     __THROW __nonnull ((1, 2));                                     
+/* Copy N bytes of SRC to DEST, guaranteeing
+   correct behavior for overlapping strings.  */                       
+extern void *memmove (void *__dest, __const void *__src, size_t __n)
+     __THROW __nonnull ((1, 2));                                    
+__END_NAMESPACE_STD
+</pre></ul>
+memcpy(3) 與 memmove(3) 在語意上最大的差異，就是允許 overlap 與否，這是為何 C99 中，兩者引數有不同 prototype 的緣故。Peter Seebach 在這系列的文章尚有三篇，想必可引來更多的思索，在此同時，如果不想在工作二十年後自嘆「我只有 1 年的工作經驗，只不過重複了 20 年。」，還是多觀察案例，多作思索並動手作，自勉之！<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 12, 2006 06:01 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1423" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: C 語言的 trigraph/digraph</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001960.html" title="Keroro Desktop Environment (2)" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001962.html" title="鴻飛那復計東西" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001960.html">« Keroro Desktop Environment (2)</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001962.html">鴻飛那復計東西 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February 13, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">C 語言的 trigraph/digraph</h3>
+
+身為「慣 C」迷，喔，我是說「<u>成</u>天習<u>慣</u>用 <u>C</u> 語言」者，每每在拜讀 Linux kernel 原始程式碼後，都能感受將 C 語言發揮得淋漓盡致的美妙，無怪乎，Linus Torvalds 本人就說 [<a href="http://www.zdnet.com.au/news/software/soa/Torvalds-Stick-to-C-for-kernel-coding/0,130061733,339285844,00.htm">Stick to C for kernel coding</a>]，端看用 C 語言實做 OOP、garbage collector、mixin、... 等高級特性，令人大呼過癮與打從心底的讚嘆。<br />
+<br />
+不過，今天要談的 C trigraph 卻是基於歷史因素的產物，看看以下程式碼： (trigraph.c)
+<pre class="code" id="codemain" style="margin: 6px;">??=include &lt;stdio.h>
+%:include &lt;stdlib.h>
+&nbsp;
+<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv&lt;::>) ??&lt;
+    <span class="keyword">char</span> msg??(:> = {<span class="literal">'O'</span>, <span class="literal">'r'</span>, <span class="literal">'z'</span>??>;
+    printf(<span class="literal">"Hello world!??/n"</span>);
+    <span class="keyword">return</span> 0;
+%></pre>
+這是貨真價實的 C99 合法程式，編譯並執行看看：<ul class="code" style="margin: 6px;">
+$ gcc --std c99 trigraph.c <br />
+$ ./a.out <br />
+Hello world!
+</ul>
+以上展示了 Trigraph (ANSI C) 與 Digraph (C99 規範)，此乃一種特別的表示法。依據執行的結果，我們可以推論置於 "include" 之前的 "??=" 與 "%:" 都表示 '#' 字元，為何如此設計呢？我們得思量 C 語言發明的年代，也就是 1970 年代，儲存與運算設備都相當匱乏，1972 年 ISO 標準 ISO 646 被提出，以 7-bit 編碼表示字元，但缺乏九個 C 語言所需的字元，也就是 '#'、'\'、'^'、'['、']'、'|'、'{'、'}'，以及 '~'。儘管在後續的資訊系統已著手修正，但總得克服透過終端機連線到 Unix 主機時，鍵盤上的字元可能會闕漏以上九個字元 (早期依據 ISO 646 標準去設計) 而無法 coding 的窘境，所以 ANSI C 委員會就提出「以三個字元構成的 trigraph」來表示上述字元的語法，到了C99，除了予以納入外，還提出修正性的 digraph，也就是簡化為「以兩個字元構成的 digraph」來表示之中五個字元，詳情可參考 wikipedia [<a href="http://en.wikipedia.org/wiki/C_trigraph">C trigraph</a>]。<br />
+<br />
+話說，「慣 C」迷如我，好像也很喜歡偷窺，至少是偷窺 C99 spec 啦 *笑*<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 February 13, 2008 05:32 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>酷捏</p>
+<span class="comments-post">由 <a href="http://cclien.net/">cclien</a> 發表於</MTIfNonEmpty> February 13, 2008 07:20 PM</span>
+</div>
+<div class="comments-body">
+<p>在工作的中遇到這種東西會讓人笑不出來</p>
+<span class="comments-post">由 <a href="http://www.reality.hk">小影</a> 發表於</MTIfNonEmpty> February 13, 2008 10:45 PM</span>
+</div>
+<div class="comments-body">
+<p>如果要離職就應該寫這種 Code # flee~~~~</p>
+<span class="comments-post">由 <a href="http://blog.richliu.com">richliu</a> 發表於</MTIfNonEmpty> February 14, 2008 12:52 AM</span>
+</div>
+<div class="comments-body">
+<p>C语言的mixin是怎样的？</p>
+<span class="comments-post">由 <a href="http://bamanzi.inlsd.org">bamanzi</a> 發表於</MTIfNonEmpty> February 15, 2008 01:02 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1961" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

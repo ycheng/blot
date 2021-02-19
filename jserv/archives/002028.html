@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 「尋幽訪勝話系統--以 Linux 探索軟硬體整合設計」簡報上線</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002027.html" title="以 ptrace 系統呼叫來追蹤/修改行程" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002029.html" title="以 C 語言實做 Functional Language 的 Currying" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002027.html">« 以 ptrace 系統呼叫來追蹤/修改行程</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002029.html">以 C 語言實做 Functional Language 的 Currying »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">May 31, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">「尋幽訪勝話系統--以 Linux 探索軟硬體整合設計」簡報上線</h3>
+
+本週四 (May 29) 前往南台科技大學，做了一場名為 [<a href="http://blog.linux.org.tw/~jserv/archives/002021.html">尋幽訪勝話系統--以 Linux 探索軟硬體整合設計</a>] 的演講，用了三小時的時間，為該校師生介紹了 Linux 設計的精神與 Device Model，相關資料已上線，可參考：<ul>
+  <li>簡報： [<a href="http://jserv.sayya.org/kernel/sysprog-with-linux.pdf">sysprog-with-linux.pdf</a>]</li>
+  <li>簡報所用到的程式範例： [<a href="http://jserv.sayya.org/kernel/sysprog-with-linux-prog.tar.bz2">sysprog-with-linux-prog.tar.bz2</a>]</li>
+</ul>
+其中簡報檔採用 Creative Commons 授權 (CC-by-SA)，程式檔則是 GNU GPL 授權。這次演講的重心主要強調 UNIX 設計原則 "Everything Is File" 與「真實的虛擬記憶體」，此原則反映到 device driver model，若能充分體驗，應該能對系統設計有適度的切入。再者，我又強調應捨棄過去「逐行 trace Linux kernel」的「陋習」，相反，我們應該掌握 kernel 設計考量與發展趨勢，再回頭思考系統發展，並以軟硬體間的變化為出發，如簡報中「Rosetta Stone：Linux如何建立軟硬體關聯」一節所提及的 "/proc/iomem"，交叉觀察分析，進而知曉其奧義。另外，也趁此時機，與該校資工系與電子系的教授交流，參觀了該校在機電整合與機器人設計的成果。<br />
+<br />
+請多指教，謝謝！<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 May 31, 2008 12:01 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>Hi jserv，<br />
+    我在网络上寻找QT GUI Auto Testing 的解决方案，看到你的BLOG很欣喜，你提到的LDTP给我很大的灵感。感觉要做Auto Testing 一定要QT+Script，我只会一点perl 不会python，您有没有点好的建议呢？希望能跟您进一步联系再深入讨论技术方面的问题，可以吗？我已留下EMAIL。</p>
+<span class="comments-post">由 <a href="mailto&#58;lucytanger&#64;gmail&#46;com">lucy</a> 發表於</MTIfNonEmpty> May 31, 2008 02:55 PM</span>
+</div>
+<div class="comments-body">
+<p>  您好,我是一名学生,下了您之前做过的软件包叫做PicoGL,在xsacle的开发板上跑起来了.我的最终目标是用sdl+opengl/es来在开发板上运行3D的游戏程序,现在我想用sdl+PicoGL来实现,不知道行不行?具体该怎么做?希望能得到您的指导.我已留下邮箱,谢谢</p>
+<span class="comments-post">由 <a href="mailto&#58;huaer926&#64;yahoo&#46;com&#46;cn">happy</a> 發表於</MTIfNonEmpty> June 18, 2008 04:34 PM</span>
+</div>
+<div class="comments-body">
+<p>您好：<br />
+請問這個簡報有錄音檔嗎？<br />
+如果有是否可以提供給我，感激不盡！</p>
+<span class="comments-post">由 <a href="http://newness.wordpress.com">Vincent</a> 發表於</MTIfNonEmpty> June 18, 2008 09:58 PM</span>
+</div>
+<div class="comments-body">
+<p>@Vincent</p>
+
+<p>抱歉，這次的演講沒有錄影、錄音，但正在規劃此系列主題的演講或心得分享，比照之前「深入淺出 Hello World」的模式，也是免費的教育訓練，等定案後，會公佈於 blog 上，謝謝！</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> June 19, 2008 02:58 AM</span>
+</div>
+<div class="comments-body">
+<p>謝謝你的回覆！<br />
+針對你在我的Blog留言，我問了一些問題囉，<br />
+有空可以麻煩妳去看一下嗎？3Q</p>
+<span class="comments-post">由 <a href="http://newness.wordpress.com">Vincent</a> 發表於</MTIfNonEmpty> June 20, 2008 10:30 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2028" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

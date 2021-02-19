@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: December 2011 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2011_11.html" title="November 2011" />
+
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2012_01.html" title="January 2012" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2011_11.html">« November 2011</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+| <a href="http://blog.linux.org.tw/~jserv/archives/2012_01.html">January 2012 »</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+
+
+<h2 class="date">December 29, 2011</h2>
+
+
+<div class="blogbody">
+<a name="002192"></a>
+<h3 class="title">在 Android 上運作 X server</h3>
+
+在 Android 上運作 X11 server 的想法大概從 2009 年始，就有頗多單位陸續實現，不過大部分都是 close source。整個 X11 若要在 Android bionic (libc) 上完整編譯，會面臨頗多問題，比方說缺少 SysV shm 的支援。而 Tom Marshall 則貢獻了一個 open source 的實做，專案暫時命名為 "android-x-server"，完全以 Java 搭配 Android framework 來開發，程式碼維護於 github [<a href="https://github.com/tdm/android-x-server">android-x-server</a>]。目前還在開發初期，不過大致能運作了。<br />
+<br />
+下圖是我在 Nexus S 手機先執行 [<a href="https://github.com/tdm/android-x-server">android-x-server</a>] (X server)，然後接受 xlogo 的顯示要求 (X client)：<br />
+<center><img src="http://people.debian.org.tw/~jserv/android/android-x-server.png" width="480" height="800" /></center><br />
+之間的通訊方式當然是 X protocol，而在 Android 環境下，我們可透過 adb 的 port forwarding，指定將 host 端的特定 port 對應到 X server 所 listen 的 port 6000，操作方式很簡單，就這麼一行：<pre class="code" style="margin: 6px;">
+$ adb forward tcp:6099 tcp:6000
+</pre>
+上述指令將 host 端的 port 6099 (也就是 DISPLAY=:99) 對應到 Android 手機上的 port 6000，自然就是 X server 接受 X protocol 之處，以下是參考的 xdpyinfo 輸出：<pre class="code" style="margin: 6px;">
+$ DISPLAY=:99 xdpyinfo 
+name of display:    :99
+version number:    11.0
+vendor string:    My Vendor
+vendor release number:    0
+maximum request size:  262140 bytes
+motion buffer size:  0
+bitmap unit, bit order, padding:    32, LSBFirst, 32
+image byte order:    LSBFirst
+number of supported pixmap formats:    6
+...
+screen #0:
+  dimensions:    480x800 pixels (50x84 millimeters)
+  resolution:    244x242 dots per inch
+  depths (2):    24, 32
+  root window id:    0x5
+  depth of root window:    24 planes
+  number of colormaps:    minimum 1, maximum 1
+  default colormap:    0x4
+  default number of colormap cells:    256
+  preallocated pixels:    black 0, white 16777215
+  options:    backing-store NO, save-unders NO
+</pre>
+整個實做非常精簡，但對於研究 X protocol 與 X server 是極好的參考項目。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2011/12/_android_x_serv.html"> 9:19 PM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2192" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<h2 class="date">December 28, 2011</h2>
+
+
+<div class="blogbody">
+<a name="002191"></a>
+<h3 class="title">「淺談探索 Linux 系統設計之道」簡報上線</h3>
+
+去年小弟在 Study-Area 分享一場主題為「<a href="http://blog.linux.org.tw/~jserv/archives/2010/06/_--_linux.html">自己動手，豐衣足食 -- 淺談探索 Linux 系統設計之道</a>」的演講，獲得頗多迴響，該議程從 Linux 核心的經典設計，全程以軟體開發者的觀點，探訪核心與週邊硬體互動的機制，試圖找出關聯性，進而將這些「鑰匙」串連並探索系統內部，簡報已上線，請見 [<a href="http://jserv.sayya.org/kernel/linux-discovery.pdf">linux-discovery.pdf</a>]<br />
+<center>
+<div style="width:425px" id="__ss_10716365"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/jserv/linux-discovery" title="淺談探索 Linux 系統設計之道 " target="_blank">淺談探索 Linux 系統設計之道 </a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/10716365" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/jserv" target="_blank">Jim Huang</a> </div> </div>
+</center>
+雖然在暑期的台南舉辦，且不幸空調無法正確運作而造成遺憾，但前來指教與討論的朋友仍不少，這讓小弟對分享系統程式原理的知識，有頗大的鼓舞。預計近期除了探討 [<a href="http://phorum.study-area.org/index.php/topic,66705.0.html">用 Android 學習系統程式</a>] 一類的題材外，還規劃了從分析 toolchain 原理、核心與使用者層級互動，到改善整體系統效能和穩定度的系列演講，請多多指教，謝謝！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2011/12/_linux_2.html">10:01 PM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2191" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<h2 class="date">December 26, 2011</h2>
+
+
+<div class="blogbody">
+<a name="002190"></a>
+<h3 class="title">「軟體又熱又平又擠」簡報上線</h3>
+
+上週五 (Dec 23) 應國立成功大學資訊工程系盧文祥教授的邀約，給予一場標題為「軟體又熱又平又擠：淺談開放原始碼軟體衝擊下的新思維」的演講，恰好演講地點就在十二年前，我參加大學推薦甄選的面試指定教室，而這場演講可說是自己心靈與知識成長的紀錄，簡報檔案已上線，請見：<br />
+<center>
+<div style="width:425px" id="__ss_10714023"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/jserv/opensource-everywhere" title="軟體又熱又平又擠：淺談開放原始碼軟體衝擊下的新思維 " target="_blank">軟體又熱又平又擠：淺談開放原始碼軟體衝擊下的新思維 </a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/10714023" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/jserv" target="_blank">Jim Huang</a> </div> </div>
+</center>
+在開放原始碼軟體衝擊下，不僅給予我們新的機會，也促使我們得快速的改變既有概念，我選定這個題目的考量，著眼以下三者：<ul>
+    <li>熱：軟體在多樣的應用</li>
+    <li>平：軟體作為破壞性技術</li>
+    <li>擠：軟體在爆炸性的規模</li>
+</ul>
+感謝老師與同學們的指教。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2011/12/post_286.html"> 4:52 PM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2190" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<h2 class="date">December  2, 2011</h2>
+
+
+<div class="blogbody">
+<a name="002189"></a>
+<h3 class="title">「探索嵌入式 ARM 平台與 SoC」簡報上線</h3>
+
+前年九月與去年五月，小弟在 Study-Area 做了主題為「探索嵌入式 ARM 平台與 SoC」的演講，分享過往的開發經驗，並試圖透過追蹤 [<a href="https://sites.google.com/site/embedded2009/introduction-to-curt-v1">CuRT</a>] 這樣具體而微的 RTOS for ARM，作為學習 ARM 嵌入式平台的切入點。在 Part I，快速瀏覽 ARM 架構、SoC 平台，與若干基礎概念，而在 Part II，以 PXA255 為範例，討論筆者開發的 CuRT 如何進行硬體啟動程序，從而知悉 ARM 中斷、例外處理，以及系統暫存器的對應。簡報已上線，可參考 [<a href="http://jserv.sayya.org/platform/">platform::	ARM overview</a>]。<br />
+<center>
+Part I<br />
+<div style="width:425px" id="__ss_1743656"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/jserv/arm-and-soc-traning-part-i-overview" title="ARM and SoC Traning Part I -- Overview" target="_blank">ARM and SoC Traning Part I -- Overview</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/1743656" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/jserv" target="_blank">Jim Huang</a> </div> </div>
+Part II<br />
+<div style="width:425px" id="__ss_10447388"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/jserv/arm-and-soc-traning-part-ii-system" title="ARM and SoC Traning Part II - System" target="_blank">ARM and SoC Traning Part II - System</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/10447388" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/jserv" target="_blank">Jim Huang</a> </div> </div>
+</center>
+Part III 預計探討 ARM Toolchain (compiler, assembler, linker/loader) 與平台特性等項目。感謝您的指教與討論。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2011/12/_study-area_arm.html">12:05 AM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2189" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+
+</body>
+</html>

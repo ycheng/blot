@@ -1,0 +1,268 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Asho's Blog: December 2006 Archives</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~asho/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~asho/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~asho/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~asho/archives/2006_10.html" title="October 2006" />
+
+<link rel="next" href="http://blog.linux.org.tw/~asho/archives/2007_01.html" title="January 2007" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~asho/" accesskey="1">Asho's Blog</a></h1>
+<span class="description">一個喜歡研究的傻小子 :-)</span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~asho/archives/2006_10.html">&laquo; October 2006</a> |
+
+<a href="http://blog.linux.org.tw/~asho/">Main</a>
+| <a href="http://blog.linux.org.tw/~asho/archives/2007_01.html">January 2007 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">December 17, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001858"></a>
+<h3 class="title">在debian下安裝systemtap</h3>
+
+<p>延續著<a href="http://blog.linux.org.tw/~asho/archives/001857.html">在 Redhat AS 4下安裝systemtap</a>之後，當然是要為我最愛的Debian寫一篇說明了！</p>
+
+<p>Debian已經有收納systemtap的軟體，現在就只差核心要重新編譯而已。請安裝systemtap和linux-source套件<br />
+apt-get install systemtap linux-source-2.6.18</p>
+
+<p>安裝好之後，開始重編Kernel。由於使用systemtap需要vmlinux檔，所以做好的kernel deb要內附vmlinux的話請修改"/etc/kernel-pkg.conf"並加入<br />
+install_vmlinux := YES</p>
+
+<p>接下來到kernel source的top dir，進行make menuconfig，記得Kernel要加入"CONFIG_KPROBES", "CONFIG_DEBUG_INFO"這兩個選項喔！建立核心請執行<br />
+make-kpkg --revision 2.6.18 --append-to-version -systemtap --initrd binary-arch</p>
+
+<p>經過一段時間後，馬上把編譯好的deb裝上(如果要刪除舊的source，請記得裝上剛編譯的kernel header deb)，並以這個新的kernel重新開機，這樣systemtap的環境就配置好了。</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/001858.html">10:45 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1858" onclick="OpenComments(this.href); return false">Comments (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001857"></a>
+<h3 class="title">在 Redhat AS 4 下安裝 systemtap</h3>
+
+<p>Systemtap是一套dynamic kernel probing system. 動態修改變數、更換function、找出function flow...這一套系統在kernel-2.6.11之後皆可以使用，只要Kernel config設定了"CONFIG_KPROBES","CONFIG_DEBUG_INFO"和相關套件就可以使用了。<br />
+因為弟的產品開發是Redhat AS4 base，而該dist所包kernel為2.6.9，雖然舊，但redhat持續有上patch，官方release note指出有支援systemtap，卻沒有詳細的安裝步驟，其實內建的套件都已經支援了，只是缺乏kernel-debuginfo套件而已。所以本節只是講解產生kernel-debuginfo，礙於腦筋不夠靈光，特寫此篇來記錄。以下是安裝順序：<br />
+<li>先安裝好Redhat AS U4，弟安裝的套件有開發用的套件</li><br />
+<li>從<a href="http://rpmfind.net/">rpmfind</a>找到Redhat ASU4的<a href="ftp://rpmfind.net/linux/redhat/updates/enterprise/4AS/en/os/SRPMS/kernel-2.6.9-42.EL.src.rpm">kernel-src.rpm</a></li><br />
+<li>安裝kernel-2.6.9-42.EL.src.rpm：rpm -ivh kernel-2.6.9-42.EL.src.rpm</li><br />
+<li>編輯kernel的spec檔案：vim /usr/src/redhat/SPECS/kernel-2.6.spec，指定要編譯的kernel設成1，其餘為0。以筆者來說，只需要%define buildup 1，其餘就填0</li><br />
+<li>執行 rpmbuiild --target i686 -ba kernel-2.6.spec</li><br />
+<li>安裝編譯好的kernel-debuginfo rpm：rpm -ivh /usr/src/redhat/RPMS/i686/kernel-debuginfo-2.6.9-42.EL.i686.rpm，這個rpm內附kernel的symbol檔，拿來debug用的</li><br />
+<li>安裝光碟所附的systemtap或是到rpmfind.net找</li><br />
+經過以上的動作就完成了systemtap的環境的設置，馬上拿systemtap script來測試吧！</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/001857.html">12:43 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1857" onclick="OpenComments(this.href); return false">Comments (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">December 16, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001856"></a>
+<h3 class="title">cycle: calendar program for women</h3>
+
+<p>Description: calendar program for women<br />
+ Cycle is a calendar for women. Given a cycle length or statistics for<br />
+ several periods, it can calculate the days until menstruation, the days<br />
+ of "safe" sex, the fertile period, and the days to ovulations, and<br />
+ define the d.o.b. of a child. It allows the user to write notes and<br />
+ helps to supervise the administration of hormonal contraceptive tablets.<br />
+ .<br />
+ Possibilities of the program:<br />
+   - Calculate days of menstruation, based on the length of the cycle or<br />
+     on statistics of previous periods.<br />
+   - Calculate days of "safe" sex, fertile period and day to ovulations.<br />
+   - Definition of D.O.B. (Date Of Birth) of a child<br />
+   - Allows to write notes.<br />
+   - Helps to supervise reception of hormonal contraceptive tablets.<br />
+   - Multiple users allowed. Data is protected by a password for every<br />
+     user.<br />
+ .<br />
+ NOTE: This program is not a reliable contraceptive method. It does<br />
+ neither help to prevent sexual transmision diseases like AIDS. It is<br />
+ just an electronic means of keeping track of some of your medical data<br />
+ and extract some statistical conclusions from them. You cannot consider<br />
+ this program as a substitute for your gynecologist in any way.<br />
+ .<br />
+  Homepage: http://cycle.sourceforge.net/<br />
+Tag: special::not-yet-tagged, special::not-yet-tagged::c<br />
+</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/001856.html">07:11 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1856" onclick="OpenComments(this.href); return false">Comments (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001855"></a>
+<h3 class="title">scsi hot-plug add/remove</h3>
+
+<p>SCSIADD(8)                        root tools                        SCSIADD(8)</p>
+
+<p>NAME<br />
+       scsiadd - Add and remove SCSI devices</p>
+
+<p>SYNOPSIS<br />
+       scsiadd [-a|-r] <id></p>
+
+<p>       scsiadd [-a|-r] <id>  <lun></p>
+
+<p>       scsiadd [-a|-r] <host> <id> <lun></p>
+
+<p>       scsiadd [-a|-r] <host> <channel> <id> <lun></p>
+
+<p>       scsiadd [-s] <host></p>
+
+<p>       scsiadd [-s] <host> <channel></p>
+
+<p>       scsiadd [-p]</p>
+
+<p>       scsiadd [-i] <maxid></p>
+
+<p>DESCRIPTION<br />
+       Scsiadd  adds and removes devices, scans for new devices, or prints the<br />
+       status of the SCSI bus.  The options are:</p>
+
+<p>       -a     add device</p>
+
+<p>       -r     remove device</p>
+
+<p>       -s     scan for new devices</p>
+
+<p>       -p     print SCSI status</p>
+
+<p>       -i     set maximum SCSI ID which is scanned</p>
+
+<p>EXAMPLES<br />
+       scsiadd 3<br />
+              add SCSI device with ID 3 on primary host</p>
+
+<p>       scsiadd -r 1<br />
+              remove SCSI device with ID 1 from primary host</p>
+
+<p>       scsiadd -s<br />
+              scan for new devices on primary device</p>
+
+<p>       scsiadd -a 1 2 13 4<br />
+             add SCSI device with ID 13 and LUN 4 on host 1 channel 2</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/001855.html">06:39 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1855" onclick="OpenComments(this.href); return false">Comments (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">December 01, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001846"></a>
+<h3 class="title">DVD Authoring</h3>
+
+<p><a href="http://linuxgazette.net/issue83/stoddard.html">http://linuxgazette.net/issue83/stoddard.html</a></p>
+
+<p>mkisofs -dvd-video -udf -o dvd.iso dvd/<br />
+dvd+rw-format -f /dev/srcd0<br />
+growisofs -Z /dev/srcd0=dvd.iso<br />
+or<br />
+dvdrecord -dao speed=2 dev=0,0,0 dvd.iso<br />
+----------------------------------------------------直接燒錄DVD檔案的方法<br />
+growisofs -Z /dev/scd0 -dvd-video -udf dvd_dir/</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/001846.html">10:15 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1846" onclick="OpenComments(this.href); return false">Comments (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

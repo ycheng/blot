@@ -1,0 +1,220 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: shellcode 的變化</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001796.html" title="E/OS LX - 多重 API 支援的作業系統" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001798.html" title="書目 - 2006 年第三季" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001796.html">« E/OS LX - 多重 API 支援的作業系統</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001798.html">書目 - 2006 年第三季 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">September 27, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">shellcode 的變化</h3>
+
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001773.html">SM 版 Hello World</a>] 提過一種「奇計淫巧」，展示 self-modifying code 與 shellcode，在網友迴響的部份，連 CIH 前輩都來指教了，真有股壓力，那個例子實在舉得不好，我還在想該用什麼更好的方式闡述。昨晚又一個失眠的夜，玩起 shellcode，思考可能的變形，以下是個展示性的 C++ 程式碼：<br>
+<pre class="code" style="margin: 6px;"><span class="keyword">struct</span> T {                                                                                          
+  <span class="keyword">int</span> _, __, ___, ____, _____, ______, _______, ________, _________;
+  T() : _(0x0a767268),          <span class="comment">/* movl $0xa767268,     (%eax)  */</span>
+       __(0x6a2d6800),          <span class="comment">/* movl $0x6a2d6800, 0x4(%eax)  */</span>
+      ___(0xe1896573),          <span class="comment">/* movl $0xe1896573, 0x8(%eax)  */</span>
+     ____(0x4b8),               <span class="comment">/* movl $0x4b8,      0xc(%eax)  */</span>
+    _____(0x1bb00),             <span class="comment">/* movl $0x1bb00,   0x10(%eax)  */</span>
+   ______(0x07ba0000),          <span class="comment">/* movl $0x7ba0000, 0x14(%eax)  */</span>
+  _______(0xcd000000),          <span class="comment">/* movl $0xcd000000,0x18(%eax)  */</span>
+ ________(0x08c48380),          <span class="comment">/* movl $0x8c48380, 0x1c(%eax)  */</span>
+_________(0x909090c3) {}        <span class="comment">/* movl $0x909090c3,0x20(%eax)  */</span>
+} main;</pre>
+編譯方式為：<ul>
+<pre class="code" style="margin: 6px;">
+gcc -g -Wall -x c++ -o hello hello.c
+</pre></ul>
+似乎沒有奇特之處，頂多就是 main 宣告的方式，與看似嚇人的註解 (對應的 x86 機械碼)，一旦程式碼執行後，應該不會有任何輸出。不過，若在 x86/IA32 Linux 上執行，卻會有特別的反應，跑起來看看：<ul><pre class="code" style="margin: 6px;">
+$ ./hello
+-jserv
+</pre></ul>
+出現小弟回信時，常用的信尾簽名，但是，這到底怎麼一回事呢？用 objdump 來觀察：<ul><pre class="code" style="margin: 6px;">
+objdump -S -C hello | grep -A 36 "&lt;T::T()&gt;:"
+08048384 &lt;T::T()&gt;:
+ 8048384:       55                      push   %ebp
+ 8048385:       89 e5                   mov    %esp,%ebp
+ 8048387:       8b 45 08                mov    0x8(%ebp),%eax
+ 804838a:       c7 00 68 72 76 0a       movl   $0xa767268,(%eax)
+ 8048390:       8b 45 08                mov    0x8(%ebp),%eax
+ 8048393:       c7 40 04 00 68 2d 6a    movl   $0x6a2d6800,0x4(%eax)
+ 804839a:       8b 55 08                mov    0x8(%ebp),%edx
+ 804839d:       b8 73 65 89 e1          mov    $0xe1896573,%eax
+ 80483a2:       89 42 08                mov    %eax,0x8(%edx)
+ 80483a5:       8b 45 08                mov    0x8(%ebp),%eax
+ 80483a8:       c7 40 0c b8 04 00 00    movl   $0x4b8,0xc(%eax)
+ 80483af:       8b 45 08                mov    0x8(%ebp),%eax
+ 80483b2:       c7 40 10 00 bb 01 00    movl   $0x1bb00,0x10(%eax)
+ 80483b9:       8b 45 08                mov    0x8(%ebp),%eax
+ 80483bc:       c7 40 14 00 00 ba 07    movl   $0x7ba0000,0x14(%eax)
+ 80483c3:       8b 55 08                mov    0x8(%ebp),%edx
+ 80483c6:       b8 00 00 00 cd          mov    $0xcd000000,%eax
+ 80483cb:       89 42 18                mov    %eax,0x18(%edx)
+ 80483ce:       8b 45 08                mov    0x8(%ebp),%eax
+ 80483d1:       c7 40 1c 80 83 c4 08    movl   $0x8c48380,0x1c(%eax)
+ 80483d8:       8b 55 08                mov    0x8(%ebp),%edx
+ 80483db:       b8 c3 90 90 90          mov    $0x909090c3,%eax
+ 80483e0:       89 42 20                mov    %eax,0x20(%edx)
+ 80483e3:       5d                      pop    %ebp
+ 80483e4:       c3                      ret    
+ 80483e5:       90                      nop    
+ 80483e6:       90                      nop    
+ 80483e7:       90                      nop    
+ 80483e8:       90                      nop    
+ 80483e9:       90                      nop    
+ 80483ea:       90                      nop  
+ 80483eb:       90                      nop
+ 80483ec:       90                      nop
+ 80483ed:       90                      nop
+ 80483ee:       90                      nop
+ 80483ef:       90                      nop
+</pre></ul>
+在解說之前，咱們看看剛剛的輸出：<ul><pre class="code" style="margin: 6px;">
+$ echo "-jserv" | hexdump 
+0000000 6a2d 6573 7672 000a
+</pre></ul>
+所以上述的 C++ 程式碼就是利用 x86 stack 的特性，反序寫入 machine code 的 HEX 表示到變數 (member data) 中，後面預留的 0x90 即 x86 NOP 指令 (No Operation) 是用以 padding。C++ constructor 在 GCC 的布局下，透過 __static_initialization_and_destruction_0 這個 routine 來被呼叫以完成必要的初始化動作。扣除 "6a2d 6573 7672 000a" 這個 HEX 序列後，可以發現，剩下的 machine code HEX 其實就是 OP code，而且巧妙的連續排列著。<br>
+<br>
+這個實驗告訴我們，shellcode 還有許多變形的機會，而且這類特別的 startup code 可作為 stub，混淆 Debugger 或者是 software tracing 的執行流程。嗯，或許可拿來當「深入淺出 Hello World」Part II 的展示範例，體驗「Orz Programming 2.0」予人的挫折感。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 September 27, 2006 02:11 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>Orz...........果然徹底！！！</p>
+<span class="comments-post">由 <a href="mailto&#58;aguaithefreak&#64;hotmail&#46;com">aguai</a> 發表於</MTIfNonEmpty> September 30, 2006 12:11 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

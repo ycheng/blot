@@ -1,0 +1,438 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 透過 User-Mode-Linux 來學習核心設計 (2)</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001871.html" title="透過 User-Mode-Linux 來學習核心設計 (1)" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001873.html" title="浪濤的單戀" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001871.html">« 透過 User-Mode-Linux 來學習核心設計 (1)</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001873.html">浪濤的單戀 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 12, 2007</h2>
+
+<div class="blogbody">
+
+<h3 class="title">透過 User-Mode-Linux 來學習核心設計 (2)</h3>
+
+延續上一個單元，我們用實例看如何體驗核心設計，但個人認為逐行去追蹤 Linux Kernel 原始程式碼實在沒有必要，事實上，只需要知道關鍵的細節即可。現在開始，我們會做出對 UML 產生影響的行為，當然，宿主 Linux 環境是不會有大問題的。雖然我們隨時可重建 rootfs，但有一份副本會是很方便的，所以我準備了一份 Ubuntu Dapper i386 image [<a href="http://jserv.sayya.org/kernel/uml/image/ubuntu-dapper-i386-rootfs.tar.bz2">ubuntu-dapper-i386-rootfs.tar.bz2</a>]，保有大部分 base package，但移除 XFS、ReiserFS、JFS 等工具程式。另外補充的是，雖可在宿主 Linux 2.4 kernel 上運作 UML 2.6，但為了最佳的效能表現，建議宿主 Linux 環境還是用較新的版本，稍後會解釋為何會影響到 UML 的效能表現。筆者的宿主 Linux 環境為：<br />
+<pre class="code" style="margin: 6px;">
+$ uname -a
+Linux venux 2.6.17-6-686 #2 SMP Fri Aug 11 22:09:15 UTC 2006 i686 GNU/Linux
+</pre>
+已知在 Ubuntu feisty (development branch) 的 linux 2.6.20-lowlatency 會有非預期的行為，筆者還在排除中，故不建議使用高於 2.6.19 的宿主 Linux 環境。另一個需要補充之處，因為我們會在宿主 Linux 環境與 UML 中頻繁切換，為避免指令操作的誤解，以下規範命令提示之原則：<ul>
+<li>$   錢字號開頭為宿主 (Host) Linux 環境之命令</li>
+<li>root@uml:~#   為 UML 環境，主機名稱 "uml"</li>
+</ul>
+有了 UML 與 rootfs，我們當然可試著修改 kernel，享受 hacking 的快感。在 LKML (Linux Kernel Mailing-List) 上不時有許多令人驚艷的 patch 或發展分支，但我們常猶豫不敢嘗試，因為輕則會讓系統當機，嚴重的話可能會讓硬碟造成無法挽救的損毀，但有了 UML 就輕鬆多了，請愛用這個 sandbox。舉例來說，Ron Yorston 對 Linux 做了一個小改進 [<a href="http://intgat.tigress.co.uk/rmy/uml/sparsify.html">Keeping filesystem images sparse</a>]，這是很有趣的想法，可徹底釋放刪除檔案的磁碟空間，咱們就先在 UML 上測試，先取得 patch [<a href="http://jserv.sayya.org/kernel/uml/patch/uml-2_6_19_1-zerofree-ext2.patch">uml-2_6_19_1-zerofree-ext2.patch</a>] (re-diff)，可透過 [<a href="http://packages.debian.org/unstable/devel/diffstat">diffstat</a>] 觀察 patch 的更動項目：<br />
+<pre class="code" style="margin: 6px;">
+$ diffstat uml-2_6_19_1-zerofree-ext2.patch
+ Documentation/filesystems/ext2.txt |    2 ++
+ fs/ext2/balloc.c                   |   24 +++++++++++++++++++++++-
+ fs/ext2/ext2.h                     |    2 +-
+ fs/ext2/inode.c                    |   12 ++++++------
+ fs/ext2/super.c                    |    6 +++++-
+ fs/ext2/xattr.c                    |   16 ++++++++--------
+ include/linux/ext2_fs.h            |    1 +
+ 7 files changed, 46 insertions(+), 17 deletions(-)
+</pre>
+雖然這個 patch 不大，但更動的檔案也頗多的，到底會對系統產生什麼影響呢？只有實地體驗才知道。大致的測試方式如下： (假設 rootfs 檔名為 "ubuntu-root"，而且放於 kernel source 上一層目錄)<br />
+<pre class="code" style="margin: 6px;">
+$ cd linux-2.6.19.1
+$ 
+$ patch -p1 < ../uml-2_6_19_1-zerofree-ext2.patch
+$ make linux ARCH=um
+$ ./linux ubd0=`pwd`/../ubuntu-root
+</pre>
+最後一個指令是要求啟動 UML，稍為等待後，我們登入系統並啟動 zerofree 功能。原本的 /etc/fstab 內容為：<br />
+<pre class="code" style="margin: 6px;">
+/dev/udb/0	/	ext2	defaults	0	1
+proc		/proc	proc	defaults	0 	0
+</pre>
+上述的 "defaults" 就是指定以檔案系統的預設參數去掛載，而我們可透過 vim 修改設定內容 (base 裡面唯一的 editor，若用不順手，也可比照前一系列先以 loop device 掛載此 rootfs 進而修改)，比方說可以改為：<br />
+<pre class="code" style="margin: 6px;">
+dev/udb/0	/	ext2	zerofree,bsddf,debug,orlov	0	1
+proc		/proc	proc	defaults	0 	0
+</pre>
+參考 kernel source 的 Documentation/filesystems/ext2.txt 可得知上述選項的描述：<br />
+<pre class="code" style="margin: 6px;">
+Options
+=======
+
+Most defaults are determined by the filesystem superblock, and can be
+set using tune2fs(8). Kernel-determined defaults are indicated by (*).
+
+bsddf                   (*)     Makes `df' act like BSD.
+... (省略) ...
+debug                           Extra debugging information is sent to the
+                                kernel syslog.  Useful for developers.
+... (省略) ...
+orlov                   (*)     Use the Orlov block allocator.
+                                (See http://lwn.net/Articles/14633/ and
+                                http://lwn.net/Articles/14446/.)
+... (省略) ...
+zerofree                        Zero data blocks when they are freed.
+</pre>
+既然提到 /etc/fstab，順便複習一下設定方式。"zerofree,bsddf,debug,orlov" 就是檔案系統參數的組合，後面有兩個數字，第一個數字表示是否讓 [<a href="http://dump.sourceforge.net/">dump</a>] 進行備份，值為 0 時則忽略，詳情可見 dump 的 man page：<br />
+<ul class="code" style="margin: 6px;">
+<b>-W</b><br />
+Dump tells the operator what file systems need to be dumped.  This information is 
+gleaned from the files /var/lib/dumpdates and /etc/fstab.  The -W option causes 
+dump to print out, for all file systems in /var/lib/dumpdates, and regognized file 
+systems in /etc/mtab and /etc/fstab. the most recent dump date and level, and 
+highlights those that should be dumped. If the -W option is set, all other options 
+are ignored, and dump exits immediately.
+</ul>
+第二個數字，是設定不正常關機或系統損毀時，該如何檢查檔案系統。一般而言，我們會 rootfs 
+那項設為 1 (優先被 fsck 處理)，其他分割區就設定為 0 (不檢查、不處理)，特別是像 iso9660 或 
+proc 這類特別的檔案系統。<br />
+<br />
+編輯後，以 "halt" 命令結束 UML 執行，再以 "./linux ubd0=..." 啟動 UML 一次，login 後我們可發現：<br />
+<pre class="code" style="margin: 6px;">
+root@uml:~# <b>dmesg</b>
+... (省略) ...
+[42949379.480000] [EXT II FS 0.5b, 95/08/09, bs=1024, fs=1024, gc=50, bpg=8192, ipg=2048, mo=0418]
+root@uml:~# <b>mount</b>    
+/dev/udb/0 on / type ext2 (rw,zerofree,bsddf,debug,orlov)
+proc on /proc type proc (rw)
+/sys on /sys type sysfs (rw)
+varrun on /var/run type tmpfs (rw)
+varlock on /var/lock type tmpfs (rw)
+udev on /dev type tmpfs (rw)
+devpts on /dev/pts type devpts (rw,gid=5,mode=620)
+devshm on /dev/shm type tmpfs (rw)
+</pre>
+所以更動已經生效，然後我們就可進行檔案讀寫的測試，因為已經達到 hacking 的要求，我們就不再探討這方面的細節。<br />
+<br />
+學習核心設計最簡便的方式就是 LKM (Linux Kernel Module) 的撰寫，這相對 user-space 的程式設計來說，也是充滿挑戰，不過，有了 UML 後，我們可更有自信些。我們必須先解決一個問題：如何將宿主 Linux 環境的檔案與 UML 環境分享？當然，透過虛擬網路是很好的解法，不過我們先來使用檔案系統層面的解法。<br />
+<br />
+上一篇文章提到的組態設定值 [<a href="http://jserv.sayya.org/kernel/uml/uml-dot-config">uml-dot-config</a>] 支援的檔案系統列表如下：<br />
+<pre class="code" style="margin: 6px;">
+$ grep 'FS=[ym]' uml-dot-config 
+CONFIG_HOSTFS=m
+CONFIG_HPPFS=m
+CONFIG_EXT2_FS=y
+CONFIG_PROC_FS=y
+CONFIG_SYSFS=y
+CONFIG_TMPFS=y
+CONFIG_RAMFS=y
+CONFIG_DEBUG_FS=y
+</pre>
+其中，CONFIG_HOSTFS 就對應到 UML [<a href="http://user-mode-linux.sourceforge.net/hostfs.html">Host file access</a>]，Linux Kernel Configuration (make menuconfig ARCH=um) 的設定方式為：<br />
+<pre class="code" style="margin: 6px;">
+UML-specific options  ---&gt;
+    Host filesystem
+</pre>
+"Help" 提供簡要的說明：<br />
+<ul class="code" style="margin: 6px;">
+While the User-Mode Linux port uses its own root file system for 
+booting and normal file access, this module lets the UML user 
+access files stored on the host.  It does not require any 
+network connection between the Host and UML.  An example use of 
+this might be:<ul>
+    mount none /tmp/fromhost -t hostfs -o /tmp/umlshare
+</ul>
+where /tmp/fromhost is an empty directory inside UML and 
+/tmp/umlshare is a directory on the host with files the UML user 
+wishes to access.
+</ul>
+所以，透過 hostfs 就可在 UML 中存取到宿主 Linux 環境中的檔案系統，當然，這使用上必須小心，儘管 UML 是個 sandbox，不過 hostfs 的機制就好比主人把貓沙盒 (UML) 擺放到沙發 (host 上的 filesystem) 上一般，萬一貓咪調皮搗蛋，沙發上仍可能造成傷害。筆者的習慣是編譯為 LKM，只在需要時掛載，所以也來看看如何將 hostfs.ko 放入 rootfs 中。假設我們的 rootfs "ubuntu-root" 放在 /home/jserv/uml 目錄下，而 kernel source 在 /home/jserv/linux-2.6.19.1 同時已執行過 "make linux ARCH=um"，那麼我們可進行以下操作：<br />
+<pre class="code" style="margin: 6px;">
+$ cd /home/jserv/uml
+$ mkdir -p ext2fs
+$ sudo mount -o loop ubuntu-root ext2fs
+$ cd linux-2.6.19.1
+$ make modules ARCH=um
+  SYMLINK arch/um/include/sysdep
+make[1]: `arch/um/sys-i386/user-offsets.s' is up to date.
+  CHK     include/linux/version.h
+  CHK     include/linux/utsrelease.h
+... (省略) ...
+  Building modules, stage 2.
+  MODPOST 5 modules
+  CC      fs/hostfs/hostfs.mod.o
+  LD [M]  fs/hostfs/hostfs.ko
+... (省略) ...
+$ make _modinst_ MODLIB=`pwd`/../ext2fs/lib/modules/2.6.19.1 ARCH=um
+  INSTALL fs/hostfs/hostfs.ko
+  INSTALL fs/hppfs/hppfs.ko
+  INSTALL lib/crc-ccitt.ko
+  INSTALL lib/crc32.ko
+  INSTALL lib/libcrc32c.ko
+</pre>
+光只是把 hotsfs.ko 放到 rootfs 還不夠，最好還能把 kernel module dependency 也一併建立，所以再透過 chroot 去以在 rootfs 執行 depmod，流程如下：<br />
+<pre class="code" style="margin: 6px;">
+$ cd /home/jserv/uml
+$ sudo chroot ext2fs
+# /sbin/depmod -ae 2.6.19.1
+# exit
+$ sudo umount ext2fs
+</pre>
+注意到上面以 '#' 開頭的兩行，表示處於 chroot 環境中。萬事具備，再來啟動 UML 一次，咱們來掛載 hostfs，操作方式如下：<br />
+<pre class="code" style="margin: 6px;">
+root@uml:~# modprobe hostfs
+root@uml:~# mkdir -p /mnt/host
+root@uml:~# mount none /mnt/host -t hostfs -o /home/jserv/uml
+</pre>
+這時候在 UML 中切換到 /mnt/host 目錄，就可以看到宿主 Linux 環境的 /home/jserv/uml 底下的檔案，工作空間瞬間大幅提昇，以筆者的環境來說：<br />
+<pre class="code" style="margin: 6px;">
+root@uml:~# df -h
+Filesystem            Size  Used Avail Use% Mounted on
+/dev/udb/0            388M  141M  227M  39% /
+varrun                 15M   20K   15M   1% /var/run
+varlock                15M     0   15M   0% /var/lock
+udev                   15M  4.0K   15M   1% /dev
+devshm                 15M     0   15M   0% /dev/shm
+none                  9.4G  8.7G  707M  93% /mnt/host
+</pre>
+當然，hostfs 也可直接編譯到 UML kernel 中，這樣甚至可在啟動 UML 時，直接掛載宿主 Linux 的檔案系統，方式為更動 kernel configuration，將 "Host filesystem" 從 m (module) 改為 y (builtin) 並重新編譯後，執行以下命令：<br />
+<pre class="code" style="margin: 6px;">
+linux root=/dev/root rootflags=/ rootfstype=hostfs ro con0=fd:0,fd:1 init="/bin/sh -l"
+</pre>
+若將 "ro" 參數改為 "rw" (Read & Write enabled)，就可完全掌握宿主 Linux 的檔案系統，儘管可行，但強烈建議讀者不要輕易嘗試。張羅許久，終於有舒適的環境，我們還是從 "Hello World" 等級的 LKM 開始吧。<br />
+<br />
+建議再開一個終端機 (建立新的 rxvt 視窗或者透過 [<a href="http://www.gnu.org/software/screen/">GNU screen</a>])，這樣就可確保一個顯示宿主 Linux 環境 (以下簡稱「Linux 工作區」)，而另一個專門顯示 UML，如沒有特別強調，「Linux 工作區」都在 /home/jserv/uml 之下的目錄或子目錄。在 Linux 工作區撰寫迷你 LKM (檔名："hello.c")，其內容如下：<br />
+<pre class="code" style="margin: 6px;">
+<span class="keyword">#include</span> &lt;linux/init.h><span class="keyword">                                                                             
+#include</span> &lt;linux/module.h>
+MODULE_LICENSE(<span class="literal">"GPL"</span>);
+
+<span class="keyword">static</span> <span class="keyword">int</span> hello_init(<span class="keyword">void</span>)
+{
+        printk(KERN_ALERT <span class="literal">"Hello World! - init\n"</span>);
+        <span class="keyword">return</span> 0;
+}
+
+<span class="keyword">static</span> <span class="keyword">void</span> hello_exit(<span class="keyword">void</span>)
+{
+        printk(KERN_ALERT <span class="literal">"Hello World! - exit\n"</span>);
+}
+
+module_init(hello_init);
+module_exit(hello_exit);
+</pre>
+這其中沒什麼大學問，只是在 LKM 的開始與結束時期印出 "Hello World!" 訊息。筆者的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001794.html">"Kernel Modules and Device Drivers" 免費文件下載</a>] 提到 Doug Abbott 大作《<a href="http://www.elsevier.com/wps/find/bookdescription.cws_home/707446/description">Linux for Embedded and Real-Time Applications 2/e</a>》書中第七章〈Kernel Modules and Device Drivers〉有相當好的入門資訊，並提供開放下載。就系統的角度，LKM 與核心的互動可用下圖表示：<br />
+<center><img src="http://jserv.sayya.org/kernel/kernel_module_linking.png" /></center><br />
+LKM 被「注入」系統核心有相當繁瑣的動作，但我們只需認為 Linux Kernel 有個 ELF loader 可識別 LKM 內部資訊，以 insmod「插入」LKM 時，會觸發 module_init，反之，當以 rmmod「移除」LKM 時，會觸發 module_exit。上面檔案列表的 "module_init" 與 "module_exit" 是個 macro，定義於 include/linux/init.h 標頭檔中。<br />
+<br />
+編譯提供給 UML 的 LKM 方式稍微不一樣，我們寫個 Makefile 如下：<br />
+<pre class="code" style="margin: 6px;">
+obj-m += hello.o
+
+KDIR    :=/lib/modules/$(shell uname -r)/build
+PWD     :=$(shell pwd)
+KDIR    :=$(PWD)/linux-2.6.19.1
+
+default:
+        $(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules ARCH=um
+
+clean:
+        $(MAKE) -C $(KDIR) SUBDIRS=$(PWD) clean ARCH=um
+</pre>
+以往 Linux kernel 2.4 下要撰寫 LKM，總是得做出一堆又臭又長的編譯參數，不過 Kernel 2.6 後簡化許多，但要注意上面的 "ARCH=um"。取得打包好的 [<a href="http://jserv.sayya.org/kernel/uml/hello-lkm.tar.bz2">hello-lkm.tar.bz2</a>] 後，觀察建構過程：<br />
+<pre class="code" style="margin: 6px;">
+$ <b>make</b>
+make -C /home/jserv/uml/linux-2.6.19.1 SUBDIRS=/home/jserv/uml modules ARCH=um
+make[1]: Entering directory `/home/jserv/uml/linux-2.6.19.1'
+  CC [M]  /home/jserv/uml/hello.o
+  Building modules, stage 2.
+  MODPOST 1 modules
+  CC      /home/jserv/uml/hello.mod.o
+  LD [M]  /home/jserv/uml/hello.ko
+make[1]: Leaving directory `/home/jserv/uml/linux-2.6.19.1'
+$ <b>nm hello.ko</b>
+00000000 r __mod_license4
+0000000c r __mod_vermagic5
+0000002a r __module_depends
+00000000 D __this_module
+00000013 T cleanup_module
+00000013 t hello_exit
+00000000 t hello_init
+00000000 T init_module
+         U printk
+</pre>
+以上的 "init_module" 與 "cleanup_module" 兩個 symbol 是一定會出現在 LKM 中，不過這並非本文討論的範疇，我們將專注於 UML 的開發與測試。得益於 hostfs，建構完畢的 hello.ko 很容易佈署 (deploy) 到 UML 環境中，測試方式如下：<br />
+<pre class="code" style="margin: 6px;">
+root@uml:~# <b>cd /mnt/host</b>
+root@uml:/mnt/host# <b>insmod hello.ko</b>
+[42951224.080000] Hello World! - init
+root@uml:/mnt/host# <b>rmmod hello</b>
+[42951227.890000] Hello World! - exit
+root@uml:/mnt/host#
+</pre>
+上述粗體字為我們輸入的命令，看來正確無誤的運作，當然，我們不會因此滿足，畢竟之所以要使用 UML，就是我們想體驗實體 Linux 環境下難以操作或實現的開發方式，後面的章節將會以 [<a href="http://sources.redhat.com/insight/">GDB/Insight</a>] 配合 UML 作分析與細部調整測試動作。<br />
+(待續)<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 12, 2007 10:17 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1872" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Solaris 9 新注音</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/000970.html" title="尋寶" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/000972.html" title="台中捐血中心祝您新春愉快" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/000970.html">« 尋寶</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/000972.html">台中捐血中心祝您新春愉快 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February 25, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Solaris 9 新注音</h3>
+
+Sun Microsystems 一直對 X Window System 的 i18n (internationalization) 處理有很卓越的貢獻，而 Sun Solaris 裡頭則有相當豐富的技術展現。在 [<a href="http://chewing.csie.net/">新酷音</a>] 尚未整合到 JDS (Java Desktop System) 之前，IIIMF svn repository (im-sdk) 有一份 Sun Microsystems 釋出的 sun_le_asia，不過後來 Ervin Yan 用 GTK+ 重新改寫 aux 與對 LE 重新組織後，今年一月份徹底切割 tch_le_sun 與 sch_le_sun，基本上已經相當成熟。<br />
+<br />
+不過，過去的 sun_le_asia 則提供了一個有趣的設計，也就是「繁體新注音輸入法」，詳情可參考 [<a href="http://docs.sun.com/app/docs/doc/816-0670/6m751touj?l=zh_TW&a=view">新注音輸入法</a>]。Solaris 9 上面的「新注音」基本上是用新拼改過來的，所以很不符合台灣使用者既有的習慣，看快照大概就知道是怎麼一回事。<br />
+<br />
+儘管 im-sdk 現在已經移除「新注音」並改用「新酷音」，但是我從過去的 repository 翻出來，做了 [<a href="http://jserv.sayya.org/iiimf/sun-le-asia.tar.bz2">一份複製</a>] (參考 zh_TW/input_methods/newzy 目錄)，裡頭有一些有趣的斷詞規則可以參考，比方說：
+<ul class="code" style="margin: 6px;">
+/* 以下單字為: 前後均不可聯的字, 在分詞時作用類同標點符號 */
+uchar NonLinkHZ[2 * NUM_NONLINKHZ + 2] =                    
+<ul>"是的了不也而你我他與它她其就和或"; </ul>
+
+/* 以下單字為: 只可與前聯, 不可與後聯. */
+uchar PreLinkHZ[2 * NUM_PRELINKHZ + 2] = 
+<ul>"們性員子上下中內外化者家兒年月日時分秒街路村";</ul>
+
+/* 以下單字為: 只可與後聯, 不可與前聯. */
+uchar SufLinkHZ[2 * NUM_SUFLINKHZ + 2] = 
+<ul>"不在這從到那哪第各每某本總當由如以為被使更且指於但"
+"將可應會該此全很都近約";</ul>
+</ul>
+新酷音在 libchewing-0.2.6 都還只是建構在統計學的基礎上，希望能夠在 0.3 branch 做出 heuristic 的整合。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 February 25, 2005 10:57 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

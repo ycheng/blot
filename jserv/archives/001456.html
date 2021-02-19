@@ -1,0 +1,281 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: GuarantorTo_be_Killed Toolkit</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001455.html" title="下一代的 SCIM 設計" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001457.html" title="Hyper Liu : Web-based 蝦米" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001455.html">« 下一代的 SCIM 設計</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001457.html">Hyper Liu : Web-based 蝦米 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 27, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">GuarantorTo_be_Killed Toolkit</h3>
+
+"GuarantorTo_be_Killed Toolkit" 聽起來頗奇怪，到底是什麼呢？解釋前，先來看看今天早上跟 PCMan 聊天的內容 (in #dot IRC channel)：<ul class="code" style="margin: 6px;">
+07:53:19 pcman : gtk+ tree model 有非常嚴重的 bug<br>
+07:53:31 pcman : 我被迫停止開發了 T_T<br>
+07:53:42 pcman :  GtkTreeModelSort 整個根本是壞的<br>
+07:54:07 pcman : 去看 source code 才發現裡面的註解：連開發者自己都不確定那個會不會動<br>
+07:54:29 pcman : 文件裡面竟然沒有警告..... 我在大量使用後發現一堆解決不掉的問題，最後一點辦法都沒有了......<br>
+07:55:15 pcman : 連用奇怪的 workaround 都沒辦法處理....<br>
+07:55:43 pcman : 是可以用 GtkListStore 本身的 GtkTreeSortable interface<br>
+07:55:54 pcman : 只是這樣又不能共用 model<br>
+07:55:54 jserv-- : 真麻煩 XD<br>
+07:56:01 pcman : 每種 sort 要自己一份<br>
+07:56:12 pcman : memory 使用量大增<br>
+07:56:34 * jserv-- 還是用 mc<br>
+07:56:38 pcman  : 然後剛剛發現... XFCE Thunar 採用的方案是...自己寫 custom model.... 他根本就不用 gtk+ 的<br>
+07:56:51 pcman  : 怒........@_@ 努力了這麼久到剛剛有種上當的感覺<br>
+07:57:16 pcman  : 去看 bug report 發現沒人提到，感覺這根本是個大家沒在用的東西<br>
+07:57:50 pcman  : 我上次已經偷了 ExoIconView， patch 一下可以用<br>
+07:58:08 pcman  : 但這次這個.... 如果用他的我得整個重寫，而且那個沒法共用 child model<br>
+07:58:34 pcman  : 那我還不如改用 GtkTreeSortable 然後各 tree view 各 copy 一份 model<br>
+07:58:44 pcman  : 這樣應該不會壞<br>
+07:58:51 pcman  : 只是很可惜的吃 RAM<br>
+07:59:25 pcman  : 但看來是目前唯一可以動的方法.... 沒辦法了，很大一部分得重寫<br>
+07:59:34 jserv-- : !!
+07:59:45 pcman  : 下次不要用 gtk+ 了<br>
+08:00:23 pcman  : 生氣了生氣了.... 被文件耍了半天，debug 好幾天受不了 hack 進去才發現 那根本是爛的 @@<br>
+08:00:46 pcman  : 不確定能不能用的東西竟然放在正式版本 release 出來，文件上也沒有警告 = =<br>
+08:01:19 pcman  : 這還是 2.8... 一般人使用最多的 2.6 還不知道藏著什麼鬼 bug... 越想越恐怖<br>
+08:01:50 * pcman 開始覺得去 TnLug 講完 gtk+ 簡介後，應該要呼籲大家不要使用.......<br>
+08:02:25 jserv-- : [Orz] pcman 寫 code 被 Gtk+ 耍，難道... GuarantorTo_be_Killed Toolkit ?<br>
+08:03:25 pcman  : 這回是真的怒了..... /*  WARNING: this code is dangerous, can cause sleepless nights, can cause your dog to die among other bad things. we warned you and we're not liable for any head injuries.<br>
+08:03:52 pcman  : 文件上應該把這段寫進去.... 竟然藏在 source code 裡面，害我用得很高興<br>
+08:04:47 jserv-- : 寫 browser 最忌諱這種 unknown behavior :(<br>
+08:05:17 pcman  : 最慘的是寫到最後階段，一直有解決不掉的 bug，才發現問題根本來自底層 toolkit......<br>
+08:05:33 pcman  : 差一點就寫完了，然後被迫放棄重來 = =<br>
+08:05:59 jserv-- 果然 Gtk+ = GuarantorTo_be_Killed Toolkit<br>
+08:06:30 jserv-- : 找不到擔保人，Nobody cares<br>
+08:06:31 jserv-- : Orz
+</ul>
+PCMan 最近的大作是 [<a href="http://pcmanfm.sourceforge.net/">PCMan File Manager</a>]，而他詬病的部份就是 Gtk+ 的 GtkTreeModelSort，其 source code 可參考 [<a href="http://cvs.gnome.org/viewcvs/gtk%2B/gtk/gtktreemodelsort.c?rev=1.101&view=markup">gtk+/gtk/gtktreemodelsort.c</a>]，在一開頭就這麼寫到：<br><ul class="code" style="margin: 6px;">
+<pre>
+/* WARNING: this code is dangerous, can cause sleepless nights,
+ * can cause your dog to die among other bad things
+ *
+ * we warned you and we're not liable for any head injuries.
+ */
+</pre></ul>
+這個 "GuarantorTo_be_Killed Toolkit" 真是複雜到不行 :(<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 27, 2006 03:24 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>該檔案內還有另一行非常經典：<br />
+/* FIXME: I still have doubts if this works */<br />
+static void<br />
+gtk_tree_model_sort_row_deleted (GtkTreeModel *s_model,<br />
+				 GtkTreePath  *s_path,<br />
+				 gpointer      data)</p>
+
+<p>連開發者自己都不知道可不可以用的東西...<br />
+就當作正式版本釋出了，並且文件上沒任何警告</p>
+<span class="comments-post">由 <a href="http://pcman.sayya.org/">PCMan</a> 發表於</MTIfNonEmpty> January 27, 2006 08:13 PM</span>
+</div>
+<div class="comments-body">
+<p>我也碰到类似问题，在google上找到你这里来了。似乎这几个问题gtk+开发者都知道。我在irc.gnome.org #gtk-devel上的聊天记录：</p>
+
+<p>falls hello, I've a question about "GtkTreeModelSort"<br />
+falls I found this comment in gtk/gtktreemodelsort.c ( gtk+-2.8.10 ):<br />
+falls  /* WARNING: this code is dangerous, can cause sleepless nights,<br />
+falls  * can cause your dog to die among other bad things<br />
+falls *<br />
+falls  * we warned you and we're not liable for any head injuries.<br />
+falls  */<br />
+falls Does it denote that I can't use the functions in this file ?<br />
+falls If this file is dangerous , why does it still stay in the gtk+'s stable<br />
+falls version ? <br />
+kris the comment is just sort of a joke really<br />
+falls I've debuged my program for serverl days. At last,I found it's not my fault ,it the bug of "GtkTreeModelSort"<br />
+kris (because the code is so hairy/complicated)<br />
+falls oh,  my god, it's a joke <br />
+falls ?<br />
+deadchip o_O<br />
+kris you might want to try gtk+ HEAD, since some bugs have been fixed in there<br />
+kris else file a bug with a good testcase<br />
+falls ok, thank u all !<br />
+falls In gtk/gtktreemodelsort.c, I found another line :<br />
+falls  /* FIXME: I still have doubts if this works */<br />
+falls static void<br />
+falls gtk_tree_model_sort_row_deleted (GtkTreeModel *s_model,<br />
+kris that one has been removed in gtk+ HEA DIIRC<br />
+falls oh , I see .<br />
+kris s/HEA DIIRC/HEAD IIRC/</p>
+<span class="comments-post">由 <a href="mailto&#58;falls&#46;huang&#64;gmail&#46;com">falls</a> 發表於</MTIfNonEmpty> February  4, 2006 09:28 AM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1456" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

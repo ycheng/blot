@@ -1,0 +1,1146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Asho's Blog: January 2005 Archives</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~asho/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~asho/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~asho/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~asho/archives/2004_12.html" title="December 2004" />
+
+<link rel="next" href="http://blog.linux.org.tw/~asho/archives/2005_02.html" title="February 2005" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~asho/" accesskey="1">Asho's Blog</a></h1>
+<span class="description">一個喜歡研究的傻小子 :-)</span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~asho/archives/2004_12.html">&laquo; December 2004</a> |
+
+<a href="http://blog.linux.org.tw/~asho/">Main</a>
+| <a href="http://blog.linux.org.tw/~asho/archives/2005_02.html">February 2005 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">January 31, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000880"></a>
+<h3 class="title">王漢宗字型 debian pkg</h3>
+
+<p>目前已經包裝了 wt001 的 ttf套件，還在研究 for LaTeX 的字型檔怎麼作...</p>
+
+<p>打算將王老師的所有字體都各別包一個 pkg，最後再包裝一個 meta pkg:ttf-wang(暫定)來安裝所有的字體...</p>
+
+<p>先測試一下，等有空間再放</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000880.html">08:51 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=880" onclick="OpenComments(this.href); return false">Comments (303)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 30, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000876"></a>
+<h3 class="title">Xserver dpi 範圍</h3>
+
+<p>解析度在 1024x768 的情況可以設定 dpi=96，跟windows一樣</p>
+
+<p>改變字體大小的 dpi 範圍：<br />
+~ 97<br />
+98~104<br />
+105~111<br />
+112~118<br />
+119~126</p>
+
+<p>我在自己的 17inch CRT 用的解析度是 1280x1024，dpi是用 112，字體顯示剛剛好，不會太大與太小，KDE系統字體全部用 10。</p>
+
+<p>startx的方式請修改 /etc/X11/xinit/xserverrc：<br />
+exec /usr/bin/X11/X -dpi 112 -nolisten tcp</p>
+
+<p>KDM or GDM 請自行修改相關的設定檔，搜尋 bin/X 字串，也就是啟動 X 的部份加入 -dpi 選項就可以了</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000876.html">11:20 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=876" onclick="OpenComments(this.href); return false">Comments (142)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 27, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000846"></a>
+<h3 class="title">gcin-0.6.4-2 is ACCEPTED</h3>
+
+<p>已經做好了，目前正在 sync 中。我在 gui 視窗中加入了破折號和連接號的按鈕。</p>
+
+<p>必須先移除 ~/.gcin/symbol-table 檔案才行。testing 則為 gcin-0.6.1-3</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000846.html">11:31 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=846" onclick="OpenComments(this.href); return false">Comments (264)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000845"></a>
+<h3 class="title">mdadm 1.8.1</h3>
+
+<p>This is a "development" release of mdadm.  It should *not* be<br />
+considered stable and should be used primarily for testing.<br />
+The current "stable" version is 1.8.0.</p>
+
+<p>Release 1.8.1 supports different styles of superblocks (aka RAID metadata).<br />
+Two formats are currently supported <br />
+   version 0.90.0 - the traditional Linux RAID superblock<br />
+   version 1 - a new superblock which less useless information and some more <br />
+        flexability.</p>
+
+<p>Version 1 supports more than 28 devices in an array, and RAID1 and greater over<br />
+devices larger than 2TB (though a 2TB RAID1 would take forever to resync!).</p>
+
+<p>mdadm 1.8.1 takes a different approach to creating arrays than<br />
+previous versions, though this is largely transparent.  Instead of<br />
+giving the devices to the kernel and letting it "create" the array and<br />
+write out initial superblocks, mdadm 1.8.1 writes out the initial<br />
+superblocks itself, thus creating the array, and then asks the kernel<br />
+to assemble that array.</p>
+
+<p>Version 1 superblocks requires 2.6.10 or a recent 2.6.10-rc snapshot.</p>
+
+<p>Enhancements that are expected before this becomes 2.0.0:</p>
+
+<p> - mdassemble currently doesn't compile<br />
+ - version 1 superblocks have room for a label, which currently isn't used.<br />
+   Setting the label, and assembling arrays by label will be supported.<br />
+   A label like "$HOSTNAME-root" could be the standard label for the device <br />
+   containing the root filesystem for $HOSTNAME.</p>
+
+<p><br />
+滿期待裡面的 label 功能，未來應該可以達到方便轉移系統，該版本也支援 raid6 了喔</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000845.html">11:27 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=845" onclick="OpenComments(this.href); return false">Comments (601)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 26, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000841"></a>
+<h3 class="title">DVD Rootdir 的播放方式</h3>
+
+<p>假設拷貝到硬碟的 DVD 在 目錄 iso 下：</p>
+
+<p>for mplayer<br />
+mplayer dvd://1 -dvd-device iso<br />
+播放時按 'j'可選字幕</p>
+
+<p>for xine<br />
+xine dvd://`pwd`/iso<br />
+播放時按 'g' 出現 gui 選單來選擇字幕</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000841.html">02:20 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=841" onclick="OpenComments(this.href); return false">Comments (258)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 25, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000840"></a>
+<h3 class="title">我的跑步節奏</h3>
+
+<p>而我慢跑時老實講，滿無聊的，大部份時間都在跟身體作抗衡，因為距離拉長後(5km左右)，我的腳就會承受不了，會開始發熱腫痛，這時候就要靠 "意志力" 跑完剩下的 5km 距離，有時候太疲勞的話，我是閉著眼睛跑直線道，瞇著眼跑彎道，而且隨時會有倒下的趨勢...:P</p>
+
+<p>這樣子的跑法一年左右，我覺得實在有點單調和無趣，我認為慢跑運動應該要帶點娛樂和競賽的成份在裡頭，這樣才有辦法持續，但我是一個人跑步，怎麼競賽呢？有了，沒有人可以比的話，那我就跟時間比吧...XD</p>
+
+<p>基於這個想法，我就買了一個小型的電子表，有簡單的碼表功能來輔助我跑步。我們把畫面帶到操場看一下。</p>
+
+<p>通常操場大約 400m，一個男生全力跑的話大約 1min 就可結束，但這沒意義。速度中等的話，大約2min 可結束且會稍微喘，這也不是我想要的，所以捨棄。慢跑運動最主要是讓心靈放鬆，讓大腦產生腦內非讓自己快樂，如果跑到缺氧的話，那不就白費了，也失去運動的意義。運動就像兩面刃，操控不好則會傷身阿。</p>
+
+<p>所以我會先定一個寬鬆的時間，就以 4min 為主吧!!!</p>
+
+<p>看到這裡可別開始傻傻的跑喔，運動之前可別忘記熱身，可以參考一些有氧舞蹈的書，舒緩關節和彈性，手腳都要喔。熱身差不多之後，接下來是跑步的熱身。別懷疑，也要熱身跑步，這個步驟在於讓腳適應跑道的軟硬度和承受的衝擊力，順便規劃您想跑的範圍。這個過程至少 10 min，速度上必須很 "慢"，慢到維持跑步的姿勢和鼻子能夠順暢呼吸，不要用嘴巴換氣喔。</p>
+
+<p>經過 10min 的跑步之後(別停下來喔，如果身大汗或是氣喘如牛，表示熱身錯誤，建議休息 5 min直到鼻子正常呼吸。)，請拿出準備的碼表，倒數計時 4min，然後慢慢加速跑，速度依自己的體能調整，但必須越來越快。呼吸的方式改為鼻子輕吸兩口氣，嘴巴慢吐兩口氣，不要用嘴巴吸氣，一來會口乾舌燥和渴，二來會噁心，因為吃了什麼東西也不知道...><，三來，保持口腔乾淨，渴的話喝自己口水解渴。</p>
+
+<p>一圈快結束時，檢查還剩下多少時間，如果剩很多，請放慢速度，慢慢地調整呼吸，將速度調整到終點時時間也結束。抵達終點時，請繼續仿照上述辦法加速跑，但時間縮短成 3min50sec，這樣的好處是鼓勵自己進步的動力，跟時間玩遊戲。每一圈依照自己的體能縮短秒數，這樣快慢跑能加強心肺功能，如果後來很喘，身體在提醒自己該休息了，這時候請不要用嘴巴大口吸和用力吐氣，請放慢腳步，調節呼吸。</p>
+
+<p>這樣的快慢跑至少要持續 20min 以上，加上熱身至少要 30min，才能燃燒身體屯積的脂肪，達到瘦身效果。結束之後，先別離開，坐下來用腹式呼吸法代謝身體的雜質，看看周遭的環境或天空，想想一些有趣的事情，按摩一下自己的小腿和大腿以免蘿蔔腿，什麼煩惱都沒有了。以上這個方法不會加強跑步的速度，但能讓心情愉快，加強體力，專注力提升，提高工作效率喔。</p>
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000840.html">10:33 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=840" onclick="OpenComments(this.href); return false">Comments (576)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000839"></a>
+<h3 class="title">我的跑步節奏(前篇)</h3>
+
+<p>我一直很喜歡運動，國中時熱愛打籃球，但滿容易碰撞的，所以慢慢不打了。後來高一轉高二時，因為失戀了，想把重心轉移到運動上，所以就開始學習慢跑。<br />
+</p>
+
+<p>在當時的我由於>90kg 的噸位讓我的心肺和腳承受很大的"壓力"，小時候不懂事，愛喝冷水，所以有點小內傷，台語叫作：「煞掉」，國語我就不清楚了...^^，腳的部份是因為扁平足的關係，韌帶不夠力，無法化解與地面的衝擊力，所以會傷到膝蓋，最頭痛的當然是重量問題...><</p>
+
+<p>好在失戀的心情讓我不必去在意這些物理傷痛(其實滿傷的，現在都會痛...><)，所以就開始接觸慢跑，高二期間每天放學大約會跑 3km 左右，我最喜歡跑的地方是河堤和公園，因為安靜且空氣好。</p>
+
+<p>上大學之後，加上慢跑風氣很盛，宿舍離操場很近，所以跑步也沒斷過，距離則從 3km 拉長到 5km左右，大一上結束到大一下時距離則拉大到 10km，每天 5pm 都是在操場渡過，如果晚上有課，大約8:30下課後會到操場跑 1 hr 左右，反正就是 10km 跑完就是了。</p>
+
+<p>to be continue...</p>
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000839.html">09:59 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=839" onclick="OpenComments(this.href); return false">Comments (234)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000838"></a>
+<h3 class="title">挨...只剩下一隻小老鼠兒子</h3>
+
+<p>今天早上要換飼料的時候，打開箱子發現一股惡臭，我大概知道發生什麼事情了...</p>
+
+<p>有一隻小老鼠過世了...最近連死掉兩隻，不知道是什麼原因，飼料也有在吃，年紀雖然快兩歲了，但還沒落毛，難道是前陣子太冷了感冒...><</p>
+
+<p>挨...記得以前癢了30多隻到現在的一兩隻，心理有許多起伏和感受，新生兒誕生的喜悅與死亡來臨的痛楚，歷歷可見，生命是這麼的可愛與脆弱，希望這些寶貝化成天使後，還能回來看看我倆老...</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000838.html">09:41 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=838" onclick="OpenComments(this.href); return false">Comments (247)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 24, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000836"></a>
+<h3 class="title">慘劇發生了</h3>
+
+<p>剛剛在打鍵盤時，因為 Tab 鍵有點鬆落，所以我想說拔起來調整，誰知...稍微用一點力就把其中一隻腳折斷了..><</p>
+
+<p>勉強裝回去之後，再按看看，似乎沒有太嚴重，至少還打的出字來...><</p>
+
+<p>但說也奇怪，本來有點不穩的 Tab 鍵重裝之後，竟然穩定許多了，難道真的是本來沒有裝穩嗎？不知道可不可以送去羅技送修呢？一年保固可別浪費了...</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000836.html">05:17 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=836" onclick="OpenComments(this.href); return false">Comments (514)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000835"></a>
+<h3 class="title">KDE 會後的討論結果</h3>
+
+<p>昨日在 KDE 聚會時，跟 Rex, Jesse 等討論一些我想對 Debian 貢獻的想法。目前我已經跟 Christian Perrier 說明我想主持 Debian zh_TW 中的 po, debconf template 的翻譯，也得到很棒的回應。目前我仿效 KDE@Taiwan 的方式，會撰寫一個認領頁面(完成了)，讓大家方便認領。</p>
+
+<p>昨天在也跟原真兄討論了一下，我會作一些 Data format 以便 merge 到 KDE po 檔翻譯查詢介面，這樣比較有 centralized...，而原真兄也很熱心幫忙與協助，至於資源部份也跟 Rex, Jesse 商量好了，目前大家會先把急的事情搞定，之後在慢慢上軌道。</p>
+
+<p>hmm...突然想到，我這樣寫應該沒有人看的懂我在想什麼...XD，畢竟還沒有完全弄好，馬上說明白反而會一團亂，我會準備一個禮拜的時間做好我該作的事情，之後在公佈。會有這個想法是我希望有傳承的觀念，畢竟有熱忱想幫忙的朋友很多，可惜沒有一個好的 gateway，那小弟就先下海來當吧，我也樂見未來的發展。</p>
+
+<p>Anyway...講的有點遠了...拉回一下，除了 i18n 事項之外，我還有另外一個計劃。除了每年兩次以上的 Debian 聚會外，我想要另外主持一個 Bug Squashing Party(參閱 <a href="http://bugs.qa.debian.org/">here</a>或 google)，這個聚會是純技術，會中每個人都需要電腦，然後關在聚會場所內專門修正 Debian 中的 Bug 和維護套件內容，聽起來實在有夠刺激又熱血沸騰阿。這個計劃我會慢慢觀察和籌備。可能會先辦幾場熱身，專講 Debian 開發的東西，模式成熟後就真的會來場 Bug Squashing...</p>
+
+<p>期待中...:D</p>
+
+<p>BTW:目前zh_TW 的 D-I coordinator 是 Tetralet 兄，感謝他熱心的付出</p>
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000835.html">04:59 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=835" onclick="OpenComments(this.href); return false">Comments (490)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000833"></a>
+<h3 class="title">好用的 PS2 轉 USB</h3>
+
+<p>昨天敗家之旅其實還有要買這種轉接頭，但因為光華看不到喜歡的，所以就延後下次買，今天11點有事出門時，想說繞道去Nova看一下，所以就買了這一個：<br />
+<img src=http://asho.dyndns.org/~asho/pic/ps2tousb.jpg></p>
+
+<p>在中壢 Nova 三樓的 Catt 買的，$199，算是中壢便宜的了，順發也有賣別的，但要價 250，所以放棄，將 Ps2 keyboard接到 PS2接頭後，Linux下插入 USB port後，都不用設定就直接可以打字了...^^</p>
+
+<p>現在我的銀幻手也變成 USB 了...:D</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000833.html">01:37 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=833" onclick="OpenComments(this.href); return false">Comments (103)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000832"></a>
+<h3 class="title">手指與鍵盤的親密接觸</h3>
+
+<p>昨天在 KDE 聚會之後，就跟 jesse 到光華商場買鍵盤，我要買的是 Logitech 的<a href="http://www.logitech.com.tw/product/product-detail.asp?PID=00000119">銀幻手</a>，這隻鍵盤的觸感跟 IBM T4x 的感覺滿像的(感謝 Palmpilote 兄的T42)，鍵盤底下有四個止滑墊，讓整個 keyboard 穩固在桌面上，讓您打字很自在。<br />
+</p>
+
+<p>這隻鍵盤的觸感跟 IBM T4x 的感覺滿像的(感謝 Palmpilote 兄的T42)，鍵盤底下有四個止滑墊，讓整個 keyboard 穩固在桌面上，讓您打字很自在。</p>
+
+<p>另一個推崇的地方就是真的跟 notebook 的keyboard觸感類似，薄模式的按鍵以及彈力，讓您的手指不用再抬起，讓您的肌腱得到充份的休息，Palmpilote兄(學醫的喔)手指最大的傷害最主要是要按下鍵之後的"抬起"動作，長時間打字的情況下，其實肌腱是容易受傷發炎的，所以穩固的鍵盤和彈力的按鍵是減輕手指傷害的幫手，尤其是文字工作者(應該也有包含程式設計師？)更明顯。</p>
+
+<p>舒適的敲擊彷彿是手指跟按鍵"彈"戀愛，完全不用離開鍵盤水平面，滑勾之間緊密的夾縫讓灰塵無所遁形，建議購買鍵盤或在賣場試用時，將雙手食指放在F, J上，然後閉上雙眼，慢慢地移動手指，將所有觸覺神經集中在您的雙手十指，細細體驗那細緻的觸覺，彷彿稚妊少女的觸感，彈指<br />
+之間彷彿......(我已經說不下去了，請看官自己想像..XD)</p>
+
+<p>Anyway, 這是一個值得推薦的好盤。</p>
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000832.html">08:59 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=832" onclick="OpenComments(this.href); return false">Comments (570)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 22, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000826"></a>
+<h3 class="title">解決網卡問題摟</h3>
+
+<p>今天抓 2.4.28 的 stock kernel 終於搞定了 3Com 網卡的問題，總算是告一個段落，看來是下錯了 prism54.org 上的 kernel patch才這樣。</p>
+
+<p>現在燈會亮但還是沒有實際測試過，希望明天聚會時不會出鎚...寫資料中...:D</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000826.html">12:00 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=826" onclick="OpenComments(this.href); return false">Comments (201)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 21, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000822"></a>
+<h3 class="title">目前網卡的問題</h3>
+
+<p>目前載入 prisma-cvs-latest 會出現這樣的問題</p>
+
+<p>Loaded prism54 driver, version 1.2<br />
+eth1: resetting device...<br />
+eth1: uploading firmware...<br />
+eth1: firmware version: 1.0.4.3<br />
+eth1: firmware upload complete<br />
+eth1: no PIMFOR header found<br />
+eth1: timeout waiting for mgmt response 100, triggering device<br />
+eth1: timeout waiting for mgmt response 90, triggering device<br />
+eth1: timeout waiting for mgmt response 80, triggering device<br />
+eth1: timeout waiting for mgmt response 70, triggering device<br />
+eth1: timeout waiting for mgmt response 60, triggering device<br />
+eth1: timeout waiting for mgmt response 50, triggering device<br />
+eth1: timeout waiting for mgmt response 40, triggering device</p>
+
+<p>其他相關的 <a href="http://prism54.org/cgi-bin/bugzilla/show_bug.cgi?id=72">bug</a>，看來無解中....有的人也是用 3Com 的卡。</p>
+
+<p>值得高興的是 kernel-2.4.28已經納入了</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000822.html">11:50 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=822" onclick="OpenComments(this.href); return false">Comments (136)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000821"></a>
+<h3 class="title">3Com 無線網卡體驗</h3>
+
+<p>執著於 kernel-2.4 的小弟敗給了 3Com 的網路卡了，因為新買的必須要快點測試才能知道東西是否壞掉。</p>
+
+<p>首先呢，依照已往的，先到 prism54.org 抓 for kernel-2.4 的 patch，抓下來編譯好之後，載入 module時卻出現 I/O error...faint...我咧...好樣地，不知道是什麼錯誤，訊息說有可能是 IRQ 互衝，急急忙忙下換成kernel-2.6，成功驅動了，link燈亮了...</p>
+
+<p>表示硬體沒錯，很好，這下又給自己一個研究的方向，一定要搞定 kernel-2.4.27 與 prism54的搭配，不然星期日 KDE 聚會就沒法上網了...</p>
+
+<p>PS：換到 kernel-2.6之後，發現touchpad的裝置與usb mouse共用 同一個 device node，所以gpm or XF86Config只需要一個 mouse section。真神奇，還不清楚是怎麼回事，先換回 kernel-2.4 再說。BTW...Kernel-2.6 真的滿快的...:D</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000821.html">09:57 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=821" onclick="OpenComments(this.href); return false">Comments (158)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 20, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000811"></a>
+<h3 class="title">敗了3Com 無線網卡</h3>
+
+<p>用 700 塊台票買到的，是店家出清的全新品，PCMCIA剛好符合我的使用，等一下來試試看如何驅動...:D</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000811.html">08:14 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=811" onclick="OpenComments(this.href); return false">Comments (537)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000807"></a>
+<h3 class="title">Kernel-image-2.4.27-2-686 in testing</h3>
+
+<p>終於等到 kernel-image-2.4.27-2-686 出來了，該版最大的變更是所有 外掛的 kernel module 都會重新編譯，例如 alsa-modules, nvidia-kernel-module, 等，changelog 如下：</p>
+
+<p>  * Change Pentium IV/PIV to Pentium 4/P4<br />
+    (closes: #284138). (Simon Horman)<br />
+  * Increment SONAME to 2 as the CAN-2004-0814 fix<br />
+    included in kernel-source 2.4.27-6 breaks binary compatibility.<br />
+    (closes: #284356)<br />
+  * Built against kernel-source-2.4.27 2.4.27-7<br />
+</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000807.html">02:36 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=807" onclick="OpenComments(this.href); return false">Comments (215)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000806"></a>
+<h3 class="title">該 K 一些 kernel-2.6 的 doc 了</h3>
+
+<p>昨天下午看了一下由 Alan Cox 做好的 2.6.10-ac2，裡面有 it8212F 的 driver，但因為我用的是 Kernel-2.4，加上公司的產品(我還沒當兵所以不能進去工作@@)也是以 2.4 為主(未來才有2.6的產品)，所以就拿來作 backport。</p>
+
+<p>抽出 ide 部份的 code 之後，merge到2.4.27-6之後，開始看 code，想當然爾，無法直接編譯成功，最大的問題在於 2.6 與 2.4 的 IDE DMA 的 function call 不一樣，2.6增加了一些東西所以必須修改成 2.4 才符合的東西。我傾向於修改 it821x.c 的 code而不增加 function。</p>
+
+<p>弄了一下之後，大概剩一下問題，但也是我不會的 C 的問題，好吧，實力不足只好慢慢繼續 K 文件加油...順便找一下其他 dist 是否已經有 patch 了...^^</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000806.html">01:30 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=806" onclick="OpenComments(this.href); return false">Comments (205)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000805"></a>
+<h3 class="title">新的 NB 計劃</h3>
+
+<p>最近老婆說想要買一台專屬她自己的電腦來使用，因為公司沒有配 NB，所以只好自己掏腰包。<br />
+目前其實沒有多大的想法，因為我只用過 Acer Aspire 1200和IBM X31，因為X31的輕薄，讓我打算未來會買小尺寸的電腦。但 Acer 的鍵盤卻比較好打，實在是那以割捨。</p>
+
+<p>大概還是以大廠為主，而如果是我本身需要的話，老實講，有點想買 MAC iBook，因為想體驗 PPC 加上 MAC 的耗電量比較小一點(聽說)，也想在上面裝 Debian 來使用。</p>
+
+<p>上次的生日聚會看到 Andrew用的 iBook，效果不錯，可以列入考量範圍，但怕的是中文的 pkg 還要 porting...-_-...</p>
+
+<p>恩...等退伍在說吧...哈哈</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000805.html">01:23 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=805" onclick="OpenComments(this.href); return false">Comments (144)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000804"></a>
+<h3 class="title">兩隻滑鼠與 gpm, XFree86</h3>
+
+<p>目前我的 notebook 上有兩個 pointer 裝置，一個是內建的 touchpad，另外一個是我的 USB mouse。</p>
+
+<p>不管是 XFree or Console 下，我都是用 gpm 來控管滑鼠的，所以我的 gpmconfig 也就變成這樣：<br />
+device=/dev/psaux<br />
+responsiveness=<br />
+repeat_type=raw<br />
+type=autops2<br />
+append="-M -m /dev/input/mice -t imps2"<br />
+sample_rate=</p>
+
+<p>在 XF86Config-4 就變成了<br />
+Section "InputDevice"<br />
+        Identifier      "Configured Mouse"<br />
+        Driver          "mouse"<br />
+        Option          "CorePointer"<br />
+        Option          "Device"                "/dev/gpmdata"<br />
+        Option          "Protocol"              "PS/2"<br />
+EndSection</p>
+
+<p>這樣會有一個小問題，也就是 usb 滑鼠的滾輪不能用，因為 Protocol 的關係，改成 ImPS/2 的話，變成 touch pad 有問題，兩者不能實現目前的窘境，只好全部獨立設定。</p>
+
+<p>新的設定檔就變成：(for gpmconfig)<br />
+device=/dev/psaux<br />
+responsiveness=<br />
+repeat_type=raw<br />
+type=autops2<br />
+append=""<br />
+sample_rate=</p>
+
+<p>Section "InputDevice"<br />
+        Identifier      "Configured Mouse"<br />
+        Driver          "mouse"<br />
+        Option          "SendCoreEvents"<br />
+        Option          "Device"                "/dev/gpmdata"<br />
+        Option          "Protocol"              "PS/2"<br />
+EndSection</p>
+
+<p>Section "InputDevice"<br />
+        Identifier      "Mouse2"<br />
+        Driver          "mouse"<br />
+        Option          "CorePointer"<br />
+        Option          "Device"                "/dev/input/mice"<br />
+        Option          "Protocol"              "ImPS/2"<br />
+        Option          "ZAxisMapping"          "4 5"<br />
+EndSection</p>
+
+<p>Section "ServerLayout"<br />
+        Identifier      "Default Layout"<br />
+        Screen          "Default Screen"<br />
+        InputDevice     "Generic Keyboard"<br />
+        InputDevice     "Configured Mouse"<br />
+        InputDevice     "Mouse2"<br />
+EndSection</p>
+
+<p>目前也只能這樣了。難怪 gpm 的 maintainer 已經加入當登入X-win時會關閉gpm，登出後會重新啟動 gpm。但實際上這個機制有點怪且不是那麼穩定。</p>
+
+<p>Debian 的 gpm team 也沒打算換到新的 upstream，那就慢慢等吧</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000804.html">01:17 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=804" onclick="OpenComments(this.href); return false">Comments (221)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 19, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000797"></a>
+<h3 class="title">ite8212 against 2.6.10-ac2</h3>
+
+<p>from 2.6.10-ac2/driver/ide/pci/it821x.c</p>
+
+<p>Pass Through: standard IDE<br />
+Smart Mode: use the hardware raid</p>
+
+<p> *  Errata:<br />
+ *  o	Rev 0x10 also requires master/slave hold the same DMA timings and<br />
+ *	cannot do ATAPI MWDMA. <br />
+ *  o	The identify data for raid volumes lacks CHS info (technically ok)<br />
+ *	but also fails to set the LBA28 and other bits. We fix these in<br />
+ *	the IDE probe quirk code.<br />
+ *  o	If you write LBA48 sized I/O's (ie > 256 sector) in smart mode<br />
+ *	raid then the controller firmware dies<br />
+ *  o	Smart mode without RAID doesn't clear all the necessary identify<br />
+ *	bits to reduce the command set to the one used</p>
+
+<p>hmm... 有點害怕，真的要拿來用嗎？@@</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000797.html">02:44 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=797" onclick="OpenComments(this.href); return false">Comments (228)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000796"></a>
+<h3 class="title">D-I 翻譯進度</h3>
+
+<p>請參閱 <a href="http://people.debian.org/~seppy/d-i/translation-status.html">status</a>，目前已經有七個語言已經達到了 100%了，而 zh_TW 還剩下一部分，但很快就會成為 100%。</p>
+
+<p>今天也翻譯好 apt 的部份交給 Kanru 整合，目前 status 中的 po 其實都翻譯差不多，只是 maintainer 還沒有納入，所以會比較慢，例如我翻譯的 dpkg 還沒納入，因為 maintainer 尚未 release 新的，所以沒有加入。</p>
+
+<p>其餘的幾乎完成，接下來就是等待而已...:D</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000796.html">01:51 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=796" onclick="OpenComments(this.href); return false">Comments (150)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 18, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000789"></a>
+<h3 class="title">Seagate 5400RPM notebook 硬碟入手</h3>
+
+<p>今天總算拿到了 Seagate Momentus 5400RPM 的硬碟了，我的 NB 不在是孤兒，拿到硬碟之後馬上安裝 Debian，速度上明顯比以前的4200RPM快的多。重點是沒有比較耗電，這真是太神奇啦。</p>
+
+<p>這一顆硬碟的速度不錯，hdparm -d 1 -c3 /dev/hda的參數測出來的結果有 30MB/s，以 NB 的硬碟來說相當優異了。目前滿意使用中，繼續來 K kernel，剛剛看的 Raid 1.0 的部份繼續往下看，Ya!!</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000789.html">03:27 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=789" onclick="OpenComments(this.href); return false">Comments (1337)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 17, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000781"></a>
+<h3 class="title">gcin-0.6.1-3 is accepted</h3>
+
+<p>剛剛把 gcin-setup 的問題解決了，也解決掉 gcin-0.6.2 的修正，目前已經可以下載更新。</p>
+
+<p>也把提供的下載點整理好，改code的速度還比整理檔案的速度快很多...><</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000781.html">04:14 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=781" onclick="OpenComments(this.href); return false">Comments (181)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000776"></a>
+<h3 class="title">gcin-0.6.1-2 is accepted</h3>
+
+<p>今天早上稍微修正了一下 gcin 的 package，結果卻發現 gcin-setup 叫不出來，真衰，但至少改掉一些比較嚴重的問題。</p>
+
+<p>另外花絮：Server的Power供電不足，造成硬碟損毀，努力搶救資料中。<br />
+另外花絮2：Notebook的硬碟即將寄來，seagate 5400rpm 40G的，五年聯強保固，希望一切正常...:D</p>
+
+<p>肚子餓去吃飯了</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000776.html">11:45 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=776" onclick="OpenComments(this.href); return false">Comments (257)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 16, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000769"></a>
+<h3 class="title">我的 deb pool</h3>
+
+<p>現在改成這樣子：<br />
+deb http://debian/~asho/debian/ testing main<br />
+deb-src http://debian/~asho/debian/ testing main<br />
+deb http://debian/~asho/debian/ unstable main<br />
+deb-src http://debian/~asho/debian/ unstable main</p>
+
+<p>任君選用，debsrc的部份會陸續完成，gcin-0.6.1 is in unstable，可以使用，但會有些小問題，例如那個"針"的圖不見了...XD...</p>
+
+<p>gcin-0.6.2 的 upstream 已經出來了，星期一再看，打算 backported 就好了</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000769.html">12:17 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=769" onclick="OpenComments(this.href); return false">Comments (377)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 14, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000766"></a>
+<h3 class="title">gcin-0.6.1 is accepted</h3>
+
+<p>今天總算做出一個雛型了，目前暫時在 unstable上，testing依然是 0.5.6-1，這個假日有空的話，我打算好好看一下 gcin 的source code。</p>
+
+<p>測試差不多之後，我在考慮弄到 testing吧，阿...還有 qref...@@</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000766.html">11:16 PM</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000763"></a>
+<h3 class="title">苦惱阿，機器損毀中</h3>
+
+<p>本來一直在使用的 xp333 這塊主機板，竟然搞到我的硬碟都壞了，現在用原廠的cpu 頻率跑還會當機，真不知道該怎麼辦才好，也不知道是主機板壞掉還是CPU壞掉還是...><</p>
+
+<p>天阿...</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000763.html">04:04 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=763" onclick="OpenComments(this.href); return false">Comments (156)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000762"></a>
+<h3 class="title">gcin-0.6.1</h3>
+
+<p>gcin-0.6.1 已經出來了，今天早上弄的很辛苦，因為我很久沒看 gcin 的 source code了，加上 0.5.7之後的版本變動滿大的，而且 porting 到 Debian 上要做滿大的修改，真累阿。</p>
+
+<p>目前我做好 debianlization，但還需要更多的測試，目前可以編譯完成，讓程式上我修改滿多的，還需要大幅度的修改才能在 debian 上跑。</p>
+
+<p>所以...繼續 stay in gcin-0.5.6，</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000762.html">04:01 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=762" onclick="OpenComments(this.href); return false">Comments (282)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 10, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000758"></a>
+<h3 class="title">Tyan K8E</h3>
+
+<p>機種名：S2865AG2NRF。<br />
+支援Socket 939的AMD Athlon 64/64FX<br />
+晶片組：nVidia nForce4。<br />
+記憶體：4個DIMM插槽。支援最大4GB的unbuffered DDR400模組。<br />
+擴充槽：1個 x16 PCI-E<br />
+2個 x 1 PCI-E<br />
+4個33MHz 32-bit PCI插槽。<br />
+網路：1個Broadcom BCM5721 PCI-E GbE控制器，1個nForce 4 MAC with Marvell 88E1111-CAA GbE PHY。<br />
+其他：威盛電子VT6307 IEEE 1394a。<br />
+音效：ALC 655 AC'97。<br />
+顯示：ATi RAGE XL w/8MB。<br />
+看看這會不會是Tyan第一張超賣的Single AMD platform！<br />
+全Sanyo OSCON SMT電解電容。<br />
+Coming soon.... </p>
+
+<p>就等它出來馬上轉換到 k8 平台</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000758.html">07:39 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=758" onclick="OpenComments(this.href); return false">Comments (246)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 08, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000757"></a>
+<h3 class="title">真慘...blog 被人丟廣告信</h3>
+
+<p>慘阿...我的 blog 被一堆廣告迴響了...看來是有人惡意的...真不知道該怎麼刪除...氣死人了</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000757.html">11:20 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=757" onclick="OpenComments(this.href); return false">Comments (247)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000756"></a>
+<h3 class="title">關於 gcin 的包裝</h3>
+
+<p>目前 gcin 已經出到 0.5.9 的版本了，而我 maintain 的只到 0.5.6，原因無他，我認為 0.5.6很穩定，看了 0.5.7 之後的 source 改變許多。</p>
+
+<p>目前打算採取的包裝方法是用 patch 的方式，打算移除掉源碼中其他非 Debian 的 build，增加 debconf 來提醒如何修改 xsession 和 xinitrc。</p>
+
+<p>gcin-0.5.6 目前待在 testing 的版本，gcin-0.5.9才是 for unstable的，等我測試的差不多才會拿到 testing</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000756.html">11:17 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=756" onclick="OpenComments(this.href); return false">Comments (70)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 04, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000755"></a>
+<h3 class="title">找出目錄和檔案總何 > 4G 的 script Version 0.6.5</h3>
+
+<p>v0.6.5<br />
+* fix GetSize method in order to find out the miss value set<br />
+* change the MaxSize to 4.7G<br />
+Bugs:<br />
+* still lack of all value set</p>
+
+<p>請在<a href="http://asho.dyndns.org/~asho/script/getsize-0.6.5.py">這邊</a>抓</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000755.html">12:35 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=755" onclick="OpenComments(this.href); return false">Comments (657)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 03, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000753"></a>
+<h3 class="title">Grub dual booting situation</h3>
+
+<p>我從網路上擷取下來的訊息，現在 scsi 硬碟只裝 Linux，Seagate 80G 是 Windows，booting 的方式如下。</p>
+
+<p>原文：http://www.usd.edu/~djennewe/rh8.html#dualboot</p>
+
+<p>Dual Booting with a single drive<br />
+There are about 39,000 different ways to do this, but this is easiest. It should work with any version of windows.</p>
+
+<p>    * Create a partition for windows and install windows to it.<br />
+    * Alternatively, if you already have windows installed, you can use Partition Magic, or maybe FIPS, to shrink your partition to make room for linux.<br />
+    * Install linux to the disk, using the space left from the windows install for the linux partitions.<br />
+    * The installer should make an appropriate grub.conf for you, but if not, you can make your own based on this one:</p>
+
+<p>title Red Hat Linux (2.4.18-3)<br />
+	root (hd0,1)<br />
+	kernel /boot/vmlinuz-2.4.18-3 ro root=/dev/hda2<br />
+	initrd /boot/initrd-2.4.18-3.img<br />
+title Windows XP<br />
+	rootnoverify (hd0,0)<br />
+	chainloader +1</p>
+
+<p><br />
+Dual Booting with 2 drives<br />
+There are about 40,000 different ways to do this, but this is the easiest. This should work with any version of windows. In this example, windows is on (hd0,0), the first partition of the first hard disk, and Redhat on (hd1,0), the first partition on the second hard disk</p>
+
+<p>    * Install Windows. If you don't install onto a primary drive, have a look at the next section.<br />
+    * Install linux. Have it install the grub bootloader in the MBR of the primary drive. It should make grub.conf for you with entries for both OS's<br />
+    * The corresponding entries in grub.conf might look like this:</p>
+
+<p>title Red Hat Linux (2.4.18-3)<br />
+	root (hd1,0)<br />
+	kernel /vmlinuz-2.4.18-3 ro root=/dev/hdb5<br />
+	initrd /initrd-2.4.18-3.img<br />
+title Windows XP Pro<br />
+	rootnoverify (hd0,0)<br />
+	chainloader +1</p>
+
+<p>Booting Windows on a secondary drive<br />
+This takes some explaining. Windows will (as far as I know) only boot from a primary physical drive. So if you have linux on your primary drive and want to have windows on a secondary drive, you need to tinker with grub.conf a little. You might wonder why not just put linux on the second drive so windows can be happy. You could do that too.</p>
+
+<p>    * vi grub.conf (as root)<br />
+    * make an entry for your windows install. If your windows drive was /dev/hdb (the second drive on the first IDE controller), the entry would look like this:</p>
+
+<p>Windows XP Pro<br />
+	map (hd0) (hd1)<br />
+	map (hd1) (hd0)<br />
+	rootnoverify (hd1,0)<br />
+	chainloader +1</p>
+
+<p>      The two important lines are the map ones. Essentially, they make the primary drive the secondary drive and the secondary drive the primary drive. If windows were on the primary drive, the entry would look the same, except the map lines wouldn't be there. </p>
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000753.html">01:04 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=753" onclick="OpenComments(this.href); return false">Comments (245)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 02, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000752"></a>
+<h3 class="title">Notebook & Desktop 硬碟修復了</h3>
+
+<p>我檢查了一下壞軌的部份，大約是介面卡驅動程式搭配 XFS 的問題，造成寫入錯誤的檔案到 hard disk，所以我抓取廠商的 low level format 程式格式化後就沒壞軌了...^^</p>
+
+<p>這下可省一大筆錢摟</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000752.html">06:54 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=752" onclick="OpenComments(this.href); return false">Comments (187)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

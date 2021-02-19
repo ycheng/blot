@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: 演講: Accelerating or Complicating PHP execution by LLVM Compiler Infrastructure (PHPConf.TW)</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2011/09/_mandelbrot_set.html" title="繪製 Mandelbrot Set 的小程式" />
+
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2011/11/android_--_1.html" title="「Android 圖形系統 -- 設計與實做分析」簡報上線" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2011/09/_mandelbrot_set.html">« 繪製 Mandelbrot Set 的小程式</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+| <a href="http://blog.linux.org.tw/~jserv/archives/2011/11/android_--_1.html">「Android 圖形系統 -- 設計與實做分析」簡報上線 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">October 30, 2011</h2>
+
+<div class="blogbody">
+
+<h3 class="title">演講: Accelerating or Complicating PHP execution by LLVM Compiler Infrastructure (PHPConf.TW)</h3>
+
+台灣 PHP 界的盛事又多了一項，舉辦首次的開發者技術研討會，詳情可見官方網站 [<a href="http://phpconf.tw/">PHPConf.TW</a>]。以下是擷取網站的介紹文字：<ul>
+「相信在台灣，網站開發用最多的程式語言就是 PHP，也就是大家好像都會寫 PHP，但為什麼台灣還沒有舉辦 PHP 的研討會呢？ 因為有著這樣的疑惑，加上大家都愛寫 code，更何況寫 code 就是為了創造東西，沒 PHPConf 當然也要自己來創造一個！ 所以就在今年，您可以拋下各種疑惑，來參加 PHPConf Taiwan 2011 。<br />
+... 11/12 (六) 在中研院「人文社會科學館」的第二會議室，我們一同來參與這場盛會！」
+</ul>
+小弟則為這次盛會分享一個題目: "Accelerating or Complicating PHP execution by LLVM Compiler Infrastructure"，還記得第一次接觸 PHP 程式語言，已是十年前的事情，當時沈迷 Java Server side 技術的我，總是把 PHP 喚作「玩具般的網頁語言」，但這十年間的變化實在驚人，軟體產業沒有銀彈，而端看怎麼使用技術，來滿足多元的需求。對每月得承受上千億萬次 PV 的 Facebook 來說，提昇整體效能的利器之一，就是 [<a href="https://github.com/facebook/hiphop-php/wiki/">HipHop for PHP</a>]，這個特製的 PHP to C++ 編譯器。本議程以一位編譯器系統開發人員的角度，分析透過 LLVM 來提昇 PHP 執行效能與系統保護的途徑。不會探討技術細節，而是分享無所不在的編譯器技術應用，呼應今年在 OSDC.tw 的演講 [<a href="http://blog.linux.org.tw/~jserv/archives/2011/04/build_programmi_1.html">Build Programming Language Runtime by LLVM</a>]。<br />
+<br />
+另外，非常熱血的陳韋任在 HelloGCC community 分享了一系列的 LLVM JIT 文章，可對照參考：<ul>
+  <li><a href="http://www.hellogcc.org/archives/462">LLVM Introduction - How to use LLVM JIT 1/3</a></li>
+  <li><a href="http://www.hellogcc.org/archives/464">LLVM Introduction - How to use LLVM JIT 2/3</a></li>
+  <li><a href="http://www.hellogcc.org/archives/471">LLVM Introduction - How to use LLVM JIT 3/3</a></li>
+</ul>
+期待您的指教 :)<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 October 30, 2011 12:46 PM
+
+<br /></span>
+
+</div>
+
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2185" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 在 Linux 上使用 WirelessLAN 的經驗</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001604.html" title="缺月掛疏桐" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001606.html" title="Bill Gates 的工作方式" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001604.html">« 缺月掛疏桐</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001606.html">Bill Gates 的工作方式 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">April 06, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">在 Linux 上使用 WirelessLAN 的經驗</h3>
+
+剛剛瞥見 Eason 的 blog [<a href="http://eason.be/blog/post/1/446">Linux Supported Wireless Adapter Chipset Directory</a>] 提到由 HJ Heins 所整理的 [<a href="http://linux-wless.passys.nl/">Linux wireless LAN support</a>]，這是很棒的 native Linux WLAN driver list。我第一次在 Linux 使用 WirelessLAN，是在「某公司」(其實也沒這麼神秘，只是「某公司」已經消失了)，使用 PRISM2 chipset，時間是 2002 年春季。兩年前從事 Linux-based Thin-client 開發，考慮到產品的多元，開始提供 WirelessLAN support，執行畫面類似下圖： (click to enlarge)<br>
+<center><a href="http://jserv.sayya.org/misc/sias-wlan-kit.jpg"><img src="http://jserv.sayya.org/misc/sias-wlan-kit.jpg" width="280" height="210"></a></center><br>
+使用的 chipset 除了 Atmel AT76C5xx 外，也包含 PRISM2/3 與 TI ACX100 系列，有部份成果已經 merge 到 upstream。據我記憶所及，當時在 CeBIT 展覽的迴響還不惡，也是當時少數 Linux-based Thin-client 有內建無線網路的解決方案 (其實我一直沒有看到其他也具備的)。在去年，以 GPLv2 釋出相關的計畫 [<a href="http://linetconf.csie.net/">Linetconf - Linux Network Configurator</a>]，這是全新的 codebase，與兩年前直接用 ioctl 驅動 iwpriv 的 dirty-hack 是截然不同的，離職後，手頭沒有保有 source code，我也忘記自己到底用了多少 tricks 與 workaround 了。<br>
+<br>
+開發的過程發生了一個插曲，當時就讀交大資工系的小貓，利用暑期來到前公司作工讀生，協助我作 driver development & testing，同時也維護一部分 WLAN Kit 的 user-space application，不過或許是因為我對小貓的期許較高，而我忽略小貓還有其他計畫要忙，結果我就在辦公室把小貓罵哭了... 有時候，lover 與 partner 的角色還是分開比較好，到現在才學會這點，為此，還是覺得很愧疚。<br>
+<br>
+後來在去年年初的休假中，我接觸了幾款 ACX100 / ACX11x 的 chipset，起初驅動不是很成功，後來在許多前輩的協助下，最後達到可用的境界，再來是玩了 Atheros 的 chipset，這部份的 Linux/*BSD driver 可參考 [<a href="http://madwifi.org/">MadWifi</a>]，這是非常優秀的專案計畫，展示如何跨越平台對 close firmware 做出完整的 WLAN 驅動支援。說到這裡，又要炫耀一下，在參與 2004 年的 Asia BSD Developer Conference 時，跟  [<a href="http://madwifi.org/">MadWifi</a>] 核心開發者 Sam Leffler 前輩要了親筆簽名與合照，從此以後，遇到的 Atheros chipset 運作都相當順暢，所以收集簽名還是有點用的 :P<br>
+<br>
+以上提到的是有 native Linux driver support 的 chipset，至於 close-source driver 的部份，我用過 VIA Solomon 系列，以及最近 P 公司與 M 公司的解決方案，說來也很有趣，Linux driver 有時候反而是先 ready，過好一段時日才有 Windows Mobile 的 WDM，而且現在大多也全力支持 LWE (Linux Wireless Extension)，才過兩年，發現這些通訊與硬體廠商的態度有很大的轉變，這是值得欣慰之處。有時候也幫一些朋友修改 Linux driver，比方說之前在 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001025.html">3Com 3CRWE62092A 驅動</a>]，就是在手頭沒有硬體時 hacking 的，沒想到還因此幫了 Jouston 與一個老外的忙，前幾月也幫了某公司處理，也是瞎子摸象亂改 driver，運氣還不差，最後有驅動。<br>
+<br>
+我個人的感覺是，Linux kernel 2.6 在相關的 API 與 driver model 有收斂的趨勢，雖然每次改版還是忍不住罵一下，但隨著相關廠商的釋出善意、大量 WLAN 相關 Free/open source 軟體的現身，以及 Linux Desktop 的整合，才短短兩年間，這些變化是巨大的，衷心期望明天會更好。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 April  6, 2006 01:25 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>之前有在別處看過另一個無線網卡的解決方案</p>
+
+<p>Project Evil: 在 FreeBSD 上使用 Windows 網路卡 driver</p>
+
+<p>http://www.freebsd.org.hk/modules/news/article.php?storyid=68</p>
+<span class="comments-post">由 <a href="mailto&#58;drogher&#64;YAHOO&#46;COM">droger</a> 發表於</MTIfNonEmpty> April  6, 2006 02:33 PM</span>
+</div>
+<div class="comments-body">
+<p>宇動聽說還在...=_=...</p>
+
+<p>之前在台中有呆過一陣子...</p>
+<span class="comments-post">由 <a href="mailto&#58;actionmask&#64;gmail&#46;com">fc</a> 發表於</MTIfNonEmpty> April  6, 2006 07:21 PM</span>
+</div>
+<div class="comments-body">
+<p>To droger,<br />
+   我說的是 native Linux driver，而非透過 NDIS emulation / loader 載入 WDM 的途徑</p>
+
+<p>To fc,<br />
+  本文的「某公司」是指我更早去過的，非 W-Channel</p>
+
+<p>By the way，這篇怎麼被刊出來？ http://freesf.tnc.edu.tw/modules/news/article.php?storyid=2412<br />
+我只是隨便寫的，附加炫耀文與自省罷了 XD</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> April  6, 2006 07:40 PM</span>
+</div>
+<div class="comments-body">
+<p>鉅X...XD</p>
+<span class="comments-post">由 <a href="mailto&#58;fourdollars&#64;gmail&#46;com">$4</a> 發表於</MTIfNonEmpty> April  7, 2006 12:33 AM</span>
+</div>
+<div class="comments-body">
+<p>鉅X不是要他做這個, 史蛋.</p>
+<span class="comments-post">由 <a href="mailto&#58;lic1217&#64;hotmail&#46;com">Simon</a> 發表於</MTIfNonEmpty> April  7, 2006 03:25 PM</span>
+</div>
+<div class="comments-body">
+<p>因為覺得本篇內容很豐富啊<br />
+雖然對自己來說太深了<br />
+不過也許其他遇到相同狀況的人看到會很受用<br />
+所以就轉貼去自由軟體技術網那邊了 :)</p>
+<span class="comments-post">由 <a href="mailto&#58;drogher&#64;yahoo&#46;com">droger</a> 發表於</MTIfNonEmpty> April  8, 2006 10:41 AM</span>
+</div>
+<div class="comments-body">
+<p>啊 只是忘記打個招呼 這點倒是有點不好意思</p>
+<span class="comments-post">由 <a href="mailto&#58;drogher&#64;yahoo&#46;com">droger</a> 發表於</MTIfNonEmpty> April  8, 2006 10:42 AM</span>
+</div>
+<div class="comments-body">
+<p>To droger,</p>
+
+<p>  That's fine. 下次如果我寫好關於 Linux wireless 的文章 (當然不是像這篇 blog 一般膚淺)，會先行告知。</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> April  9, 2006 02:44 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

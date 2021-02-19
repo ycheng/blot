@@ -1,0 +1,246 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 以 C 語言模擬 Lisp/Scheme 語法</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002057.html" title="以 C 語言實做 Javascript 的 prototype 特性" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002059.html" title="演講：Clutter -- 釋放 OpenGL 威力的新途徑" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002057.html">« 以 C 語言實做 Javascript 的 prototype 特性</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002059.html">演講：Clutter -- 釋放 OpenGL 威力的新途徑 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">August 01, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">以 C 語言模擬 Lisp/Scheme 語法</h3>
+
+<center><img src="http://jserv.sayya.org/misc/scheme-syntax.png" width="312" height="82" /></center><br />
+傍晚與一位六月份見過面的朋友通訊，我們聊到機器人設計，他問說為何不考慮用 Lisp 來建構系統平台，問題一出，讓我這個「慣 C 魔人」想到新題目：<ul class="code" style="margin: 6px;">
+「能否用 C 語言模擬 Lisp 語法？」
+</ul>
+筆者選定 Scheme 作為主要的模擬對象，發展於 1975 年的 MIT 人工智慧實驗室 (是的，就是 Richard M. Stallman 早年服務所在)、衍生自 Lisp，作為一種 functional programming languages，以 lambda calculus 為理論基礎。現有 Scheme 語言的標準，依據 2007 年制訂 Scheme 語法規則的第六次修正，特稱 [<a href="http://www.r6rs.org/">R6RS</a>] (Revised(6) Report on the algorithmic language Scheme)，基本上就是 Lisp 的方言 (dialect)，伴隨豐富的函式庫資源。[<a href="http://irw.ncut.edu.tw/peterju/">朱孝國的筆記本</a>] 有一份簡要的 [<a href="http://irw.ncut.edu.tw/peterju/scheme.html">中文簡介</a>]，引述其中關於語法的段落：<ul>
+  <li>整個 scheme 可以說是 read-eval-print loop 的運作方式：即「讀取、計算，印出」的過程</li>
+  <li>scheme 沒有大小寫之分</li>
+  <li>由函數組合所構成，可以巢狀組合，沒有 main 這個主函數進入點，以小括號將運算式括起來，函數名稱或運算元在左括號的右邊，運算子彼此以空白為間隔，如 3+4*5 這個運算式，以 Sheme 語法撰寫如： (+ 3 (* 4 5)) ，類似資料結構中的前序運算式</li>
+  <li>基本的資料型態為原子 (atom) 及字串 (list)：<ul>
+    <li>原子 (atom) 包含符號 (symbol) 及數值 (number)</li>
+    <li>串列 (list) 則是以小括號括起來的一串資料</li>
+  </ul></li>
+</ul>
+Wikipedia 的 [<a href="http://en.wikipedia.org/wiki/Scheme_(programming_language)">Scheme</a>] 詞目給了一個遞迴式階層運算的範例：<pre class="code" style="margin: 6px;">
+ (define (fact n)
+    (if (= n 0)
+        1
+        (* n (fact (- n 1)))))
+</pre>
+考量到 C 語言的關鍵字，我們「模仿」成以下的風格： (factorial.c)<pre class="code" style="margin: 6px;" id="codemain">define(<span class="keyword">int</span>, factorial, (<span class="keyword">int</span> n),
+       <span class="keyword">if</span>(eq(n, 0),
+          1,
+          mul(n, factorial(sub(n, 1)))))
+
+define(<span class="keyword">int</span>, main, (<span class="keyword">void</span>),
+       (printf(<span class="literal">"10! = %d\n"</span>, factorial(10)), EXIT_SUCCESS))</pre>
+由上可見，「形式」上，保有括號與原子 (atom) 的呈現，不過，這就不是 C 語言了呀？沒關係，只要在編譯器那邊動點手腳即可，以下是編撰的 Makefile 內容：<pre class="code" style="margin: 6px;">
+CFLAGS = -Wall \
+  -D'define(ret, name, args, block) = ret name args { return block; }' \
+  -D'if(expr, block1, block2) = expr ? block1 : block2' \
+  -D'eq(a, b) = a == b' \
+  -D'sub(a, b) = a - b' \
+  -D'mul(a, b) = a * b' \                                                                  
+  -include "stdio.h" -include "stdlib.h"
+
+TARGET=factorial
+all:
+	gcc -o $(TARGET) $(TARGET).c $(CFLAGS)
+clean:
+	rm -f $(TARGET)
+</pre>
+編譯並執行：<pre class="code" style="margin: 6px;">
+$ make >/dev/null && ./factorial
+10! = 3628800
+</pre>
+結果符合我們預期。由上述 macro 定義 (即 -D'name(args...)=definition' 的那五行)，特意將 Scheme 語法的 atom 轉變成 C 語言的語法，原本 Scheme 的語法是：<pre class="code" style="margin: 6px;">
+define(型別 函數名稱 (引數串列), (函數 ...))
+</pre>
+做了小量的挪移，恰好符合。同樣地，以上僅示範「模擬」語法的可能性，實際尚須考量到 Scheme/Lisp 在處理運算，本質上採用 prefix (前序運算式) 的設計。<br />
+<br />
+取得本文打包的程式碼 [<a href="http://jserv.sayya.org/misc/scheme-in-c.tar.bz2">scheme-in-c.tar.bz2</a>]。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 August  1, 2008 08:54 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>太巧妙了哈哈</p>
+<span class="comments-post">由 <a href="mailto&#58;nkchenz&#64;gmail&#46;com">td</a> 發表於</MTIfNonEmpty> August  2, 2008 10:40 AM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2058" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

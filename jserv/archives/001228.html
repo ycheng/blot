@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: KHTML 的 CSS3 支援度</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001227.html" title="熱血之餘談軟體授權" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001230.html" title="演講：綜觀 X Window System 與新發展" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001227.html">« 熱血之餘談軟體授權</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001230.html">演講：綜觀 X Window System 與新發展 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">August 08, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">KHTML 的 CSS3 支援度</h3>
+
+<p>Free/Open Source Softwares Community 的力量真是驚人，在 KDE.News 稍早介紹過 [<a href="http://dot.kde.org/1121021917/"> Next Generation KDE Technologies Ported to WebCore</a>] 提到 KDE Developers 與 Apple [<a href="http://webkit.opendarwin.org/">WebKit/Webcore 開發團隊</a>] 協同開發出未來的瀏覽器技術，不僅 Apple Safari 獲得大幅度改進，KDE Konqueror 的 [<a href="http://www.khtml.info/">KHTML</a>] 也在標準相容度與可用性項目中，有頗大的成長。</p>
+
+<p>W3C 的 [<a href="http://www.w3.org/Style/CSS/current-work">CSS WG (Cascading Style Sheets Working Group)</a>] 已經完成許多 Draft 與 profiles 的制定，CSS3 不僅是 CSS Level 1 / Level 2 的擴充，更意味著以 XML 為主體的 Extensionale Stylesheet Language。同時，W3C 的野心相當大，我們也看到類似 [<a href="http://www.w3.org/TR/2003/CR-css-tv-20030514">CSS TV Profile 1.0</a>] 這樣針對 TV devices 的規格，在 Overview 一節我們可以看到：<ul><br />
+The CSS TV Profile specifies a conformance profile for TV devices, identifying a minimum set of properties, values, selectors, and cascading rules. The resulting CSS TV Profile includes the vast majority of CSS1, portions of CSS2 and CSS3 Module: Color. The CSS TV Profile is a proper superset of the CSS Mobile Profile, with the use of the 'tv' media type instead of the 'handheld' media type.<br />
+</ul></p>
+
+<p>是此，如何銜接 W3C 的規範就變成當今的重要議題，KDE.News 的新聞報導 [<a href="http://dot.kde.org/1123347837/">KDE Commit Digest for August 5, 2005</a>] 的評論中 ([<a href="http://gslin.org/">Gea-Suan Lin</a>] 長輩再三提醒我們，評論或討論遠比新聞內文重要得多)，有幾個項目相當有趣：<ul><br />
+CSS 3 multiple background images<br />
+by Jim on Saturday 06/Aug/2005, @13:24<br />
+From one of the check-ins, it looks like Konqueror now has CSS 3 multiple background images courtesy of Safari. <a href="http://webkit.opendarwin.org/blog/?p=15">Read more here</a>.<br />
+<a href="http://decaffeinated.org/archives/2005/08/03/background-image">A pretty cool test page here</a>.<br />
+</ul><br />
+所以就目前來說，W3C 的 CSS3 multiple background images 支援已經在 KHTML 實做出來，正所謂「一圖勝千文」，先看看下圖：<br />
+<center><img src="http://dot.kde.org/1123347837/1123352643/1123374694/1123424134/image1.png"></center><br />
+引述  Morty 的介紹：<ul><br />
+Here's screenshot of the window at two different sizes. When you resize it and make it smaller the outer pictures slides under the central one, and they move away when making the window bigger. All wery smoothly, with only a little bit of flicker on fast resizing.<br />
+</ul></p>
+
+<p>我們也可以看見 W3C WG 提出的 public-review 與 feedback request -- [<a href="http://www.lawver.net/archive/2005/07/18/h16_help_the_css_working_group_with_backgrounds_and_borders.php">Help The CSS Working Group With Backgrounds and Borders</a>] 已經在這兩方人馬的協同開發下，獲得驗證，這是個相當好的模式。</p>
+
+<p>KDE rules!</p>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 August  8, 2005 02:34 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>KHTML 不是跟 Safari 翻臉了嗎？:p</p>
+<span class="comments-post">由 <a href="mailto&#58;barabbas&#64;gmail&#46;com">b6s</a> 發表於</MTIfNonEmpty> August  8, 2005 05:42 PM</span>
+</div>
+<div class="comments-body">
+<p>http://webkit.opendarwin.org/ &lt;-- 第一段就寫得很清楚了 :-)</p>
+
+<p>Apple 已經釋出善意，提供 KDE 的開發者詳細的 version control / bug / issue tracker 紀錄。所以現在合好了 :p</p>
+<span class="comments-post">由 <a href="http://jserv.sayya.org/">jserv</a> 發表於</MTIfNonEmpty> August  8, 2005 06:02 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

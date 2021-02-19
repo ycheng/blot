@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 編譯器技術的革新：談移動平台的機會</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002096.html" title="「我所知道的 C 語言」簡報上線" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002098.html" title="MP3 專利議題與自由軟體" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002096.html">« 「我所知道的 C 語言」簡報上線</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002098.html">MP3 專利議題與自由軟體 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">April 07, 2009</h2>
+
+<div class="blogbody">
+
+<h3 class="title">編譯器技術的革新：談移動平台的機會</h3>
+
+本文並不打算談及深入的技術，只是用一個實例，解釋網友詢問小弟在 [<a href="http://osdc.tw/">OSDC.tw</a>] 的 [<a href="http://blog.linux.org.tw/~jserv/archives/002090.html">窮得只剩下 Compiler -- 淺談編譯技術的革命</a>] 議程的著眼點。編譯器技術從1960 年代發展至今，已是電腦科學最成熟的基礎之一，且不斷地成長與蛻變，而透過 open source，GCC 與 [<a href="http://llvm.org/">LLVM</a>] (Low Level Virtual Machine) 計畫獲得空前的成功，累積了驚人的編譯器技術。儘管 parser 是 compiler 的關鍵技術，但今日，我們會著重於打通任督二脈的技術展現，過去耳熟能詳卻貌似獨立的項目，比方說 virtual machine, binary translator, JIT compiler, HotSpot JVM, FDO (Feedback-Directed Optimization), ... 等等，如今好似整合了金庸書中的武功精髓、淬湅出武術菁華，形成一套獨到的武功系統，透過 LLVM 一類的整合性技術而一瀉千里。<br />
+<br />
+幾年前，知名的遊戲設計公司 [<a href="http://www.idsoftware.com/">id Software</a>] 在該公司靈魂人物 John Carmack 的主導下，將 Doom (毀滅戰士) 核心的遊戲引擎以 GNU GPL 開放授權釋出，自此廣泛的平台移植與功能強化就展開。早期的 Doom GPL 程式碼被 Sam Lantinga 移植到 SDL 圖形函式庫，藉由 SDL 優異的可攜性，眾多硬體環境得以運行 Doom 遊戲，儘管遊戲的資料檔並非自由軟體。另一方面，現在最火熱的移動平台，就屬 Google Android 開放源碼平台，為了迴避 Sun Microsystems 對 Java 的控制權 (logo + patent)，該平台整合大部分 Apache [<a href="http://harmony.apache.org/">Harmony</a>] 專案的成果，建立了一套貌似 Java 語言但執行環境大異於 Java 的嶄新虛擬機器 -- Dalvik，將原本 stack-based VM 轉換為 register-based VM，不過本文不打算探討技術細節，總之，Android 的程式設計來說，Java 是唯一可用的程式語言，搭配 Android framework / class library，不然就是透過 JNI 去呼叫 C/C++ 撰寫的動態函式庫。作為一個 [<a href="http://blog.linux.org.tw/~jserv/archives/001965.html">慣 C 魔人</a>]，筆者反覆思考，是否能將以 C 語言搭配 SDL 函式庫撰寫的 Doom，透過編譯器轉換為 Android 平台可運作的 Dalvik bytecode 呢？此舉不僅讓 C/C++ 程式跨平台執行，還為移動平台提供了新的附加價值，於是，筆者就開始一系列的 hacking，現在有初步的成果，請參考以下螢幕快照：<br />
+<center><img src="http://jserv.sayya.org/llvm/pix/doom-on-android.jpg" width="490" height="766" /></center><br />
+這可不是紙老虎或單純貼圖，電動玩具當然是設計來玩的：<br />
+<center><img src="http://jserv.sayya.org/llvm/pix/doom-on-android2.jpg" width="491" height="768" /></center><br />
+此一貨真價實的 Android 應用程式自然透過編譯器技術而來，筆者採用新興的 LLVM 編譯器架構，建構一套 Dalvik bytecode backend，並使用 llvm-gcc frontend，示意圖如下：<br />
+<center><img src="http://jserv.sayya.org/llvm/pix/llvm-gcc-opt.png" width="496" height="232" /></center><br />
+對 LLVM 來說，筆者的更動不過只是小菜一碟，但卻巧妙的串連起來，這過程並無專門的 C/C++ 轉 Dalvik VM bytecode translator，而是透過 LLVM IR (中間表示)，具體就是 "bitcode"，由一個虛擬的硬體指令集的組合語言來呈現，示意如下圖：<br />
+<center><img src="http://jserv.sayya.org/llvm/pix/to-machine.png" width="228" height="67" /></center><br />
+而在 backend 的 Code generator 當然就是 Dalvik bytecode，Android 官方網頁已給予充分的文件說明，本文不贅述。不過，光如此的轉換手法，Doom 還是不能直接運作於 Android，因為需要 SDL 與圖形系統的支援。如稍早 [<a href="http://blog.linux.org.tw/~jserv/archives/002095.html">淺談 Google Skia 圖形處理引擎</a>] 一文提及，Android 的核心圖形技術就透過 Skia，並包裝於 framework 中，我們需要作適度的任務轉包，不過工作量不大，基本上就是找到 canvas，就可在畫布上呈現，自然 Doom 就可以把玩了。<br />
+<br />
+那麼，LLVM IR 是如何表達的呢？我們看看以下 C 程式片段：<pre class="code" style="margin: 6px;">
+int mul_add(int x, int y, int z) { return x * y + z; }
+</pre>
+我們定義了在多媒體領域常見的乘加操作，函式名稱為 "mul_add"，轉換為 LLVM IR 則是：<pre class="code" style="margin: 6px;">
+define i32 @mul_add(i32 %x, i32 %y, i32 %z) {
+entry:
+  %tmp = mul i32 %x, %y
+  %tmp2 = add i32 %tmp, %z
+  ret i32 %tmp2
+}
+</pre>
+一旦有了 IR，就可對 compiler 的核心作多元的操作，各式 optimizer 即可引入，只要有合適的 backend，即可輸出特定平台的機械碼，甚至是 C code，這一系列的變形有相當多種可能，畢竟，技術都在那了，唯一的極限就是人類的想像力，詳情會在筆者的「窮得只剩下 Compiler -- 淺談編譯技術的革命」議程探討，這裡就賣個關子，當然屆時會作更生動的體驗。<br />
+<br />
+編譯器技術如此有趣且多元，為什麼不玩玩呢？ :-)<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 April  7, 2009 01:37 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>唯一的極限就是人類的想像力</p>
+
+<p>看來jserv老大已經突破極限了 LOL</p>
+<span class="comments-post">由 <a href="http://iveney.blogspot.com">iveney</a> 發表於</MTIfNonEmpty> April  7, 2009 11:58 PM</span>
+</div>
+<div class="comments-body">
+<p>每個人拿來開胃的小菜真是可以差很多喔...<br />
+我光試吃開胃菜就胃好痛了</p>
+<span class="comments-post">由 <a href="http://voicephrase.blogspot.com">aguai</a> 發表於</MTIfNonEmpty> April  8, 2009 02:25 PM</span>
+</div>
+<div class="comments-body">
+<p>发现已经成为这个blog的fan了,每天都上来看看更新了没. :)<br />
+其实我一直有一个疑问, 还有Jserv不会的东西吗? ^_^</p>
+
+<p>BTW:这个应用很像adobe的Alchemy(C/C++编译为flash), 也是用llvm作为后端. 好处是可以产生直接run在JVM上的bytecode,限制是没法利用Java的对象模型.<br />
+我对于Java是小白,嗯....,不知道JNI是怎么工作的.</p>
+<span class="comments-post">由 <a href="mailto&#58;lurker0ster&#64;gmail&#46;com">lurker0</a> 發表於</MTIfNonEmpty> April  8, 2009 03:51 PM</span>
+</div>
+<div class="comments-body">
+<p>@lurker0</p>
+
+<p>感謝您的支持。<br />
+目標就是透過 LLVM 技術，不要有 JNI (Java Native Interface) 的介入，導入 C/C++ 作為 Android 程式開發的程式語言，也是 platform independent。目前仍有許多要改進的項目，但醜媳婦終究要見公婆，就放上來看看 :)</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> April  8, 2009 05:13 PM</span>
+</div>
+<div class="comments-body">
+<p>I love open source.<br />
+How to join the open source robot project?<br />
+I would like to work for fun in my spare times.<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;patrick&#46;violin&#64;gmail&#46;com">kaufmann</a> 發表於</MTIfNonEmpty> April  8, 2009 06:54 PM</span>
+</div>
+<div class="comments-body">
+<p>強人~</p>
+<span class="comments-post">由 <a href="http://yoshi.tw">Yoshi</a> 發表於</MTIfNonEmpty> April 18, 2009 09:26 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2097" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

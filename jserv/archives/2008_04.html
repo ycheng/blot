@@ -1,0 +1,857 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: April 2008 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2008_03.html" title="March 2008" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2008_05.html" title="May 2008" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/2008_03.html">« March 2008</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/2008_05.html">May 2008 »</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">April 24, 2008</h2>
+
+
+<div class="blogbody">
+<a name="002017"></a>
+<h3 class="title">Unihan (漢統輸入系統) 也採開源發展</h3>
+
+<center><img src="http://jserv.sayya.org/tmp/unihan.jpg" width="75" height="67" /></center><br />
+事實上不是新聞，早在半年前，大陸 [<a href="http://www.sw-linux.com.cn/">新華科技</a>] 即將用於該公司華鐳 RAYS LX - Linux 桌面作業系統的 [<a href="http://www.sw-linux.com/en/scripts/main/viewitem.php?itemid=2158511108981584&showid=products&catid=platforms">Unihan2 中文輸入法系統</a>]，公佈其大部分原始程式碼，授權條款為 GNU LGPL，並架設於 Google Code 的 [<a href="http://code.google.com/p/unihan/">Unihan</a>] 專案上，維護者就是知名的 Debian 開發者 [<a href="http://spacehunt.info/">Roger So</a>]。<br />
+<br />
+我與 Roger So 有一面之緣，時間是 2004 年，當時正思考 [<a href="http://www.openi18n.org/subgroups/im/IIIMF/">IIIMF</a>] 與 SCIM 設計並著手改善輸入法設計的我，得知 [<a href="http://www.openi18n.org/">openi18n</a>] 主席 Hideki Hiura、XIM/IIIMF 架構設計者，來台與本地的開發者作面對面交流，自然很歡欣地前往。先跟 Hideki Hiura 身旁同行的開發者聊到當時 Debian 對於多個 IIIMF 套件打包維護的問題，我提到：<ul class="code" style="margin: 6px;">
+「幾天前發信給 Debian mainatainer, Roger So, 但是他沒有回覆訊息，也不知道 Debian 現在的處理態度如何。」
+</ul>
+沒想到，那位開發者竟回覆道：<ul class="code" style="margin: 6px;">
+「我就是 Roger So」
+</ul>
+可想而知，有眼不識泰山的我，是有多麼震撼，也因此得知頗多第一手的資訊。過去，推動 IIIMF 最積極的兩家公司是 Sun Microsystems (Hideki Hiura 的老東家) 與新華科技 (Roger So 擔任該公司 CTO 一職)，Unihan2 (漢統) 即後者最知名的、以 IIIMF 為基礎的中文輸入法平台，內含紫光拼音、智能 ABC、五筆等十三種輸入法，允許使用者添加刪除輸入法模組，並作簡繁轉換輸入，其大略的系統示意圖如下：<br />
+<center><img src="http://jserv.sayya.org/tmp/sunwah-arch.jpg" width="389" height="391" /></center><br />
+IIIMF 主要分成兩部份：<ul>
+  <li>IIIMSF (IIIM Server Framework) - 提供與平台無關的 LE (Language Engine) 讓 client 存取必要的輸入法處理的服務，透過其 LEIF (LE Interface) 讓程式開發者得以專注於輸入法的邏輯流程處理，而不需擔憂平台設計</li>
+  <li>IIIMCF (IIIM Client Framework) - 與平台接軌之處，可接上 X11 XIM, Java, Emacs, Gtk+, Qt, 等等執行環境</li>
+</ul>
+不過，IIIMF 基本上還只是框架，若要發展為傳統中文輸入法的模樣，有頗多地方需要改進，所以 Unihan 首先藉由 IIIMSF 發展若干 LE，有表格導向、需要特別詞庫猜字選詞，也有手寫辨識引擎等等。再來，因為許多輸入法需要與使用者保持互動，不免要有特製的 UI，在 IIIMCF 中引入 xaux 來輔助 X11 的顯示，Unihan 也提供 Gtk+/GNOME 平台的支援。<br />
+<br />
+Roger So 在 Unihan 中，把原本複雜的 IIIMF 包裝成較為容易開發的模式，可參照以 Doxygen 產生的 [<a href="http://people.openrays.org/~rogerso/unihan/dox/unihan__im_8h.html">C++ API 文件</a>] 與範例輸入法：[<a href="http://people.openrays.org/~rogerso/unihan/unihan-sample-2.5.tar.bz2">unihan-sample-2.5.tar.bz2</a>]。這個簡化的模型中，系統架構如下圖：<br />
+<center><img src="http://jserv.sayya.org/i18n/unihan-arch.png" width="250" height="307" /></center><br />
+doc/api.txt 則是簡要的描述，基本上掌握輸入法的 state machine，即可快速開發輸入法的邏輯處理，詳情可參照範例的 src/sample.cpp。關於 Unihan 的資源，除了 Google Code 的專案網頁外，可在新華科技的 [<a href="http://forum.openrays.org/thread-htm-fid-40.html">漢統Unihan 論壇</a>] 找到一些討論，此外，就少見蹤跡，大概跟過去 closed-source 模式有關。<br />
+<br />
+值得注意的是，Unihan 作者 Roger So 的 blog 文章 [<a href="http://spacehunt.info/2008/01/25/input-method-api-now-nearly-standardised-on-linux">Input Method API Now (nearly) Standardised on Linux</a>] 提及在今年一月份，由中、日、韓等國政府資助的 [<a href="http://www.neaoss.org/">Northeast Asia OSS Promotion Forum</a>] (NEAOSS) 的 IMSWG (輸入法標準工作小組) 會議中，蘇哲 (SCIM) 與 Hideki Hiura (IIIMF/XIM) 出席共同制定下一代的輸入法架構，可望讓現有 UNIX 的輸入法架構分歧更加收斂，目前呼聲頗高的 [<a href="http://code.google.com/p/imbus/">IMBus</a>] 標榜 "The next generation input method framework for Linux"，很可能成為彙整包含 Unicon 在內的輸入法開發資源，期待種種開放原始碼的系統，得以有新的發展。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002017.html">03:46 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2017" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">April 22, 2008</h2>
+
+
+<div class="blogbody">
+<a name="002016"></a>
+<h3 class="title">非同步 Xlib 處理機制</h3>
+
+X Window System 大異於傳統的 GUI 之處，在於其核心的設計即把「網路」列入考量。基本上，任何的操作都與 X Protocol 有著密切關聯，與其將 X Window System 視作 GUI，還不如將其比作網路資料庫系統，原因無他，都得考慮到「網路通透性」(network transparency) 的本質。<br />
+<center><img src="http://gallery.debian.org.tw/albums/2004-10-21/x_arch_comparison.png" width="500" height="183" /></center><br />
+上圖可見，無論是 X Protocol (X11) 或 RDA = Remote Data Access (RDBMS)，都是高度非同步處理的設計，此外，顧及 API 與 programming model 考量，這兩者的實做往往得達到 thread-transparent。典型的運作模式為，在 reply-receiving 函式呼叫前，client 端會預先保存 reply data，接著，server 端施行對於 client 要求而生的同步動作，而控制權從 server 重回到 client 的這段期間，稱為 "round-trip" time，可視作作繪圖指令 / 操作的往返。本文試圖揭開鮮為人知的 X 非同步設計議題，並在用語方面做了一些釐清，多方保留 X 的術語，以避免與常見的用語混淆，如 "request", "event" 等等。<br />
+<br />
+USENIX 2003 上，由 X.org 的 Keith Packard 與 Jim Gettys 共同發表 [<a href="http://www.sagecertification.org/events/usenix03/tech/freenix03/full_papers/packard/packard_html/">X Window System Network Performance</a>] 論文舉出往返於 X Protocol 的封包範例：<br />
+<center><img src="http://www.sagecertification.org/events/usenix03/tech/freenix03/full_papers/packard/packard_html/img2.png" width="748" height="388" /></center>
+上圖左側是 timestamp，每個 packet 的 message 都有對應的 X sequence number 與其 length，而 client 的 Request 則包含 equest id, events, 與對應的 errors code。專注於 thin-client / remote X desktop 的 [<a href="http://www.nomachine.com/">NoMachine</a>] 公司表示，在 modem 連線的情境中，不同主機之間的每個 round-trip 大約需要 200 milliseconds (在本機端的
+X client-server 可透過 fast IPC/RPC 實現，不在這個探討範圍內)，所以若一個 X client 要求 5 個 reply，最終，我們會得到 10 bytes/second 的 bit rate。<br />
+<br />
+自 XOrg 7.2 起，與 X server 溝通的 Xlib 實做被更換為以 [<a href="http://xcb.freedesktop.org/">XCB</a>] 為核心的新設計，並於 XCB 維持 Xlib API 相容性，有別於過往的設計，XCB 可望減少同步 request 與 server 端的 round-trip。不過，倘若有心對系統作全面優化，我們仍有必要去理解 X Window System 的設計。考量到效率，X Protocol 設計是非同步的，一般來說，無論 server 或 client 不會總是等待 reply 才能繼續動作，當然，為此必須要有對應的同步機制，若處理不當，將會有 race condition。X11 定義一組非同步的 protocol：client 傳送包含繪圖與視窗管理 request 的 stream 到 server 那邊，隨後 server 則回傳 event 的 stream 給 client。注意，常態來說，這兩個 stream 並不需要彼此進行同步化，儘管 server 必須依序處理一個 client 所發出的 request，而且，原本的設計中並未規範同時來自不同 client 的交錯 (interleaving) 處理。<br />
+<br />
+因為種種歷史因素，非同步的 X protocol 並未規範特定的視窗管理原則，但提供一些 hooks 讓一個window manager得以監控特定應用程式的 request，作為修正的途徑，X.org 規範了 ICCCM (Inter-Client Communication Conventions Manual) 以避免非同步設計所造成的 race condition。ICCCM 是一系列複雜的規範，只消看看其中幾個 race condition 情況，就知道為何需要如此設計。比方說老字號的 twm，雖然很陽春，但具備了 title bar，也就是所謂的 "window decoration"，為了要正確描繪，需要事先建立夠大的 frame window，以包含 client window 與 title bar，隨後，twm 會要求重新繪製 client window，以便成為該 frame window 的 client (重新建立 window 間的階層從屬關係)。這個動作看似簡易，但是也需要透過 "redirection" 的動作，才可轉譯原本在 client window 的 MapWindow 與 ConfigureWindow request 為 frame window 的 MapWindow/ConfigureWindow request。一個特別的狀況是，若 twm 先等待 nofication event 的話，ConfigureWindow request 會在window manager介入前，導致一片灰色的畫面。<br />
+<br />
+也就是說，"redirection" 的動作可能會造成問題，想像一個應用程式開始處理畫面繪製的過程，稍後將 map 到 window 上。若 MapWindow 並未被 "redirect" 的話，這不會有問題，但若在一個正在 "redirect" 的window manager中，X server 傳遞 map request 到window manager，而 X client 在window manager進行處理 request 前即進行繪製動作，這樣一來，X server 會在window manager完全 map 好 frame window 之前，一律忽略所有繪製的指令。下圖是對應的示意圖：<br />
+<center><img src="http://jserv.sayya.org/wm/map-window-race.png" width="650" height="230" /></center><br />
+圖中的 "Draw rectangle" 是 X client 期望的繪圖操作，但夾雜於window manager的 Reparent / Map client / Map parent 等動作間，X server 僅能完全忽略動作的 request，對使用者來說，就是完全無法看到任何合理的畫面輸出。<br />
+<br />
+為了解決這個議題，X client 應在進行繪製操作前，先等待 MapNotify event (或 Expose event)，如此一來，我們得到以下互動的示意圖：<br />
+<center><img src="http://jserv.sayya.org/wm/map-window-mapnotify.png" width="650" height="326" /></center><br />
+這就是常見的解法。不過，實際上，依據不同window manager的設計，仍可能發生機率頗低的 race condition 議題，這一系列的規範可參見 ICCCM。由以上的例子可見，基於 X 的非同步本質，即便是單純的繪圖操作與視窗管理，也需要格外當心。在 X programming 中，為了釐清 Xlib 操作所造成的種種錯誤，可在命令列傳遞 '-sync' 參數給 X 應用程式，可強制 Xlib 使用同步模式。<br />
+<br />
+又基於設計複雜度的考量，Xlib 在許多設計中引入大量的同步處理元素，儘管 XCB 已著手透過 X 非同步設計來提昇效能，但 Xlib 畢竟仍是目前通用的 X C interface/API。不過，Xlib 內部仍有允許善用非同步處理的地方，比方說我們可改良原本 (同步的) XGetProperty() 的使用，另行實做非同步的版本，轉變成 callback 導向的設計，如此一來，可避免非必要的 round-trip 並集中 request 處理。GNOME 的window manager [<a href="http://en.wikipedia.org/wiki/Metacity">Metacity</a>] 已實現了初步的非同步版本 XGetProperty() 實做，[<a href="http://o-hand.com/">openedhand</a>] 的 Matthew Allum 進一步整理為 Xas (Asynchronous Xlib hack utilties) API，我則做了簡化的修改，可參考 [<a href="http://jserv.sayya.org/wm/xasync.tar.bz2">xasync.tar.bz2</a>]，授權方式為 MIT X License。<br />
+<br />
+在 Xas 中，有兩個重要的概念，一個是 XasContext，另外則是 XasCookie，前者是紀錄整個 X 非同步處理的 context 物件，後者是往返於 X 非同步過程的 cookies (或 session) 物件。以下舉一個範例 (程式碼見前述 <a href="http://jserv.sayya.org/wm/xasync.tar.bz2">xasync.tar.bz2</a> 的 test.c 檔案)，探討如何透過 Xas 來進行 Xlib 為基礎的非同步處理程式設計，我們的目標很單純，想在 [<a href="http://standards.freedesktop.org/wm-spec/wm-spec-latest.html">EWMH/NETWM</a>] 相容的window manager環境下，取得 "_NET_CURRENT_DESKTOP" (目前的桌面位於哪個虛擬桌面？)、"_NET_NUMBER_OF_DESKTOPS" (虛擬桌面數量)，及 "_NET_WM_USER_TIME" (window manager對 window 的 timestamp 值) 等內含值。首先，我們作必要的宣告與初始化，如下程式碼列表：<br />
+<pre class="code" id="codemain" style="margin: 6px;">	Display *xdpy;
+	<span class="keyword">int</span> xscreen;
+	Window xwin_root;
+	Atom atom, atom2, atom3;
+	XasContext *xas_ctx;
+	XasCookie cookie, cookie2, cookie3, cookie4, cookie5;
+	XWindowAttributes wattr;
+
+	<span class="keyword">if</span> ((xdpy = XOpenDisplay(getenv(<span class="literal">"DISPLAY"</span>))) == NULL) {
+		fprintf(stderr, <span class="literal">"failed to open DISPLAY\n"</span>);
+		exit(-1);
+	}
+
+	xscreen   = DefaultScreen(xdpy);
+	xwin_root = RootWindow(xdpy, xscreen); 
+
+	xas_ctx = xas_context_new(xdpy);
+	atom  = XInternAtom(xdpy, <span class="literal">"_NET_CURRENT_DESKTOP"</span>, False);
+	atom2 = XInternAtom(xdpy, <span class="literal">"_NET_NUMBER_OF_DESKTOPS"</span>, False);
+	atom3 = XInternAtom(xdpy, <span class="literal">"_NET_WM_USER_TIME"</span>, False);
+&nbsp;
+	cookie = xas_get_property(xas_ctx,
+			xwin_root,
+			atom,
+			0, 1L,
+			False,
+			XA_CARDINAL);
+
+	XGetWindowAttributes(xdpy, xwin_root, &amp;wattr);
+	... (省略) ...
+</pre>
+由上述程式碼列表，可見我們註冊了 XAtom，對應於若干 XInternAtom，呼叫 xas_context_new() 建立名為 xas_ctx 的物件，爾後，依據所需的回傳資訊，建立對應的 Xas cookies 物件。我們接著模擬一個情境，就是這些非同步的 request 一次被 X server 所處理，這個動作可用以下這行操作：<br />
+<pre class="code" id="codemain" style="margin: 6px;">
+	<span class="comment">/* Make sure all our queued requested get processed 
+	   by server */</span>
+	XSync(xdpy, False);
+</pre>
+一旦 X server 處理之後，X client 就可擷取必要的 reply 資訊，程式碼列表如下：<br />
+<pre class="code" id="codemain" style="margin: 6px;">	{ <span class="comment">/* Now grab various results  */</span>
+		Atom               actual_type;
+		<span class="keyword">int</span>                actual_format;
+		<span class="keyword">unsigned</span> <span class="keyword">long</span>      nitems;
+		<span class="keyword">unsigned</span> <span class="keyword">long</span>      bytesafter;
+		<span class="keyword">int</span>               *result;
+
+		XasWindowAttributes *attr;
+
+		<span class="keyword">int</span>                x_return;
+		<span class="keyword">int</span>                y_return; 
+		<span class="keyword">unsigned</span> <span class="keyword">int</span>       width_return;
+		<span class="keyword">unsigned</span> <span class="keyword">int</span>       height_return;
+		<span class="keyword">unsigned</span> <span class="keyword">int</span>       border_width_return;
+		<span class="keyword">unsigned</span> <span class="keyword">int</span>       depth_return;
+
+		<span class="keyword">int</span>                err;
+		<span class="keyword">char</span>               msg[255];
+
+		xas_get_property_reply(xas_ctx,
+				cookie,
+				&amp;actual_type,
+				&amp;actual_format,
+				&amp;nitems,
+				&amp;bytesafter,
+				(<span class="keyword">char</span>**) &amp;result,
+				NULL);
+
+		printf(<span class="literal">"got %li vs %li %li items ==> %i\n"</span>, 
+				XA_CARDINAL, actual_type, nitems, *result);
+		... (省略) ...
+</pre>
+由程式碼列表，可見到類似 XGetProperty() 的操作，但因為其非同步本質，允許我們挪動一系列的 X client request，並透過 Xas cookie 來追蹤具體的處理情況。這個範例程式的輸出如下：<br />
+<pre class="code" id="codemain" style="margin: 6px;">
+jserv@venux:~/x11/xasync$ ./test-async 
+got 6 vs 6 1 items ==> 1
+got 6 vs 6 1 items ==> 4
+got window attr ok.
+xas_get_geometry_reply() => (0, 0, 1024, 768), border:0, depth:24
+got 6 vs 6 1 items ==> 663bda1
+</pre>
+Xas API 對於若干關鍵的 X 桌面應用程式，如 window manager 與 dock/panel 來說，可減少不必要的同步處理，並提昇反應效率，未來也可銜接 XCB 的非同步處理設計，給予更佳的效能提昇。<br />
+<br />
+參考資料：<ul>
+<li>[<a href="http://www-h.eng.cam.ac.uk/help/tpl/graphics/X/signals.html">X and signals</a>]
+  <ul>由 Tim Love 整理散見於若干新聞群組的討論，不乏原本 X Window System 設計者對非同步設計與 UNIX 平台支援的限制，而做的妥協與改進的途徑等資訊。</ul></li>
+<li>[<a href="http://www.std.org/msm/common/protocol.pdf">Why X Is Not Our Ideal Window System</a>] (PDF)
+  <ul>以系統設計的角度，揭露一個事實：X Protocol 的設計相當洗練，問題出在 X Window System 若干設計本質的瑕疵</ul></li>
+</ul>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002016.html">04:49 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2016" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">April 21, 2008</h2>
+
+
+<div class="blogbody">
+<a name="002015"></a>
+<h3 class="title">演講：親手打造開放原始程式碼的機器人</h3>
+
+稍早提過本月底舉辦的 [<a href="http://blog.linux.org.tw/~jserv/archives/002013.html">OpenTech Summit Taiwan 2008</a>]，應大會之邀，我將會在最後一日 (Apr 29) 於元智大學的議程中，給予主題為 "Build Your Own Open Source Robot" 的演講，中文標題是「親手打造開放原始碼的機器人」。此處「親手打造」一詞對技術人來說，得以付諸實現的感動，遠遠超過千言萬語，在 [<a href="http://blog.linux.org.tw/~jserv/archives/000978.html">衣帶漸寬終不悔</a>] 一文就曾提過我對《親手打造網際網路四大服務》的感動。<br />
+<br />
+以往，我們都認為從無到有開發一整套機器人，必定是國外大學如 CMU, Stanford, MIT 一類各方面資源極為豐富的環境，才有機會這麼作，反過來說，平凡我者，只能買個零售玩具來過過癮罷了。樂高公司推出的 [<a href="http://mindstorms.lego.com/">mindstorms NXT</a>] 本質上仍是玩具，但其允許 DIY 打造機器人的獨特體驗，讓許多玩家雀躍不已，而隨著硬體普及化與低價化，打造機器人已非奢侈或遙不可及之事，而這也是我將要分享的經驗。當硬體獲得突破性的變化，紛紛依循標準化的模式發展，那軟體就成為新的障礙，先不論設計人形機器人需要多少卓越的演算法，在開發之初，我們可能連一個機械手臂如何控制都毫無概念，遑論憑藉著一股傻勁去建構完整的系統。試看，[<a href="http://jakarta.apache.org/">Apache Jakarta</a>] 不就是為 Java server-side computing 走入普及，奠定優秀的基礎嗎？若無這些基礎建設與相關的開放資源，動輒千萬金的開銷，一般人實在不可能奢想。同樣的，open source 在 (普及/平價) 機器人的領域就相當重要，最低的限度來說，至少我們需要透過 open source 的實做，去理解、研究、修改機器人的自動控制的細節，有了這些根基，才有機會去引入創新。<br />
+<br />
+愛因斯坦曾說：「真理就是在實踐面前站得住腳的東西」(Truth is what stands the test of experience.)，而訴諸 open source 的途徑，則是踏在可層層累積的實踐中，探求真理的方案，我同樣相信，普及科學亦大有可為，正如他的另一句話：「
+不必努力去做一個成功者，盡力去成為一個有價值者」(Try not to become a man of success, but rather try to become a man of value.)，價值的追尋有很多方式，重點是你如何探究。去年曾花了一些時間，體驗一個 Robot 加上整個系統軟體的設計，並在 COSCUP 2007 研討會分享 [<a href="http://blog.linux.org.tw/~jserv/archives/001936.html">快快樂樂設計嵌入式即時作業系統</a>] 議程分享經驗，儘管獲得一個具體而微的系統，但這無疑只是個出發點，我們早已知曉機器人會是個有趣的玩意，而技術問題也慢慢消弭中，真正的問題是，機器人設計是否能走出專業的殿堂外，得以允許一般人也能用不同的思維，去創造獨特的價值呢？這也是本次分享想指出的關鍵，所以，在建構機器人之初，所有的硬體元件都該有對應的 open source 軟體控制實做，最終，會在兼顧運算量與功耗的平台上，透過自由軟體對這樣的機器人系統，注入新的生命。<br />
+<br />
+關於地理交通資訊可參考 wiki [<a href="http://wiki.openpattern.org/index.php/OpenTechSummitTaiwan2008_Map">OpenTechSummitTaiwan2008 Map</a>]，我的議程時間是 Apr 29 (週二) 的上午 11:15 - 12:15。以上，歡迎指教，謝謝！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002015.html">01:37 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2015" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">April 20, 2008</h2>
+
+
+<div class="blogbody">
+<a name="002014"></a>
+<h3 class="title">KDE 的 MS-Windows 平台移植</h3>
+
+任何自由軟體專案好像只要趨於成熟，就會有人問「何時會有 Microsoft Windows 的移植？」，為此，KDE 團隊的回應是 [<a href="http://windows.kde.org/">KDE Windows Project</a>]，整合了幾年前的 KDE-Cygwin 專案，並配合 Trolltech 以 GNU GPL v2/v3 釋出的 Qt/Windows 4，得以更貼近 MS-Windows 平台，無論效能或功能，都有極大的改善。漫步於台南府城，突然很想 hack 這個特別的 KDE 版本，於是跑到一家網咖，將環境設定好，經過一番等待後，現在運作的效果如下： (click to enlarge)<br />
+<center><a href="http://jserv.sayya.org/tmp/kde4-win32.png"><img src="http://jserv.sayya.org/tmp/kde4-win32-small.jpg" width="640" height="512" /></a></center><br />
+相較於幾年前的 KDE 1/2/3 的 Windows 移植，現在 KDE 4/Windows 可用性頗高，至少 KDE games 套件幾乎都可順暢無誤的執行，KDE core libs 雖沒有完整移植上去，但大部分執行時期所需的部分算是完成了，而且底層的 Qt4 效能的確很優秀，筆者在 Windows XP 平台下，幾乎無法感受到效能落差。若不想從原始程式碼建構，目前也提供安裝執行檔: [<a href="http://www.winkde.org/pub/kde/ports/win32/installer/">KDE::ports::win32::installer</a>]，甚至還有 Step-by-Step 的安裝說明，可參考 [<a href="http://obso1337.org/hci/kde/KDE_for_Windows_Installer_Expert_Review.pdf">KDE_for_Windows_Installer_Expert_Review.pdf</a>]。另外，據 KDE KOffice 團隊表示，KOffice2 的 MS-Windows 移植也開始運作了，這些自由免費、高品質的生產力工具可望給予我們更多選擇。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002014.html">03:17 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2014" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">April 17, 2008</h2>
+
+
+<div class="blogbody">
+<a name="002013"></a>
+<h3 class="title">OpenTech Summit Taiwan 2008</h3>
+
+由 OHI (Open Hardware Initiative) 與 ADCT (社團法人台灣數位文化協會) 主辦、華碩電腦協辦的 [<a href="http://wiki.openpattern.org/index.php/OpenTechSummitTaiwan2008">OpenTech Summit Taiwan 2008</a>] 活動，嘗試在硬體設計、生產製造大宗的台灣本地，建立 "Open Hardware" 與其社群，特此舉辦技術研討會，相關的議程可參考 [<a href="http://wiki.openpattern.org/index.php/OpenTechSummitTaiwan2008_(Agenda)">Agenda</a>]，形式上會有若干 workshop、presentation，以及在華碩關渡的企業總部舉辦的 ASUS Day。<br />
+<br />
+可在議程中見到，包含 CC 與 Openmoko 等組織都在列席名單中，由不同的角度切入創作媒體與手機平台的開放性，另外，還有「Eee PC hacker show」，顧名思義，就是介紹展示，如何在貌似普通的 Eee PC 硬體上，作些有趣的變化，Walis, pcman, Yuren Ju, 與我都會出席，歡迎交流。免費報名與參加，這方面的資訊可參考 [<a href="http://moto.debian.org.tw/viewtopic.php?t=12723">免費報名 4 月 26, 27 兩天在華碩舉辦的OpenTechSummitTaiwan2008</a>]，謝謝！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002013.html">12:55 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2013" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="002012"></a>
+<h3 class="title">WebKit/Clutter 快速入門</h3>
+
+發表 [<a href="http://blog.linux.org.tw/~jserv/archives/002009.html">透過 OpenGL 作 WebKit 網頁描繪</a>] 一文後，網友來信提及這感覺「不夠具體」，看不出 OpenGL 的效果，於是，我改成 3D 版本的 web browser，執行畫面如下：<br />
+<center><img src="http://jserv.sayya.org/khtml/screenshots/webkit-clutter.png" width="433" height="508" /></center><br />
+看起來就絢麗多了，當滑鼠點壓網頁時，會作 180 度的旋轉，上圖即是翻轉中的效果。這樣的程式，從零到有，需要多少行呢？其實就是把之前的程式碼，追加幾行程式罷了，程式碼列表如下：  [<a href="http://people.debian.org.tw/~jserv/webkit/test-webkit2.c">test-webkit2.c</a>]<br />
+<pre class="code" id="codemain" style="margin: 6px;"><span class="keyword">#include</span> &lt;stdlib.h><span class="keyword">
+#include</span> &lt;stdio.h><span class="keyword">
+#include</span> &lt;clutter/clutter.h><span class="keyword">
+#include</span> &lt;webkit/webkit.h>
+
+<span class="keyword">static</span> WebkitAdjustment *hadj, *vadj;
+&nbsp;
+<span class="keyword">static</span> gboolean
+on_button_release (ClutterActor *rect,
+                            ClutterEvent *event, gpointer data)
+{
+	ClutterTimeline  *timeline = (ClutterTimeline*) data;
+	gint x = 0, y = 0;
+
+	clutter_event_get_coords (event, &amp;x, &amp;y);
+	clutter_timeline_start (timeline);
+
+	<span class="keyword">return</span> TRUE;
+}
+
+<span class="keyword">int</span> main (<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])
+{
+	guint stageWidth, stageHeight, stage_depth;
+	guint buttonWidth, buttonHeight;
+	gfloat fovy, aspect, zNear, zFar;
+	ClutterActor *stage;
+	ClutterColor stage_color = { 0xcc, 0xcc, 0xcc, 0xff };
+	ClutterColor rect_color = { 0x33, 0x22, 0x22, 0xff };
+
+	WebKitWebView *hand;
+
+	<span class="keyword">if</span> (argc &lt; 2) <span class="keyword">return</span> -1;
+
+	clutter_init (&amp;argc, &amp;argv);
+
+	hadj = webkit_adjustment_new (0,0,0,0,0,0);
+	vadj = webkit_adjustment_new (0,0,0,0,0,0);
+	hand = webkit_web_view_new (640, 480);
+	webkit_web_view_set_scroll_adjustments (hand, hadj, vadj);
+
+	stage = clutter_stage_get_default();
+	clutter_stage_set_color (CLUTTER_STAGE (stage), &amp;stage_color);
+	clutter_stage_set_use_fog (CLUTTER_STAGE (stage), TRUE);
+	clutter_stage_set_fog (CLUTTER_STAGE (stage), 1.0, 10, -50);
+
+	clutter_stage_get_perspective (CLUTTER_STAGE (stage),
+			&amp;fovy, &amp;aspect, &amp;zNear, &amp;zFar);
+
+	clutter_actor_get_size (CLUTTER_ACTOR (stage),
+                        &amp;stageWidth, &amp;stageHeight);
+	stage_depth = zFar;
+	buttonWidth = stageWidth * 3 / 4;
+	buttonHeight = stageHeight * 3 / 4;
+
+	ClutterTimeline *timeline = clutter_timeline_new (60, 60);
+
+	ClutterBehaviour *rotY = clutter_behaviour_rotate_new (
+			clutter_alpha_new_full(timeline,
+				CLUTTER_ALPHA_RAMP_INC, NULL, NULL),
+			CLUTTER_Y_AXIS,
+			CLUTTER_ROTATE_CW,
+			0, 180);
+
+	clutter_actor_set_anchor_point (hand,
+                        buttonWidth/2, buttonHeight/2);
+	clutter_actor_set_size (hand, buttonWidth, buttonHeight);
+
+	clutter_container_add_actor (CLUTTER_CONTAINER (stage), hand);
+	webkit_web_view_open (hand, argv[1]);
+
+	clutter_actor_set_position (hand, stageWidth/2, stageHeight/2);
+
+	clutter_behaviour_apply (rotY, hand);
+
+	clutter_stage_set_key_focus (stage, hand);
+
+	clutter_actor_set_reactive (hand, TRUE);
+	g_signal_connect (hand, <span class="literal">"button-release-event"</span>,
+			G_CALLBACK (on_button_release), timeline);
+
+	clutter_actor_show (stage);
+
+	clutter_main ();
+	<span class="keyword">return</span> EXIT_SUCCESS;
+}</pre>
+由上可見，除了作必要的初始化、加上 WebKit 這個 Clutter Actor 物件外，就是加上對應於「按鈕」的 callback，這裡指的「按鈕」，就是 WebKit 網頁輸出的畫面，拜 Clutter 簡潔的設計所賜，就這樣完成了 :-)<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002012.html">09:58 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2012" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="002011"></a>
+<h3 class="title">SynthOS : 合成專屬的 RTOS</h3>
+
+拜讀 Embedded.com 的 [<a href="http://www.embedded.com/columns/technicalinsights/206900628?printable=true">Software and RTOS synthesis: The next step in software development?</a>] 一文，讓我知曉 Zeidman Technologies 的產品 [<a href="http://www.zeidman.biz/synthos.htm">SynthOS</a>]，其產品訴求就是 "Synthesize Your Own Operating System"，乍看一頭霧水，仔細閱讀才發現，這是克服目前中低端嵌入式系統的新途徑。<br />
+<br />
+設計中低端嵌入式系統如 micro controller 者，我們不免會遇到一個問題：<ul class="code" style="margin: 6px;">
+是否需要 RTOS？若需要，該如何評估？
+</ul>
+為了解答這個疑惑，二十多年來，無數廠商投入這個領域，提出琳瑯滿目的解決方案，但開發者需要處理的，不外乎系統的可靠性、效能，與正確性，但這卻是一條漫漫長路，過去的經驗是，沒有 RTOS、全部自行開發系統，曠日費時且難以預估時程；有 RTOS 的話，整體開發變得順暢，但其潛在的系統設計缺陷，卻難以除錯。反觀硬體設計，很早就允許高階的方式來設計系統 (如 Verilog 或 VHDL)，透過數位訊號合成 (synthesize) 的途徑，輸出為硬體的單元，經過反覆的模擬測試後，導入最終硬體設計，近年來，甚至允許透過 UML 工具來對 SystemC 作 modeling 動作，相關的開發工具更是齊全。那麼，系統軟體呢？一般來說，系統軟體不能像高階軟體一般導入 OOA/D 或者高層次的開發，因其仍陷入種種設計上的難題，諸如同步處理、低階 I/O 操作等議題，為此，Zeidman Technologies 提出新的途徑，試圖將硬體設計的概念，導入系統軟體。<br />
+<br />
+SynthOS 本身以 Java 撰寫，與其說是個 "OS"，不如說是個 OS Generator，其輸入為 C/C++, Java, assembly 的程式，描述一個系統設計中的基本要素，不過，我們沒有必須知曉 RTOS 的設計原理，只需維護必要之 state machine，稍後可在系統模擬得知其運作的模式，最終，會輸出 kernel source code，經編譯後，可佈署於我們期望的硬體平台中。聽起來相當誘人，在如此的開發流程中，我們只需知曉 "SynthOS primitives"，也就是高階的系統特性操作，如下：<ul>
+  <li>SynthOS_call(task)</li>
+  <li>SynthOS_start(task)</li>
+  <li>SynthOS_check(task)</li>
+  <li>SynthOS_sleep()</li>
+  <li>SynthOS_wait(condition)</li>
+  <li>SynthOS_wait(task)</li>
+</ul>
+貌似每個 multi-tasking kernel 都會提供類似上述列表的 API，何其之有呢？重點是，SynthOS 允許用其支援的高階語言描述方式，將如此的系統在設計前期，予以充分表示，經過「合成」後，才會得到最終的 kernel source，而當我們作系統偵錯時，其實是對高階的表示作處理。與典型的 RTOS 設計相仿，SynthOS 的 task 運作模型如下圖：<br />
+<center><img src="http://jserv.sayya.org/kernel/rtos-02.gif" width="413" height="269" /></center><br />
+在執行的 Loop 中，可在 SynthOS Project Configuration (SOP) 選用合適的排程演算法。當然，也少不了 task 的呼叫 (call)，SynthOS 在合成後，會輸出對應的 scheduler 程式或 TCB (task control block) 處理等細節。以下是作為 SynthOS「合成」處理前後的範例對照：<br />
+<center><img src="http://i.cmpnet.com/pldesignline/2008/02/rtos-03-tab.gif" width="419" height="254" /></center><br />
+至於效能的部份，根據文中後半指出：<ul class="code" style="margin: 6px;">
+For reference, the MCF5206e features, on average, 50 MIPS performance at 54 MHz. The test was performed with the on-chip I-cache enabled and we measured an average task switch time of 15 microseconds. While commercial, hand-crafted RTOS measurements would probably yield better numbers, these results are quite adequate for many real-time embedded applications. 
+</ul>
+看來有相當不錯的效能表現。所以，簡單來說，SynthOS 開啟了新的、引入自硬體訊號合成的概念，將整個 RTOS 開發予以高階化，對於系統軟體元件的外包或切割，也可得到更佳的支援度，相信是個值得關注的技術途徑。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002011.html">09:15 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2011" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">April 15, 2008</h2>
+
+
+<div class="blogbody">
+<a name="002010"></a>
+<h3 class="title">「許我們一個 Keroro 的桌面」簡報上線</h3>
+
+<center><a href="http://www.flickr.com/photos/plasmaball/2409978751/"><img src="http://farm3.static.flickr.com/2286/2409978751_72f3cd4547.jpg" width="500" height="333" /></a></center><br />
+週日在 [<a href="http://osdc.tw/">OSDC.tw</a>] 分享 [<a href="http://blog.linux.org.tw/~jserv/archives/001963.html">許我們一個 Keroro 的桌面</a>]，感謝各位前來指教的朋友們，現在簡報檔已上線，請參閱 [<a href="http://people.debian.org.tw/~jserv/keroro-desktop.pdf">keroro-desktop.pdf</a>]，對應的原始程式碼可在 [<a href="http://jserv.sayya.org/kerode/snapshots/">snapshots</a>] 取得。<br />
+<br />
+三年前在 [<a href="http://blog.linux.org.tw/~jserv/archives/001129.html">摩托學園/Debian User 聚會</a>] 展示過一些 3D 特效，展現當時 Xorg 一些實驗性的特徵，如 Xgl 與 Composite extension，當時 Xgl 還在初期設計階段，所以在 freedesktop 上，我們用了一些技巧，將 OpenGL ARGB visual 予以重新導向，加入一些有趣的 eye candy，不過，我們還是不免懷疑：<ul class="code" style="margin: 6px;">
+「這實用嗎？普通的電腦跑得動嗎？」
+</ul>
+現在，許多關鍵技術趨於成熟，無論是底層的 Graphics stack、OpenGL 硬體加速、Toolkit，或者是重量級應用程式如 OpenOffice，也有令人激賞的表現。而最近這幾個月，展開 [<a href="http://wiki.x.org/wiki/DRI2">DRI2</a>] 的新發展，扭轉整個繁複的系統，重回簡約有效率的設計，初期在 Intel chipset 上有不錯的成果，而 Eee PC 也有機會受益，所以，Keroro Desktop 在有限的圖形加速架構下，以 Keroro 軍曹中的卡通造型，重塑造桌面環境的樣貌，改變一般大眾過去對電腦冷冰冰的印象，所以我說：<ul class="code" style="margin: 6px;">
+「不玩電動，也能玩桌面」
+</ul>
+電腦就該是有趣的，明明顯示解析度就很大，但不能呈現出一些動人的玩意嗎？明明 Eee PC 系統效能尚可、整合繪圖晶片也不錯，就不能作些軟體介面的改變？所以，在這個雛型實做中，先克服系統效能與裝置可用性的議題 (考量到能源管理，所以還先降頻到 600 MHz)，然後透過成熟的繪圖 toolkit 如 [<a href="http://cairographics.org/">Cairo</a>] 與 [<a href="http://www.clutter-project.org/">Clutter</a>]，允許開發者作些有趣的改變，並引入 artwork 設計師的興趣，最終，我相信，針對某些主題、訴求的嶄新桌面系統，有機會在低價電腦，或者移動裝置上，大放異彩。<br />
+<br />
+以上，請多指教，謝謝！<br />
+PS: 本次議程有錄影，待主辦單位處理後，即可公開存取，不過有興趣者也可參考 [<a href="http://www.flickr.com/photos/tags/jserv/">相關的照片蒐集</a>]。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002010.html">11:50 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2010" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">April 11, 2008</h2>
+
+
+<div class="blogbody">
+<a name="002009"></a>
+<h3 class="title">透過 OpenGL 作 WebKit 網頁描繪</h3>
+
+之前的文章 [<a href="http://blog.linux.org.tw/~jserv/archives/001989.html">WebKit + Clutter：以 3D 技術給予網頁瀏覽的新體驗</a>] 提過 [<a href="http://webkit.org/">WebKit</a>] 開始採用 [<a href="http://cairographics.org/">Cairo</a>] 的向量繪圖處理能力，後者允許發揮硬體的 OpenGL 加速，我們也見到將 WebKit 描繪的網頁映射到 2D surface 的 3D 展示，不過那時候是透過 Gtk+/Cairo 先進行描繪，然後透過 [<a href="http://www.clutter-project.org/">clutter</a>] 對 2.5D 場景作進一步處理。現在，[<a href="http://o-hand.com/">openedhand</a>] 的 [<a href="http://blogs.gnome.org/iain/">Iain Holmes</a>] 著手將 WebKit 整個移植到 clutter，也就是新增 clutter platform，免除剛剛繁瑣的對應，讓這一切都能透過 clutter，直接驅動硬體 OpenGL 加速，目前還在開發中，但是給我們頗大的想像空間。<br />
+<br />
+這個 Clutter/WebKit 實驗性的分支維護於 Iain 的 git tree [<a href="http://folks.o-hand.com/iain/git/WebKit/">WebKit</a>]，待發展成熟後，會比照 Gtk+/WebKit 的模式，整合回 WebKit 專案。我做了一些調整，讓 SVN trunk 的 clutter 與 clutter-cairo 得以銜接，可取得這份打包好的 tarball [<a href="http://people.debian.org.tw/~jserv/webkit/webkit-clutter-snap-20080410.tar.bz2">webkit-clutter-snap-20080410.tar.bz2</a>]，先執行 autogen.sh，然後傳遞 '--disable-gtk' '--enable-clutter' 等參數給 configure script，隨後再依據一般的建構程序即可。Clutter/WebKit 的 API 設計相當簡潔漂亮，以下示範如何建立一個純 OpenGL 繪製、WebKit 為基礎的網頁瀏覽器： [<a href="http://people.debian.org.tw/~jserv/webkit/test-webkit.c">test-webkit.c</a>]
+<pre class="code" id="codemain" style="margin: 6px;"><span class="keyword">#include</span> &lt;clutter/clutter.h><span class="keyword">
+#include</span> &lt;webkit/webkit.h>
+
+<span class="keyword">static</span> WebkitAdjustment *hadj, *vadj;
+<span class="keyword">int</span> main (<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)
+{
+	ClutterActor *stage;
+	WebKitWebView *view;
+&nbsp;
+	<span class="keyword">if</span> (argc &lt; 2) <span class="keyword">return</span> 1;
+
+	clutter_init (&amp;argc, &amp;argv);
+&nbsp;
+	hadj = webkit_adjustment_new (0,0,0,0,0,0);
+	vadj = webkit_adjustment_new (0,0,0,0,0,0);
+&nbsp;
+	stage = clutter_stage_get_default ();
+	clutter_actor_set_size (stage, 800, 400);
+&nbsp;
+	view = webkit_web_view_new (800, 400);
+	webkit_web_view_set_scroll_adjustments (view, hadj, vadj);
+&nbsp;
+	clutter_actor_set_position (view, 0, 0);
+	clutter_actor_set_size (view, 800, 400);
+	clutter_actor_set_reactive (view, TRUE);
+	clutter_stage_set_key_focus (stage, view);
+
+	clutter_container_add_actor (CLUTTER_CONTAINER (stage), view);
+&nbsp;
+	webkit_web_view_open (view, argv[1]);
+	clutter_actor_show_all (stage);
+&nbsp;
+	clutter_main ();
+}</pre>
+程式列表最多的地方，主要是 clutter 的布局操作，先建立 ClutterActor，給予適當的尺寸與屬性，再來建立 WebKitWebView 的物件，將之放入剛剛的 clutter 容器中 (clutter 底層採用 GObject/GLib)，最後呼叫關鍵的 webkit_web_view_open() 函式，這樣，一個網頁瀏覽器就完成了，重點是，這個 clutter 容器可任意置放於其他 2.5D 畫面中，要作絢麗的特效也是相當容易。以 Google Maps 來驗證目前開發的進度：<br />
+<center><img src="http://jserv.sayya.org/khtml/screenshots/webkit-clutter-pure-gl.jpg" width="452" height="248" /></center><br />
+現在網頁字型的描繪，是透過 Pango/Freetype，並透過 GLX backend 作顯示。<br />
+<br />
+感謝 Iain 的指導，協助排除許多技術問題，看來好戲正要上場了！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002009.html">10:32 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2009" onclick="OpenComments(this.href); return false">迴響 (8)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">April 10, 2008</h2>
+
+
+<div class="blogbody">
+<a name="002008"></a>
+<h3 class="title">對自己好一些：談技術手冊閱讀</h3>
+
+<center><img src="http://jserv.sayya.org/misc/reading-manual.jpg" width="409" height="242" /></center><br />
+想當年 (好像人老了，就喜歡說這句)，我們若沒有把技術手冊閱讀懂，是不敢坐在工作站前面，深怕一不小心，把系統組態弄壞，或者是因為反覆查閱手冊而耽誤寶貴的使用時間。不過，顯然這些顧慮幾乎已排除，隨便在網路上安裝個開發套件，對著圖示「拖拖拉拉」後，任何人都能寫程式 (無貶抑之意，相反地，我覺得這是很正面的事情)，遇到不懂，就把關鍵字 / 錯誤訊息貼上 Google，看看能否得解。我們說，這大概就是「Google 世代的軟體開發方式」。<br />
+<br />
+在談弊端之前，先提一個真實故事。最近休假 N 個月 (N 遞增中)，賦閒的我很無聊地租借兩打 VCD/DVD，通常在睡前助眠之用，使用就比較隨性些 (通常是躺著看)，竟然因為光碟沒放好，而讓光碟機卡住而無法取出光碟。遇到這種事情，對我這種硬體白痴來說，真是惶恐不已，該不會要賠償店家損失吧？後來想到，畢竟是一植入光碟，機器就不運轉，所以似乎只要取出光碟片，應不至於損壞。基於這個念頭，我試著將光碟機從組裝的 PC 上取出，沒想到，這竟然花費了一個多小時，為什麼？其實外殼很早就拆開了，但是光碟機一直拿不出來，無論如何施力，就是不行，在幾乎快放棄的時候，將光碟機稍微往前推移，結果就取出了，隨即以工具撬開光碟機，卡在其中的光碟片沒有損壞，慶幸。這個故事固然可笑，特別是這發生於一個國小三年級就開始玩電腦的人，沒辦法，我就是拒絕碰電腦硬體 (PC 架構)，這種荒唐、烏龍事件層出不窮，舉凡插錯記憶體模組造成燒壞、連續讓兩台電腦 CRT 螢幕爆炸、接錯線讓 Power 燒壞、...，這時候就想起前女同事臉帶不解地質疑：<ul class="code" style="margin: 6px;">
+「現在的電腦不是都會防呆嗎？」
+</ul>
+是呀，的確有防呆設計，但是無法防止白痴，發生在我身上的這些故事，大概可在 Ptt BBS 笨板張貼好幾篇，光想到就覺可笑。對於有形的硬體，竟然有人會犯下這些笨錯誤，對於無形虛幻的軟體，又會犯下什麼錯誤？<br />
+<br />
+小時候寫程式時，一來不熟悉原文技術手冊或文件 (會寫程式時，還看不懂英文，所以都用猜測的方式去理解)，二來是對背景知識的掌握度不高，還好身邊有一些前輩可請益，所以以鴨子划水的姿態，得以培養出對程式設計的技能。並不是說小弟多會寫程式，而是說我很珍惜這等分享與解惑的過程，所以，行有餘力的話，對於網友的來信，我大多會試著回覆其中的技術問題 (基本上不收費的，若需要的話，我會事先告知，保證讓您心甘情願)。絕大部分的網友都相當客氣，我也從這這些問題中得到頗多啟發，只是，近年來，面對部份問題時，實在感覺有點心疼，摘錄描述如下：<ul>
+  <li>「我在 Google 已經找了一週以上，但是一直搞不懂該下什麼參數？」</li>
+  <li>「到底要怎麼使用 xxx 工具？我 Google 好幾天了」</li>
+  <li>「xxx 很強大，但是怎麼安裝？我好幾天沒睡，都在 Google」</li>
+</ul>
+這類的描述太多了，可發現 "Google" 被當作動詞來用，表示在茫茫「網海」苦苦「撈」資料的過程。人生苦短，青春怎可如此揮霍呢？這樣對待軟體，不就與我瞎弄胡搞電腦硬體的行為，如出一轍嗎？每每想到這裡，實在是不忍不去幫忙對方一把，在自己能力可及之處。究竟透過 Google「撈」資料，可得到什麼「資訊」呢？讀 mouson 的 blog 文章 [<a href="http://blog.azhu.idv.tw/mouson/blog/archives/227">有點搞笑 - 縹緲、飄渺傻傻分不清楚</a>]，讓我們很清楚看到，其實 Google 搜尋引擎本質上只是基於「統計」，無論用什麼技術，其意涵都是一樣：讓出現頻率高者置前，這樣一來，就如同 mouson 的發現一般：<ul class="code" style="margin: 6px;">
+「虛無飄渺」的 126,000 筆大勝「虛無縹渺」的 1,480 筆，所以依照大家都使用的習慣來確定，應該是虛無飄渺，但，你注意到了嗎? 沒有說您肯定不知道，在虛無縹緲這個詞中，除了縹有可能與飄混雜，渺與緲也會搞混，所以到底是虛無飄渺、虛無飄緲、虛無縹渺還是虛無縹緲呢?
+</ul>
+顯然，「虛無縹緲」才是正確用法，但是 Google 只是一味依循網路文章以訛傳訛的作法，給予這個錯誤的答案，不得不要當心。那麼，這與本文標題的「技術手冊」有何關係呢？在有網路的地方寫程式，特別是修改某個開發完善的程式專案時，捫心自問，當我們遇到程式編譯、執行，或者相關的問題時，是不是曾將錯誤訊息、關鍵字，或者胡亂將專案名稱加上功能描述，一併丟入 Google 搜尋呢？我想，大部分人都很難抗拒這種「誘惑」，因為運氣好的時候，可以獲得一些解答，不過，往往我們只會看到其他人對此同樣的疑惑罷了。<br />
+<br />
+有著「我在 Google 已經找了一週以上」的朋友，應該相當多，只是沒有提筆開口問人，一開始不想麻煩他人，最後卻賠上青春，只為了在「網海」裡頭消磨？！不，身處於二十一世紀高科技社會的我們，怎可允許這種慢性自殺呢？我沒有對此搖頭，只是，我只想勸勸這些朋友，給他們一句話：<ul class="code" tyle="margin: 6px;">
+「對自己好一些，花一兩個小時閱讀技術手冊吧」
+</ul>
+稍微像樣的軟體專案或套件，應該都有技術手冊可查閱，不會因為其免費取得而折損價值，我們可在 FSF/GNU 的自由軟體專案看到這點，這些高品質的軟體背後，都有上百、上千頁的技術手冊，甚至還提及其內部設計等細節。若能細心拜讀這些經歷無數琢磨與推敲的技術文件，對於技術能力的提昇，有相當大的助益，不過，往往在 Google 的搜尋結果來看，其排名卻相當低，而且相對舊版、不完整的文件還比最新、校閱多次的版本，有著更高的排名，一切都是因為「統計」本質使然，哪篇最多人看，就放前面，對資料庫設計來說很自然，但對程式設計者來說，就是一種折磨，我想，身處於「Google 世代的軟體開發方式」的我們，不免都有為了嚐點「甜頭」，而付出慘痛代價的經驗：要不 API 不合，要不軟體改版時換掉若干程式設計模式等等。<br />
+<br />
+現在由程式碼去產生文件或參考手冊的系統，越來越成熟，個人相當推崇 Trolltech 的 [<a href="http://doc.trolltech.com/">Qt Reference Documentation</a>]，這就是由眾多產品線的原始程式碼，透過工具去自動產生特定版本的文件，並提供有限度的搜尋、交叉參考的功能。其他像是透過 [<a hfref="http://java.sun.com/j2se/javadoc/">Javadoc</a>] 或 [<a href="http://www.stack.nl/~dimitri/doxygen/">Doxygen</a>] 所產生的文件也相當不錯，圖文並茂的精美程度媲美專業的排版系統，而且這無疑是所謂的「第一手資訊」，不先去拜讀，而盲目迷失於「網海」，實在失策。儘管很多人都能理解這淺顯的道理，但不經意還是犯了錯誤，而且還一犯錯就耗了一週的時間，怎叫我們不心痛呢？<br />
+<br />
+發展活躍的自由軟體專案，如 [<a href="http://gcc.gnu.org/">GCC</a>] 或 [<a href="http://www.mplayerhq.hu/">MPlayer</a>]，每日都有大量的 patch 或 issue 被提出，我們可見到，其實這些不全是針對軟體設計本身，很多時候是所謂的 "documentation patch"，也就是修正某份文件較為含糊的用詞或者不合時宜的參數與描述，訂閱開發者的郵件論壇 mailing-list，還會不時發現追求完美的開發者，為了幾個英文詞彙的使用，推敲好一段時間，為的就是讓技術手冊或文件得以精益求精、更臻完善，作為自由軟體消費者，怎好意思辜負他們的苦心呢？如果行有餘力，去指出或修正其中的錯誤，不失與社群開發模式互動的一種途徑，也不需花上太多時間，說不定還能釐清自己的誤解。<br />
+<br />
+至於閱讀技術手冊，個人的建議是掌握以下要點：<ul>
+  <li>設計動機與核心概念：這個系統為何被提出？基於什麼想法去建構整個系統？</li>
+  <li>適用對象與限制：沒有完美的軟體，只有合用的設計</li>
+  <li>功能概況：不需要熟記每個章節，但需要在腦海中建構一套索引</li>
+  <li>範例或樣品程式：如果時間允許，請試著驗證</li>
+</ul>
+這當然是老生常談，但我們常因專案進度壓迫而忽略紮實的功夫，因小失大，實在得不償失。前天讀 cait 的 blog 文章 [<a href="http://blog.roodo.com/cait/archives/5776607.html">問問題前，請先問問自己</a>]，讓我想花點時間也寫點東西，談談對著 Google 前「發問」的一些思維，正如暢銷書《蘇菲的世界》、《紙牌的祕密》等書作者 Jostein Gaarder 的說法：<ul class="code" tyle="margin: 6px;">
+「答案永遠是在你身後延伸的那條路，只有問題才能指引眼前的道路。」
+</ul>
+倘若我們能更加清楚「問題」是如何被提出，也就是在閱讀技術手冊後，循著原始設計者的思維，去探討「問題」，這樣，距離答案就不遠了，這是我微薄的經驗分享，也祝所有面臨難題的程式設計師，得以左右逢源，戰勝困境。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002008.html">12:35 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2008" onclick="OpenComments(this.href); return false">迴響 (9)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="002007"></a>
+<h3 class="title">從 Ditz 談針對分散式版本控制的 Issue Tracker</h3>
+
+兩年多前提過的 [<a href="http://blog.linux.org.tw/~jserv/archives/001387.html">Trac 整合性開發環境</a>]，現在已在許多實驗室、公司專案開發等地見到廣泛的使用，原因無他，一套系統可涵蓋 Wiki + issue tracking + SVN 的整合，安裝與操作都很簡單，又有許多 plugin 可用，自然會流行。包含我在內，不少人將 [<a href="http://trac.edgewall.org/">trac</a>] 也裝於自己的電腦 (laptop) 中，搭配 svk 一類的分散式版本控制系統，就可隨時隨地追蹤專案進度 (internal / external)、作基本的個人知識管理 (KM)，或者查核待作事項等等。那為何又要接觸 [<a href="http://ditz.rubyforge.org/">Ditz</a>] 這套 issue tracker 呢？<br />
+<br />
+使用一個工具前，若缺乏必要的背景知識，那也是枉然，所以先來反思分散式版本控制系統。trac 背後端採用 Subversion，雖較 CVS 有著巨大的進步，不過本質上還是集中式管理的版本控制系統。正如之前文章 [<a href="http://orzlab.blogspot.com/2007/05/svk.html">SVK 與嵌入式系統開發</a>] 與 [<a href="http://blog.linux.org.tw/~jserv/archives/001251.html">在 Linux kernel 外應用 GIT，兼談分散式版本控制系統</a>] 所提及，現在開發的模式在無形中已經逐漸轉變，最顯著的領域大概是伺服器應用端與嵌入式系統開發，我們常見到過去都是研發人員封閉開發的環境，在自由軟體蓬勃發展的影響，竟以「追趕上游自由軟體發展」為重要指導原則，這裡的「上游」就是 "upstream" 一詞，也就是說源頭的自由軟體專案，比方說 Linux Kernel, MySQL, GNU Toolchain 等等，正如稍早提過的概念：<ul class="code" style="margin: 6px;">
+蓬勃發展的計畫如 Linux kernel，隨時都引入新的技術與硬體支援，我們當然該緊密跟上這些脈動，但開發產品不是兒戲，往往得先挑選一個堪用的軟硬體設計，然後依據功能需求，進行調整與改寫，這是我們相當清楚的。但過去的問題就是，這樣的軟體設計往往無法再銜接到日新月異的社群發展，也就難以跟新的開發版本銜接，於是乎，我們得認真的思考分散式版本控制系統 (Distributed Version Control System)，對過去集中式的系統做了反撲。
+</ul>
+儘管我們有 [<a href="http://git.or.cz/">git</a>], [<a href="http://www.darcs.net/>darcs</a>], [<a href="http://www.selenic.com/mercurial/">mercurial</a>], [<a href="http://bazaar-vcs.org/">Bazaar</a>] 等一系列發展活躍且強大的分散式版本控制工具，但我們如今面臨新的考驗：本質上的差異，使得 issue tracking 也需改變想法。過去我們建立開發分支 (branch) 往往是基於某種特徵或實驗性設計，由一組人馬以現有的 codebase 為基礎，設立一個獨立的環境，日後有需要則可合併 (merge) 回去，而開發標籤 (tag) 則是標注某些特定的版本，作細部的調整或客製化等等，但在分散式版本控制系統的概念中，建立分支是理所當然的事情，基本上，任何人在自己的電腦取得一份副本 (clone) 時，就是一個「分支」了，隨時可從 upstream 取得、參照修改、進行本地端修改合併等操作。設計層面來看，這類分散式版本控制系統都伴隨一套數學上不會重複的 hash，讓個別修改得以追蹤，以前要解釋這個概念實在不容易，但還好有了火紅的 "Web 2.0" 名詞後，就可把 CVS/Subversion 一類看作如同 "Web 1.0" 那樣持續性、單調性、集中的開發模式，而 git 一類則如同 "Web 2.0" 般，允許全球各地的開發者共同追蹤管理專案，是分散性、社群導向的模式，所以，有人就說：<ul class="code" style="margin: 6px;">
+"It's real strength is that Git is a social source control system."
+</ul>
+於是，剛剛提到的 hash，或者說 "changeset"，在概念上就有了全新的意義，因為變異性提高了，不能以過去集中的開發模式來思考，如此一來，衝擊在哪？是的，就在 issue tracking。過去 issue tracking 會綁定某個 milestone，細部則是若干 changeset 或 revision number (如 Subversion)，但，這對 git 一類的分散式版本控制系統來說，意義不是很大，畢竟我們現在操作的對象是「整個 tree」，也就是專案從開始進行到現在的歷程，首先在尺度上就有落差。無論工具提供哪些操作，基本上我們只要懂 "pull", "push", "merge" 等動作的對應即可，貌似過去的 Subversion 這類 "VCS 1.0" (VCS 乃是 "Version Control System" 的縮寫) 都可做到，那麼考量到 git 一類 "VCS 2.0" 又有何影響呢？重點就是分散式開發所引來的不確定性、社群模式，很可能前一次合併 (pull + merge) 還是順利運作的系統，下次就連編譯都會失敗了，這樣，更別談什麼軟體品質控管，所以這是一種「混沌」(choas) 嗎？某個角度來說是，但其背後的蜜糖才是吸引我們的地方：<ul  class="code" style="margin: 6px;">
+「自由軟體是活的，生生不息的演化」
+</ul>
+只要適度操作，我們可在自己的 git tree 中創造獨有的變化或新功能設計，在保有完整開發歷程的狀態下，合併任何重大的合理變更，假以時日，還可 "push" 到 upstream，並透過開發社群作合理的 merge。所以，在這個模式下，我們思考的是「一整個 tree」，其中的細節則是若干 hash/chageset 如何「變遷」，這也是核心的議題。當然，回頭看 issue tracking，還是能訂定 milestone，但落實面就要改變手法。換言之，我們需要把過去單一維度的 issue tracking 觀念捨棄，現在這些 issue 是會跟著 "tree" 變動 / 移動的，在分散式版本控制系統的維度來說，瞬間就提高許多，尤其越大的專案越顯著。[<a href="http://ditz.rubyforge.org/">Ditz</a>] 的提出，就是試圖針對這個本質的落差，實做出專門打造的 issue tracker，以下是官方網頁的簡介：<ul  class="code" style="margin: 6px;">
+Ditz is a simple, light-weight distributed issue tracker designed to work with distributed version control systems like darcs and git. Ditz maintains an issue database file on disk, written in a line-based and human-editable format. This file is kept under version control, alongside project code. Changes in issue state is handled by version control like code change: included as part of a commit, merged with changes from other developers, conflict-resolved in the standard manner, etc. 
+</ul>
+現在的發展仍很陽春，但概念上就是將「分散式」、「社群開發模式」的本質予以彰顯，目前是命令列方式來操作，初期已有的 "proof-of-concept" 呈現如下圖：<br />
+<center><img src="http://ditz.rubyforge.org/ss1.png" width="642" height="410" /></center><br />
+<center><img src="http://ditz.rubyforge.org/ss3.png" width="642" height="410" /></center><br />
+除了命令列外，Ditz 還支援 HTML 輸出，示範的網站可參考 [<a href="http://ditz.rubyforge.org/ditz/">ditz Issue Tracker</a>]。<br />
+<br />
+可想見，未來版本控制系統與專案開發走向更全面的分散式之後，issue tracking 會是相當重要的考量。試想，upstream 原本就有若干 "tree"，彼此對 changeset 做了高度的互動，而在我們自己的 "tree" 也有特定的變動，這樣一來，「此 issue 非彼 issue」則是稀疏平常的事情，甚至我們難以用單一版本數字來界定 issue 的「起源」，特別是考量到發展 "tree" 之間的「繼承」或「移轉」特性，這個議題越加複雜，Ditz 是個出發點，有太多值得思量之處。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002007.html">01:49 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2007" onclick="OpenComments(this.href); return false">迴響 (4)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">April 09, 2008</h2>
+
+
+<div class="blogbody">
+<a name="002006"></a>
+<h3 class="title">透過 WINE 玩 Hello Kitty 世界盃足球賽遊戲</h3>
+
+[<a href="http://www.winehq.org/">WINE</a>] 最近的發展實在令人動容！<br />
+<br />
+一向重視跨平台、開放系統的 Google 在收購若干軟體公司，接手原本的 Windows-only 的軟體元件是相當苦惱的問題，一來 MS-Windows 軟體有著「剪不斷、理還亂」的交叉參照不同來源元件的困擾，二來是移植到 Linux 或 BSD 一類的系統實在曠日費時，也難以與原本開發模式保持同步。所以 Google 也對 WINE 專案與其背後商業公司 [<a href="http://www.codeweavers.com/">CodeWeavers</a>] 釋出善意，做了資助與軟體強化的貢獻，這方面的細節可參考 Google 工程師 Dan Kegel 整理的 [<a href="http://www.kegel.com/wine/sweng/">Software Engineering with Wine</a>]，現在越來越多重量級商業程式透過 WINE 技術得以在 Linux 上現身，當然也包含 Google 提供的軟體。晚上突然興起，想玩 Windows/Direct3D 的電動，取出書架上擺放由 [<a href="http://www.typhoongames.com/">Typhoon Games</a>] 出品的 "Hello Kitty Football Cup 2002" 遊戲，將光碟插入主機後，就展開美妙的 hacking 之旅...<br />
+<center><img src="http://www.sanriotown.com/footballcup2002/images/frontpage_pic_2.gif" width="506" height="225" /></center><br />
+去年的 [<a href="http://wiki.winehq.org/WineConf2007">WineConf2007</a>] 上，眾多開發者就宣告自由軟體的 Direct3D 實做趨向完整，而今年也頻頻傳出 DirectX 遊戲的成功案例，這讓我有了很大的信心，所以花了一個晚上的時間，進行打電動的「前戲」。<br />
+<br />
+從 git 取出 WINE 最新的原始程式碼，建構與佈署後，首先安裝 DirectX 10，建立一些內部 dll 的對應，也需修改必要的 registry，但是 WINE 一直不能成功載入，查閱 mailing-list 後加入修改的方式，終於能繼續前進。切換光碟目錄，執行 "wine Setup.exe"，安裝過程很順暢，不過執行時期問題就出來。<br />
+<center><img src="http://jserv.sayya.org/wine/pix/ktfc-gameconf.png" width="660" height="233" /><br />(WINE 自動建立選單項目)</center><br />
+遊戲的主題畫面一直無法顯示，而且 WINE 不斷吐出 UNIMPLEMENTED 的警告，最麻煩的是那些 COM 相關的錯誤，看來還有得處理，不過竟然也發現投機取巧的途徑。總之，折騰了好幾個小時，終於可以玩電動了，在這台 Pentium 4、安裝 Ubuntu Linux 的電腦上，執行 "Hello Kitty Football Cup 2002" 遊戲很順暢，有圖有真相：<ul>
+  <li>足球賽廝殺畫面：<br />
+  <center><img src="http://jserv.sayya.org/wine/pix/ktfc-1.jpg" width="400" height="300" /></center></li>
+  <li>出現於看板的 Kitty：<br />
+  <center><img src="http://jserv.sayya.org/wine/pix/ktfc-2.jpg" width="400" height="300" /></center></li>
+  <li>Kitty 選手列席的可愛模樣：<br />
+  <center><img src="http://jserv.sayya.org/wine/pix/ktfc-3.jpg" width="400" height="300" /></center></li>
+  <li>到處都有 Kitty：<br />
+  <center><img src="http://jserv.sayya.org/wine/pix/ktfc-4.jpg" width="400" height="300" /></center></li>
+  <li>衝刺中的 Kitty：<br />
+  <center><img src="http://jserv.sayya.org/wine/pix/ktfc-5.jpg" width="400" height="225" /></center></li>
+</ul>
+看起來很棒，現在剩下的問題就是遊戲畫面中的亂碼，還沒查出為何 UCS2 轉碼過程會出錯，不過應該可修正這個議題。WINE 專案預計於今年六月份釋出經歷十餘年發展的 1.0 版，看來有機會成為我今年最棒的生日禮物了 :-)<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002006.html">12:05 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2006" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">April 07, 2008</h2>
+
+
+<div class="blogbody">
+<a name="002005"></a>
+<h3 class="title">Qt4/Character Map - 查看字型的好用工具</h3>
+
+讀 Cavendish Qi 的 blog 文章 [<a href="http://cavendishqi.blogspot.com/">兩個不錯的查看字體應用</a>]，一直對文中 "Qt4/Character Map" 感到好奇，苦苦尋無該套件，後來才想到，原來 Qt4 的原始程式碼裡面就有這個範例，可參考 [<a href="http://doc.trolltech.com/4.3/widgets-charactermap.html">Character Map Example</a>]，Trolltech Qt 的文件有相當清楚的描述，介紹這樣的應用程式是如何透過幾十行撰寫出來的。一般字型的預覽工具大概只顯示 "<a href="http://en.wikipedia.org/wiki/The_quick_brown_fox_jumps_over_the_lazy_dog">The quick brown fox jumps over the lazy dog</a>" 這一段文字，只對英文有代表性，因為這一句就涵蓋了 26 個英文字母，問題是，我們有偉大的 CJK 與一系列的 Unicode 字碼，所以得透過更強大的工具。Qt4/Character Map 的執行畫面如下圖：<br />
+<center><img src="http://jserv.sayya.org/misc/qt4charmap.jpg" width="480" height="212" /></center><br />
+很清楚可見到 [<a href="http://www.freedesktop.org/wiki/Software/CJKUnifonts">CJKUnifont</a>] 的楷體字，以 28 點字體顯示，注意，從今年一月份開始，命名方式有了改變。為避免下載 Qt4 tarball 所造成不必要的網路資源浪費，我以 Qt 4.3.2 裡頭的程式重新打包為 [<a href="http://jserv.sayya.org/misc/charactermap.tar.bz2">charactermap.tar.bz2</a>]，授權同樣是 GNU GPLv2 或 GPLv3。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002005.html">10:17 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2005" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">April 04, 2008</h2>
+
+
+<div class="blogbody">
+<a name="002004"></a>
+<h3 class="title">Buffon 投針試驗：當圓周率計算遇上機率論</h3>
+
+<center><img src="http://jserv.sayya.org/misc/Givenchy-PI.jpg" width="371" height="256" /></center><br />
+1999 年，一向以優雅高檔著稱的 [<a href="http://www.givenchy.com/">Givenchy</a>]，推出由知名設計師 Serge Mansau 所設計的「π香水」(pi)，據稱，是一款令人精神充沛的木質味香水，瓶身造型展現π的精神：無止盡的學習與探索，而不規則的密度感、基於琥珀色調的雕刻圖案，使其得以在眾多男用香水中脫穎而出。是的，計算圓周率一直是令人著迷的議題，從古埃及至今，無數專家學者乃至業餘數學家前仆後繼地投入，1777 年，Georges-Louis Leclerc，Comte de Buffon (1707—1788) 提出嶄新的途徑，將圓周率這等幾何問題出發的計算，巧妙地以機率統計原理來表示，自此，開創使用隨機數值處理典型數學表示的先河，我們就來看看傳奇性的 Buffon 投針試驗。<br />
+<br />
+法國數學家、科學家、《自然史》作者，也是風格家的 Comte de Buffon 在 1777 年某日，邀請賓客齊聚大廳，共襄盛舉一次試驗活動。古稀之年的 Buffon 鋪好一張白紙，其上預先畫好了一條條等距的平行線，接著取出一大把質量均等、長度為平行線間距一半的小針，待賓客就座後，Buffon 發言道：<ul class="code" style="margin: 6px;">
+「煩請各位將這些小針一根一根扔往白紙上，並且告知扔下的針是否與紙上平行線相交」
+</ul>
+<center><img src="http://jserv.sayya.org/misc/buffon-pin.gif" width="215" height="131" /><br />
+(示意圖)</center><br />
+客隨主意，雖摸不著頭緒，但也一個個加入了試驗的行列。一把小針扔完了，把它撿起來又扔，而 Buffon 則在一旁不停地記數著，忙碌了將近一個鐘頭。最後，Buffon 高聲宣佈：<ul class="code" style="margin: 6px;">
+「各位賓客，依據我的紀錄，剛才的投針結果，共投針 2212 次，其中與平行線相交有 704 次。而總數 2212 與相交數 704 的比值為 3.142。」
+</ul>
+說到這裡，Buffon 故作停頓，神秘張望賓客，接著說：<ul class="code" style="margin: 6px;">
+「這就是圓周率π的近似值！」
+</ul>
+Buffon 利用平凡不過的除法，計算出圓周率的近似值，並宣稱投針的數目越多，圓周率的近似值將會越精準，這就是數學史上著名的 Buffon 投針問題，記載於其著作《機率算術試驗》(1777 年)，此外，Buffon 也試著將機率應用於審判場合，比方說，若能對每個審判員規定某個足以理解真相或說出真相機會的數值，即可算出法庭作出正確判決的機會，換言之，就是「審判的概率」(Probabilite des jugements)。<br />
+<br />
+圓周率π在這種看似雜亂的場合出現，實在出乎意料。一個直觀的理解途徑可透過物理上的對應，取一根鐵絲，將其彎成一個圓圈，適度剪裁使其直徑恰等於平行線間距離 d。於是乎，對於這個圓圈來說，無論如何扔下，都將和平行線有兩個交點。也就是說，若圓圈扔下的次數為 n，那麼，相交的交點總數必為 2n。接著，我們展開物理的形變，將圓圈拉開、拉直，這樣就成為長度為 πd 的鐵絲，再將這條鐵絲扔下，與平行線相交的情況就複雜許多，由於 1 < π < 4，我們可歸納交點數量為 4 個 (跨越三個間隔)、3 個 (跨越兩個間隔)、2 個 (跨越一個間隔)，1 個 (不跨越間隔，僅一端碰觸平行線)，以及 0 個 (幾乎與平行線平行)。注意，在形變的過程中，鐵線在圓圈和直線這兩個型態的長度同為 πd，根據機會均等的原理，在同等大量的投擲下，兩者與平行線組交點的總數應有一致的期望值，換言之，當長為 πd 的鐵絲扔下 n 次，其與平行線相交的交點總數應接近 2n。<br />
+<center><img src="http://jserv.sayya.org/misc/buffon-expect.jpg" width="200" height="150" />(示意圖：考慮AB與XY這兩個間距)</center><br />
+當正多邊形之邊數趨於無限多時，極限就是正圓，在概念上來說，也就是上述產生形變的小針，而小針觸碰線的次數，依據機率統計原理，應比照特定之比例。接著，我們將鐵線切為長度為 (1/2)d 的小線，在物理上大量的扔放小線的行為來說，小線碰線的期望值 m 應保持等比例，也就是說：<ul class="code" style="margin: 6px;">
+πd : (1/2)d ≈ 2n : m
+</ul>
+這也是 Buffon 投針試驗中所作的參數配置，約分後可得漂亮的式子：<ul class="code" style="margin: 6px;">
+π ≈ n / m
+</ul>
+在古典數學中，求圓周率之值是幾何問題，而 Buffon 卻以此拍案叫絕的方式，以機率方法打通兩個看似風馬牛不相及的領域，成為幾何概率的典型例子。此外，Buffon 還翻譯了牛頓的著作，並探討牛頓和萊布尼茨發現微積分的歷史，集多年研究成果編成巨著《自然史》(四十四卷，1749—1808) ，原定出版五十卷，Buffon 生前僅出版三十六卷，後八卷由他的學生完成，其中包含物種進化的思想，推動了古生物學的發展。涉獵廣泛的 Buffon 也是第一個對地質史劃分時期的科學家，首次提出太陽與慧星碰撞產生行星的理論。<br />
+<br />
+近代科學的發展下，原本壁壘分明的個別人文、科學、哲學思想領域走向空前的大融通，匯流而成當代種種巨大變革，一如 Buffon 首次打破機率與幾何學的藩籬。數學領域的變遷也受到這等啟蒙，1904 年，R·Chartres 甚至提出另一種表示法：若寫下任意兩個整數，測這兩者互質的機率為 6 / π^2。<br />
+<br />
+我們以更嚴謹的態度分析這個實驗結果，分析投下的小針與平行線相交的關係圖，如下：<br />
+<center><img src="http://jserv.sayya.org/misc/buffon-fig.png" width="400" height="545" /></center><br />
+其中，針與平行線的銳角交角為θ，針的中點到最近一條直線的距離為 Y。我們可得之，若 Y ≦ d/2 * sinθ，則小針壓線，反之，若 Y ＞ d/2 * sinθ，則小針不壓線。進一步來看，在上圖下方中，點 (θ, Y) 若落於矩形中的曲線下部分，針就壓線，反之就是不壓線，因此，針壓線的機率就是曲線下部分在長方形中所占的比例。經過分析後，我們就可著手以機率統計理論來探討。<br />
+<br />
+先來看看 pdf (probability density function) 的表示。Y 在 0 到 d/2 之間的 pdf 為：<br />
+<center><img src="http://jserv.sayya.org/misc/math/buffon-fig-1.png" width="43" height="41" /></center><br />
+而 θ 在 0 與 π/2 之間的 pdf 為：<br />
+<center><img src="http://jserv.sayya.org/misc/math/buffon-fig-2.png" width="41" height="42" /></center><br />
+既然 Y 與 θ 為獨立之隨機數值，換言之，獨立事件之機率為其乘積，表示為：<br />
+<center><img src="http://jserv.sayya.org/misc/math/buffon-fig-3.png" width="81" height="41" /></center><br />
+而由前述分析可得，針與平行線相交的充要條件為：<br />
+<center><img src="http://jserv.sayya.org/misc/math/buffon-fig-4.png" width="100" height="41" /></center><br />
+我們知道，曲線下的面積就是針與平行線相交的機率，透過積分可知：<br />
+<center><img src="http://jserv.sayya.org/misc/math/buffon-fig-5.png" width="253" height="44" /></center><br />
+所以當 n 個細線被扔下，而其中 h 個與平行線相交，其機率為：<br />
+<center><img src="http://jserv.sayya.org/misc/math/buffon-fig-6.png" width="67" height="44" /></center><br />
+簡化後即可求得圓周率：<br />
+<center><img src="http://jserv.sayya.org/misc/math/buffon-fig-7.png" width="74" height="41" /></center><br />
+經過幾百年的演繹與探討，Buffon 投針試驗逐漸演化為一種數值方法的前身：「蒙地卡羅方法」(Monte Carlo method)，也就是透過利用亂數取樣 (random sampling) 模擬來解決數學問題。第二次世界大戰期間，Monte Carlo 方法被系統性地應用於科學研究中，誕生了 MANIAC (Mathematical Analyzer, Numerical Integrator and Computer)，而 Stanislaw Ulam、John von Neumann、Nicholas Metropolis、Enrico Fermi 等人發展法一種基於樣本統計的方法，來解決關於在原子彈設計中，中子隨機擴散問題和 Schrodinger 等式的特徵值估計問題。該方法的原理最初是 Stanislaw Ulam 闡述的，後來由 John von Neumann 深入研究，於 1949 年發表一篇名為 "The Monte Carlo method" 的論文而聞名，當然，到了進入電腦時代，這個方法才得以由原本手動產生亂數來解決問題，變成實際性的數值方法。<br />
+<br />
+Monte Carlo 方法是由 Nicholas Metropolis 所命名，取自其亂數機率有如賭博一般，而恰似北非最西側的摩洛哥首都 Monte Carlo，也就是知名賭城，種種奇豔動人的賭場生活寫照。所有具有隨機效應的過程，均可能以 Monte Carlo 方法大量模擬單一事件，並藉由統計上平均值，獲得某設定條件下實際最可能測量值，更廣泛來說，自然界裏的布朗運動、電波的噪音、基因的突變、交通即時路況等等，無處不含有隨機的變化，均有可適用的場合。<br />
+<br />
+最後，且讓我們實地模擬 Monte Carlo 方法始祖的 Buffon 投針，以下是小弟的 C 語言小實驗：[<a href="http://jserv.sayya.org/misc/buffon.c">buffon.c</a>]<br />
+<pre class="code" id="codemain" style="margin: 6px;"><span class="comment">/**
+ * buffon.c - Simulating Buffon's Needle Problem
+ *
+ * Authored by Jim Huang &lt;jserv.tw@gmail.com>
+ * Public Domain.  Runtime confirming to POSIX.1-2001.
+ */</span><span class="keyword">
+#include</span> &lt;stdio.h><span class="keyword">
+#include</span> &lt;stdlib.h><span class="keyword">
+
+#include</span> &lt;math.h><span class="keyword">
+#include</span> &lt;time.h>
+&nbsp;
+<span class="keyword">int</span> main( <span class="keyword">int</span> argc, <span class="keyword">char</span> **argv )
+{
+	<span class="keyword">int</span> i;
+	<span class="keyword">int</span> ntrial = 99991; <span class="comment">/* the largest prime number &lt; 100000 */</span>
+
+	<span class="keyword">int</span> crossing = 0;
+	srand48( time( NULL ) );
+&nbsp;
+	<span class="comment">/*
+	 * ----------------------------------------
+	 * ||
+	 * || 1                         
+	 * ||                / ) Theta   ||x
+	 * -----------------/----------------------
+	 * x &lt;= 1/2 * sin( Theta ), when needles cross a crack.
+	 */</span>
+	<span class="keyword">for</span> (i = 0; i &lt; ntrial; i++) {
+		<span class="keyword">double</span> theta = M_PI * drand48(); <span class="comment">/* 0 &lt;= Theta &lt;= PI */</span>
+
+		<span class="keyword">double</span> x = drand48(); <span class="comment">/* 0 &lt;= x &lt; 1 */</span>
+		<span class="keyword">if</span> (x &lt;= 0.5 * sin(theta))
+			crossing++;
+	}
+	printf(<span class="literal">"Needles dropped on floor = %8d \n"</span>, ntrial);
+	printf(<span class="literal">"Those that cross a crack = %8d \n"</span>, crossing);
+	printf(<span class="literal">"\tPI Estimate: "</span>);
+	printf(<span class="literal">"%0.5f \n"</span>, (<span class="keyword">double</span>)ntrial / (<span class="keyword">double</span>)crossing);
+	<span class="keyword">return</span> 0;
+}</pre>
+我得到最接近的輸出為：<pre class="code" id="codemain" style="margin: 6px;">
+Needles dropped on floor =    99991 
+Those that cross a crack =    31830 
+        PI Estimate: 3.14141
+</pre>
+其中 99991 是五位數中最大的質數，在隨機試驗中沒有特別的意義。行文至此，彷彿聞到「π香水」給予人充沛與活力的美妙體驗，謎樣的數學，謎樣的π。<br />
+<br />
+參考資料：<ul>
+  <li>Wikipedia [<a href="http://en.wikipedia.org/wiki/Buffon%27s_needle">Buffon's needle</a>]</li>
+  <li>George Reese - [<a href="http://www.mste.uiuc.edu/reese/buffon/">Buffon's Needle : An Analysis and Simulation</a>]</li>
+</ul>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002004.html">04:32 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2004" onclick="OpenComments(this.href); return false">迴響 (7)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+
+</body>
+</html>

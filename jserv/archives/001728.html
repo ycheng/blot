@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 演講：深入淺出 Hello World -- 理解 Linux 上運作 Hello World 的種種機制  (台中場次)</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001727.html" title="深入分析 Python 直譯器" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001729.html" title="GNU screen 的 Unicode 修正 (更新)" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001727.html">« 深入分析 Python 直譯器</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001729.html">GNU screen 的 Unicode 修正 (更新) »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">June 20, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">演講：深入淺出 Hello World -- 理解 Linux 上運作 Hello World 的種種機制  (台中場次)</h3>
+
+感謝 [<a href="http://www.study-area.org/">Study-Area</a>] 的老 jou 與 HaWay 協助安排，今年七月份，我會準備一場公開演講，詳情可參考 [<a href="http://phorum.study-area.org/viewtopic.php?t=39953">SA@台中 七月份 深入淺出 Hello World</a>]，以下引用議程資訊：<ul class="code" style="margin: 6px;">
+題目：深入淺出 Hello World -- 理解 Linux 上運作 Hello World 的種種機制<br>
+<br>
+主講人：Jim Huang (黃敬群 / "jserv")，熱血工讀生，閒暇時投入新酷音計畫、Free Java、GNU GCC、X
+Window System，以及相關自由軟體的開發工作。<br>
+Website: <a href="http://jserv.sayya.org/">http://jserv.sayya.org/</a><br>
+Blog: <a href="http://blog.linux.org.tw/jserv/">http://blog.linux.org.tw/jserv/</a><br>
+<br>
+摘要："Hello World" 大概是每種程式語言的介紹書籍第一個範例，人人會寫，可是又是如何運作呢？以 GNU GCC 靜態編譯後，動輒上百 kb 的執行檔是怎麼一回事？
+Free & Open Source的作業系統中，有著太多我們無從知曉的軟體，可是，我們似乎連簡單的 "Hello World"背後運作的原理也無從知悉，本議程即以高階與低階的角度，交叉分析在 Linux 上應用程式運作的原理，並探討如何將這些經驗應用於其他範疇。<br>
+大綱：<ul>
+<li>"Hello World" 人人會寫，可是又是如何運作呢？</li>
+<li>"Hello World" 與 ELF</li>
+<li>從 GNU Toolchain 看 "Hello World"：動輒上百 k 是怎麼回事？如何應用 GNU 工具對 "Hello World" 尋幽訪勝</li>
+<li>以 "Hello World" 為鑰匙，揭開 Embedded Linux 重重布幕</li>
+</ul>
+期望議程結束時，可建立以下基本概念：<ul>
+<li>如何利用既有的工具，對 ELF 作分析 (讀 ELF document 是很消極的，應該要思考為何有 ELF 的設計，並利用其特性)</li>
+<li>基本低階處理</li>
+<li>Know the facts: Symbols, Symbols, Symbols</li>
+<li>善用 GDB，尋幽訪勝</li>
+<li>對既有 Embedded Linux software stack 的反思</li>
+</ul>
+備註：<ul>
+<li>本議程在台中與台南各有一場，免費</li>
+<li>本議程以探討 x86 架構為主，至於針對 ARM 與 MIPS 架構的 training，請聯絡主講者作進一步安排</li>
+<li>事先提交問題，可優先解決與討論</li>
+<li>歡迎招待當地名產，講者該月休假 :-)</li>
+</ul>
+時間：2006年 07 月 15 日(星期六) 13:30 休息時間視現場決定<br>
+地點：清水國小(視聽教室) 清水鎮光華路125號<br>
+費用：0 -<br>
+報名網址： <a href="http://samc.study-area.org/">http://samc.study-area.org/</a><br>
+地理位置/交通路線: 清水國小地圖<br>
+離清水火車站步行大約十至十五分鐘。<br>
+公車(巨業'台汽'岳達)台中往大甲，清水高中站下車。
+</ul>
+因為台中是我最喜歡的都市，所以一邊休假，一邊作心得分享，而台南場次的內容大致會與台中場相似，就看當時的 feedback 決定。議程以 x86 為主要的硬體平台，涵蓋高階與低階、巨觀與微觀角度，對程式運作原理作探討，至於 ARM 與 MIPS 架構相關的討論或意見交流，也相當歡迎，不過安排在另外的 training 中 (available on demand)，以上，請多指教，謝謝！<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 June 20, 2006 07:54 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

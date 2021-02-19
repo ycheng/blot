@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jesse's Holodeck: kernel 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jesse/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jesse/index.rdf" />
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jesse/" accesskey="1">Jesse's Holodeck</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+<!--
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/">
+<rdf:Description
+    rdf:about="http://blog.linux.org.tw/~jesse/archives/cat_kernel.html#000554"
+    trackback:ping="http://mt.debian.org.tw/mt-tb.cgi/355"
+    dc:title="udev"
+    dc:identifier="http://blog.linux.org.tw/~jesse/archives/cat_kernel.html#000554"
+    dc:subject="kernel"
+    dc:description="在 kernel 2.6 中, devfs 被標示為 OBSELETE, 著實嚇了我一大跳... 今天花了點時間看了些 udev 的東西, 還沒實際使用過, 不過怕自己以後要用時又要花時間找, 還是記錄一下好了......"
+    dc:creator="jesse"
+    dc:date="2003-12-30T16:31:52+08:00" />
+</rdf:RDF>
+-->
+
+
+<h2 class="date">December 30, 2003</h2>
+
+
+<div class="blogbody">
+
+<a name="000554"></a>
+<h3 class="title">udev</h3>
+
+<p>在 kernel 2.6 中, devfs 被標示為 OBSELETE, 著實嚇了我一大跳... 今天花了點時間看了些 udev 的東西, 還沒實際使用過, 不過怕自己以後要用時又要花時間找, 還是記錄一下好了...</p>
+
+<p><a href="http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev-FAQ">這裡</a>是 udev 的 FAQ, 它結合 sysfs 和 hotplug, 提供和 devfs 相似的功能, 當系統中新增或移除裝置時, 會產生 hotplug event, 再由 udev 依 sysfs 的內容生成或是移除對應的 device file。和 devfs 不同的是, devfs 是在 kernel 中完成的, 而 udev 則是完完全全的 userspace 程式。</p>
+
+<p>udev 共分為三個部份:<br />
+<ol><br />
+<li>namedev: 處理 device file naming 及 permission。</li><br />
+<li>libsysfs: 提供統一的 access sysfs 介面。</li><br />
+<li>udev: 處理 /dev 下檔案的生成及移除。</li><br />
+</ol></p>
+
+<p>在 <a href="http://www.kroah.com/linux/talks/ols_2003_udev_talk/ ">http://www.kroah.com/linux/talks/ols_2003_udev_talk/</a> 有 Greg KH 在 OLS 2003 的投影片可以參考。</p>
+
+<p>至於 devfs 被標為 OBSELETE 的原因, 在 udev-FAQ 中也有提到:<br />
+<div class="code"><br />
+Q: Why was devfs marked OBSOLETE if udev is not finished yet?<br />
+A: To quote Al Viro (Linux VFS kernel maintainer):<br />
+	- it was determined that the same thing could be done in userspace<br />
+	- devfs had been shoved into the tree in hope that its quality will<br />
+	  catch up<br />
+	- devfs was found to have fixable and unfixable bugs<br />
+	- the former had stayed around for many months with maintainer<br />
+	  claiming that everything works fine<br />
+	- the latter had stayed, period.<br />
+	- the devfs maintainer/author disappeared and stoped maintaining<br />
+	  the code.<br />
+</div></p>
+
+<p>如果只是要使用的話, 在<a href="http://www.kernel.org/pub/linux/utils/kernel/hotplug/">這裡</a>可以取得 udev, 或是直接在<a href="http://www.bofh.it/~md/debian/">這裡</a>取得 deb 套件包。</p>
+
+
+
+<div class="posted">
+	由 jesse 發表於 <a href="http://blog.linux.org.tw/~jesse/archives/000554.html">04:31 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-comments.cgi?entry_id=554" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+		| <a href="http://mt.debian.org.tw/mt-tb.cgi?__mode=view&amp;entry_id=554" onclick="OpenTrackback(this.href); return false">引用</a>
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">September 10, 2003</h2>
+
+
+<div class="blogbody">
+
+<a name="000081"></a>
+<h3 class="title">驅動多合一讀卡機</h3>
+
+<p>我的讀卡機是某無牌子的 CF/SM 二合一讀卡機, 使用 Neodio ND-5010 的 chip。kernel 2.6 的 usb-storage 可以驅動它, 不過一直都只看得到 CF 槽, 偏偏我的數位相機用的是 SM card.... 本來以為是 usb-storage 沒有 scan 到 0 以外的 USB function, 找了老半天, 才發現原來只要把 CONFIG_SCSI_MULTI_LUN enable 起來即可... 終於它不再是『跛腳』的讀卡機囉! :D</p>
+
+
+
+
+<div class="posted">
+	由 jesse 發表於 <a href="http://blog.linux.org.tw/~jesse/archives/000081.html">12:37 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-comments.cgi?entry_id=81" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">July 16, 2003</h2>
+
+
+<div class="blogbody">
+
+<a name="000045"></a>
+<h3 class="title">Wonderful World of Linux 2.6</h3>
+
+<p>Linux kernel 2.6.0-test1 正式<a href="http://marc.theaimsgroup.com/?l=linux-kernel&m=105815539730173&w=2">發表</a>了。Joseph Pranevich 撰寫了一篇『<a href="http://www.kniggit.net/wwol26.html">The Wonderful World of Linux 2.6</a>』, 大略介紹了這個新 kernel 的特點。</p>
+
+
+
+
+<div class="posted">
+	由 jesse 發表於 <a href="http://blog.linux.org.tw/~jesse/archives/000045.html">09:19 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-comments.cgi?entry_id=45" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+</body>
+</html>

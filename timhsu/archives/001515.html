@@ -1,0 +1,310 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>timhsu: SSH TCP FORWARDING</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~timhsu/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~timhsu/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~timhsu/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~timhsu/archives/001512.html" title="某金控網站被入侵" />
+
+<link rel="next" href="http://blog.linux.org.tw/~timhsu/archives/001564.html" title="資安展遊記" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+<!--
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="http://blog.linux.org.tw/~timhsu/archives/001515.html">
+<dc:title>SSH TCP FORWARDING</dc:title>
+<dc:description>如果防火牆有開放 ssh 連線，或是沒有對 HTTP Protocol 作查核，那就可以試著用 ssh 的 tcp-forwarding 來建立加密連線(secure tunnel)。</dc:description>
+<dc:creator></dc:creator>
+<dc:date>2006-02-17T19:48:35+08:00</dc:date>
+<license rdf:resource="http://creativecommons.org/licenses/by-nc-sa/1.0/" />
+</Work>
+<License rdf:about="http://creativecommons.org/licenses/by-nc-sa/1.0/">
+<requires rdf:resource="http://web.resource.org/cc/Attribution" />
+<requires rdf:resource="http://web.resource.org/cc/Notice" />
+<requires rdf:resource="http://web.resource.org/cc/ShareAlike" />
+<permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+<permits rdf:resource="http://web.resource.org/cc/Distribution" />
+<permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+<prohibits rdf:resource="http://web.resource.org/cc/CommercialUse" />
+</License>
+</rdf:RDF>
+-->
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~timhsu/" accesskey="1">timhsu</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~timhsu/archives/001512.html">&laquo; 某金控網站被入侵</a> |
+
+<a href="http://blog.linux.org.tw/~timhsu/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~timhsu/archives/001564.html">資安展遊記 &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February 17, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">SSH TCP FORWARDING</h3>
+
+<p>有些公司或機關會試著用一些防火牆和監控設備，來對公司內部同仁上網作加以控管。最常見的例子就是對 IM (MSN/Yahoo!)等作記錄或限制。如果防火牆有開放 ssh 連線，或是沒有對 HTTP Protocol 作查核，那就可以試著用 ssh 的 tcp-forwarding 來建立加密連線(secure tunnel)。</p>
+
+<p>(公司外部 Server: proxy.nosuchserver.org)<br />
+1. 先架好 Proxy，例如可以 bind 在 3128 Port.<br />
+2. 設好 Firewall 規則，只開放 localhost 連線: <br />
+    iptables -A INPUT -p tcp -s ! 127.0.0.1 --dport 3128 -j DROP<br />
+3. 加個帳號叫 tunnel</p>
+
+<p>(公司內部 Linux: 192.168.1.10)<br />
+1. 用 ssh 登入 proxy.nosuchserver.org <br />
+    ssh -L 8080:127.0.0.1:3128 tunnel@proxy.nosuchserver.org<br />
+2. 此時可以將 MSN 或 WWW-Browser 的 proxy 設定指向 127.0.0.1:8080<br />
+3. 利用此 tunnel 即可對外加密連線</p>
+
+<p>如果你想讓公司內其它同事共享此 proxy，則可以利用新版 ssh 的功能:</p>
+
+<p>   ssh -L 192.168.1.10:8080:127.0.0.1:3128 tunnel@proxy.nosuchserver.org</p>
+
+<p>那麼大夥通通把 proxy 設定指向 192.168.1.10:8080 即可。</p>
+
+<p>如果對外沒開放 port 22，那就只好試著讓 Server 上的 sshd 聽 port 80 或其它開放的 port 囉。</p>
+
+<a name="more"></a>
+
+
+<span class="posted">由  發表於 February 17, 2006 07:48 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>http://hagen.milan.jp/ http://hroft.milan.jp/ http://hedin.milan.jp/ http://hervard.milan.jp/ http://rakot.milan.jp/ http://merlin.milan.jp/ http://hagen.milan.jp/ http://hroft.milan.jp/ http://hedin.milan.jp/ http://hervard.milan.jp/ http://rakot.milan.jp/ http://merlin.milan.jp/</p>
+<span class="comments-post">Posted by: <a href="http://hervard.milan.jp/">hagen</a> 發表於 July 27, 2006 10:48 AM</span>
+</div>
+<div class="comments-body">
+<p>csLook this  http://creamonpussy.donnatos.net/just-fucked-pussy-cum-filled-pussy.html<br />
+dog creampies<br />
+free full length creampie videos<br />
+http://creamonpussy.donnatos.net/mf-creampie-eating.html<br />
+http://creamonpussy.donnatos.net/banana-cream-pie-2.html<br />
+anime cream pie<br />
+http://creamonpussy.donnatos.net/creampie-clips-video.html<br />
+sexual cream pies free pictures<br />
+http://creamonpussy.donnatos.net/creampie-eat-wife-after-sex.html<br />
+http://creamonpussy.donnatos.net/men-eating-cum-filled-pussy.html</p>
+<span class="comments-post">Posted by: <a href="http://creamonpussy.donnatos.net/">juju</a> 發表於 October  6, 2006 02:14 PM</span>
+</div>
+<div class="comments-body">
+<p>csHello. I am new here. It is very interesting. amateur chubby sex|http://amateurpics.takegirls.com/amateur-chubby-sex.html<br />
+adult amateur pictures|http://amateurpics.takegirls.com/adult-amateur-pictures.html<br />
+amateur orgasm porn video|http://amateurpics.takegirls.com/amateur-orgasm-porn-video.html<br />
+asian amateur models|http://amateurpics.takegirls.com/asian-amateur-models.html<br />
+amatuer wife photographs|http://amateurpics.takegirls.com/amatuer-wife-photographs.html<br />
+amatuer fiction|http://amateurpics.takegirls.com/amatuer-fiction.html<br />
+amateur nude wives|http://amateurpics.takegirls.com/amateur-nud3-wives.html<br />
+angel wife lovers amatuer pics and wifelover movies|http://amateurpics.takegirls.com/angel-wife-lovers-amatuer-pics-and-wifelover-movies.html<br />
+british amatuer nude wife photo web sites|http://amateurpics.takegirls.com/british-amatuer-nude-wife-photo-web-sites.html<br />
+amatuer teen blog|http://amateurpics.takegirls.com/amatuer-teen-blog.html</p>
+<span class="comments-post">Posted by: <a href="http://amateurpics.takegirls.com/amatuer-handjob.html">mary</a> 發表於 October  6, 2006 10:11 PM</span>
+</div>
+<div class="comments-body">
+<p>csIt is there -  http://onewomzoo.uppar.org/horse-sex-trailers.html<br />
+http://onewomzoo.uppar.org/dog-sex-1.html<br />
+bestiality thumbs<br />
+http://onewomzoo.uppar.org/beastiality-male.html<br />
+http://onewomzoo.uppar.org/forced-dog-sex.html<br />
+http://onewomzoo.uppar.org/girl-having-sex-with-animal.html<br />
+beastiality websites<br />
+horse beastiality movies<br />
+http://onewomzoo.uppar.org/dog-bestiality-cartoons.html<br />
+http://onewomzoo.uppar.org/free-bestiality-mpegs-samples.html</p>
+<span class="comments-post">Posted by: <a href="http://onewomzoo.uppar.org/">irgy</a> 發表於 October  7, 2006 06:01 PM</span>
+</div>
+<div class="comments-body">
+<p>csHi. May be this is BAD, but is something different:  miniskirt pantyhose<br />
+http://antyhose.uplyn.net/panty-upskirt.html<br />
+http://antyhose.uplyn.net/pantyhose-forums.html<br />
+http://antyhose.uplyn.net/free-sex-galleries-porn.html<br />
+stockings fetish<br />
+catfight in pantyhose<br />
+pantyhose pee<br />
+xxx stockings<br />
+pantyhose lovers<br />
+free porn picture galleries</p>
+<span class="comments-post">Posted by: <a href="http://antyhose.uplyn.net/">jon</a> 發表於 October  9, 2006 04:58 PM</span>
+</div>
+<div class="comments-body">
+<p>csHello. I am new here. It is very interesting. http://fet.uppar.org/exotic-panties.html<br />
+http://fet.uppar.org/panty-scat.html<br />
+http://fet.uppar.org/cum-on-stockings.html<br />
+http://fet.uppar.org/panty-drawer.html<br />
+pissing in panty<br />
+wet pantys<br />
+girls wearing no panties<br />
+celebrity panties<br />
+http://fet.uppar.org/upskirt-panty-shots.html<br />
+http://fet.uppar.org/</p>
+<span class="comments-post">Posted by: <a href="http://fet.uppar.org/">boris</a> 發表於 October 11, 2006 11:08 AM</span>
+</div>
+<div class="comments-body">
+<p>csHi. May be this is BAD, but is something different:  kids panties|http://usedpanties.madloads.com/kids-panties.html<br />
+pussy panties|http://usedpanties.madloads.com/pussy-panties.html<br />
+granny pantyhose|http://usedpanties.madloads.com/granny-pantyhose.html<br />
+panties teen|http://usedpanties.madloads.com/panties-teen.html<br />
+girls in fishnet stockings girls in fishnets|http://usedpanties.madloads.com/girls-in-fishnet-stockings-girls-in-fishnets.html<br />
+panty model|http://usedpanties.madloads.com/panty-model.html<br />
+girls wearing panties|http://usedpanties.madloads.com/girls-wearing-panties.html<br />
+panties pulled down|http://usedpanties.madloads.com/panties-pulled-down.html<br />
+cummy pantyhose|http://usedpanties.madloads.com/cummy-pantyhose.html<br />
+pantyhose teens|http://usedpanties.madloads.com/pantyhose-teens.html</p>
+<span class="comments-post">Posted by: <a href="http://usedpanties.madloads.com/free-pantyhose-galleries.html">den</a> 發表於 October 15, 2006 12:03 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1515" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響數量:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+</div>
+</div>
+</body>
+</html>

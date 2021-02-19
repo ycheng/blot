@@ -1,0 +1,304 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: C99 的 offsetof macro</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001398.html" title="32% evil, 68% good" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001400.html" title="PX-GUI - 用 SDL 寫 Window System" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001398.html">« 32% evil, 68% good</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001400.html">PX-GUI - 用 SDL 寫 Window System »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">December 20, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">C99 的 offsetof macro</h3>
+
+歷久彌新的 C 語言在 1999 年時，ANSI/ISO 批准之前的 C90 Draft，成為新標準，也稱為 C99，offsetof 是個其中制定的新 macro，在規格中提到：<ul class="code" style="margin: 6px;">
+"The offsetof() macro returns the offset of the element name within the struct or union composite. This provides a portable method to determine the offset."
+</ul>
+Nigel Jones 在 Embedded.com 撰寫了一篇名為 [<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=18312031">Learn a new trick with the offsetof() macro</a>] 的文章，介紹如何使用該 macro，並以具體的 Embedded Systems 開發作例子，相當有參考價值。首先，Nigel Jones 引用了幾個 C compiler 的實做：<ul>
+// Keil 8051 compiler<br>
+#define offsetof(s,m) (size_t)&(((s *)0)-&gt;m)<br><br>
+
+// Microsoft x86 compiler (version 7)<br>
+#define offsetof(s,m) (size_t)(unsigned long)&(((s *)0)-&gt;m)<br><br>
+
+// Diab Coldfire compiler<br>
+#define offsetof(s,memb) ((size_t)((char *)&((s *)0)-&gt;memb-(char *)0))<br>
+</ul>
+Nigel Jones 給了相當詳盡的解釋：<ul class="code" style="margin: 6px;">
+To better understand the magic of the offsetof() macro, consider the details of Keil's definition. The various operators within the macro are evaluated in an order such that the following steps are performed:<ul>
+  <li>((s *)0) takes the integer zero and casts it as a pointer to s.</li>
+  <li>((s *)0)-&gt;m dereferences that pointer to point to structure member m.</li>
+  <li>&(((s *)0)-&gt;m) computes the address of m.</li>
+  <li>(size_t)&(((s *)0)-&gt;m) casts the result to an appropriate data type.</li>
+</ul><br>
+
+By definition, the structure itself resides at address 0. It follows that the address of the field pointed to (Step 3 above) must be the offset, in bytes, from the start of the structure. At this point, we can make several observations:<ul>
+  <li>We can be a bit more specific about the term "structure name." In a nutshell, if the structure name you use, call it s, results in a valid C expression when written as (s *)0-&gt;m, you can use s in the offsetof() macro. The examples shown in Listings 3 and 4 will help clarify that point.</li>
+  <li>The member expression, m, can be of arbitrary complexity. Indeed, if you have nested structures, then the member field can be an expression that resolves to a parameter deeply nested within a structure.</li>
+  <li>It's easy enough to see why this macro also works with unions.</li>
+  <li>The macro won't work with bitfields. You simply can't take the address of a bitfield member of a structure or union.</li>
+</ul>
+</ul>
+以上的設計非常 tricky，不過需要留意的是，上述的運作方式是高度平台相依的，也預先做了定址方式、size_t 轉換，以及 bit-fields operations 上的假設，所以 Keith Thompson 做了這樣的評論：<ul>
+That's why the offsetof() macro is defined in the standard library; there's no portable way to implement it, but there's always a non-portable way that works for a given implementation. The implementer is allowed to do things that you aren't.
+</ul>
+GNU GCC 作為一個高度可攜性的 C compiler 實做，勢必無法透過以上的 "magic"，以 GCC 4.0.2 來說，相關的定義在 /usr/lib/gcc/i486-linux-gnu/4.0.2/include/stddef.h，其 offsetof macro 定義為：<ul>
+/* Offset of member MEMBER in a struct of type TYPE. */<br>
+#define offsetof(TYPE, MEMBER) __builtin_offsetof (TYPE, MEMBER)<br>
+</ul>
+看到 __builtin_ 開頭的 symbol，事實上我們知道這是 GCC 內部的實做，GCC 線上文件版本 4.0.0 的 [<a href="http://gcc.gnu.org/onlinedocs/gcc-4.0.0/gcc/Offsetof.html">5.43 Offsetof</a>] 提到這方面的細節：<ul>
+GCC implements for both C and C++ a syntactic extension to implement the offsetof macro.<br>
+<pre>
+     primary:
+     	"__builtin_offsetof" "(" typename "," offsetof_member_designator ")"
+     
+     offsetof_member_designator:
+     	  identifier
+     	| offsetof_member_designator "." identifier
+     	| offsetof_member_designator "[" expr "]"
+</pre>
+This extension is sufficient such that<ul>
+  #define offsetof(type, member)  __builtin_offsetof (type, member)
+</ul>
+is a suitable definition of the offsetof macro. In C++, type may be dependent. In either case, member may consist of a single identifier, or a sequence of member accesses and array references. 
+</ul>
+除了可攜性考量外，dependent expressions 也是 GCC 在內部 parsing tree 實做 __builtin_offsetof 的考量。倘若深入去追 __builtin_offsetof 實做方式，可參閱 gcc/cp/parser.c 。gcc/cp/parser.c 用以處理 primary-expression parsing 的部份在於 cp_parser_primary_expression function ，而 primary expression 的形式：<ul>
+<li>literal</li>
+<li>this</li>
+<li>( expression )</li>
+<li>id-expression</li>
+</ul>
+在識別為 CPP_KEYWORD 並確認為 RID_OFFSETOF (Reserved Identifier) 後，將透過 cp_parser_builtin_offsetof() 來傳回其 representation form。<br><br>
+
+回到 Nigel Jones 的 [<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=18312031">Learn a new trick with the offsetof() macro</a>] 這篇文章，舉了 EEPROM 的應用案例，EEPROM 是 Embedded Systems 最常見的 nonvolatile memory，他提到存取的方式：<ul>
+Normally, such memories are byte addressable. The result is often a serial EEPROM driver that provides an API that includes a read function that looks like this:<ul>
+  ee_rd(uint16_t offset, uint16_t nBytes, uint8_t * dest)
+</ul>
+In other words, read nBytes from offset offset in the EEPROM and store them at dest. The problem is knowing what offset in EEPROM to read from and how many bytes to read (in other words, the underlying size of the variable being read). 
+</ul>
+ee_rd() 這類的 API 可在許多系統發現，但是我們的問題就在於如何得知 EEPROM 中的 offset 與預讀入的 bytes 數量，常見的解法是：<ul><pre class="code" style="margin: 6px;">
+typedef struct
+{
+    	int 	i;
+    	float 	f;
+    	char 	c;
+
+} EEPROM;
+
+EEPROM * const pEE = 0x0000000;
+
+ee_rd(&(pEE->f), sizeof(pEE->f), dest); 
+</pre></ul>
+類似上面提到的 trick，不過這降低了可讀性，同時因為需要 pEE pointer 來協助算 offset，也可能因為不當的操作 (如 Nigel Jones 提到的 "You can write perfectly legal code (for example, pEE->f = 3.2) and get no compiler warnings that what you're doing is disastrous.")，造成新的問題。而透過 offsetof macro，我們改寫以上的最後兩行：<ul><pre class="code" style="margin: 6px;">
+ee_rd(offsetof(EEPROM,f), sizeof(float) /* f in struct EEPROM */, dest);
+</pre></ul>
+不能很直覺的得知 EEPROM structure 裡面 float f 的 size，是很大的遺憾，所以又施加類似的 trick：<ul>
+#define SIZEOF(s,m) ((size_t) sizeof(((s *)0)->m))<br>
+#define EE_RD(M,D)   ee_rd(offsetof(EEPROM,M), SIZEOF(EEPROM,M), D)<br>
+</ul>
+所以現在讀取 EEPROM 資料並置放於特定 member f 中，可以寫成：<ul>
+EE_RD(f, &dest)
+</ul>
+一舉克服了上面提到的問題，而 API 也更為乾淨。稍後的 [Use 3: protecting nonvolatile memory] 更是經典，篇幅稍微長了些。Linux Kernel 中，在 linux/nvram.h 規範了類似的 definition，不過透過 GCC extensions 來作 padding，比 Nigel Jones 舉例的寫法來得更漂亮且明確。以 arch/arm/kernel/asm-offsets.c 來說，也透過 offsetof macro 來增加填寫向量表格的可讀性：<ul><pre class="code" style="margin: 6px;">
+#define DEFINE(sym, val) \
+        asm volatile("\n->" #sym " %0 " #val : : "i" (val))
+
+#define BLANK() asm volatile("\n->" : : )
+
+int main(void)
+{
+  DEFINE(TSK_ACTIVE_MM,         offsetof(struct task_struct, active_mm));
+  BLANK();
+  DEFINE(TI_FLAGS,              offsetof(struct thread_info, flags));
+  DEFINE(TI_PREEMPT,            offsetof(struct thread_info, preempt_count));
+   ...
+</pre></ul>
+對了，讀者回應也很值得一看，Louis Huemiller 提到的 "providing an abstract interface, without having to use an object orientated high-level language (e.g. C++)" 很有意思。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 December 20, 2005 11:51 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>很有參考價值，先 bookmark 起來，<br />
+有時間時再來細看 :)</p>
+<span class="comments-post">由 <a href="http://yukuan.blogspot.com/">Yukuan</a> 發表於</MTIfNonEmpty> December 21, 2005 02:07 AM</span>
+</div>
+<div class="comments-body">
+<p>在 Linux kernel 的應用請見：<br />
+http://blog.chinaunix.net/u/13494/showart_415725.html</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> November 12, 2007 10:45 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1399" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

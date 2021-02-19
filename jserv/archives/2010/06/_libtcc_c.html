@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: 透過 libtcc 來擴充 C 語言</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2010/06/_gdb_c_3.html" title="在 GDB 透視 C 語言的字串表示法" />
+
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2010/07/dissy_--_objdum.html" title="dissy -- 好用的 objdump 圖形前端工具" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2010/06/_gdb_c_3.html">« 在 GDB 透視 C 語言的字串表示法</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+| <a href="http://blog.linux.org.tw/~jserv/archives/2010/07/dissy_--_objdum.html">dissy -- 好用的 objdump 圖形前端工具 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">June 17, 2010</h2>
+
+<div class="blogbody">
+
+<h3 class="title">透過 libtcc 來擴充 C 語言</h3>
+
+在「<a href="http://jserv.blogspot.com/2009/12/libacc-android-20-c-compiler.html">libacc : Android 2.0 內建的輕量級 C Compiler</a>」一文，筆者提過 Fabrice Bellard 的大作 [<a href="http://fabrice.bellard.free.fr/otcc/">OTCC</a>] (Obfuscated Tiny C Compiler)，而 OTCC 進一步開發則成為 [<a href="http://bellard.org/tcc/">TCC</a>] (Tiny C Compiler)，這是世上最完整的迷你 C compiler 實做。如同 Fabrice Bellard 的其他作品，TCC 也提供一個驚喜，可參見 TCC 網頁的特徵描述，其中有一項：<ul>
+"With libtcc, you can use TCC as a backend for dynamic code generation."
+</ul>
+本文就是透過 libtcc，試圖擴展 C 語言，並探討新的應用型態。<br />
+<br />
+在 Ubuntu Linux 上，libtcc 是以 statically-linked library 的形式存在，安裝方式相當便利：<pre class="code" style="margin: 6px;">
+$ sudo apt-get install libtcc-dev
+</pre>
+不過還需要 "libtcc1"，也就是 TCC runtime library，最簡單的安裝方式就是直接安裝 TCC：<pre class="code" style="margin: 6px;">
+$ sudo apt-get install tcc
+</pre>
+到底哪些檔案是必要的呢？先來看看目錄結構：<pre class="code" style="margin: 6px;">
+$ tree /usr/lib/tcc/
+/usr/lib/tcc/
+├── bcheck.o
+├── include
+│   ├── float.h
+│   ├── stdarg.h
+│   ├── stdbool.h
+│   ├── stddef.h
+│   ├── tcclib.h
+│   └── varargs.h
+└── libtcc1.a
+
+1 directory, 8 files
+</pre>
+可發現，"/usr/lib/tcc/libtcc1.a" 就是 runtime library，會在呼叫 libtcc 時被引入。實務上，可以不必安裝 TCC 套件，只要提供位於 "/usr/lib/tcc/" 目錄的若干檔案即可。張羅了必要的套件後，我們可展開一些實驗。筆者設定的目標是，將之前的 [<a href="http://blog.linux.org.tw/~jserv/archives/001906.html">qsort 與 shellcode</a>] 程式範例，用 libtcc 適度改寫，使其成為架構在 C 語言上的 Lambda expression 實現。在我們設定的目標中，基本概念是動態時做出「匿名函式」(anonymous function) 的機制，，也就是建立特別的 function object 以供後續操作，不過因為 C 語言可直接操作記憶體與堆疊。動手寫個程式吧 (<a href="http://jserv.sayya.org/helloworld/lambda-in-c.c">lambda-in-c.c</a>):
+<script src="http://pastebin.com/embed_js.php?i=ig8GfwrK"></script>
+<br />
+編譯方式如下：<pre class="code" style="margin: 6px;">
+$ gcc -o lambda-in-c lambda-in-c.c -ltcc -ldl
+</pre>
+執行驗證看看：<pre class="code" style="margin: 6px;">
+$ ./lambda-in-c 
+1 2 3 4 5 6 7 8 9 10 
+--- done ---
+</pre>
+看來透過 libtcc 動態編譯的 "lambda" 函式實做，被帶入 qsort() 函式，並正確執行，確認其標榜的 "use TCC as a backend for dynamic code generation" 功能。那麼，如此的機制到底有什麼實務上的價值？當然不是為了動態編譯而編譯的，事實上，Mesa/3D 函式庫很早就透過 libtcc，進行動態編譯，進而產生某些特定的機械碼。可參考 XORG-6_8_0_.tar.gz 裡面的 xc/extras/Mesa/src/mesa/swrast/s_tcc.c 檔案，這是為了輔助同目錄下的 s_fragprog_to_c 檔案，以下引用其註解：<ul class="code" style="margin: 6px;">
+An amusing little utility to print ARB fragment programs out as a C function.   Resulting code not tested except visually.
+</ul>
+在程式碼可見到，Mesa 動態輸出若干 Texture samplers，libtcc 給予開發者很大的彈性，能用 C 語言來作動態建立 texture 處理函式的實做。另外還有 SQL Stored Procedures，依據其定義就是：<ul class="code" style="margin: 6px;">
+A stored procedure is a group of Transact-SQL statements compiled into a single execution plan.
+</ul>
+在 MySQL 的處理中，也可透過 libtcc，詳情可參考這兩篇精彩的文章：<ul>
+    <li>[<a href="http://www.flamingspork.com/blog/2010/03/17/stored-proceduresfunctions-for-drizzle/">Stored Procedures/Functions for Drizzle</a>]</li>
+    <li>[<a href="http://www.flamingspork.com/blog/2010/03/17/one-last-bit-of-evil/">One last bit of evil....</a>]</li>
+</ul>
+為何我們該搞懂進階的 Compiler 技術？為了技術突破！試想，SQL 有 Stored procedures；OpenGL 2.0 有 GLSL；JavaScript 有一堆 engine, ... 這些背後的技術，都直接與 compiler 有關，希望筆者也能持續分享探討這些美妙的技術。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 June 17, 2010  2:05 AM
+
+<br /></span>
+
+</div>
+
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2151" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

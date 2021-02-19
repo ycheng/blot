@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Xorz/Embedded 展示</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001274.html" title="協助 kernel bug-report 的小工具" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001277.html" title="To be, or not to be..." />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001274.html">« 協助 kernel bug-report 的小工具</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001277.html">To be, or not to be... »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">August 29, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Xorz/Embedded 展示</h3>
+
+之前 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001273.html">「綜觀 X Window System 新發展」簡報上線</a>] 提到我本來要展示的 Xorz/Embedded，我用以打破 X11 相容性的實驗，用很小的 footprint 實做與 GTK+/Cairo 相似的 API，並且作為一個具體而微的 Window System，更適合 Embedded Systems。<br />
+<br />
+首先看看 Xorz/Embedded 的展示畫面：<br />
+<center><img src="http://jserv.sayya.org/misc/xorz-embedded-demo.png" /></center><br />
+這要花多少程式碼達到以上的效果：向量繪圖、向量字型支援、半透明效果、Window Layout、簡單的 Widget Set，以及可更換的 skin，「數字會說話」：<ul><pre class="code" style="margin: 6px;">
+jserv@venux:~/gui-toolkits/xorz-embedded$ ls -lh xorz-all-in-one
+-rwxr-xr-x  1 jserv jserv <b><font color="red">59K</font></b> 2005-08-29 15:01 xorz-all-in-one
+</pre></ul>
+x86 binary 的空間是 59kb，那 Library Dependency 呢？<ul><pre class="code" style="margin: 6px;">
+jserv@venux:~/gui-toolkits/xorz-embedded$ ldd xorz-all-in-one
+	linux-gate.so.1 =>  (0xffffe000)
+	libm.so.6 => /lib/tls/i686/cmov/libm.so.6 (0xb7ee4000)
+	/lib/ld-linux.so.2 (0xb7fd9000)
+</pre></ul>
+是的，直接透過 Linux [<a href="http://linuxconsole.sourceforge.net/">FBDev</a>] (framebuffer) 作顯示，什麼負擔都沒有，套句廣告台詞：「輕鬆窈窕」。希望今年有機會釋出正式版本，也歡迎作技術交流與合作，謝謝！<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 August 29, 2005 03:18 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>有用 freetype 嗎？</p>
+<span class="comments-post">由 <a href="mailto&#58;mrq&#64;yahoo&#46;com">Mr.Q</a> 發表於</MTIfNonEmpty> August 29, 2005 07:16 PM</span>
+</div>
+<div class="comments-body">
+<p>To Mr. Q,</p>
+
+<p>  ldd 告訴事實：沒有 FreeType dependency，而字型處理也是在 Xorz/Embedded 內部處理掉的，類似 Cairo 的設計。</p>
+<span class="comments-post">由 <a href="http://jserv.sayya.org/">jserv</a> 發表於</MTIfNonEmpty> August 29, 2005 07:25 PM</span>
+</div>
+<div class="comments-body">
+<p>有有关Zorz体系和算法的介绍吗？</p>
+<span class="comments-post">由 <a href="mailto&#58;gtkdict&#64;yahoo&#46;com&#46;cn">Jacky</a> 發表於</MTIfNonEmpty> August 30, 2005 09:20 AM</span>
+</div>
+<div class="comments-body">
+<p>希望早日看到成果！</p>
+<span class="comments-post">由 <a href="mailto&#58;tpunix&#64;126&#46;com">tpu</a> 發表於</MTIfNonEmpty> August 30, 2005 11:32 AM</span>
+</div>
+<div class="comments-body">
+<p>To jacky,</p>
+
+<p>肯定要讓你失望了，因為您所提及的項目，仍然只會出現在我的新書中，不過我會試著撰寫相關的文件與簡報，感謝您對本軟體的興趣。</p>
+<span class="comments-post">由 <a href="http://jserv.sayya.org/">jserv</a> 發表於</MTIfNonEmpty> August 30, 2005 01:17 PM</span>
+</div>
+<div class="comments-body">
+<p>不知jserv是否关注过fbui项目。fbui中的一些创意是否能和xorz结合起来？想象中...</p>
+<span class="comments-post">由 <a href="mailto&#58;tpunix&#64;126&#46;com">tpu</a> 發表於</MTIfNonEmpty> August 30, 2005 05:36 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

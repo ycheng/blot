@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 窺探 .bss section</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002029.html" title="以 C 語言實做 Functional Language 的 Currying" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002031.html" title="開機見 Hello World" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002029.html">« 以 C 語言實做 Functional Language 的 Currying</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002031.html">開機見 Hello World »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">June 19, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">窺探 .bss section</h3>
+
+幾年前只是對系統設計感到困惑，沒想到「<a href="http://blog.linux.org.tw/~jserv/archives/001750.html">分析 GCC 對 Hello World 的重重布幕</a>」一類的舉動，竟成為激勵自我成長的目標，實在始料未及。拜 C 語言這種「披著高階語言羊皮的低階語言之狼」所賜，我們可透過稍早 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001853.html">自我印列 ELF 簽名</a>] 所提及的途徑，探索記憶體位址背後的意義。同樣地，我們也可從實驗觀察 GNU/Linux 中 ELF (executable and linkable format) 格式執行檔裡頭 .bss section 的呈現，關於這部份的背景知識，可參閱 Jollen 整理的 [<a href="http://www.jollen.org/blog/2007/01/no-zero-initialized-in-bss.html">.bss section：C 語言所種下的因</a>] 與 [<a href="http://www.jollen.org/EmbeddedLinux/BSS_Section_Concepts.html">BSS Section 觀念教學</a>] 等文章，本文則針對「窺探」的手法作補充。<br />
+<br />
+「窺探」ELF 執行檔有許多途徑，我們當然可用 binutils 裡面的 readelf / objdump 工具，但這裡我們直接用程式自我列印，筆者給定的程式如下：
+<pre class="code" id="codemain" style="margin: 6px;"><span class="keyword">#include</span> &lt;stdio.h>
+
+<span class="keyword">extern</span> <span class="keyword">int</span> __bss_start, _end;
+
+<span class="keyword">int</span> a, b, c, d;  <span class="comment">/* un-initialized */</span>
+
+<span class="keyword">int</span> main()
+{
+        <span class="keyword">int</span> *ptr;
+        a = 1, b = 2, c = 3, d = 4;
+
+        <span class="keyword">for</span> (ptr = &amp;__bss_start; ptr != &amp;_end; ptr++) {
+                printf(<span class="literal">"%d\n"</span>, *ptr);
+        }
+        <span class="keyword">return</span> 0;
+}</pre>
+為行文便利，此小程式命名為 [<a href="http://jserv.sayya.org/helloworld/bss.c">bss.c</a>]，咱們就先試著執行看看。在筆者的電腦安裝有 gcc 3.4 與 4.3 兩個版本，先用 gcc-3.4 看看：<pre class="code" id="codemain" style="margin: 6px;">
+$ gcc-3.4 -xc bss.c && ./a.out
+0
+4
+1
+2
+3
+</pre>
+由上可見，C 語言程式碼中的 int a, b, c, d 在宣告的時候，並未給定數值，也就是「未作初始化」，這樣的變數在 ELF 的角度來看，就存放於 .bss section，而在 main() 中，這四個變數都在執行時期 (runtime) 被給定數值，上述的程式透過迴圈，將給定的 1, 2, 3, 4 等值都印列出來 (儘管順序不是預期的遞增排列，不過本文不會深入分析)，這是怎麼做到的呢？關鍵之處就在於一開始宣告的這行：
+<pre class="code" id="codemain" style="margin: 6px;"><span <span class="keyword">extern</span> <span class="keyword">int</span> __bss_start, _end;
+</pre>
+注意到此行前方的 "extern" 關鍵字，在 GNU Toolchain 會對名稱為 "__bss_start" 與 "_end" 的符號作特別處理，在預設的 linker script 中，會給定輸出 ELF 執行檔的 .bss section 的資訊，重點是，經過這樣的操作後，"__bss_start" 與 "_end" 只是 label 而非真正的變數，所以，並不佔用真正的記憶體空間。在 C 語言中，我們可取得其位址作指標的尋訪過程，以逐一得知 .bss section 各元素的內容值，這下似乎明暸了，但回顧剛剛的執行輸出，我們不免對其中的 "0" 感到困惑，是啊，這值到底從哪邊來？<br />
+<br />
+在找尋答案之前，筆者改用 gcc-4.3 來作測試，其執行輸出如下：<pre class="code" id="codemain" style="margin: 6px;">
+$ gcc-4.3 -xc bss.c && ./a.out
+0
+0
+4
+1
+2
+3
+</pre>
+感覺起來就更離奇了，「又」多了一個 "0" 的輸出？！看來是 GNU Toolchain 對 ELF 執行檔額外施加了「魔法」，看來得搬出其他工具來分析。先觀察 objdump 對 .bss section 的分析：<pre class="code" id="codemain" style="margin: 6px;">
+$ gcc-3.4 -xc bss.c && objdump --section=.bss -x a.out
+...
+SYMBOL TABLE:
+08049598 l    d  .bss	00000000              .bss
+08049598 l     O .bss	00000001              completed.1
+0804959c g     O .bss	00000004              d
+080495a0 g     O .bss	00000004              a
+080495a4 g     O .bss	00000004              b
+080495a8 g     O .bss	00000004              c
+</pre>
+可以發現，事實上程式碼的 &__bss_start 勢必指向 ELF 執行檔透過 Program Loader 映射到記憶體中的 BSS 區域，而我們在程式中尋訪 .bss section 中的元素，大抵就是依照上面的 SYMBOL TABLE 的排列方式，而之前那個印列出的 "0" 數值，就是 "completed.1" 這個符號的內含值。同理，我們觀察透過 gcc-4.3 編譯時的分析結果：
+<pre class="code" id="codemain" style="margin: 6px;">
+$ gcc-4.3 -xc bss.c && objdump --section=.bss -x a.out
+...
+SYMBOL TABLE:
+0804a014 l    d  .bss	00000000              .bss
+0804a014 l     O .bss	00000001              completed.6625
+0804a018 l     O .bss	00000004              dtor_idx.6627
+0804a01c g     O .bss	00000004              d
+0804a020 g     O .bss	00000004              a
+0804a024 g     O .bss	00000004              b
+0804a028 g     O .bss	00000004              c
+</pre>
+在這份輸出中，我們看到形似剛剛 "completed.1" 的 "completed.6625" 符號，也多了名稱為 "dtor_idx.6627" 的符號。為了揭開謎團的真相，筆者又用 gcc-4.1 與 gcc-4.2 作實驗，這兩者得到與 gcc-3.4 編譯時相仿的輸出，但 "completed." 符號後方的數值名稱是不一樣的，由此可歸納，gcc-4.3 引入了一些我們未察覺的修改，而在 gcc-3.4 到 gcc-4.2 之間的 GNU Toolchain 所編譯的 ELF 執行檔，其 .bss section 也隱含我們不甚明暸的細節。<br />
+<br />
+未完，待續<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 June 19, 2008 05:33 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>非常好奇为什么“順序不是預期的遞增排列”，请指教，谢谢！</p>
+<span class="comments-post">由 <a href="mailto&#58;weihu&#64;virginia&#46;edu">Wei</a> 發表於</MTIfNonEmpty> June 20, 2008 02:10 AM</span>
+</div>
+<div class="comments-body">
+<p>我猜順序是因為 parse tree 之 traverse 的關係？</p>
+<span class="comments-post">由 <a href="http://c9s.blogspot.com/">c9s</a> 發表於</MTIfNonEmpty> June 22, 2008 01:59 AM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2030" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

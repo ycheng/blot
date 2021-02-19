@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 為學之道</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001259.html" title="Hula 展示" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001261.html" title="JavaTwo 2005 與會紀錄" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001259.html">« Hula 展示</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001261.html">JavaTwo 2005 與會紀錄 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">August 23, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">為學之道</h3>
+
+早上起來看 Slava Pestov 的 blog [<a href="http://www.jroller.com/page/slava?entry=james_gosling_doesn_t_understand">James Gosling doesn't understand sin/cos?</a>]，如果只從字面來看，這是說 Java 之父 [<a href="http://blogs.sun.com/roller/page/jag">James Gosling</a>] 不懂 sin(x) 與 cos(x) 嗎？這故事的開始是 James Gosling 問及為何 sin(x) 與 cos(x) 函數的週期是 2*PI 呢？而且為何不能以角度取代徑度呢？這種懷疑的出發點顯然不是為了數學，而是從一個架構設計師的角度，就 sin(x) 與 cos(x) 兩函數的輸入域與輸出域來說，都必須使用 primitive type 最大的型態來表示，在轉化數學問題到實際的程式碼，是否可能兼顧便利性與資料儲存的效能？<br />
+<br />
+我相信 James Gosling 絕對懂這些數學原理，而且絕對是這方面的高手，但我認同他的懷疑，有時候我們必須從不同的觀點來看待既有的事實。而 Slava 在 blog 就是從此出發，他擔憂如果程式設計師只有懷疑與假設，並沒有廣泛的求證，那麼，或許以後開根號的函式實做輸出型態或許是 int。Rob 在評論解釋道：<ul>
+Well, David, you are missing one of Slava's key points: people who do not perform calculus for fun over lunch write bad code, those who were the apple of their calc teacher's eyes are coding poets. In fact, a hilarious metrics study was done recently showing that mathematicians and scientists write appallingly bad code. But Slava doesn't like metrics, which is somewhat bizarre, given that he professes his love for math.
+</ul>
+後面的評論就更有意思了，所謂的 "Good code" 到底是如何？成功的專案是否都有文質俱佳的程式碼呢？<br />
+<br />
+而讀到這裡，讓我想起昨天閱讀 [<a href="http://s88.dyndns.org/">s88's blog</a>] 的一篇 [<a href="http://s88.dyndns.org/?p=193">16th VLSI/CAD conference</a>]，我對 VLSI 一無所知，但是劉教授的 Neuroelectronics 領域的確很吸引我，並且我對建構的過程有更大的興致，s88 提到：<ul>
+劉教授除了解釋專業上的問題外，也說了很多做研究上的重點：<ul>
+<li>先定義大問題，小問題就會浮現。</li>
+<li>不要把自己框住，以劉教授為例，他的主要研究領域是晶片設計，但是，為了研究視網膜晶片，他必須和醫學院的醫生合作，他自己也成了半個眼科醫師，這一點讓我有新的體悟。</li>
+<li>不恥下問、不恥下問、不恥下問，劉教授至少說了三次以上的『不恥下問』，他認為，既然不要把自己框住，就必須與他人合作，可是，如何放下自己的身段，讓他人與你合作的愉快，是一件重要的事！</li>
+</ul></ul>
+我大概是從高中三年級開始，自修 Computer Science 的部份知識，如之前 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001258.html">Realtime Kernel</a>] 所提及，當時已經很明確的設計目標，至少要設計一個 kernel 出來。必須承認的是，大學教育給我最大的收穫並不是 computer science，而是人格的震撼，但這過程中，我有幸可以接觸到當時一流的人物，比方說成大電機博士班的 unixer 學長。<br />
+<br />
+適度的懷疑與假設是必要的，而問題在於求證的過程，我們該如何「不恥下問」的放下身段投入去作？這絕對是相當值得去思考的議題。在 s88 的 blog 文後，提到「研究生的為學之道」，基本上這對我來說，是很遙遠的名詞，作為一個中輟生，光 paid work 可能就弄得昏天暗地，更別說進修了。不過，清大電資學院院長吳誠文教授提到幾個重點，倒是可以看看：<ul>
+<li>大學教育與研究所教育最大的不同，就是研究生必須去開創新的知識，有別於大學生，只是知識的消費者。</li>
+<li>閱讀可以增加思想的深度以及廣度。</li>
+<li>碩士生的研究目標：<ul>
+survey -> study -> verification -> justification -> presentation
+presentation is the most important thing!</ul></li>
+<li>敬業是做任何事成功的要素！</li>
+</ul>
+我沒有受過完整的「高等教育」，大概也難以理解箇中的真諦，但與其作為一個知識的消費者，我喜歡開拓自己的見識，用雙手把一些想法實現出來，或許這就是驅使我成長的動力。至於說「碩士生的研究目標」，程序似乎在我高中時代就體驗過了，當然，那時候做的東西只是小玩具，但後來才慢慢能理解 "presentation is the most important thing!" 這句話的寓意。<br />
+<br />
+在 2004 年以前，我還是孤芳自賞的躲在電腦前面鑽研自己的計畫與領域，雖然有透過 IRC 與 mailing-list 來跟國外的開發者交流，但基本上還是很封閉的，頂多是之前在學校參加比賽做了幾場簡報，但範圍還是很小。而從 2004 年中開始，陸續整理自己的心得，寫了幾篇短文，並且做了 Presentation，一開始，我並不是有高度教育熱誠的人，面對台下來自不同背景的聽眾，總覺得不知如何進行，不過後來從 F/OSS 技術的推廣，以及對於特定領域的經驗分享後，就慢慢比較有感覺，也獲得不少 feedback 與指教，這些對於我釐清觀念與確立目標，很有幫助，也因此，在 [<a href="http://blog.linux.org.tw/~jserv/archives/001245.html">2005 下半年計畫</a>] 提到，我還是會繼續作公開的分享，看看能否激發出更多有趣的效應。<br />
+<br />
+有時候信箱會收到一些朋友的來信，問及「XXX 技術該如何學習？」、「要如何學習 Linux 程式設計？」「如何作 VM 一類的基礎建設？」、... 等等，我想為學之道就正如前面所述及的，自己去體驗還是最重要的。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 August 23, 2005 08:05 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>一直关注J的每一天的心得，很多次很想与之分享一些想法，无奈恐遭人讥笑....今天翻出去年的文章好好品味一番，谈到研究生的为学之道........... 学会消化，学会表达，学会创造，不正是气学中的吸气（进），呼气（出），运气（创造）. J给了我极大的动力：）</p>
+<span class="comments-post">由 <a href="mailto&#58;Sakur&#46;hwa&#64;iasolution&#46;net">Sakur</a> 發表於</MTIfNonEmpty> July 13, 2006 06:18 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

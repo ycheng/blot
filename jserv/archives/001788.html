@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: SCIM 輸入法架構簡要分析</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001787.html" title="測試 drivel" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001791.html" title="vdswitcher - X Window 的桌面工作區切換程式" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001787.html">« 測試 drivel</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001791.html">vdswitcher - X Window 的桌面工作區切換程式 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">September 11, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">SCIM 輸入法架構簡要分析</h3>
+
+對岸的 [<a href="http://blog.csdn.net/absurd/">absurd</a>] 對 [<a href="http://www.scim-im.org/">SCIM 輸入法架構</a>] 做了簡要的分析，可參考 [<a href="http://blog.csdn.net/absurd/archive/2006/08/31/1151404.aspx">SCIM輸入法架構分析(上)</a>] 與 [<a href="http://blog.csdn.net/absurd/archive/2006/08/31/1151524.aspx">SCIM輸入法架構分析(下)</a>]，探討了 SCIM 以下組合元件：<ul>
+<li>配置模塊(Config)</li>
+<li>輸入法前端模塊(FrontEnd)</li>
+<li>輸入法引擎模塊(IMEngine)</li>
+<li>進程間通信模塊(IPC)</li>
+<li>輸入法Panel</li>
+<li>輸入法Helper</li>
+</ul>
+並提供相關的 UML 圖解，除此之外，因為 SCIM 在設計時即考量到手寫輸入這類複雜的處理，在第二部份也針對這個議題，探討 SCIM 個別元件間的互動，相當引人入勝，篇幅不長但深入，推薦閱讀。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 September 11, 2006 09:38 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>谢谢您的推荐。您的BLOG写得非常好，不但有技术深度，文采也非常棒，我差不多读过您全部BLOG文章。以前很少用Linux GUI应用程序，如果不是您的几篇关于输入法的讲稿，或许到现在我还不知道SCIM呢。再次谢谢您。</p>
+<span class="comments-post">由 <a href="http://blog.csdn.net/absurd">absurd</a> 發表於</MTIfNonEmpty> September 16, 2006 08:35 PM</span>
+</div>
+<div class="comments-body">
+<p>To absurd,</p>
+
+<p>謝謝，不過要能像您一般高密度地分享與整理技術細節，實在不容易呢，而且 SCIM 1.x 架構定案這麼久，我還是首次見到分析內部設計的中文文件 (日本人倒是相當熱心地分析好大一部份)，頗受用。</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> September 17, 2006 03:13 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

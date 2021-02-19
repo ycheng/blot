@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Is Design Dead?</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001434.html" title="ubuntu - Linux for Animals" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001436.html" title="思索 C++" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001434.html">« ubuntu - Linux for Animals</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001436.html">思索 C++ »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 16, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Is Design Dead?</h3>
+
+連續感冒一週，在家修養時閱讀了幾篇 Martin Fowler 大師的 [<a href="http://www.martinfowler.com/articles.html">著作</a>]，在此之前我拜讀過他的經典著作《Refactoring : Improving the Design of Existing Code》，第一章影片出租系統的 Refactoring 案例，仍讓我記憶猶新。之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001322.html">鼯鼠與軟體專案開發</a>] 略述個人在軟體專案開發的過程中，作為專案經理或架構設計者，總不免需要作個稱職的「鼯鼠」，特別設計所謂「消費性電子」的軟體架構，更是如此。<br />
+<br />
+在我小時候，曾規劃些 J2EE 的軟體專案 (based on Jserv)，除了 transaction 與 storage 的限制外，我可以明確說出軟體上的瓶頸與設計缺失，而如果是設計手機、PDA，或是其他手持裝置裡面的軟體架構，可就完全不是這回事。首先，基於價格或非技術的考量，可能使用根本不熟悉的硬體架構，也被迫作些高度 risky 的假設與評估，同時還要作硬體、baseband，或者 RF 的妥協，針對這些議題提出一狗票的 workaround，儘管最後作報告時，總是能畫出一系列漂亮的系統架構圖，然而，我們都知道，背後隱藏了難以計數修補的痕跡。<br />
+<br />
+在我設計初期，僅可能透過 GoF 裡面經典的 23 個 Design Pattern，比方說我現在規劃的軟體架構中，使用了 Factory Method，其重要的概念就是讓提出一個(或一系列) Abstract Interface，讓 subclasses 決定該 instance-ize / initialized 哪些 classes，然而有許多非預期的因素涉入，看起來優雅的設計，被迫重複修改，把 "Dirty-hack" 嵌入，我遇過最有趣的例子就是設計 UI framework，結果原本理想的情況，竟然因為硬體的 backlight 考量而修改得面目全非。最近可能會花些時間思考 protocol / communication framework 與 software stack，果然我遇到不少來自 RF 的議題...<br />
+<br />
+又，在時程不斷的壓縮、功能無止盡的要求，codebase 已經開始腐爛，本來是葡萄美酒的設計，現在則是酸溜溜的老醋，怎不叫設計者擔憂？(也難怪感冒一直沒好轉)，該如何進行 Refactoring，就是相當重要的議題，Martin Fowler 大師的 [<a href="http://www.martinfowler.com/articles/designDead.html">Is Design Dead?</a>] 給予我頗多啟發，而 Ai92 做了簡體中文的翻譯 [<a href="http://blog.csdn.net/ai92/archive/2005/11/23/535430.aspx">設計已死？</a>]，可以加速我們閱讀的理解，對面大師的著作，不容我這個駑鈍者置喙，不過我到是想到一些有趣的議題。<br />
+<br />
+Kent 提出的概念中，"Do The Simplest Thing that Could Possibly Work" 是相當重要的指導原則，對於許多要求 "Time-to-Market" 的專案 (老實說，我看到這個字，會不自覺的發抖)，幾乎可以說僅可能把現有的 solution 強加組合，甚至執行者都靠著「自覺」完成基本的設計，而且，重點是根本就沒有一家廠商 (至少是可能的 partner) 能對該專案所需要的軟硬體技術有足夠的掌握能力，以工廠的思維進行下，會發生什麼後果，可想而知。在 Refactoring 的過程中，我們檢視了既有的問題，在資源較充分而且經驗也足夠的前提下，原本的「直覺」逐漸演化為「複雜但必要的設計」，這就如 Martin Fowler 在 [<a href="http://www.martinfowler.com/articles/designDead.html">Is Design Dead?</a>] 一文所說的 "What on Earth is Simplicity Anyway?"。<br />
+<br />
+注意：以上僅是個人經驗，與目前任職的公司或工作團隊無直接關係，請勿自行臆測。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 16, 2006 12:04 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>http://william.cswiz.org/blog/archives/2006-01-09/conceptual-integrity/</p>
+<span class="comments-post">由 <a href="mailto&#58;barabbas&#64;gmail&#46;com">b6s</a> 發表於</MTIfNonEmpty> January 16, 2006 04:26 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

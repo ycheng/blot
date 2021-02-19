@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 初等概念</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001582.html" title="interactive QProcess 處理" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001584.html" title="ZTerm : 以 Java 撰寫的 VT100 Telnet/SSH 終端機" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001582.html">« interactive QProcess 處理</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001584.html">ZTerm : 以 Java 撰寫的 VT100 Telnet/SSH 終端機 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 18, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">初等概念</h3>
+
+* 以下內容純屬個人經驗，不與任何公司有直接關聯 *<br>
+<br>
+標題的「初等」取自數學的「初等代數」，也就是說 C/C++ 中處於「奠基」的「基本」，至於這些項目是否「基本」，實在見仁見智。在我看來，C Programming Language 本來就是用來寫作業系統，所以相關的基礎知識也要有一定的理解，至少也需要對硬體有認知，這樣才有機會徹底理解 C 語言，而 C++ 就更不說了，不僅 ISO C++ spec 複雜難懂，又得遷就於 C++ compiler 許多不合標準但陳窠已久的特性，又得將其 OOPL 的理念貫徹於專案開發，這使得沒有對特定 domain knowledge 有足夠掌握者，難以透過 C++ 將其發揮得淋漓盡致。孫文先生說過「知難行易」，我想每個 Programmer 在這些艱辛的歷程中，還是得抱持無比的樂觀，才能逐步累積成果。<br>
+<br>
+因為專案需求，我需要對語言層面與 compiler implementation 有一定程度的掌握，過程中吃了很多苦，記得之前只是對 C++ 應用程式的某些奇特的 machine code 感到好奇，結果一路從 GCC frontend 追到 RTL backend optimizations，釐清 instruction scheduling 的細節，最後才發現 GCC 多少做了一些 tradeoff，這些「苦工」又非作不可，畢竟「只有痛苦能把深度帶給我們」。<br>
+<br>
+從我「出道」以來，給了應試者 N 次面試，老實說，每次壓力都很大，我一直到了今年才好了些 (終於有部份應徵國防訓儲者年紀略小)。之前我都是面試學歷比我高一大截、年紀比我大的應試者 (將心比心：倘若我是三十歲的中年男子，千里迢迢來到某企業應試，可是發現竟然是一個貌似高中生的小夥子很嚴苛的出題，還不時被質詢：「到底有沒有學過或深入接觸過 XXX ！？」時，該做何感想)，而台灣的 IT 環境儘管口口聲聲說重視教育訓練，但是實際的成效還是很有限，更別說 training 到底對導入專案開發有無可具體的突破，也因此，只好排除些「有潛力但缺乏概念」的求職者。<br>
+<br>
+說來說去，我還只是一個工讀生罷了，社會經驗也不足，只是有時候被抓去「協助過濾未來的同事」，但就我個人的觀點，只要 Resume 有提到，我就得去「驗證」，而最常遇到的情況就是應徵 Device driver 或韌體工程師，並在 Resume 提到已有 C/C++ 基礎，然而內部實在沒有足夠的資源可作充分的訓練與技術培養，所以只好考些基本概念，像是 const T*、T *const，及 T const* 的差異、volatile object、C 的 register 對最佳化產生的衝擊、_init 的實做、某段 code snip 在 c89 與 c99 中的行為差異、GCC 的 GNU extensions、... 等等。或許我們會懷疑：又不是要去實做 C/C++ compiler，有必要對語言層面作如此的認知嗎？的確，倘若今天只是要作演算法的驗證，其實很多細節根本不必釐清，就如同在大學院校中 programming 課程的經驗一般，但就 device driver 這個項目，程式語言是跟硬體打交道的途徑，任何未知或者混沌不明的情況 (如在 c99 釐清，但在 c89 還是沒有界定的議題)，都可能在整個系統醞釀出致命的危機。<br>
+<br>
+有許多領域我沒資格置喙，但就效能提昇與軟體最佳化的觀點來說，不僅要如 Delphi 神殿前的神諭所言："Know Thyself."，徹底瞭解自己的技術水準、團隊合作、理性，及 Programmer 應有堅忍不拔的精神，評估可投入的整體資源並作設定預期目標外，前述的「基本概念」更是另一項關鍵。最近除了忙專案進度外，也安排了一些面試，跟形形色色的應試者訪談是很特別的經驗，要完全客觀、公正，是很困難的，所以我只好著重在技術的項目，根據不同的背景與項目，還得提出不同的問題與設想可能的情境。<br>
+<br>
+為什麼要把一個面試搞得如此複雜？我說不上來，我完全沒有任何刁難的意思，但倘若一次面談的結果，可有助於知悉自我的技術，無論是他人的肯定或者他人針對不足的提醒，我想都是很正面的。我記得曾去某公司應試，或許是因為我當時既無文憑又無經驗，主考官給了一系列高挑戰性的題目，甚至要我當場寫 MD5 的實做，其餘的技術問題我已經忘記了，但如今想想，當時如果沒有受到這些刺激，說不定那些盲點將讓我面對未來的挑戰時，無法有足夠的基礎來克服。很幸運地，後來對方公司給我工作機會，為此我還與當時的主考官聊了許多，或多或少影響了我日後作類似工作時的心態。<br>
+<br>
+我陸續將心得記錄下來，不過實在太零星，還不足以發表。Embedded.com 有許多優秀的文章，其中不少針對前述的「基本概念」做了不錯的闡述，比方說以下幾篇：<ul>
+<li>[<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=174300478">Place volatile accurately</a>]</li>
+<li>[<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=175801310">Volatile as a promise</a>]</li>
+<li>[<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=180205632">Qualifiers in multilevel pointers</a>]</li>
+<li>[<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=26807176">Mapping memory</a>]</li>
+<li>[<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=55301821">More ways to map memory</a>]</li>
+</ul>
+這些都是從具體的案例，並且基於嵌入式系統所需特定目的，先是發現問題，繼而改善並作進一步的探究，相當精彩，希望未來有機會，也可採取此引導的方式，無論是跟應試者，還是作內部訓練時。<br>
+<br>
+話說回來，自己又是幾斤兩？蘇格拉底說的好：「我唯一所知的，是我一無所知」，只有不斷進修與思考，才能讓我們看清更多事實，而我一直到現在，才發現儘管已經有幾年 programming 經驗，也在 IT 產業從事過相關設計，但這幾年的經驗用一句話來說就是「只有三個月的程式設計經驗，只不過重複了 N 次」，汗顏、汗顏！<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March 18, 2006 02:51 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>你的有些問題太過瑣碎且不必要了，例如 "某段 code snip 在 c89 與 c99 中的行為差異、GCC 的 GNU extensions" 等等。有時候我們會陷入一種迷思，考我們熟析的領域裡面的艱難項目，而當對方答不到我們滿意的答案時，就會有所不以為然，這是迷思阿，要跳脫這種迷思才能更進步，共勉之。</p>
+<span class="comments-post">由 <a href="http://www.csie.ntu.edu.tw/~r88052/">胡岳偉</a> 發表於</MTIfNonEmpty> March 19, 2006 03:12 PM</span>
+</div>
+<div class="comments-body">
+<p>hi 胡兄，</p>
+
+<p>感謝指教，的確是太瑣碎了，不過也不是每次 interview 都會考，而我認為更可貴的是，對方怎麼面對這類的問題，以及該以什麼途徑去解決。我以前會比較喜歡演算法題目，可以作全面性的分析，不過這樣似乎會讓整個過程變得冗長。無論如何，總覺得搞技術到一定程度後，不免會鑽牛角尖而不自知，於是就陷入您所說的「迷思」，該如何再進步，我實在要好好地思考。</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> March 19, 2006 05:14 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: GParts - GTK+/GNOME 與 Qt/KDE 應用程式的整合</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001391.html" title="Which OS are You?" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001393.html" title="王安電腦的興衰" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001391.html">« Which OS are You?</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001393.html">王安電腦的興衰 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">December 17, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">GParts - GTK+/GNOME 與 Qt/KDE 應用程式的整合</h3>
+
+一個成熟的桌面系統，面對眾多桌面元件的整合，勢必要提出一套強而有效的 Desktop Object Model 來作整合，在KDE 來說是 KParts/DCOP，而 GNOME 是 Bonobo/Mico，這裡先略過這兩者複雜的設計概念，從 KDE 1.9.x (KDE 2.0 pre-release) 到現在的 KDE 3.5，甚至是未來的 KDE 4，可以預見的是，KParts 技術仍是 KDE 的核心元件，正如 [<a href="http://jserv.sayya.org/kde/zh_TW_kpart-techno.html">KDE 元件技術</a>] 一文所描述的長存著。大約在 2001 年，當 FreeDesktop.org 成立後，有一組人馬試著修改 GTK+ 與 Qt 來達到兩者的整合，而今，終於開花結果了。GTK+ 底層的 event loop 是建構於 GLib，而 Qt 則是一套複雜的 C++ Framework，如果要讓兩者協同運作，首先就會遇到 main loop 的議題，Norbert 實做出一個新的途徑，稱為 [<a href="http://www.scheinwelt.at/~norbertf/common_main_loop/">Common Main Loop</a>]，目標就是在適度更動 Qt MainLoop 的前提下，透過 Adaptor Pattern 來讓 KDE/Qt 與 GNOME/GTK+ 應用程式可共存，並不造成 GUI blocking，使用 [<a href="http://www.scheinwelt.at/~norbertf/common_main_loop/files/">download Qt-glibmainloop patch and demo</a>] 後，可得到以下的展示畫面：<br>
+<center><img src="http://www.scheinwelt.at/~norbertf/common_main_loop/crossover_screenshot.png"></center>
+這個「雜交」 (crossover) 的畫面，我們可以發現，在同一個 process 中，可以完美的讓 GTK+ widget 與 Qt widget/component 在同一個 event loop，而不會互相干擾。<br><br>
+
+以上的 [<a href="http://www.scheinwelt.at/~norbertf/common_main_loop/">Common Main Loop</a>] 就是為了 [<a href="http://gparts.blogspot.com/">GParts</a>] 布局，咱們來看看該網頁提到的重點：<ul>
+GParts is an in-process component system for GNOME based on shared libraries and is in fact KDE's KParts adoption. GParts also implies Bonobo integration. That means that Bonobo components may be wrapped into GParts components and vice versa. The goal is to acheive the highest possible degree of interoperability between GNOME and KDE component models.<br>
+GParts for GNOME is everything that KParts is for KDE.
+Based on shared libraries, it provides the developer with the following objects and abstractions:<ul>
+<li>parts - reusable widgets with XML description of UI layout and actions</li>
+<li>mainwindow, whose interface is described in XML so that it is able to embed parts</li>
+<li>a part manager, an objects whose task is to handle the activation and the deactivation of the parts</li></ul>
+The most important aspect of GParts is its integration with Bonobo, so that together these two models form a consistent bipolar component model, providing a feature-complete development platform for GNOME developers that is fully compatible with KDE component system.
+</ul>
+KParts 在提出之前，KDE Team 曾採用過 CORBA 作為 Desktop Component Model 現身前的空缺，不過 CORBA 實在太複雜了，而 KDE 核心設計是很重視 Design Patterns 與 code reusability 的，在 mailing-list 與 IRC 上都有相當巨量的討論 (應該說辯論)，甚至我們可以用 [<a href="http://www.cse.unsw.edu.au/~drt">DRT: A design recovery/reverse engineering tool</a>] 這樣的工具來分析 KDE Application Framework 與其上眾多應用程式的視覺關係，就可以發現整合度的高寡，而 GNOME 則基於歷史因素，沿用了 Bonobo/Mico 的 CORBA 為基礎的設計作為桌面元件技術，事實上，必須開發相當多組 API 予以包裝，才能達到符合使用的境界，有部份 GNOME 開發者已經開始思考捨棄 Bonobo/Mico 的設計。Dmitry M. Shatrov 提出 GParts 就是希望在 GNOME 重現 KDE 相當成功的 KParts 技術，並且承諾與原有的 Bonobo 維持整合。KParts 相當重要的優勢除了其 lightweight (有興趣的話，可以去閱讀 GNOME Bonobo 的 source code，看看其如何與 Mico 這個 CORBA 接軌，再去看看之間捨棄多少 CORBA 的特徵)，再來是其 XML-GUI 的整合，簡單來說，如 KWord 這個 KOffice 元件要 Embeding 到 KSpread 同樣是 KOffice 的另一個元件時，原本附屬於 KWord 的 GUI，如選單，會 seamless 的一併 Embeding 到 KSpread 的選單中，並且能協同運作，這是桌面技術相當大的突破。<br><br>
+
+在 KDE 2.1 後，KDE 的核心架構開發者 Matthias Ettrich、Simon Hausmann，以及 Lars Knoll 共同提出 XParts 這個延伸 KDE KParts 的新設計，當時要克服的問題就是，如何讓 Konqueror 與 Mozilla 這兩個不同的程式，達到彼此間的整合，亦即引用 Mozilla 的 Gecko HTML render engine 作為 Konqueror 的一部分，但是，很明顯的，第一個問題就是，如何把 Mozilla 放進 Konqueror 的視窗中，那時候的解決方案是直接透過 X Window System 的 Repaint 機制，適度的分割資源處理方式，再來，第二個問題就是如何作 In-process / Out-process component communications，也包含如何直接使用 XML-GUI 來操控 Mozilla 的功能。在 XParts 的設計中，相當巧妙的運用 KDE DCOP 技術，透過以下三個 DCOP 元件：<ul>
+<li>XPartHost - 在使用 XParts 的 user side，作為該程式與非 KDE 元件的溝通</li>
+<li>XPartManager - 於 component side，管理所有 component instance</li>
+<li>XPart - 包裝非 KDE 元件，並允許跟 KDE 元件溝通</li>
+</ul>
+於是，我們可以發現，當 Konqueror 試圖載入 Mozilla 作為 HTML renderer 時，會先建立 KMozillaPart 的 KParts 元件，而其隨後會執行 kmozilla，並產生 XPartHost與 XPartManager，這樣一來，DCOP 將可把  KMozillaPart 與 kmozilla 作牽連，進行溝通。整體來說，XParts 是 out-of-process component 技術的展現，然而，就目前的發展來說，已經沒有太強烈的需求，Konqeueror 本身的 HTML rerndering 品質已經相當高。<br><br>
+
+不同於 XPart 複雜的途徑，GParts 是期望用直接在 GNOME 對應 KParts 的觀念，引用網頁上的資訊：<ul>
+Now lets look what benefits GParts offers. At first, GParts may be viewed just as a direct mapping of KParts into GNOME's development environment, so that GNOME developers don't need to care if they are interoperating with KDE and embedding a Qt-based component or are reusing GNOME's native Gtk+ code. All they need to know is that they are working with KParts. Similarly, KDE developers may use Gtk+ GParts components as if they were native KParts components. This is possible because KParts and GParts will be in fact two implementations of the same technology and will share as much code as possible. The only difference is that KParts has bindings for KDE/Qt while GParts has bindings fot GNOME/Gtk+.<br>
+
+GParts to KParts mapping will be quite straightforward and consist of a simple bridge between Qt and Gtk+ objects and a namespace mapping, so that KParts may be viewed as GParts and vice versa. I've tested embedding Gtk+ widgets iside Qt and Qt widgets inside Gtk+ within a single main loop and there's a working example as a proof of concept.
+</ul>
+XParts 當初運用 X Repaint 機制，就是希望不修改既有 GTK+ 或其他 X 應用程式的前提，透過 DCOP 來達成彼此應用程式的通訊，並包裝為 KDE 的 KParts，然而這付出的成本事實上也相當可觀，GParts 的方式則更為直接，Dmitry Shatrovs 做了一個相當成功的展示，說明如何將 KParts (以 Konqueror 為例) 嵌入 GTK+ 應用程式中：<br>
+<center><img src="http://www.scheinwelt.at/~norbertf/common_main_loop/gparts_khtml_demo.png"></center>
+[<a href="http://www.scheinwelt.at/~norbertf/common_main_loop/">Common Main Loop</a>] 在這之間扮演相當重要的角色，同一的 process 中，我們看到 Qt 與 GTK+ 元件有不同的外觀，但 Konqueror 得以 Embedded in GTK+ 中。這也引發許多思考，其中，其大成者為 [<a href="http://www.scheinwelt.at/~dmitrys/">Common Desktop Component Model</a>]，試圖建構在以上技術的基礎上，讓 KDE 與 GNOME 的互動有更好的表現，在 [The way to go] 提到一個重點：<ul>
+Look once again at the Environment Integrity rule. It is impossible to create a universal object model that would map well enough onto existent programming environments. The consequence is that there should not be one! One does not need an object model to reuse others' code. What is needed is a well-defined interface to access components. Now I will describe such an interface. It is the result of several redesigns and it looks simple enough to me to be close to the right thing.
+</ul>
+基於這個想法，有 D-Bus 為基礎的 CDCM (Common Data Communication Model) conventions、 強調 Native Implementation，亦即不走複雜的 Distributed Computing Model，同時我們也看到可能的使用方式：<ul>
+GObject *component = cdcm_get_kparts_component_for_name ("khtml");
+GReadOnlyComponent *khtml = CDCM_READONLY_PART (component);<br>
+
+g_readonly_component_open_url (khtml, "http://gnome.org");
+</ul>
+我們在 GTK+/Glib 要求 khtml 的 component creation，並將 action 帶予該 instance，至於 object activation / invocation 的方式也可望相當簡單且一致：<ul>
+cdcm_call_method (CDCM_COMPONENT (khtml), "set_load_images", TRUE, CDCM_TYPE_BOOLEAN, NULL);
+</ul>
+另外，Norbert 也提出 [<a href="http://www.scheinwelt.at/~norbertf/dadapt/">Generic desktop adapter library</a>] 的新提案，引用網頁的介紹：<ul>
+The "Generic desktop adapter" tries to solve the problem by intruducing a standardized interface between applications and desktops. Filechoosers and VFS are considered as part of the host-desktop and not the application. Unlike the common-VFS, common password storage and common configuration system approach the "Generic desktop adapter" doesn't require abrupt changes of the internal design of desktop libraries and applications. The migration can be gradual. The only major requirement is the "common main loop". IPC-bridges or threads don't seem rationale for this purpose.
+</ul>
+試圖建構一系列 desktop adater 來標準化這些介面設計與通訊議題，看來未來的桌面技術發展相當有趣 :-)
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 December 17, 2005 11:45 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>辛苦了  非常棒的BLOG      加油~~</p>
+<span class="comments-post">由 <a href="mailto&#58;sun&#46;range&#64;gmail&#46;com">Range</a> 發表於</MTIfNonEmpty> December 23, 2005 04:46 PM</span>
+</div>
+<div class="comments-body">
+<p>jserv 前辈，牛~~~~~~</p>
+<span class="comments-post">由 <a href="http://linux.hiweed.com">huahua</a> 發表於</MTIfNonEmpty> December 30, 2005 06:51 PM</span>
+</div>
+<div class="comments-body">
+<p>樂見linux的desktop發展愈來愈好，並非只有xp才能做得到:)</p>
+<span class="comments-post">由 <a href="mailto&#58;realmax6&#64;yahoo&#46;com&#46;tw">wumins</a> 發表於</MTIfNonEmpty> April  9, 2006 07:46 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

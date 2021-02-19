@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Realtime Kernel</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001256.html" title="在 Action Dual PC Modem 上體驗 uClinux" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001259.html" title="Hula 展示" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001256.html">« 在 Action Dual PC Modem 上體驗 uClinux</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001259.html">Hula 展示 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">August 22, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Realtime Kernel</h3>
+
+今天開始研讀 Realtime Linux 實做的技術，首先我閱讀一篇訪談 [<a href="http://www-128.ibm.com/developerworks/power/library/pa-nl14-directions.html'>Shrinking slices: Looking at real time for Linux, PowerPC, and Cell</a>]，多年從事 Realtime 系統開發的 Paul E. McKenney，提供簡單扼要的觀點，PS3 的設計更是吸引我，雖然訪談沒有提到很多，但是後面列出的參考項目更是精彩，所以我繼續閱讀大師的文章 [<a href="http://www.linuxdevices.com/articles/AT4721170330.html">A comparison of real-time Linux approaches</a>]。這篇文章介紹很多以 Linux Kernel 為基礎的 Realtime 途徑，相當明確，可惜是對應的實做介紹付之闕如，所以我就繼續找資料了。<br>
+<br>
+想起書桌上有一本經典著作《即時多工核心程式設計》：<br>
+<center><img src="http://pemclab.cn.nctu.edu.tw/W3lib/covers/hu95a.jpg"></center><br>
+這是交大電控的胡竹生教授與尹燕陶的大作，我在高中三年級的時候開始拜讀，書中的 TauOS 實做給我很大的助益，我得以在 MS-DOS 上體驗 Object-based Realtime Kernel 的實做，並從中培養作業系統的理論基礎，爾後我開發 Venux Kernel 與 JK (Just the Kernel)，都受這本大作的影響。還在一中宿舍的我，常常拾起這本大作，思索箇中的奧妙，宿舍沒有電腦，更沒有網際網路，所以我用傳統書信，寫給胡教授詢問一些細節，沒想到還收到回信，真是好感動...<br>
+<br>
+屈指一算，高中三年級拜讀的兩本書 -- [<a href="http://www.jjhou.com/jjwbooks-polymorphism-in-cpp.htm">《多型與虛擬》</a>] 與這本大作，至今對我影響甚大，否則也不會如 blog 所及 [<a href="http://blog.linux.org.tw/~jserv/archives/001255.html">我為何選擇工程技術，而非其他行業？</a>]，更別說能有些微的成果了。<br>
+<br>
+嗯，繼續來研究 Realtime Kernel。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 August 22, 2005 08:04 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

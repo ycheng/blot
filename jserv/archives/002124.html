@@ -1,0 +1,426 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 透過 gdb 動態改變程式執行示例</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002123.html" title="隨手畫 - Amber" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002125.html" title="演講：深入淺出Hello World (完結篇)" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002123.html">« 隨手畫 - Amber</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002125.html">演講：深入淺出Hello World (完結篇) »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">December 08, 2009</h2>
+
+<div class="blogbody">
+
+<h3 class="title">透過 gdb 動態改變程式執行示例</h3>
+
+昨日在修平技術學院講課時，想到一個可展示透過 gdb 動態改變程式執行的範例，適用於 GNU/Linux IA32 (x86) 硬體架構。考慮以下程式碼 (func.c)：<pre class="code" id="codemain" class="code" style="margin: 6px;">
+<span class="keyword">#include</span> &lt;stdlib.h>
+
+<span class="keyword">void</span> hello() {
+  puts(<span class="literal">"Hello World!"</span>);
+  exit(1);
+}
+
+<span class="keyword">void</span> func() {
+  <span class="keyword">void</span> *buffer[1];
+}
+
+<span class="keyword">int</span> main() {
+  func();
+  <span class="keyword">return</span> 0;
+}</pre>
+從這個簡單的小程式，我們可以發現：<ul>
+  <li>函式 hello() 無法被呼叫執行</li>
+  <li>函式 func() 宣告了一個可存放 pointer 的空間，被 main() 呼叫後，即行返回</li>
+</ul>
+但我們可透過 gdb，在不重新編譯的情況下，動態改變程式執行的流程，讓函式 hello() 得以被呼叫。首先將 debug info 加進前述的小程式，以利分析追蹤：<pre class="code" id="codemain" class="code" style="margin: 6px;">
+$ gcc -g -o func func.c
+</pre>
+接著就祭出 gdb：<pre class="code" style="margin: 6px;">
+$ gdb func
+GNU gdb (GDB) 7.0-ubuntu
+...
+Reading symbols from /home/jserv/testbed/func...done.
+</pre>
+先對函式 main() 作反組譯：<pre class="code" style="margin: 6px;">
+(gdb) disassemble main
+Dump of assembler code for function main:
+0x0804843a &lt;main+0>:	push   %ebp
+0x0804843b &lt;main+1>:	mov    %esp,%ebp
+0x0804843d &lt;main+3>:	call   0x8048432 &lt;func>
+0x08048442 &lt;main+8>:	mov    $0x0,%eax
+0x08048447 &lt;main+13>:	pop    %ebp
+0x08048448 &lt;main+14>:	ret    
+End of assembler dump.
+</pre>
+我們可留意到兩個細節：<ul>
+  <li>反組譯輸出包含 "call 0x8048432" 的指令，該位址即函式 func() 的進入點</li>
+  <li>"call" 指令的下個指令的位址為 "0x08048442"，如果我們能在這個位址動手腳，就可達到預期的目標，比方說額外呼叫函式 hello()</li>
+</ul>
+方向確立後，咱們來發揮 gdb 的威力。將中斷點設定於函式 func()：<pre class="code" style="margin: 6px;">
+(gdb) break func
+Breakpoint 1 at 0x8048438: file func.c, line 10.
+</pre>
+儘管函式 func() 的進入點為 "0x08048432"，不過 gdb 會停留在函式內首個有效的指令，我們可見該位址是 "0x8048438"，對照反組譯輸出：<pre class="code" style="margin: 6px;">
+(gdb) disassemble func
+Dump of assembler code for function func:
+0x08048432 &lt;func+0>:	push   %ebp
+0x08048433 &lt;func+1>:	mov    %esp,%ebp
+0x08048435 &lt;func+3>:	sub    $0x10,%esp
+0x08048438 &lt;func+6>:	leave  
+0x08048439 &lt;func+7>:	ret    
+End of assembler dump.
+</pre>
+設定好中斷點後，執行這個小程式，動態觀察程式的狀態，預期會停在剛剛設定的函式 func()：<pre class="code" style="margin: 6px;">
+(gdb) run
+Starting program: /home/jserv/testbed/func 
+
+Breakpoint 1, func () at func.c:10
+10	}
+</pre>
+回顧稍早的程式碼列表，預留的 void *buffer[1] 給予我們一個機會去探索 x86 stack 的變化。因為 buffer[0] 實際位於函式 func() 的宣告中，而將索引值往後指呢？來看看：<pre class="code" style="margin: 6px;">
+(gdb) print *(buffer + 1)
+$1 = (void *) 0xbffff808
+(gdb) print *(buffer + 2)
+$2 = (void *) 0x8048442
+</pre>
+gdb 告訴我們，*(buffer + 2) 的內含值就是位址 "0x8048442"，有沒有覺得很熟悉呢？不就是函式 main() 裡頭，指令 call 的下一個位址嗎？回顧一下反組譯輸出：<pre class="code" style="margin: 6px;">
+(gdb) disassemble main
+Dump of assembler code for function main:
+0x0804843a &lt;main+0>:	push   %ebp
+0x0804843b &lt;main+1>:	mov    %esp,%ebp
+0x0804843d &lt;main+3>:	call   0x8048432 &lt;func>
+0x08048442 &lt;main+8>:	mov    $0x0,%eax
+0x08048447 &lt;main+13>:	pop    %ebp
+0x08048448 &lt;main+14>:	ret    
+End of assembler dump.
+</pre>
+至此，透過 gdb 動態改變程式執行的範例就剩下臨門一腳，在 gdb 的提示符號打入以下指令，要求將位址對齊到函式 hello()：<pre class="code" style="margin: 6px;">
+(gdb) print *(buffer + 2) = (void(*)()) hello
+$3 = (void *) 0x8048414
+</pre>
+繼續程式執行，來檢驗我們的想法：<pre class="code" style="margin: 6px;">
+(gdb) c
+Continuing.
+Hello World!
+
+Program exited with code 01.
+</pre>
+由上可見：<ul>
+  <li>函式 hello() 的確被執行到，所以輸出 "Hello World!" 字樣</li>
+  <li>函式 hello() 的 puts() 呼叫後又呼叫 exit(1)，將控制權交給 gdb，並顯示 "Program exited with code 01"，符合預期</li>
+</ul>
+這個技巧也是許多 shellcode 的基礎原理之一，實務上在低階處理的 runtime code patching 也是不可或缺的。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 December  8, 2009 02:42 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>你好，请问一下，怎么我执行你的代码发现有些不同呢？<br />
+NU gdb 6.3.50-20050815 (Apple version gdb-966) (Tue Mar 10 02:43:13 UTC 2009)<br />
+Copyright 2004 Free Software Foundation, Inc.<br />
+GDB is free software, covered by the GNU General Public License, and you are<br />
+welcome to change it and/or distribute copies of it under certain conditions.<br />
+Type "show copying" to see the conditions.<br />
+There is absolutely no warranty for GDB.  Type "show warranty" for details.<br />
+This GDB was configured as "i386-apple-darwin"...Reading symbols for shared libraries ... done</p>
+
+<p>(gdb) disassemble main<br />
+Dump of assembler code for function main:<br />
+0x00001fe1 :	push   %ebp<br />
+0x00001fe2 :	mov    %esp,%ebp<br />
+0x00001fe4 :	sub    $0x8,%esp<br />
+0x00001fe7 :	call   0x1fd9 <br />
+0x00001fec :	mov    $0x0,%eax<br />
+0x00001ff1 :	leave  <br />
+0x00001ff2 :	ret    <br />
+End of assembler dump.<br />
+(gdb) disassemble func<br />
+Dump of assembler code for function func:<br />
+0x00001fd9 :	push   %ebp<br />
+0x00001fda :	mov    %esp,%ebp<br />
+0x00001fdc :	sub    $0x18,%esp<br />
+0x00001fdf :	leave  <br />
+0x00001fe0 :	ret    <br />
+End of assembler dump.<br />
+(gdb) break func<br />
+Breakpoint 1 at 0x1fdf: file func.c, line 10.<br />
+(gdb) run<br />
+Starting program: /Users/karpar/func <br />
+Reading symbols for shared libraries ++. done</p>
+
+<p>Breakpoint 1, func () at func.c:10<br />
+10	}<br />
+(gdb) print *(buffer+1)<br />
+$1 = (void *) 0x0<br />
+(gdb) print *(buffer+2)<br />
+$2 = (void *) 0x0<br />
+(gdb) <br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;jack&#46;hu&#46;cool&#64;gmail&#46;com">karpar</a> 發表於</MTIfNonEmpty> December  8, 2009 09:49 PM</span>
+</div>
+<div class="comments-body">
+<p>karpar,</p>
+
+<p>感謝分享 Apple Mac 上執行的狀況，理由很簡單，因為是 i386-apple-darwin :)</p>
+
+<p>軟體的組態與 GNU/Linux 不同，是符合預期的。小弟這邊沒有實際的系統可以分析 Apple Mac 的 Mach-O 格式執行檔。</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> December  8, 2009 11:08 PM</span>
+</div>
+<div class="comments-body">
+<p>大概明白了你的意思了，謝謝jserv</p>
+<span class="comments-post">由 <a href="mailto&#58;jack&#46;hu&#46;cool&#64;gmail&#46;com">karpar</a> 發表於</MTIfNonEmpty> December  9, 2009 11:21 AM</span>
+</div>
+<div class="comments-body">
+<p>不了解您要表達的是什麼？是在探討Stack內容對程式的影響嗎？<br />
+如果要以gdb動態改變程式執行，是x86沒有PC暫存器可以直接修改嗎？<br />
+還是您有其它想表達的意義？</p>
+<span class="comments-post">由 <a href="mailto&#58;danny&#46;bc&#46;chang&#64;gmail&#46;com">Danny Chang</a> 發表於</MTIfNonEmpty> December 14, 2009 11:33 PM</span>
+</div>
+<div class="comments-body">
+<p>To Danny,</p>
+
+<p>延伸的意思就是，若在 func() 多加一行：</p>
+
+<p>*(buffer + 2) = (void(*)()) hello</p>
+
+<p>那麼，在 x86 架構上，會導致額外去呼叫 hello()，當然整個 call stack 也會被破壞</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> December 15, 2009 12:36 PM</span>
+</div>
+<div class="comments-body">
+<p>博主并没有讲明原理。在IA32的GDB环境下，调用栈从高地址向低地址“生长”，函数内第一个变量的内存地址向回（也就是向栈底位置，即向高地址）偏移该变量的内存长度，再偏移函数参数所占的内存长度后得到的内存地址中存放着该函数的返回地址，将该地址存储的地址值改成你要调用的函数FUNC的指针地址，就可以在该函数结束后自动跳转到FUNC函数执行。</p>
+<span class="comments-post">由 <a href="http://adreaman.com">adreaman</a> 發表於</MTIfNonEmpty> December 30, 2009 11:39 PM</span>
+</div>
+<div class="comments-body">
+<p>To adreaman,</p>
+
+<p>感謝補充，受教了</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> December 30, 2009 11:49 PM</span>
+</div>
+<div class="comments-body">
+<p>在OpenSolaris 2009.06中也正常。<br />
+GNU gdb 6.3.50_2004-11-23-cvs<br />
+Copyright 2004 Free Software Foundation, Inc.<br />
+GDB is free software, covered by the GNU General Public License, and you are<br />
+welcome to change it and/or distribute copies of it under certain conditions.<br />
+Type "show copying" to see the conditions.<br />
+There is absolutely no warranty for GDB.  Type "show warranty" for details.<br />
+This GDB was configured as "i386-pc-solaris2.11"...<br />
+(gdb) disassemble main<br />
+Dump of assembler code for function main:<br />
+0x08050d08 :	push   %ebp<br />
+0x08050d09 :	mov    %esp,%ebp<br />
+0x08050d0b :	sub    $0x8,%esp<br />
+0x08050d0e :	and    $0xfffffff0,%esp<br />
+0x08050d11 :	mov    $0x0,%eax<br />
+0x08050d16 :	add    $0xf,%eax<br />
+0x08050d19 :	add    $0xf,%eax<br />
+0x08050d1c :	shr    $0x4,%eax<br />
+0x08050d1f :	shl    $0x4,%eax<br />
+0x08050d22 :	sub    %eax,%esp<br />
+0x08050d24 :	call   0x8050d00 <br />
+0x08050d29 :	mov    $0x0,%eax<br />
+0x08050d2e :	leave  <br />
+0x08050d2f :	ret    <br />
+End of assembler dump.<br />
+(gdb) break func<br />
+Breakpoint 1 at 0x8050d06: file func.c, line 10.<br />
+(gdb) disassemble func<br />
+Dump of assembler code for function func:<br />
+0x08050d00 :	push   %ebp<br />
+0x08050d01 :	mov    %esp,%ebp<br />
+0x08050d03 :	sub    $0x4,%esp<br />
+0x08050d06 :	leave  <br />
+0x08050d07 :	ret    <br />
+End of assembler dump.<br />
+(gdb) run<br />
+Starting program: /export/home/roy/func </p>
+
+<p>Breakpoint 1, func () at func.c:10<br />
+10	}<br />
+(gdb) print *(buffer + 1)<br />
+$1 = (void *) 0x8047a2c<br />
+(gdb) print *(buffer + 2)<br />
+$2 = (void *) 0x8050d29<br />
+(gdb) print *(buffer + 2) = (void(*)()) hello<br />
+$3 = (void *) 0x8050ce0<br />
+(gdb) c<br />
+Continuing.<br />
+Hello World!</p>
+
+<p>Program exited with code 01.<br />
+</p>
+<span class="comments-post">由 <a href="http://scrappedblog.blogspot.com/">Roy</a> 發表於</MTIfNonEmpty> January  2, 2010 03:59 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2124" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

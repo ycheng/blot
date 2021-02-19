@@ -1,0 +1,248 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 夢想、希冀、實踐</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002055.html" title="建立 Gtk+/WebKit 的 API 文件以加速開發流程" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002057.html" title="以 C 語言實做 Javascript 的 prototype 特性" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002055.html">« 建立 Gtk+/WebKit 的 API 文件以加速開發流程</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002057.html">以 C 語言實做 Javascript 的 prototype 特性 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">July 31, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">夢想、希冀、實踐</h3>
+
+早上在書房隨性閱讀時，想到美國現代火箭先驅 Robert Hutchings Goddard 在 1904 年畢業生致詞時，道出一句精闢入裡的格言：<ul class="code" style="margin: 6px;">
+"It has often proved true that the dream of yesterday is the hope of today, and the reality of tomorrow." 
+</ul>
+<center><img src="http://www.iki.rssi.ru/mirrors/stern/stargaze/Sfigs/goddard.jpg" width="237" height="142" /></center><br />
+誠然，昨日的夢想，成為今日的希冀所在，而更具體落實於明日，這幾乎是人類歷史最生動的描述。Robert H. Goddard 十六歲那年，拜讀 H.G. Wells 的科幻小說名著《世界大戰》(War Of The Worlds)，就一心嚮往太空旅行。在家鄉美國麻州，閱讀小說而獲得靈感的他，爬上一顆櫻桃樹，望著一望無際的寬廣草原，幻想著能操控得以登錄火星的裝置，自此，生命大受啟發，就訂定該日，也就是十月 19 日為紀念日，時值 1899 年。<br />
+<br />
+科幻大師 Arthur C. Clarke 曾說過，人們談論對新興的事物，通常要經歷以下三階段的變化：<ul>
+  <li>「胡扯！癡人說夢，別提了」</li>
+  <li>「這或許是可行，但值得嗎？」</li>
+  <li>「我早就說這是個好主意！」</li>
+</ul>
+無疑地，宇宙航行正是如此。從人類有知覺開始，仰望天際的星宿，對穹廬的高度神秘保有敬意，卻在內心建構著探索太空的幻想。無論是中國淒美的牛郎織女、嫦娥奔月傳說，抑或希臘羅馬的神話，再再都反映著，這是最深刻又浪漫的夢想。工業革命後，人類技術快速發展，過去許多不可能之事，逐漸有改觀，在二十世紀初，仍有一些科學家撰文，定論太空航行是徹底的空想，但 Robert Goddard 不這麼想，以堅毅不拔的精神，獨自在二十世紀上半葉，進行火箭飛行的試驗與著手理論的研究。<br />
+<br />
+劃時代的里程碑，是在 1926 年三月 16 日，Robert Goddard 在姑媽 Effie 的農場發射史上第一個液態燃料火箭，儘管飛行時間只有 2.5 秒，最大的高度僅 12 公尺，飛行距離為 55 公尺，但這完全具備現在火箭的特徵：為保持缺乏尾翼的火箭得以穩定飛行，沈重的引擎位在頭部，而攜帶液態氧和汽油的燃料筒位在尾部，靠管線以輸送液態燃料。在 1945 年去世前，他已累積超過兩百個關於火箭技術的專利，爾後，人類甚至在 1969 年踏上了月球表面，這當然是奠基於他與後繼者勇於挑戰而執著自我信念的研發。<br />
+<br />
+閱讀這位「太空航行技術之父」的事蹟時，我們很難想像，過去報章媒體是如何不斷抨擊訕笑這位畢生都在宣揚火箭飛行與星體探測的 Robert Goddard，這些，不過就是幾十年前的事。1921 年《紐約時報》的編輯駁斥 Robert Goddard 對於火箭在太空飛行的火箭的提案，認為真空的環境下，沒有空氣的反作用力，火箭不可能航行，自此，對這位古怪的教授，各方的抨擊此起彼落。甚至，到了 1956 年，Robert Goddard 死後，英國皇家天文學家還表示：「太空旅行完全是胡扯」。至此，不禁想到愛因斯坦的名言：「常識就是人到十八歲為止所累積的各種偏見」，僅用「常識」去看待這群憑靠著昨日的夢想、追逐今日美好的期待的實踐者，是不是太果斷了？1957 年，蘇聯人造衛星 Sputnik I 就開始環繞地球，1961 年載人航行器也進入太空，這說明了什麼？<br />
+<br />
+無獨有偶，歷史上，處處可見人們對科技發展的錯誤評估，就在 Robert Goddard 爬上櫻桃樹而矢志太空航行的 1899 年，當時的美國專利局局長都爾就說：<ul class="code" style="margin: 6px;">
+ 「所有能被發明的東西，都早已被發明出來了」
+</ul>
+上天安排如此的巧合，豈不是人類歷史上，讓人拍案叫絕的笑話嗎？Robert Goddard 等人，在飽受質疑與抨擊的年代，仍堅定自己的信念，因為他們瞭解關於流體力學、燃料，發動機，和機械結構等廣泛又深入的背景知識，藉此設計現代多節火箭。「過去、現在、未來」又使命性地對照於「夢想、希冀、實踐」，是我們都該瞭然於心的，這也將是人生最美好的體驗。<br />
+<br />
+1994 年，美國人文心理學之父 Rollo May 過世後，一篇發表於《人文心理期刊》的追悼文章提到，他生前耕褥思緒的研究室，在牆上貼有一首詩，部份試譯如下：<ul class="code" style="margin: 6px;">
+        有隱士般的靈魂<br />
+        蟄伏寄居於<br />
+        自足的靜謐裡<br />
+        有星星般的靈魂<br />
+        疏離錯落於<br />
+        寂寥的蒼穹上<br />
+        有拓荒者般的靈魂<br />
+        篳路藍縷的作為新路標<br />
+        立於高速公路未曾鋪設的地段<br />
+        但讓我站於道路的一旁<br />
+        成為人類的<br />
+        一位朋友
+</ul>
+Rollo May 的生活備忘錄，不是沙特的證詞，也非佛洛伊德的文集，更不是尼采的語錄，而僅是一位平凡詩人福斯的詩。這貌似不凡的平凡，可說是 Rollo May 一生的寫照，更廣泛來說，先驅如 Robert H. Goddard 者，不正拓荒於這嶄新的地帶？儘管路途是如此艱辛又孤獨執著，而他們穩健的步伐，隱約透露其天真純美的初衷。佇立於書房的窗口，喃喃道著：<ul class="code" style="margin: 6px;">
+"the dream of yesterday is the hope of today,<br />
+and the reality of tomorrow."
+</ul>
+參考資料：<ul>
+  <li>Wikipedia - [<a href="http://en.wikipedia.org/wiki/Robert_Goddard_(scientist)">Robert H. Goddard</a>]</li>
+  <li>Dr. David P. Stern, [<a href="http://www.iki.rssi.ru/mirrors/stern/stargaze/Sgoddard.htm">Robert Goddard and His Rockets</a>]</li>
+</ul>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 July 31, 2008 05:51 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>好句。</p>
+<span class="comments-post">由 <a href="mailto&#58;Rifurdoma&#64;gmail&#46;com">Rifur</a> 發表於</MTIfNonEmpty> July 31, 2008 08:15 PM</span>
+</div>
+<div class="comments-body">
+<p>曾經也有這麼一句：<br />
+有夢最美，希望相隨</p>
+<span class="comments-post">由 <a href="mailto&#58;aga1983&#64;hotmail&#46;com">aga</a> 發表於</MTIfNonEmpty> July 31, 2008 09:26 PM</span>
+</div>
+<div class="comments-body">
+<p>紐約時報的編輯的知識構成是不是有問題，動量定理是很難理解的問題嗎？那時已經 1921 年了。</p>
+<span class="comments-post">由 <a href="http://longgi.yo2.cn">zx.longinus</a> 發表於</MTIfNonEmpty> August  3, 2008 09:41 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2056" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

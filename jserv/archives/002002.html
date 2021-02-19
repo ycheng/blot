@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Xenomai/SOLO 開始進行 pSOS API 模擬</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002001.html" title="LatencyTop：分析系統延遲的工具" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002003.html" title="QtWebKit: 將 Web 2.0 技術帶入行動通訊的系統設計" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002001.html">« LatencyTop：分析系統延遲的工具</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002003.html">QtWebKit: 將 Web 2.0 技術帶入行動通訊的系統設計 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 30, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Xenomai/SOLO 開始進行 pSOS API 模擬</h3>
+
+之前在 [<a href="http://blog.linux.org.tw/~jserv/archives/001994.html">Xenomai/SOLO：提供 Linux 使用者層級的 RTOS 模擬</a>] 提過 Linux realtime framework 專案 [<a href="http://www.xenomai.org/">Xenomai</a>] 透過 PREEMPT_RT 與 NPTL 等 Kernel 2.6 嶄新的 Realtime 能力提昇機制，提供 user-space 的 RTOS API 模擬，當時進行的項目是 [<a href="http://www.windriver.com">WindRiver</a>] 的 VxWorks/WIND，現在 GIT repository 中也展開 pSOS 的模擬工作。<br />
+<br />
+VxWorks 與 pSOS 都是 WindRiver 公司的 RTOS，在 Xenomai 2.x 的 RTOS skins 中也有對應的支援。Embedded RTOS 領域有別於其他系統軟體開發，主要因為多半是透過交叉發展的方式，依據需求而調整目標端 BSP，所以移植能力與彈性就是很重要的訴求，WindRiver 的這兩套 RTOS 解決方案正是如此的產品，兩者定位稍有不同，大抵來說，VxWorks 的開發難度較高，但允許較精細的操控，而 pSOS 則允許較直覺的開發模式，後者在手機領域應用頗廣泛，前者則在電信服務領域見長。致力於商業 Linux 應用的 MontaVista 從 1999 年即以強化 Linux 在 realtime 能力，訴求將過去採用 VxWorks 一類的電信領域系統，改以電信等級的 Linux，根據該公司 CTO 的說法，其考量點就在於，典型 RTOS 的應用考量到許多因素，比方說 programming model、API、效能，而日漸彰顯的項目則是軟體開發環境，這也是 Xenomai 一類專案的機會。<br />
+<center><img src="http://jserv.sayya.org/embedded/rtos2linux.gif" width="368" height="186" /></center>
+<br />
+經歷多年的發展，Linux 對於 POSIX 支援度提昇相當顯著，而 IEEE 1003 一類 Realtime 標準也逐漸透過 kernel 本質的修改，慢慢有機會達到接近成熟的表現，也因此，"Legacy to Linux" 就是重要的考量點。這裡的 "Legacy" 就是說發展封閉的 VxWorks、pSOS、VRTX和 uItron 一類的 RTOS，過去有太多 RTOS 的解決方案，其成長的緣故，就是對於資訊技術的急迫需求，相較於 Linux 蓬勃的發展、活躍於引入新技術，該如何將此類 "legacy" 技術對應於 Linux 開發環境呢？Xenomai 引入 skin/personality 的概念，實做對這些 "legacy" RTOS API 的模擬，對應到 Xenomai nanokernel API (稱為 nucleus)，最後再以 i-pipe 來搶佔 Linux kernel 的 interrupt 資源處理。上圖即簡要呈現 "Legacy to Linux" 的概念。<br />
+<br />
+從 Xenomai 2 邁入 Xenomai 3，有相當多 [<a href="http://www.xenomai.org/index.php/TaskMarket">待作事項</a>]，其中，念茲在茲的就是：<ul class="code" style="margin: 6px;">
+"Keep in mind: How to map on robust futexes for PREEMPT_RT support?"
+</ul>
+Xenomai-SOLO 可說是技術的里程碑，也相當於 Xenomai 3 關鍵技術的「試金石」，Philippe Gerum 對此 [<a href="https://mail.gna.org/public/xenomai-core/2008-03/msg00101.html">表示</a>]：<ul class="code" style="margin: 6px;">
+"Xenomai 3 is a matter of months, given that a significant part of the job will be directly available from the SOLO effort (i.e. have the RTOS emulators run in user-space natively).
+</ul>
+現在，我們有 VxWorks 與 pSOS 等 RTOS API 支援，而且開發也相當活躍，儘管基於本質上的落差，對於相容性，實做上會有相當程度的分歧 (詳見 vxworks/README 與 psos/README 這兩個檔案)，但大抵來說，醞釀許久的基礎建設，終於要邁入成熟了。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March 30, 2008 11:23 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2002" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Visual LDD : 視覺化動態函式庫呈現</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001981.html" title="不想讓你知道" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001983.html" title="聽雨" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001981.html">« 不想讓你知道</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001983.html">聽雨 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 07, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Visual LDD : 視覺化動態函式庫呈現</h3>
+
+傍晚慢慢自酒醉中甦醒，又繼續 hack Eclipse CDT，在分析 dynamic linker 時，發現電腦裡頭的 Gtk+ 程式都 linked 到 libstdc++，啊？！GNOME/Gtk+ 開發不是一直 [<a href="http://blog.linux.org.tw/~jserv/archives/001965.html">強烈支持慣C</a>] 嗎？先用 ldd 分析 gedit：<pre class="code" style="margin: 6px;">
+$ ldd /usr/bin/gedit | grep libstdc++
+	<b>libstdc++.so.6</b> =&gt; /usr/lib/libstdc++.so.6 (0xb6f3a000)
+$
+</pre>
+真是太詭異了，可是 gedit 又連結到一堆函式庫：<pre class="code" style="margin: 6px;">
+$ ldd /usr/bin/gedit | wc -l
+<b>80</b>
+</pre>
+八十個！該如何觀察分析呢？還好 [<a href="http://www.autopackage.org/">Autopackage</a>] 專案有個好用的工具 visual-ldd，直接將 gedit 塞進去可得以下圖形輸出：<br />
+<center><img src="http://jserv.sayya.org/misc/visual-ldd.png" /></center><br />
+由上往下看，gedit 是 Gtk+ 程式，Gtk+ 程式依賴 cairo 程式庫，而 cairo 程式庫依賴 libstdc++ (?!)，我們終於抓到兇手了，當然，這跟系統組態有些關聯 (Ubuntu hardy)，先不細究。visual-ldd 可以解讀 ELF 執行檔格式，分析動態函式庫的解析，並建立階層式表現，上圖的 [+] 即可進一步被展開。自 SVN 取得最新的 visual-ldd 並建構：<pre class="code" style="margin: 6px;">
+$ svn co svn://plan99.net/visual-ldd/trunk visual-ldd
+$ cd visual-ldd
+$ qmake-qt3
+$ make
+</pre>
+直接執行即可，不需安裝動作。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March  7, 2008 07:54 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>所有纯 C 的 Gtk 程序都依赖 C++ 库了……</p>
+<span class="comments-post">由 <a href="mailto&#58;jhuangjiahua&#64;gmail&#46;com">華華</a> 發表於</MTIfNonEmpty> March  7, 2008 09:31 PM</span>
+</div>
+<div class="comments-body">
+<p>不過 Ubuntu gutsy 時，cairo 是不相依於 libstdc++ 的：<br />
+$ ldd /usr/lib/libcairo.so.2<br />
+        linux-gate.so.1 =>  (0xffffe000)<br />
+        libfreetype.so.6 => /usr/lib/libfreetype.so.6 (0xb7e37000)<br />
+        libz.so.1 => /usr/lib/libz.so.1 (0xb7e22000)<br />
+        libfontconfig.so.1 => /usr/lib/libfontconfig.so.1 (0xb7df6000)<br />
+        libpng12.so.0 => /usr/lib/libpng12.so.0 (0xb7dd3000)<br />
+        libXrender.so.1 => /usr/lib/libXrender.so.1 (0xb7dcb000)<br />
+        libX11.so.6 => /usr/lib/libX11.so.6 (0xb7cda000)<br />
+        libm.so.6 => /lib/tls/i686/cmov/libm.so.6 (0xb7cb5000)<br />
+        libc.so.6 => /lib/tls/i686/cmov/libc.so.6 (0xb7b6b000)<br />
+        libexpat.so.1 => /usr/lib/libexpat.so.1 (0xb7b4a000)<br />
+        libXau.so.6 => /usr/lib/libXau.so.6 (0xb7b47000)<br />
+        libXdmcp.so.6 => /usr/lib/libXdmcp.so.6 (0xb7b42000)<br />
+        libdl.so.2 => /lib/tls/i686/cmov/libdl.so.2 (0xb7b3e000)<br />
+        /lib/ld-linux.so.2 (0x80000000)<br />
+        libpthread.so.0 => /lib/tls/i686/cmov/libpthread.so.0 (0xb7b26000)</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> March  7, 2008 09:59 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1982" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

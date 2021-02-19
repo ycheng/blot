@@ -1,0 +1,306 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>timhsu: March 2004 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~timhsu/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~timhsu/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~timhsu/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~timhsu/archives/2003_07.html" title="July 2003" />
+
+<link rel="next" href="http://blog.linux.org.tw/~timhsu/archives/2004_05.html" title="May 2004" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~timhsu/" accesskey="1">timhsu</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~timhsu/archives/2003_07.html">&laquo; July 2003</a> |
+
+<a href="http://blog.linux.org.tw/~timhsu/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~timhsu/archives/2004_05.html">May 2004 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">March 31, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000613"></a>
+<h3 class="title">Who Call Me?</h3>
+
+<p>誰叫我? 有用過 gdb 對 core 檔作 bt (backtrace) 嗎? 所謂 backtrace 是用來回溯檢查函式呼叫的關係, 以便了解是由那一個函式呼叫出問題的函式. 尢其是在許多錯綜複雜的龐大程式碼中, backtrace 是相當有用的 debug 技巧. 而這個題目則是用來討論如何在程式執行中作 backtrace.</p>
+
+<p>在實作這個技術前有兩個關鍵點要先解決:</p>
+
+<p>1. 如何取得此 function 返回位址.<br />
+2. 如何依據返回位址查知函式名稱.<br />
+關於第一點, 必須先了解堆疊(Stack) 和函式呼叫的處理關係. 堆疊是一個後進先出(Last-In-First-Out)的資料結構. 當呼叫某個函式時, 相關的暫存器(Register)就會被存入堆疊. 而當函式返回時便會從堆疊裡取回返回位址以便回到原來呼叫的下一個指令繼續執行. 至於暫存器(Register), 其中 EIP 是 Instruction Pointer, 用來指出 CPU 將要執行指令的位址. ESP 暫存器則是用來指向目前堆壘的位址.</p>
+
+<p>我們先寫個小程式來觀察可行性.</p>
+
+<p>----------- test.c -----------<br />
+void test()<br />
+{</p>
+
+<p>}</p>
+
+<p>int main()<br />
+{</p>
+
+<p>        test();<br />
+}<br />
+------------------------------</p>
+
+<p>[tim@localhost whocallme]$ gcc -o test test.c<br />
+[tim@localhost whocallme]$ gdb ./test<br />
+GNU gdb 5.3-25mdk (Mandrake Linux)<br />
+Copyright 2002 Free Software Foundation, Inc.<br />
+GDB is free software, covered by the GNU General Public License, and you are<br />
+welcome to change it and/or distribute copies of it under certain<br />
+conditions.<br />
+Type "show copying" to see the conditions.<br />
+There is absolutely no warranty for GDB.  Type "show warranty" for details.<br />
+This GDB was configured as "i586-mandrake-linux-gnu"...<br />
+(gdb) b test<br />
+Breakpoint 1 at 0x804832f<br />
+(gdb) r<br />
+Starting program: /home/tim/research/whocallme/test</p>
+
+<p>Breakpoint 1, 0x0804832f in test ()<br />
+(gdb) info reg<br />
+eax            0x0      0<br />
+ecx            0x1      1<br />
+edx            0x4014fe50       1075117648<br />
+ebx            0x4014e9a0       1075112352<br />
+esp            0xbffff698       0xbffff698<br />
+ebp            0xbffff698       0xbffff698<br />
+esi            0x40013880       1073821824<br />
+edi            0xbffff6f4       -1073744140<br />
+eip            0x804832f        0x804832f</p>
+
+<p>(gdb) disas test<br />
+Dump of assembler code for function test:<br />
+0x804832c <test>:       push   %ebp<br />
+0x804832d <test+1>:     mov    %esp,%ebp<br />
+0x804832f <test+3>:     pop    %ebp<br />
+0x8048330 <test+4>:     ret<br />
+End of assembler dump.</p>
+
+<p>ebp 暫存器值是 0xbffff698, 也就是原來的堆疊位址. 我們知道在呼叫函式時(call) CPU 會將返回位址存入堆疊, 因此可以從 ebp 暫存器的位址裡面找到我們需要的返回位址:</p>
+
+<p>(gdb) p/x *0xbffff698<br />
+$1 = 0xbffff6a8</p>
+
+<p>別忘了, 一進入此函式時 push $ebp 已被執行, 因此堆疊位址已被減 4, 所以要取得正確的值還得把 4 加回去才行:</p>
+
+<p>(gdb) p/x *(0xbffff698+4)<br />
+$2 = 0x8048346</p>
+
+<p>這個值應該就是 test() 正確的返回位址, 來檢查看看:</p>
+
+<p>(gdb) disas main<br />
+Dump of assembler code for function main:<br />
+0x8048331 <main>:       push   %ebp<br />
+0x8048332 <main+1>:     mov    %esp,%ebp<br />
+0x8048334 <main+3>:     sub    $0x8,%esp<br />
+0x8048337 <main+6>:     and    $0xfffffff0,%esp<br />
+0x804833a <main+9>:     mov    $0x0,%eax<br />
+0x804833f <main+14>:    sub    %eax,%esp<br />
+0x8048341 <main+16>:    call   0x804832c <test><br />
+0x8048346 <main+21>:    leave<br />
+0x8048347 <main+22>:    ret<br />
+0x8048348 <main+23>:    nop<br />
+0x8048349 <main+24>:    nop<br />
+0x804834a <main+25>:    nop<br />
+0x804834b <main+26>:    nop<br />
+0x804834c <main+27>:    nop<br />
+0x804834d <main+28>:    nop<br />
+0x804834e <main+29>:    nop<br />
+0x804834f <main+30>:    nop<br />
+End of assembler dump.</p>
+
+<p>果然在 call <test> 完後的下個指令是位於 0x8048346, 也就是 test() 返回位址.<br />
+接下來我們就用 C 和一些 assembly 配合來實作.</p>
+
+<p>------------- test-1.c ------------------<br />
+void test()<br />
+{<br />
+        unsigned long *stack;<br />
+        asm ("movl %%ebp, %0\n"<br />
+                : "=g"(stack));<br />
+        printf("ret address = 0x%x\n", *(stack+1));</p>
+
+<p>}</p>
+
+<p>int main()<br />
+{</p>
+
+<p>        test();<br />
+}<br />
+-----------------------------------------</p>
+
+<p>[tim@localhost whocallme]$ ./test-1<br />
+ret address = 0x8048394<br />
+[tim@localhost whocallme]$ gdb ./test-1<br />
+(gdb) disas main<br />
+Dump of assembler code for function main:<br />
+0x804837f <main>:       push   %ebp<br />
+0x8048380 <main+1>:     mov    %esp,%ebp<br />
+0x8048382 <main+3>:     sub    $0x8,%esp<br />
+0x8048385 <main+6>:     and    $0xfffffff0,%esp<br />
+0x8048388 <main+9>:     mov    $0x0,%eax<br />
+0x804838d <main+14>:    sub    %eax,%esp<br />
+0x804838f <main+16>:    call   0x804835c <test><br />
+0x8048394 <main+21>:    leave<br />
+0x8048395 <main+22>:    ret<br />
+0x8048396 <main+23>:    nop</p>
+
+<p>第一個關鍵點目前已解決, 再來要想想怎麼要能夠依記憶體位址查知所處的函式名稱呢?</p>
+
+<p>更多詳細的內容請看 <a href="http://info.sayya.org/~timhsu/research/whocallme"> Who Call Me? </a>一文.</p>
+
+
+
+<div class="posted">
+	由 timhsu 發表於 <a href="http://blog.linux.org.tw/~timhsu/archives/000613.html">03:41 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=613" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">March 25, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000610"></a>
+<h3 class="title">DOSBOX 下玩 CCH</h3>
+
+<p>這兩天在 <a href="telnet://bbs.sayya.org">Sayya BBS</a> 上有朋友討論圍棋、象棋,<br />
+後來更有人在 Linux 下直接玩一個古考的 DOS 遊戲 - 將族.<br />
+將族應該是我高中時候的遊戲, 當時的我對象棋非常著迷, 而將族的棋力又非常不錯, 我記得我曾經打敗過所有一星和二星的棋士, 但三星就很困難了.<br />
+今天我也去下載了 <a href="http://dosbox.sourceforge.net">DOSBOX</a>, Mandrake 的使用者可以至 cooker 下載 dosbox-0.61-1mdk, 原來 Mandrake 9.2 的 dosbox 0.58 版本太舊無法正常執行 CCH.<br />
+<img alt="cch.png" src="http://blog.linux.org.tw/~timhsu/archives/images/cch.png" width="640" height="480" border="0" /><br />
+Ok, 從上面這張 screenshot 來看效果不錯, 而且音樂音效也有出來, 美中不足的是偶爾 dosbox 會突然爆炸....</p>
+
+
+
+<div class="posted">
+	由 timhsu 發表於 <a href="http://blog.linux.org.tw/~timhsu/archives/000610.html">11:52 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=610" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">March 24, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000607"></a>
+<h3 class="title">悼 Maxtor 硬碟</h3>
+
+<p>去年(2003)六月時買的硬碟, 突然一聲不吭的就出問題了, 裡頭的資料啊.....</p>
+
+<p>由於平時沒有勤備份的習慣, 目前已服役數年的兩顆 Maxtor 也都還十分認真,<br />
+實在料想不到好好的 Maxtor 80G 用不到一年就出問題, 以致許多重要資料就<br />
+此遺失.</p>
+
+<p>底下的 messages 為已陣亡的 Maxtor 6Y080L0(/dev/hde) 記錄:</p>
+
+<p>Jan 13 10:58:39 debian kernel: Partition check:<br />
+Jan 13 10:58:39 debian kernel:  hda: hda1 hda2 hda3 < hda5 hda6 ><br />
+Jan 13 10:58:39 debian kernel:  hde:hde: dma_intr: status=0x51 { DriveReady See<br />
+Jan 13 10:58:39 debian kernel: hde: dma_intr: error=0x40 { UncorrectableError }<br />
+Jan 13 10:58:39 debian kernel: end_request: I/O error, dev 21:00 (hde), sector<br />
+Jan 13 10:58:39 debian kernel: hde: dma_intr: status=0x51 { DriveReady SeekComp<br />
+Jan 13 10:58:39 debian kernel: hde: dma_intr: error=0x01 { AddrMarkNotFound },<br />
+Jan 13 10:58:39 debian kernel: hde: dma_intr: status=0x51 { DriveReady SeekComp<br />
+Jan 13 10:58:39 debian kernel: hde: dma_intr: error=0x40 { UncorrectableError }<br />
+Jan 13 10:58:39 debian kernel: end_request: I/O error, dev 21:00 (hde), sector<br />
+Jan 13 10:58:39 debian kernel: hde: dma_intr: status=0x51 { DriveReady SeekComp<br />
+Jan 13 10:58:39 debian kernel: hde: dma_intr: error=0x40 { UncorrectableError }<br />
+Jan 13 10:58:39 debian kernel: end_request: I/O error, dev 21:00 (hde), sector<br />
+Jan 13 10:58:39 debian kernel: hde: dma_intr: status=0x51 { DriveReady SeekComp<br />
+Jan 13 10:58:39 debian kernel: hde: dma_intr: error=0x40 { UncorrectableError }<br />
+Jan 13 10:58:39 debian kernel: end_request: I/O error, dev 21:00 (hde), sector<br />
+Jan 13 10:58:39 debian kernel:  unable to read partition table</p>
+
+<p>當然, 遇到問題總不能馬上投降. 因此上網找尋了 <a href="http://smartmontools.sourceforge.net">smartmontools</a> 來檢測<br />
+使用 smartctl -H /dev/hde 確認了硬碟無法使用後才放棄.</p>
+
+<p>第二天出發至 NOVA 找店家, 並在店家的指示下到地下一樓的 Maxtor 維修中心,<br />
+填妥資料即馬上領了新的硬碟, 一樣還是 Maxtor 6Y080L0. 說到這, 我在 google<br />
+時注意到有許多人的 Maxtor 6Y080L0 在用不到一年即有類似的情況.</p>
+
+<p>此外, 我也特意買了新的 ATX Power 和硬碟散熱風扇, 希望這次的 Maxtor 6Y080L0<br />
+能服役更久些...</p>
+
+<p>底下是良好的 Maxtor 6Y080L0 狀況<br />
+[root@www src]# smartctl -H /dev/hde<br />
+smartctl version 5.30 Copyright (C) 2002-4 Bruce Allen<br />
+Home page is http://smartmontools.sourceforge.net/</p>
+
+<p>=== START OF READ SMART DATA SECTION ===<br />
+SMART overall-health self-assessment test result: PASSED</p>
+
+<p>最後,<br />
+希望大家的硬碟都身體健康, 並養成常洗手常備份的習慣, 謝謝.<br />
+</p>
+
+
+
+<div class="posted">
+	由 timhsu 發表於 <a href="http://blog.linux.org.tw/~timhsu/archives/000607.html">10:08 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=607" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

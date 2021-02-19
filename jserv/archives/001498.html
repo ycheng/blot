@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: truD 技術 : 提昇平面電視畫質的演算法</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001497.html" title="人非聖賢 - Bug-free 的迷思" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001499.html" title="ShUnit : Bourne Shell 的 Unit Test Framework" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001497.html">« 人非聖賢 - Bug-free 的迷思</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001499.html">ShUnit : Bourne Shell 的 Unit Test Framework »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February 08, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">truD 技術 : 提昇平面電視畫質的演算法</h3>
+
+過去在 LiteOn 服務時，雖然沒有實際的產出，但我也獲得許多啟發，決定投身於消費性電子裝置的核心技術與基礎建設開發。除了之前在 blog [<a href="http://blog.linux.org.tw/~jserv/archives/000938.html">光寶老闆的創業故事</a>] 述及的思想方面的啟發，而我也開始對 HDTV 與 LCD-TV 內部的技術產生了興趣，最近安排了很大比例的時間研讀相關的 spec，我才深深地感覺「觀賞電視是輕鬆的，但設計電視則是極端複雜的」。誠然，原本只是單純的涉獵呈像與 CATV，沒想到還讀到與政令法規相關的部份，還佔了好大的比例，不要說數位電視，我似乎對傳統電視的光學原理從來沒有足夠的認知。<br>
+<br>
+撇開這些議題不論，我注意到 Micronas 公司的 [<a href="http://www.micronas.com/products/trud/">truD</a>] 技術，這是一個提昇平面電視畫質的嶄新演算法，包含一系列的重要技術，並已經實做於硬體層面，可參考相關的報導：<ul>
+<li><a href="http://www.eettaiwan.com/ARTP_8800366828_480702.HTM">Micronas單片TV解決方案有助於提高開發效率</a></li>
+<li><a href="http://www.eettaiwan.com/ARTP_8800376060_876045.HTM">Micronas最新控制IC最佳化平面顯示器圖像品質</a></li>
+<li><a href="http://www.advancedimagingpro.com/article/printer.jsp?id=1522">Loewe Excels with Micronas' truD Frame Rate Converter</a></li>
+</ul>
+truD 技術為何能達到「視覺可分辨」的突破呢？簡單來說，平面顯示器原本就有較好的畫質，但如果平面電視由傳統的數位電視訊號作為驅動，這個優勢就無法充分發揮，這也是目前的技術障礙，何也？Broadcasting TV 原本就只鎖定 CRT 電視的特定顯示性能，而如果引入電影媒體的話，這個問題會更加惡化，原因是電影以 24 fps 播放，而美規電視系統以 60 fps 播放，是此，這會導致 frame-rate 的落差，又因為影像訊號通訊採 interlacing 格式，所有的落差會產生閃動、抖動，以及沿著對角線的鋸齒狀花點。<br>
+<br>
+在原理上來說，數位電視畫質的改善，必須先將電視訊號作 deinterlacing，以符合平面電視循序性的掃描模式，而 [<a href="http://www.micronas.com/products/trud/">truD</a>] 則繼續作以 24 fps 播放的影片與 50/60 ftp 的平面電視之間的 frame 落差中，插入損失的 frame 作為補償，也就是新聞稿提到的：<ul>
+Accurate vector-based motion estimation makes these fill-in frames as sharp as the originals. With this technology, the chip calculates the shift in position of every object on the screen between each frame. It then uses this information to precisely interpolate the object's location in intermediate frames. The result is steady real motion, instead of the edgy movements and blurring common to DTV displays that do not use truD.
+</ul>
+其他可作為參考的技術有動態對比增強(DCE)、照明和色彩銳利度增強(LSE/CSE)、選擇性色彩增強(SCE)、非線性色彩空間增強(NCE)及內容自適應空間雜訊降低(TNR) 等等。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 February  8, 2006 08:40 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1498" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

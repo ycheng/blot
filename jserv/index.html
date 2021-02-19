@@ -1,0 +1,573 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-195897-3";
+urchinTracker();
+</script>
+
+<title>Jserv's blog</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://blog.linux.org.tw/~jserv/rsd.xml" />
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="content">
+
+<div class="blog">
+
+
+
+
+	
+	<h2 class="date">
+	August 30, 2012
+	</h2>
+	
+
+	<div class="blogbody">
+	
+	<a name="002218"></a>
+	<h3 class="title">MPRC 的 UniCore32 架構</h3>
+	
+	其實不是什麼新聞，只是台灣較少這方面的訊息，我只是稍微紀錄。若說位於台灣新竹的 [<a href="www.andestech.com/en/">晶心科技</a>] 開發出的 Andes CPU/ISA 是「台灣芯」，那麼設址於北京的 [<a href="http://www.pkunity.com/">北大眾志微系統科技</a>] 開發出的 UniCore32 (32-bit 定點 CPU) 與 Unicore-F64 (64-bit 浮點 co-processor) 就是「中國芯」。儘管兩者在設計理念有所不同，但「堅持自行設計、自主開發，擁有自主知識產權的發展思路」這樣的指導原則卻是相同的。<br />
+<br />
+MPRC 的全名為 [<a href="http://mprc.pku.edu.cn/eng/intro.html">Microprocessor Research and Development Center </a>] (北京大學微處理器研究開發中心; 後三個字母恰好是偉大祖國的縮寫)，而北京北大眾志微系統科技有限責任公司則是 MPRC 商業化公司，成立於 2002 年 11 月，是中國專業從事自主 CPU 及系統設計的高新技術企業。在中國國家科技部、信息產業部、教育部等主管部門的重點支持下，北大眾志與 MPRC 提出了自己的 ISA (參考了 ARM 等 RISC)，研製出北大眾志 CPU 系統晶片。日前  Unicore32 架構的支援已經在 Linux Kernel, GNU Toolchain, QEMU 等主流 open source 系統中良好整合。<br />
+<br />
+依據 [<a href="http://www.pkunity.com/pkunity-3-130.asp">網頁的資訊</a>]，PKUNITY-3-130 SoC 的規格如下：<ul>
+  <li>基於 32-bit UniCore-Ⅱ ISA</li>
+  <li>採用 TSMC 0.18 um 製程</li>
+  <li>CPU 主頻為 600 MHz 到 1 GHz</li>
+  <li>SoC 整合 USB 2.0 OTG, IDE 控制器, 10M/100M/1000M Ethernet MAC, DDR-II 控制器, AC'97 控制器</li>
+  <li>具備 MPEG1/2/4 和 H.264 codec 加速器</li>
+</ul>
+<center><img src="http://www.pkunity.com/img/pkunity-3-130-chip.jpg" width="546" height="416" /></center><br />
+UniCore32 ISA 的編碼方式頗類似 ARM，但移除了 conditional execution 的部份。在 Unicore32 中，register specifiers 擴展為 5 bits，而直接表示式為 9 bit / rotated by 5 bit。在 load/store 方面，offset size 對 byte/word 為 14 bit、對 signed byte / half-word 為 10 bit。定義了 32 個通用暫存器，其中兩個被挪用作以下用途：<ul>
+  <li>r30: Link Register</li>
+  <li>r31: Program Counter</li>
+</ul>
+而在不同的執行模式，會有不同的 shadow register (這點根本就是 ARM 的翻版)。詳情可參閱 [<a href="http://mprc.pku.edu.cn/courses/organization/autumn2011/project/UniCore32_Instruction_Set.pdf">Unicore32 指令系統手冊</a>]。<br />
+	
+	
+	
+	<div class="posted">Posted by jserv at <a href="http://blog.linux.org.tw/~jserv/archives/2012/08/mprc_unicore32.html"> 8:08 PM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2218" onclick="OpenComments(this.href); return false">Comments (0)</a>
+	
+	
+	</div>
+	
+	</div>
+	
+
+
+
+
+</div>
+
+</div>
+
+
+<div id="links">
+
+
+
+<div align="center" class="calendar">
+
+<table border="0" cellspacing="4" cellpadding="0" summary="Monthly calendar with links to each day's posts">
+<caption class="calendarhead">September 2012</caption>
+<tr>
+<th abbr="Sunday" align="center"><span class="calendar">日</span></th>
+<th abbr="Monday" align="center"><span class="calendar">一</span></th>
+<th abbr="Tuesday" align="center"><span class="calendar">二</span></th>
+<th abbr="Wednesday" align="center"><span class="calendar">三</span></th>
+<th abbr="Thursday" align="center"><span class="calendar">四</span></th>
+<th abbr="Friday" align="center"><span class="calendar">五</span></th>
+<th abbr="Saturday" align="center"><span class="calendar">六</span></th>
+</tr>
+
+
+<tr>
+
+<td align="center"><span class="calendar">
+&nbsp;</span></td>
+
+
+<td align="center"><span class="calendar">
+&nbsp;</span></td>
+
+
+<td align="center"><span class="calendar">
+&nbsp;</span></td>
+
+
+<td align="center"><span class="calendar">
+&nbsp;</span></td>
+
+
+<td align="center"><span class="calendar">
+&nbsp;</span></td>
+
+
+<td align="center"><span class="calendar">
+&nbsp;</span></td>
+
+
+<td align="center"><span class="calendar">
+1</span></td></tr>
+<tr>
+
+<td align="center"><span class="calendar">
+2</span></td>
+
+
+<td align="center"><span class="calendar">
+3</span></td>
+
+
+<td align="center"><span class="calendar">
+4</span></td>
+
+
+<td align="center"><span class="calendar">
+5</span></td>
+
+
+<td align="center"><span class="calendar">
+6</span></td>
+
+
+<td align="center"><span class="calendar">
+7</span></td>
+
+
+<td align="center"><span class="calendar">
+8</span></td></tr>
+<tr>
+
+<td align="center"><span class="calendar">
+9</span></td>
+
+
+<td align="center"><span class="calendar">
+10</span></td>
+
+
+<td align="center"><span class="calendar">
+11</span></td>
+
+
+<td align="center"><span class="calendar">
+12</span></td>
+
+
+<td align="center"><span class="calendar">
+13</span></td>
+
+
+<td align="center"><span class="calendar">
+14</span></td>
+
+
+<td align="center"><span class="calendar">
+15</span></td></tr>
+<tr>
+
+<td align="center"><span class="calendar">
+16</span></td>
+
+
+<td align="center"><span class="calendar">
+17</span></td>
+
+
+<td align="center"><span class="calendar">
+18</span></td>
+
+
+<td align="center"><span class="calendar">
+19</span></td>
+
+
+<td align="center"><span class="calendar">
+20</span></td>
+
+
+<td align="center"><span class="calendar">
+21</span></td>
+
+
+<td align="center"><span class="calendar">
+22</span></td></tr>
+<tr>
+
+<td align="center"><span class="calendar">
+23</span></td>
+
+
+<td align="center"><span class="calendar">
+24</span></td>
+
+
+<td align="center"><span class="calendar">
+25</span></td>
+
+
+<td align="center"><span class="calendar">
+26</span></td>
+
+
+<td align="center"><span class="calendar">
+27</span></td>
+
+
+<td align="center"><span class="calendar">
+28</span></td>
+
+
+<td align="center"><span class="calendar">
+29</span></td></tr>
+<tr>
+
+<td align="center"><span class="calendar">
+30</span></td>
+
+
+<td align="center"><span class="calendar">
+&nbsp;</span></td>
+
+
+<td align="center"><span class="calendar">
+&nbsp;</span></td>
+
+
+<td align="center"><span class="calendar">
+&nbsp;</span></td>
+
+
+<td align="center"><span class="calendar">
+&nbsp;</span></td>
+
+
+<td align="center"><span class="calendar">
+&nbsp;</span></td>
+
+
+<td align="center"><span class="calendar">
+&nbsp;</span></td></tr>
+</table>
+
+</div>
+
+<div class="sidetitle">
+Search
+</div>
+ 
+<div class="side">
+<form method="get" action="http://blog.linux.org.tw/cgi-bin/movabletype/mt-search.cgi">
+<input type="hidden" name="IncludeBlogs" value="28" />
+<label for="search" accesskey="4">Search this site:</label><br />
+<input id="search" name="search" size="20" /><br />
+<input type="submit" value="Search" />
+</form>
+</div>
+
+<div class="sidetitle">
+Archives
+</div>
+
+<div class="side">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2012_08.html">August 2012</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2012_07.html">July 2012</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2012_06.html">June 2012</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2012_05.html">May 2012</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2012_04.html">April 2012</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2012_03.html">March 2012</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2012_02.html">February 2012</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2012_01.html">January 2012</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2011_12.html">December 2011</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2011_11.html">November 2011</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2011_10.html">October 2011</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2011_09.html">September 2011</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2011_08.html">August 2011</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2011_07.html">July 2011</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2011_06.html">June 2011</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2011_05.html">May 2011</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2011_04.html">April 2011</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2011_03.html">March 2011</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2011_02.html">February 2011</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2010_12.html">December 2010</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2010_11.html">November 2010</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2010_10.html">October 2010</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2010_09.html">September 2010</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2010_08.html">August 2010</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2010_07.html">July 2010</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2010_06.html">June 2010</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2010_05.html">May 2010</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2010_04.html">April 2010</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2010_03.html">March 2010</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2010_02.html">February 2010</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2010_01.html">January 2010</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2009_12.html">December 2009</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2009_11.html">November 2009</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2009_10.html">October 2009</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2009_09.html">September 2009</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2009_08.html">August 2009</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2009_07.html">July 2009</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2009_06.html">June 2009</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2009_05.html">May 2009</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2009_04.html">April 2009</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2009_03.html">March 2009</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2009_02.html">February 2009</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2009_01.html">January 2009</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2008_12.html">December 2008</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2008_11.html">November 2008</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2008_10.html">October 2008</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2008_09.html">September 2008</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2008_08.html">August 2008</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2008_07.html">July 2008</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2008_06.html">June 2008</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2008_05.html">May 2008</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2008_04.html">April 2008</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2008_03.html">March 2008</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2008_02.html">February 2008</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2008_01.html">January 2008</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2007_12.html">December 2007</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2007_11.html">November 2007</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2007_10.html">October 2007</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2007_09.html">September 2007</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2007_08.html">August 2007</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2007_07.html">July 2007</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2007_06.html">June 2007</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2007_05.html">May 2007</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2007_04.html">April 2007</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2007_03.html">March 2007</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2007_02.html">February 2007</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2007_01.html">January 2007</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2006_12.html">December 2006</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2006_11.html">November 2006</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2006_10.html">October 2006</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2006_09.html">September 2006</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2006_08.html">August 2006</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2006_07.html">July 2006</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2006_06.html">June 2006</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2006_05.html">May 2006</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2006_04.html">April 2006</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2006_03.html">March 2006</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2006_02.html">February 2006</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2006_01.html">January 2006</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2005_12.html">December 2005</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2005_11.html">November 2005</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2005_10.html">October 2005</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2005_09.html">September 2005</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2005_08.html">August 2005</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2005_07.html">July 2005</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2005_06.html">June 2005</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2005_05.html">May 2005</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2005_04.html">April 2005</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2005_03.html">March 2005</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2005_02.html">February 2005</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2005_01.html">January 2005</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2004_05.html">May 2004</a><br />
+
+</div>
+
+<div class="sidetitle">
+Recent Entries
+</div>
+
+<div class="side">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2012/08/mprc_unicore32.html">MPRC 的 UniCore32 架構</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2012/07/unix_v6.html">演講：UNIX v6 原始程式碼導讀</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2012/06/post_288.html">《黑客列傳：電腦革命俠客誌》讀後</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2012/06/pypy_--_runtime.html">演講：PyPy -- Runtime and Dynamic Compilation Framework</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2012/06/_x86_mosut.html">演講：作業系統之前的程式與 x86 保護模式 (MOSUT)</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2012/06/implement_check_1.html">「Implement Checkpointing for Android」簡報上線</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2012/06/_linux_3.html">演講：淺談 Linux 輸入法系統架構 (桌面系統 + 移動裝置)</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2012/06/mini_debconf_20.html">Mini DebConf 2012</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2012/05/post_287.html">軟體創作達人暑期成長營與新酷音輸入法改進項目</a><br />
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2012/05/implement_check.html">演講：Implement Checkpointing for Android (FreedomHEC)</a><br />
+
+</div>
+
+<div class="sidetitle">
+Links
+</div>
+
+<div class="side">
+<a href="http://jserv.sayya.org/">Homepage of Jim Huang (jserv)</a><br />
+<a href="http://www.advogato.org/person/jserv/">jserv in Advogato</a><br />
+<a href="http://wiki.debian.org.tw/User:jserv">jserv's documents and slides</a><br />
+<a href="http://www.0xlab.org/">0xlab</a><br />
+<a href="http://planet.classpath.org/">Planet Classpath</a><br />
+<a href="http://planet.debian.org.tw/">Planet DebianTW</a><br />
+<a href="http://planet.linux.org.tw/">Planet Linux Taiwan</a><br />
+</div>
+
+<div class="side">
+<a href="http://blog.linux.org.tw/~jserv/index.xml"><img src="http://people.debian.org.tw/~jserv/icons/xml-jserv.png"></a>
+</div>
+
+<div class="side">
+<a href="http://feeds.feedburner.com/jserv"><img src="http://www.feedburner.com/fb/images/pub/feed-icon32x32.png"></a>
+</div>
+
+<div class="side">
+Email: &lt <b>jserv.tw</b> @ gmail.com&gt
+</div>
+
+<div class="side">
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+
+<div class="side">
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="image" src="https://www.paypal.com/zh_XC/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypal.com/zh_XC/i/scr/pixel.gif" width="1" height="1">
+<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+">
+</form>
+</div>
+
+<br clear="all" />
+
+</body>
+</html>

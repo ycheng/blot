@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: librt.so 的 private symbols</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001190.html" title="PCMan X 的新發展" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001192.html" title="PCMan X 的新發展 (2)" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001190.html">« PCMan X 的新發展</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001192.html">PCMan X 的新發展 (2) »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">July 01, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">librt.so 的 private symbols</h3>
+
+剛剛在玩 [<a href="http://www.sipfoundry.org/sipXezPhone/">sipXezPhone</a>] 時，發現以下奇怪的訊息：<ul><pre class="code" style="margin: 6px;">
+error: /lib/librt.so.1: symbol __pthread_clock_settime, 
+  version GLIBC_PRIVATE not defined in file libpthread.so.0 with link time reference
+</pre></ul>
+於是腦中浮現這似乎在某個地方看過，在查詢了 [<a href="http://valgrind.org/docs/FAQ/faq.abort.html">Valgrind FAQ</a>]  之後，一切真相大白，引述 FAQ 裡頭的文字：<ul>
+This is a total swamp. Nevertheless there is a way out. It's a problem which is not easy to fix. Really the problem is that /lib/librt.so.1 refers to some symbols __pthread_clock_settime and __pthread_clock_gettime in /lib/libpthread.so which are not intended to be exported, ie they are private.
+</ul>
+是的，這兩個 symbol 是 private，並沒有 export 出來，那怎麼解決呢？相當簡單，「補釘」(patch) 用力的打下去：<ul><pre class="code" style="margin: 6px;">
+--- sipXportLib/src/Makefile.am (revision 596)
++++ sipXportLib/src/Makefile.am (working copy)
+@@ -24,7 +22,6 @@
+        @PCRE_LIBS@ \
+        @SSL_LIBS@ \
+        -ldl \
+-       -lrt  \
+        -lpthread  \
+        -lstdc++
+</pre></ul>
+沒錯，就是確保不需要 librt.so，這樣就不會有錯誤的 linkage。補充一下，在 GLIBC 2.3.x 已經修正，是因為我的 toolchain 版本比較舊，所以恰好遇到上述問題<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 July  1, 2005 02:53 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

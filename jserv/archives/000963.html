@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: XFCE -- 婀娜多姿的小姑娘</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/000959.html" title="中文輸入自由軟體工作坊活動圓滿落幕" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/000964.html" title="XFCE 手寫辨識支援" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/000959.html">« 中文輸入自由軟體工作坊活動圓滿落幕</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/000964.html">XFCE 手寫辨識支援 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February 21, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">XFCE -- 婀娜多姿的小姑娘</h3>
+
+<p>其實很久以前就玩過 <a href="http://www.xfce.org/">XFCE</a>，不過當時在相當早期，還在模仿 CDE 的時代，後來 XFCE 4.2 有了突飛猛進的發展，在閱讀 Tsung 的 blog [<a href="http://www.longwin.com.tw/~jon/blog/archives/000491.html">Xfce 4.2 flash demos</a>] 後，著實著實為其驚豔不已，讓我不得不換掉習慣的 KDE 與 GNOME。</p>
+
+<p>依據過去的習慣，我會用 cvs repository 裡頭的套件來建構，不過這次花了一些時間學習 Debian packaging，所以日後要更換應該比較容易，而 XFCE 4.2 的 Compositor 感覺不是很順手，於是動手改了一下，主要是讓效果比較接近 xcompmgr，這個 [<a href="http://jserv.sayya.org/xfce/xfwm-composite-1.diff">patch</a>] 很簡單，有興趣的朋友可以自己抓來玩玩。</p>
+
+<p>呈現的快照如下：<br />
+<img src="http://jserv.sayya.org/xfce/screenshot/1.png" /></p>
+
+<p>接下來我想改的部份大致有：<br />
+* 整合 xcompmgr 的其他絢麗特徵<br />
+* 移植我在之前 blog 提到的 [<a href="http://blog.linux.org.tw/~jserv/archives/000852.html">Prism2 WirelessLAN 驅動與整合</a>]<br />
+* 移植 <a href="http://gpe.handhelds.org/">GPE</a> 許多優秀的應用程式</p>
+
+<p>這些當然只是玩票性質啦，不過 XFCE 與 GPE 的共通其實頗多的，如果能夠適度整合應該很不錯。</p>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 February 21, 2005 09:42 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

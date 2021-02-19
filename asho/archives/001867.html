@@ -1,0 +1,246 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Asho's Blog: 在Debian下安裝SVN(subversion)</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~asho/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~asho/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~asho/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~asho/archives/001858.html" title="在debian下安裝systemtap" />
+
+<link rel="next" href="http://blog.linux.org.tw/~asho/archives/001887.html" title="How to make use of Dynamic Frequency Scaling" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~asho/" accesskey="1">Asho's Blog</a></h1>
+<span class="description">一個喜歡研究的傻小子 :-)</span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~asho/archives/001858.html">&laquo; 在debian下安裝systemtap</a> |
+
+<a href="http://blog.linux.org.tw/~asho/">Main</a>
+| <a href="http://blog.linux.org.tw/~asho/archives/001887.html">How to make use of Dynamic Frequency Scaling &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 03, 2007</h2>
+
+<div class="blogbody">
+
+<h3 class="title">在Debian下安裝SVN(subversion)</h3>
+
+<p>最近project也在使用svn了，所以我架設一台讓大家使用，並且記錄一下以免自已忘記。</p>
+
+<a name="more"></a>
+<p>假定條件<br />
+專案名稱：foo<br />
+使用人：<ul>project_leader</ul>：唯讀<br />
+<ul>project_coder</ul>：讀寫</p>
+
+<p>1:安裝"apache2"和"subversion"<br />
+apt-get install libapache2-svn apache2 subversin</p>
+
+<p>2:建立subversion和專案的檔案庫<br />
+mkdir /home/svn<br />
+mkdir /home/svn/foo<br />
+svnadmin create /home/svn/foo</p>
+
+<p>3:更改該目錄的擁有者為網頁讀取者<br />
+chown -R www-data.www-data /home/svn/foo</p>
+
+<p>4:修改apache的svn設定檔：/etc/apache2/mods-available/dav_svn.conf<br />
+<pre><br />
+<Location /svn><br />
+DAV svn<br />
+SVNParentPath /home/svn<br />
+AuthType Basic<br />
+AuthName "Subversion Repository"<br />
+AuthUserFile /etc/apache2/dav_svn.passwd<br />
+AuthzSVNAccessFile /etc/apache2/dav_svn.authz <br />
+<LimitExcept GET PROPFIND OPTIONS REPORT><br />
+  Require valid-user<br />
+</LimitExcept><br />
+</Location><br />
+</pre></p>
+
+<p>5:設定使用人的權限：修改/etc/apache2/dev_svn.authz<br />
+[foo:/]<br />
+project_leader = r<br />
+project_coder = rw</p>
+
+<p>6:增加apache連線進來的使用者帳號到/etc/apache2/dev_svn.passwd<br />
+/usr/bin/htpasswd -c /etc/apache2/dev_svn.passwd project_leader<br />
+/usr/bin/htpasswd -c /etc/apache2/dev_svn.passwd project_coder</p>
+
+<p>7:重新啟動apache<br />
+/etc/init.d/apache2 restart</p>
+
+<p>8:執行 svn co http://localhost/svn/foo 就能抓到專案的資料了。</p>
+
+<p>參考資料<br />
+如何使用Subversion 服務：http://rt.openfoundry.org/Foundry/Help/4-02.html<br />
+SVN中文站：http://www.subversion.org.cn/<br />
+SVN英文站：http://subversion.tigris.org/<br />
+在Debian下安裝svn：http://www.matrix.org.cn/thread.shtml?topicId=30723&forumId=45</p>
+
+<span class="posted">Posted by asho at January  3, 2007 01:11 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>Comments</div>
+
+<div class="comments-body">
+<p>您好！想請問一下…</p>
+
+<p>3:更改該目錄的擁有者為網頁讀取者<br />
+chown -R www-data.www-data /home/svn/foo</p>
+
+<p>為什麼要把擁有者改成 www-data 呢？<br />
+他有什麼功用嗎？</p>
+
+<p>謝謝您</p>
+<span class="comments-post">Posted by: <a href="mailto&#58;canttellyou&#64;gmail&#46;com">timeternity</a> at April 17, 2008 05:16 PM</span>
+</div>
+
+
+
+<div class="comments-head">Post a comment</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1867" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">Name:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email Address:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">URL:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+Remember personal info?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">Yes</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">No</label><br style="clear: both;" />
+
+<label for="text">Comments:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;Preview&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;Post&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+</div>
+</div>
+</body>
+</html>

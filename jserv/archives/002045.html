@@ -1,0 +1,434 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 透過虛擬化技術體驗 kgdb (1)</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002044.html" title="上衣口袋夾帶原子筆的故事" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002046.html" title="《Qtopia 编程之道》即將出版" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002044.html">« 上衣口袋夾帶原子筆的故事</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002046.html">《Qtopia 编程之道》即將出版 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">July 18, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">透過虛擬化技術體驗 kgdb (1)</h3>
+
+延續去年 [<a href="http://blog.linux.org.tw/~jserv/archives/001890.html">深入淺出 Hello World - Part III</a>] 的內容，打算於今年分享 Part IV，秉持 "Everything can be hacked" 的原則，正式要從 user-space 的 "Hello World" 應用程式，一口氣鑽進 Linux Kernel 的「黑盒子」，並揭開其中的奧秘。當然，在這之前，我們需要良好的工具，稍早在 [<a href="http://blog.linux.org.tw/~jserv/archives/002043.html">快快樂樂學 GNU Debugger</a>] 的教育訓練提過 gdb 的重要概念與用法，而對於 kernel，則需要 [<a href="http://kgdb.linsyssoft.com/">kgdb</a>]。過去，Linux + kgdb 的繁複過程讓人望之卻步，我們只能眼巴巴看著 BSD kernel hacker 玩弄著 bsd kgdb，游刃於巧妙的指令與系統變化間，如今，Linux 2.6.26 就內建了延宕多年的 kgdb，且讓我們試著操作。<br />
+<br />
+今年五月 3 日，Linus Torvalds 宣佈 [<a href="http://lwn.net/Articles/280912/">釋出 2.6.26-rc1</a>] 並關閉 Linux-2.6.26 的 merge window，除了大量的驅動程式更新外，首次對主要的架構引入了 kgdb，作為內建的 source-level debugger，當然，稍早在 linux-2.6.25 時，其實像是 ARM 架構就加入 kgdb，但這次是連同 x86, powerpc/ppc, sparc, sparc64, sh, blackfin 等硬體架構都納入支援。此舉終結了長達一年的 kgdb merge 討論，這過程中，Ingo Molnar 甚至改寫原本由 LinSysSoft Technologies 所維護的 [<a href="http://kgdb.linsyssoft.com/">kgdb</a>]，而建立名為 "kgdb light" git tree 分支以精簡 kgdb 的設計並導入新版核心中，最後，Linux-2.6.26 終於正式整合 kgdb，並提供主流硬體架構的支援，Linus Torvalds 本人對此表示：<ul class="code" style="margin: 6px;">
+"because people have tried to get me to merge it for some long is kgdb support. Which really turned out pretty small and clean, once people started putting their effort into making it so."
+</ul>
+我們需要取得 Linux kernel 2.6.26 (已於 Jul 13, 2008 釋出)，而在 x86 平台上，全然不需要施加 patch，大致操作如下：<pre class="code" style="margin: 6px;">
+$ tar jxvf linux-2.6.26.tar.bz2
+$ cd linux-2.6.26
+</pre>
+剩下就是 make menuconfig 即可，過去的繁瑣動作，全都免了！需要留意的是 kernel configuration 的方式，關鍵部份如下圖：<br />
+<center><img src="http://jserv.sayya.org/kernel/kgdb-config-1.jpg" width="500" height="261" /></center><br />
+也就是 Kernel hacking -&gt; Kernel debugging -&gt; Compile the kernel...，注意，需要同時讓 "Compile the kernel with debug info" 與 "Compile the kernel with frame pointers" 生效，如下圖：<br />
+<center><img src="http://jserv.sayya.org/kernel/kgdb-config-2.jpg" width="500" height="210" /></center><br />
+這樣，kgdb 的項目才會出現：<br />
+<center><img src="http://jserv.sayya.org/kernel/kgdb-config-3.jpg" width="500" height="385" /></center><br />
+確認 kgdb 正確被編譯到核心的方式，為檢查 .config 的配置項目，應該要包含以下：<ul>
+  <li>CONFIG_DEBUG_INFO=y</li>
+  <li>CONFIG_KGDB=y</li>
+  <li>CONFIG_KGDB_SERIAL_CONSOLE=y</li>
+</ul>
+透過 kvm / qemu 與 Xen，我們可很輕鬆地以虛擬化技術，在單機上操控 kgdb，而不必像過去得準備兩台以上的電腦，並需要張羅網路與 RS-232 線路傳輸，本文中，筆者將探討 kvm / qemu + kgdb，至於 Xen + kgdb，其實也相當類似，只是核心組態與啟動方式不同罷了。比照前文 [<a href="http://blog.linux.org.tw/~jserv/archives/001954.html">深入理解 Linux 2.6 的 initramfs 機制 (上)</a>]，我們可透過 initramfs + busybox 弄個輕巧的 kernel image，筆者的參考組態為 [<a href="http://jserv.sayya.org/kernel/dot-config-kgdb">.config</a>]，預先編入 qemu 系統模擬所需的 device drivers，若看倌的系統跟筆者一樣用 IA32，在設定檔中的 source path 也可直接指向筆者準備的 [<a href="http://jserv.sayya.org/kernel/busybox-initramfs-dist.tar.bz2">busybox-initramfs-dist.tar.bz2 </a>] 壓縮檔所解開的目錄。將 initramfs 的 source path 略作修改後，即可建構核心：<pre class="code" style="margin: 6px;">
+$ make bzImage
+</pre>
+建構好核心後，是否躍躍欲試呢？不，必須考慮到 kgdb 的「非本地端」偵錯、除錯本質，要作些額外準備。首先，來看看整個系統示意：<br />
+<center><img src="http://jserv.sayya.org/kernel/kgdb-view-1.jpg" width="500" height="155" /></center><br />
+由圖可見，我們將會邏輯上，區分兩個硬體系統，其中目標端、待除錯分析的那台自然稱為 Target，相對來說，提供開發環境的系統，就是 Host，這兩台系統透過 RS-232 (serial) 或 Ethernet 來通訊。不過，透過 Xen/qemu，我們可在單一實體環境中，模擬出這兩台。當我們透過 GNU Debugger 時，系統示意如下圖：<br />
+<center><img src="http://jserv.sayya.org/kernel/kgdb-view-2.jpg" width="325" height="238" /></center><br />
+當我們要對 target program (可能是 kernel 本身，或者單一的 process) 作除錯分析時，需透過特製的額外小程式，稱為 GDB stub，連透過 RS-232 / Ethernet 建立 GDB Remote Debugging Protocol 上的通訊，如此一來，Host 上才可透過 GNU Debugger 來遠端除錯。依據此等情境，kgdb 可說是涵蓋了 GDB stub 與 Linux kernel 銜接的部份，讓執行於 Target 端的 kernel，得以透過 GDB Protocol 來除錯。<br />
+<br />
+既然用了 kgdb，當然要體驗強悍的 source-level debugging，所以，我們也應該將網路環境預先設定好，以讓 target-host 能便利分享資源。kvm / qemu 都支援 TAP/TUN 的網路連結模式，其示意圖如下：<br />
+<center><img src="http://jserv.sayya.org/kernel/qemu-tap-tun.jpg" width="545" height="369" /></center><br />
+qemu 中模擬的 guest OS 可透過 TAP/TUN 所建立的通道，經由虛擬的 NIC (網路裝置)，輾轉透過實體網路進行通訊。vtun 則是比較特別的變形，採用 user-space socket 重新導向 TCP/IP，所以，筆者就設想以下情境：<br />
+<center><img src="http://jserv.sayya.org/kernel/bridge-network.png" width="500" height="348" /></center><br />
+也就是將虛擬與實體網路裝置一併建立橋接 (bridge)，這樣，無論在 Target 抑或 Host 端，都能夠對外連線，詳情可參閱 [<a href="http://qemu-forum.ipi.fi/viewtopic.php?f=22&t=1963">Host-only networking (or high-speed net-connection to host)</a>] 一文的組態設定，在 Debian/Ubuntu 上，我們需要先安裝以下套件：<pre class="code" style="margin: 6px;">
+$ sudo apt-get install bridge-utils uml-utilities vtun
+</pre>
+並且為了簡化後續操作，建立一個專屬的設定 script，名稱為 "<a href="http://jserv.sayya.org/kernel/kvm-network">/etc/init.d/kvm-network</a>"，以下是其內容：<pre class="code" style="margin: 6px;">
+#!/bin/bash-x
+
+# id of the user running qemu (kvm). Make sure you change it appropriately.
+USERID=1000
+
+# number of TUN/TAP devices to setup
+NUM_OF_DEVICES=1
+
+case $1 in
+start)
+        modprobe tun
+        /etc/init.d/vtun start
+        chmod a+rw /dev/net/tun
+        echo -n "Setting up bridge device br0"
+        brctl addbr br0
+        ifconfig br0 192.168.99.1 netmask 255.255.255.0 up
+        for ((i=0; i < NUM_OF_DEVICES ; i++)); do
+                echo -n "Setting up "
+                tunctl -b -u $USERID -t qtap$i
+                brctl addif br0 qtap$i
+                ifconfig qtap$i up 0.0.0.0 promisc
+        done
+        ;;
+stop)
+        for ((i=0; i < NUM_OF_DEVICES ; i++)); do
+                ifconfig qtap$i down
+                brctl delif br0 qtap$i
+                tunctl -d qtap$i
+        done
+        ifconfig br0 down
+        brctl delbr br0
+        /etc/init.d/vtun stop
+        ;;
+*)
+        echo "Usage: $(basename $0) (start|stop)"
+        ;;
+esac
+</pre>
+需注意的是，以上的 "USERID" 值要正確設定，端視現在的 user ID 而定，若採用 Ubuntu 預設安裝，應該都是 "1000"，表示第一位系統使用者。編輯此檔後，作 chmod +x 的動作，然後以 root 身份啟動 TAP/VTUN/Bridge 的服務：<pre class="code" style="margin: 6px;">
+# /etc/init.d/kvm-network stop
+# /etc/init.d/kvm-network start
+</pre>
+也應依據實際網路狀態，避開 192.168.99.1/24 的網段，這要保留給 vtun/bridge 所用。準備就緒後，我們就可試著啟動剛剛編譯出的 kernel image，指令如下：<pre class="code" style="margin: 6px;">
+qemu -kernel arch/i386/boot/bzImage \
+     -hda /dev/zero \
+     -net nic -net tap,ifname=qtap0,script=no
+</pre>
+其中 "-net tap,ifname=qtap0" 就是指定 qemu 透過 TAP/TUN 的模式存取網路，其執行畫面如下圖：<br />
+<center><img src="http://jserv.sayya.org/kernel/qemu-tap-snap.jpg" width="550" height="406" /></center><br />
+當 qemu 裡面的 guest OS (當然就是 Linux + initramfs) 啟動完畢後，需要在 qemu 模擬的環境中執行網路配置：<pre class="code" style="margin: 6px;">
+# ifconfig eth0 192.168.99.2/24
+# route add default gw 192.168.99.1 eth0
+# ping -c 5 192.168.99.1
+</pre>
+圖中可見，筆者為確保網路可正確運作，以 ping 查驗虛擬與實體網路裝置間的橋接 (bridge)，也該從 Host 端反過來 ping 192.168.99.2 (Target 端的 IP)。下一步就是多傳遞啟動 kgdb 所需的參數，如下：<pre class="code" style="margin: 6px;">
+$ qemu \
+	-no-acpi \
+	-kernel arch/i386/boot/bzImage -hda /dev/zero \
+	-net nic \
+	-net tap,ifname=qtap0,script=no \
+	-serial "stdio" -serial "pty" \
+	-append '$console kgdbwait kgdboc=ttyS1'
+</pre>
+注意到上述指令列多了一行：<pre class="code" style="margin: 6px;">
+	-serial "stdio" -serial "pty"
+</pre>
+執行畫面大致如下：<br />
+<center><img src="http://jserv.sayya.org/kernel/kgdb-on-qemu.jpg" width="550" height="525" /></center><br />
+透過 -serial 時，qemu 會輸出其(被)重導的裝置，就如上圖出現的 "/dev/ttyp9" (以紅線標注)，咱們看看 qemu 線上說明：<ul class="code" style="margin: 6px;">
+<b>-serial dev</b><br />
+<br />
+Redirect the virtual serial port to host character device dev.  The default device is "vc" in graphical mode and "stdio" in non graphical mode.  This option can be used several times to simulate up to 4 serials ports.
+</ul>
+所以前述的指令就是將 (被模擬的硬體) 文字模式的 stdio 予以導向到本機 (執行 qemu 的環境) 上的 pty (p = pseduo，虛擬之意)，也就是 "/dev/ttyp?"，而稍早也提過系統示意的遠端除錯裡頭，建立連線的動作，即透過 serial 或 Ethernet，這裡的 pty 就視為一種 serial 介面，所以，只要 kgdb 生效後，就可依據此介面來讓 host 端進行除錯。有了這概念後，自然對啟動 qemu 的另一行指令不感到訝異：<pre class="code" style="margin: 6px;">
+	-append '$console kgdbwait kgdboc=ttyS1'
+</pre>
+這行就是告訴 kgdb，欲開啟的 serial 裝置為 ttyS1，並要求完成必要的初始化後，等待來自 host 端的 gdb 連線，所以，我們可在上圖看到系統執行後，印出以下訊息並等待：<pre class="code" style="margin: 6px;">
+kgdb: Registered I/O driver kgdboc...
+kgdb: Waiting for connection from remote gdb...
+</pre>
+看來一切就緒，就待我們從 host 端來作遠端除錯了。建議開啟新的終端機，並切換到編譯核心的 linux-2.6.26 目錄下，我們要載入包含 debug info 的 Linux kernel image 是 "vmlinux"，而非壓縮過的 "arch/x86/boot/bzImage" (qemu 內建 kernel loader，所以要提供已壓縮過的 kernel image)，很容易從檔案長度看出彼此的差異：<pre class="code" style="margin: 6px;">
+$ ls -lh arch/x86/boot/bzImage vmlinux
+-rw-r--r-- 1 jserv jserv 1.6M 2008-06-02 01:37 arch/x86/boot/bzImage
+-rwxr-xr-x 1 jserv jserv  21M 2008-06-02 01:37 vmlinux
+</pre>
+載入 gdb 的方式如下：<pre class="code" style="margin: 6px;">
+$ <b>gdb ./vmlinux</b>
+GNU gdb 6.8-debian
+Copyright (C) 2008 Free Software Foundation, Inc.
+[...]
+This GDB was configured as "i486-linux-gnu"...
+(gdb) <b>shell echo -e "\003" &gt; /dev/ttyp9</b>
+(gdb) <b>set remotebaud 115200</b>
+(gdb) <b>target remote /dev/ttyp9</b>
+Remote debugging using /dev/ttyp9
+kgdb_register_io_module (new_kgdb_io_ops=0xc028f914) at kernel/kgdb.c:1677
+1677		wmb(); /* Sync point after breakpoint */
+(gdb) 
+</pre>
+其中粗體字表示將由我們鍵入的指令 (以下皆以此標示)，首先是要求 gdb 載入包含除錯資訊的 "vmlinux"，再來，測試 serial 連線是否通暢，即以輸入 ASCII 0x03 字元處理、設定 baud rate 為 115200 bps，不過，這對於 pty 來說，總是會成功，但真實情況下就難說了，在此仍列入模擬的情境。最後一個指令就是重點：<pre class="code" style="margin: 6px;">
+(gdb) <b>target remote /dev/ttyp9</b>
+</pre>
+這要求 host gdb 經由 serial 送達遠端除錯的指令，這時候，原本暫停執行的 target/kgdb 就會依據 remote gdb 通訊協定 (即 GDB Remote Serial Protocol，縮寫為 RSP) 之中的指令，做出因應的動作，而由上可知，就是取得 breakpoint 的資訊，當然，這裡不細談其具體動作。我們可查看目前的程式行為：<pre class="code" style="margin: 6px;">
+(gdb) <b>list</b>
+1672	void kgdb_breakpoint(void)
+1673	{
+1674		atomic_set(&kgdb_setting_breakpoint, 1);
+1675		wmb(); /* Sync point before breakpoint */
+1676		arch_kgdb_breakpoint();
+1677		wmb(); /* Sync point after breakpoint */
+1678		atomic_set(&kgdb_setting_breakpoint, 0);
+1679	}
+1680	EXPORT_SYMBOL_GPL(kgdb_breakpoint);
+1681	
+(gdb)
+</pre>
+由 gdb 列出的程式碼即 kgdb 設定 breakpoint 的行為，我們可單步執行看看：<pre class="code" style="margin: 6px;">
+(gdb) <b>n</b>
+[New Thread 1]
+1678		atomic_set(&kgdb_setting_breakpoint, 0);
+(gdb) <b>n</b>
+1632	}
+</pre>
+至此，我們執行過 kgdb_breakpoint() 函式。透過 kgdb 得以窺見運作中 Linux kernel 的每一個面向，筆者挑選一個自 0.0.1 版的 Linux 即有的變數 "jiffies" 作為觀察。jiffies 為 Linux 的核心變數，長度為 32 位元 (unsigned long)，用以紀錄系統自開幾以來，已過多少的 tick 數量。當系統觸發一次 timer interrupt 時，jiffies 變數值即會遞增一。需要留意的是，系統開機時，jiffies 變數值並非為零，而是一個特定的負數值 (稍後再詳述)，而在 x86 架構下，另行定義一個與 jiffies 相關的變數為 "jiffies_64"，顧名思義，此變數為 64 位元。以下就來觀察這兩個變數的值：<pre class="code" style="margin: 6px;">
+(gdb) <b>p jiffies</b>
+$1 = -74817
+(gdb) <b>p jiffies_64</b>
+$2 = 4294892479
+(gdb)
+</pre>
+(待續)<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 July 18, 2008 01:23 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>Great hacking , I estimated those ICE device for linux debugging vendors will lost many customers </p>
+<span class="comments-post">由 <a href="http://scmteamwork.blogspot.com">MaoYang</a> 發表於</MTIfNonEmpty> July 18, 2008 11:30 AM</span>
+</div>
+<div class="comments-body">
+<p>I think unless the emulator can talk to the bus/hardware directly, ICE is still a very powerful tool for the device driver developer.</p>
+<span class="comments-post">由 <a href="mailto&#58;chainwu_lee&#64;yahoo&#46;com">Chain-Wu Lee</a> 發表於</MTIfNonEmpty> July 23, 2008 10:31 AM</span>
+</div>
+<div class="comments-body">
+<p>如果我想调试动态加载的模块，我应该怎么做， 请多多指教。</p>
+<span class="comments-post">由 <a href="http://www.huistd.com">niehanzi</a> 發表於</MTIfNonEmpty> July 29, 2008 04:15 PM</span>
+</div>
+<div class="comments-body">
+<p>'stdio 予以導向到本機 (執行 qemu 的環境) 上的 pty (p = pseduo，虛擬之意)，也就是 "/dev/ttyp?"'<br />
+这里的设备节点应该是/dev/pts/x，其中x是数字。比如，我的gnome-terminal对应的虚拟终端设备可以用ps命令确认，结果如下：<br />
+$ ps -o tty,cmd<br />
+TT       CMD<br />
+pts/0    bash<br />
+pts/0    emacs<br />
+pts/0    ps -o tty,cmd<br />
+</p>
+<span class="comments-post">由 <a href="http://www.adamjiang.com/blog">大头阿当</a> 發表於</MTIfNonEmpty> June 12, 2009 07:27 PM</span>
+</div>
+<div class="comments-body">
+<p>在Qemu里面执行 ifconfig eth0 192.168.99.2/24 的时候提示: "ifconfig: SIOCSIFADDR: No such device".</p>
+
+<p>发现在执行 /etc/init.d/kvm-network 脚本的时候，有错误:<br />
+sudo /etc/init.d/kvm-network start<br />
+ * Starting virtual tunnel daemon server  vtun                                  vtund[22068]: No hosts defined<br />
+Setting up bridge device br0Setting up qtap0</p>
+
+<p>中间的“vtund[22068]: No hosts defined”是在执行/etc/init.d/vtun start 的时候报的错，用Google搜了也没有找到相应的解决方法。<br />
+</p>
+<span class="comments-post">由 <a href="http://www.wifihack.net">Bian Jiang</a> 發表於</MTIfNonEmpty> September  6, 2009 08:30 PM</span>
+</div>
+<div class="comments-body">
+<p>To Bian Jiang,</p>
+
+<p>請加入 qemu 所支援的 NIC device driver 到 kernel image 中，再行上述流程，謝謝！</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> September  6, 2009 10:58 PM</span>
+</div>
+<div class="comments-body">
+<p>感谢你的回复。</p>
+
+<p>但是无论我在ubuntu 9.04 (2.6.28-15-generic)还是在我编译的最新内核(2.6.30-5 )都加上了<br />
+"Universal TUN/TAP device driver support" 选项。并且在两个系统(ubuntu 和 Qemu 运行2.6.30-5)上可以得到以下信息:</p>
+
+<p>dmesg | grep tun<br />
+[  144.671331] tun: Universal TUN/TAP device driver, 1.6<br />
+[  144.671334] tun: (C) 1999-2004 Max Krasnyansky </p>
+
+<p>自己可以手动加载tun.ko<br />
+border@wifihack:~$ ls /lib/modules/`uname -r`/kernel/drivers/net/tun.ko<br />
+/lib/modules/2.6.28-15-generic/kernel/drivers/net/tun.ko</p>
+
+<p>但是在Qemu(2.6.30-5)还是出现 No such device的错误信息.<br />
+ifconfig: SIOCSIFADDR: No such device</p>
+
+<p><br />
+我在另一台机器ubuntu 8.04 上运行Qemu 并编译2.6.30-5内核，在执行 sudo /etc/init.d/vtun start 的时候，没有报"vtund[13195]: No hosts defined" 的错误信息， 我想这个应该是ubuntu 9.04 tun 的一个Bug。但是在 ubuntu 8.04 里面运行 Qemu， 用ifconfig配置IP的时候还是出现No such device的错误信息.</p>
+
+<p><br />
+PS: 是不是自己要在文件系统里面自己增加网络设备信息?</p>
+
+<p>非常感谢</p>
+
+<p>--<br />
+Bian Jiang<br />
+</p>
+<span class="comments-post">由 <a href="http://www.wifihack.net">Bian Jiang</a> 發表於</MTIfNonEmpty> September  7, 2009 11:57 PM</span>
+</div>
+<div class="comments-body">
+<p>早上起来我再试试 VDE(http://wiki.virtualsquare.org/index.php/VDE_Basic_Networking). </p>
+<span class="comments-post">由 <a href="http://www.wifihack.net">Bian Jiang</a> 發表於</MTIfNonEmpty> September  8, 2009 12:39 AM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2045" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

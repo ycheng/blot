@@ -1,0 +1,244 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Asho's Blog: April 2004 Archives</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~asho/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~asho/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~asho/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~asho/archives/2004_03.html" title="March 2004" />
+
+<link rel="next" href="http://blog.linux.org.tw/~asho/archives/2004_05.html" title="May 2004" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~asho/" accesskey="1">Asho's Blog</a></h1>
+<span class="description">一個喜歡研究的傻小子 :-)</span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~asho/archives/2004_03.html">&laquo; March 2004</a> |
+
+<a href="http://blog.linux.org.tw/~asho/">Main</a>
+| <a href="http://blog.linux.org.tw/~asho/archives/2004_05.html">May 2004 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">April 29, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000622"></a>
+<h3 class="title">移除首頁被綁架的手法</h3>
+
+<p>最近有人托我幫他設定 ie 首頁被綁架的事情，網址是：http://www.cnww.net</p>
+
+<p>當初把 regedit 中關於他的資訊刪掉還是沒用，重新開機就回復，真是該死。</p>
+
+<p>有一些網站提供解法，試試看吧，不一定成功<br />
+http://myweb.hinet.net/home2/nomo/teach/un-web-kidnap.htm<br />
+http://new.fxworld.com.cn/jl/Announce/Announce.asp?BoardID=303&ID=221</p>
+
+<p>覺得這種網站已經侵入別人的電腦，應該可以提出法律訴訟才是。</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000622.html">08:24 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=622" onclick="OpenComments(this.href); return false">Comments (2858)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">April 26, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000620"></a>
+<h3 class="title">mencoder 嵌入中文字幕檔</h3>
+
+<p>因為 Transcode 要內嵌字幕必須轉換成 ppml (利用 subtitler)，但對中文支援實在是很不好，經常會 core dump...:-(</p>
+
+<p>目前 subtitler 已經發展到 0.8.5 了，有支援 TrueType，但小弟實際測試時，經常發現會有問題，比如字幕過長時，就會有 core dump....</p>
+
+<p>想嚐試的朋友可以先利用 srt2ppml.pl 或是 srt2ppml.c 來轉換 text subtitle 成 ppml<br />
+http://zebra.fh-weingarten.de/~maxi/html/transcode-users/2003-10/msg00177.html<br />
+http://dominia.org/djao/dvdsub-4.html</p>
+
+<p>基於以上因素，小弟就改用 mencoder...果然...實在是太棒了，只要是 mplayer 可以播放的字幕檔，mencoder 都能內嵌進去。</p>
+
+<p>filename：1.avi<br />
+subtitle：1.srt</p>
+
+<p>請下這樣的指令：<br />
+mencoder -ovc lavc -oac copy -sub 1.srt -o new.avi -font ~/.mplayer/subfont.ttf 1.avi -subcp cp950 -subfont-text-scale 4</p>
+
+<p>其中的 subfont.ttf 是連結到系統文鼎明體，記得最後要加入 -subcp cp950，不然會變成亂碼。<br />
+-subfont-text-scale 是字體大小，4 算是剛好。</p>
+
+<p>另外一個辦法是抓取 mplayer-font：ftp://ftp.mplayerhq.hu/MPlayer/contrib/fonts/chinesefonts<br />
+mencoder -ovc lavc -oac copy -sub 1.srt -o new.avi -font ~/.mplayer/big5-ming/bsmi00lp16/font.desc 1.avi -unicode</p>
+
+<p>bsmi00lp16 是上面連結的字型檔，最後也必須加入 -unicode 才能在嵌入字幕時不出現亂碼。</p>
+
+<p>目前小弟有需要用到字幕內嵌的影片都是用 mencoder，transcode 只好繼續 K code 的了...><。</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000620.html">03:39 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=620" onclick="OpenComments(this.href); return false">Comments (627)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">April 08, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000616"></a>
+<h3 class="title">ITE 8212 Raid 卡安裝</h3>
+
+<p>昨天到光華也買了威武 W-8212 的 Raid 卡，卡的晶片是 ITE 8212，在技嘉的板子上出現過。ITE 公司對 Linux support 不錯，都有釋出 source driver，而且還是 free 的喔，但是我在 kernel-2.4 編譯時會出現 unresolve symbol，還沒去找參考到什麼 .o 檔，google 一下發現 kernel-2.6 可以編譯成功。</p>
+
+<p>http://www.ite.com.tw//pc/LinuxSrc_it8212_092007-05_26x.zip</p>
+
+<p>cd /usr/src<br />
+mkdir ITERaid<br />
+pushd ITERaid<br />
+unzip /var/downloads/LinuxSrc_it8212_092007-05_26x.zip<br />
+perl -p -i -e 's/2\.6\.1/2.6.4/' Makefile<br />
+cp -a /usr/src/linux-2.6.4/drivers/scsi/{scsi,hosts,scsi_obsolete,scsi_typedefs}.h \<br />
+/usr/src/linux-2.6.4/drivers/scsi/scsi_module.c .<br />
+make<br />
+install -m 644 iteraid.ko /lib/modules/2.6.4/kernel/drivers/scsi/<br />
+depmod -a</p>
+
+<p>成功之後，就可以看到類似的訊息：<br />
+iteraid: no version for "struct_module" found: kernel tainted.<br />
+Found Controller: IT8212 UDMA/ATA133 RAID Controller<br />
+Device 0 is IDE<br />
+Channel[0] BM-DMA at 0xC000-0xC007<br />
+Channel[1] BM-DMA at 0xC008-0xC00F<br />
+scsi0 : ITE RAIDExpress133<br />
+  Vendor: ITE       Model: IT8212F           Rev: 1.3 <br />
+  Type:   Direct-Access                      ANSI SCSI revision: 00<br />
+SCSI device sda: 120103200 512-byte hdwr sectors (61493 MB)<br />
+sda: asking for cache data failed<br />
+sda: assuming drive cache: write through<br />
+ /dev/scsi/host0/bus0/target0/lun0: p1<br />
+Attached scsi disk sda at scsi0, channel 0, id 0, lun 0</p>
+
+<p>希望未來能進入 stock kernel 之中。</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000616.html">11:16 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=616" onclick="OpenComments(this.href); return false">Comments (1129)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">April 07, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000615"></a>
+<h3 class="title">Seagate 10k.6 SCSI U320 硬碟</h3>
+
+<p>Yeah...今天終於到現代生活的八德買到了 Seagate 10k.6 U320 SCSI 硬碟摟，Seagate 在萬轉的硬碟發展得很成熟呢，聲音很小，幾乎聽不到，溫度還可以接受，有風扇吹大約3x度出頭，重要的是寫入與讀取相當穩定。</p>
+
+<p>第一次看到硬碟的讀寫曲線斜率是正值，最高點時很像死人心電圖一樣穩定...實在是很棒，看到這樣的效果，覺得掏出五千多的錢都很值得。</p>
+
+<p>老闆娘很好呢，起初定價是5800，我也沒跟她殺價，給她看一下隔壁的報價賣 5500，就拿少一點，最後付錢算我 5600，因為我喜歡八德的服務，且高階產品都在這邊買的，所以算是沒虧待老顧客...:-)...</p>
+
+<p>幻想 Seagate 15K.3 了...:-Q...</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000615.html">04:26 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=615" onclick="OpenComments(this.href); return false">Comments (566)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">April 05, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000614"></a>
+<h3 class="title">c++ string</h3>
+
+<p>http://www.cppreference.com/cppstring_details.html</p>
+
+<p>很久以前，我就希望 C++ 能對字串處理有更人性化的方法，加上後來我遇到了 Python 之後，就幾乎沒有寫 C++ Program 了，這次有機會幫同學寫作業，又重新拿起 C++(因為作業規定)，還是遇到棘手的字串處理。</p>
+
+<p>在 gcc-3.x 有定義了 string 的 class 方便處理，比以往的字元陣列方便太多了，害我高興好一陣子。</p>
+
+<p>只是...如果要用 Visual C++ or gcc-2.95  的話，那就會很難過了，因為 string.h 並沒有做 implement...:-(</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000614.html">11:16 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=614" onclick="OpenComments(this.href); return false">Comments (1103)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: December 2008 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2008_11.html" title="November 2008" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2009_01.html" title="January 2009" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/2008_11.html">« November 2008</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/2009_01.html">January 2009 »</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">December 22, 2008</h2>
+
+
+<div class="blogbody">
+<a name="002081"></a>
+<h3 class="title">不給 source 就搗蛋？談 GPL 的適用範疇</h3>
+
+台灣廠商關於 GNU GPL 的詢問度一直是居高不下，特別是每年此時，也就是消費性電子產品的旺季。就如我們所知，GNU GPL 現行為第三版 (以下簡稱 GPLv3)，FSF/GNU 的主要專案已從 GPLv2 移往 GPLv3，而 Linux Kernel 與 MySQL 等專案則仍採用 GPLv2。基本上，GPLv2 (1991) 奠定了 Richard Stallman 對於 "copyleft" 理念的實踐，同時也針對 GPLv1 在施行上可能遇到的問題，著手予以改進，而 GPLv3 (2007) 則更進一步以法律及新世代軟體開發模式的角度，重新檢視校訂，本文嘗試點出 GPL 內文的關鍵項目，釐清在導入自由軟體到產品設計開發上，可能面臨的問題。<br />
+<br />
+關於 GPL 適用範疇的討論，最佳的參考資源就是 FSF 發佈的 [<a href="http://www.gnu.org/licenses/gpl-faq.html">Frequently Asked Questions about the GNU Licenses</a>]，廣泛探討像是 Web 應用程式開發、Java 一類動態語言 (任何物件都衍生自 java.lang.Object，所以，後者的實做若是 GPL，變得「所有」的物件實做，都會受感染，於是 GCJ / GNU Classpath 改以 "GPL with Exception" 的模式) 等程式開發的議題，以及整合創作與 DRM / TiVO 模式的限制保護是否允許等等。至於實務面，往往因為供應鏈與產品量產時程的考量 (研發階段 QA 與工廠量產的軟體版本，常有所出入)，致使由原始程式碼所生的執行檔，與對應的原始程式碼無法在同一個時間提供，這也使得廠商有了假延遲釋出受 GPL 規範的原始程式碼，實則逃避 GPL 的理由，不過，逃得了一時，逃不了永遠，因為 GPL 明文指出，發行散佈者有義務在三年內，在索取後，提供完整的原始程式碼。以 GPLv2 來說，GPL 第 3 條 b) 款提及：<ul class="code" style="margin: 6px;">
+Accompany it with a written offer, valid for at least three years, to give any third party, for a charge no more than your cost of physically performing source distribution, a complete machine-readable copy of the corresponding source code, to be distributed under the terms of Sections 1 and 2 above on a medium customarily used for software interchange; or,
+</ul>
+至於 GPLv3，則是規範於第 6 條 b) 款，更詳細地提及上述有效範圍：<ul class="code" style="margin: 6px;">
+Convey the object code in, or embodied in, a physical product (including a physical distribution medium), accompanied by a written offer, valid for at least three years and valid for as long as you offer spare parts or customer support for that product model, to give anyone who possesses the object code either (1) a copy of the Corresponding Source for all the software in the product that is covered by this License, on a durable physical medium customarily used for software interchange, for a price no more than your reasonable cost of physically performing this conveying of source, or (2) access to copy the Corresponding Source from a network server at no charge.
+</ul>
+有鑑於 GPLv2 對於「提供原始程式碼」的行為有行使的窒礙度，畢竟，當我們提供 Linux 手機 (也就是運行 GNU/Linux 於硬體中 Application Processor 的手持式裝置) 時，Linux kernel image 可能存放於 NAND/NOR Flash 中，這顯然就是一種執行檔，但對應的原始程式碼卻難以「對等地」放於同一個儲存媒介中，後者往往是百萬 Mb 空間之譜，於是乎，一般的作法是提及下載的網址，或者另外提供附有原始程式碼的光碟片，而 GPLv3 就進一步予以合理化。<br />
+<br />
+再回頭檢視剛剛 GPL 對於「合理期限內提供原始程式碼」這個要求，GPLv2 到 GPLv3 演變的過程中，的確以更精確的術語來呈現，比方說 GPLv2 提及 "Accompany it with a written offer"，顯然需要對照前後文，並且這個 "Accompany" 到底形式為何，實在值得推敲，然，GPLv3 直接就改稱 "Convey the object code in, or embodied in ..."，即相當清楚了。<br />
+<br />
+最後，關於釋出的原始程式碼，到底有無機會動手腳呢？依據 GPLv3 在第 1 條的聲明：<ul class="code" style="margin: 6px;">
+The "source code" for a work means the preferred form of the work for making modifications to it.  "Object code" means any non-source
+form of a work. ... The "Corresponding Source" for a work in object code form means all the source code needed to generate, install, and (for an executable work) run the object code and to modify the work, including scripts to control those activities.  However, it does not include the work's System Libraries, or general-purpose tools or generally available free programs which are used unmodified in performing those activities but which are not part of the work.  For example, Corresponding Source includes interface definition files associated with source files for the work, and the source code for shared libraries and dynamically linked subprograms that the work is specifically designed to require, such as by intimate data communication or control flow between those subprograms and other parts of the work.
+</ul>
+顯然，提供的「原始程式碼」，就是上述 "Corresponding Source"，其規範仍是很保守。倘若我們反看 Open Source (TM) 陣營的 [<a href="http://www.opensource.org/docs/osd">Open Source Definition</a>] (以下簡稱 OSD)，在第 2 條即闡述道：<ul class="code" style="margin: 6px;">
+The program must include source code, and must allow distribution in source code as well as compiled form. Where some form of a product is not distributed with source code, there must be a well-publicized means of obtaining the source code for no more than a reasonable reproduction cost preferably, downloading via the Internet without charge. The source code must be the preferred form in which a programmer would modify the program. Deliberately obfuscated source code is not allowed. Intermediate forms such as the output of a preprocessor or translator are not allowed. 
+</ul>
+言下之意，就是說，惡意將原始程式碼透過工具或者人工的方式，弄得很難識別，基本上是不允許的，OSD 要求原始程式碼乃是程式設計者「偏好」("The source code must be the preferred form in which a programmer would modify the program.") 的形式來釋出，如此才能修改與研究。不過，就這點來說，仍有頗大的灰色地帶，畢竟，即使規範透過 preprocessor 與 translator 轉出的中介程式碼不允許 (實際上，許多的開放原始碼的程式，包含有如此透過 preprocessor 與 translator 所生的程式，並被視為創作，得以受 GPL 規範之)，但這並沒有約束其編譯系統的行為模式。意思是說，倘若我們調整 "Compiler Driver" (電腦科學術語，意思是呼叫一系列的編譯系統元件，促使編譯行為得以進行) 的行為，如前文 [<a href="http://blog.linux.org.tw/~jserv/archives/001815.html">邪惡的 Hello World</a>] 所及，那麼，是否為 preprocessor 或 translator，其實就不是這麼重要，因為，連這樣的行為也整個扭轉過來，開發者的確可「偏好」以此形式修改與維護。 (注意：完整的 "Obfuscated GCC Code Generation Framework" 中，還規範執行時期的特別行為，致使更難以光靠字面意思去探討適用性)<br />
+<br />
+必須強調的是，無論條文如何編修，模糊地帶依然存在，作為一個技術創作者，我們有必要揭露其中的盲點，並強調顯而易見的事實與規範。對於台灣廠商來說，是否會面臨「不給 source 就搗蛋」的難題，著實考驗當局者的智慧，筆者衷心企盼，台灣廠商能更加理解自由軟體的真諦，並尋求合理有效的商業模式，借力使力，透過成熟的自由軟體技術，強化特有的價值。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002081.html">01:34 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2081" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">December 15, 2008</h2>
+
+
+<div class="blogbody">
+<a name="002080"></a>
+<h3 class="title">「OpenGL/ES 自由軟體實做」簡報上線</h3>
+
+如前文 [<a href="http://blog.linux.org.tw/~jserv/archives/002079.html">演講：OpenGL/ES 自由軟體實做</a>] 所提及，上週六針對近來 OpenGL/ES 活躍積極的實做項目作了簡要的探討，並試著歸納其中的要點，簡報已上線，請參見 [<a href="http://jserv.sayya.org/freedesktop/free-opengles.pdf">free-opengles.pdf</a>]。<br />
+<br />
+大致涵蓋以下項目：<ul>
+  <li>運用 OpenGL 技術的自由軟體專案</li>
+  <li>OpenGL 實做的考量因素</li>
+  <li>自由軟體 OpenGL 實做 -- Mesa 的發展狀況</li>
+  <li>探討支援 GLX (OpenGL for X) 的實做：DRI, MiniGLX, XGL, AIGLX, Xegl</li>
+  <li>回顧嶄新的技術：Galium3D, DRI2, TTM, GEM, UXA, Wayland, Eagle</li>
+</ul>
+關於 AIGLX，已是 Xorg 預設的 GLX 硬體加速模式，olv 在議程結束後，寫了一篇簡要的紀錄 [<a href="http://olvaffe.blogspot.com/2008/12/dri.html">一千零一夜之 DRI</a>]，用觀察運作 GNU/Linux + Xorg 的方式，窺見 AIGLX 的原理。另外，議程最後展示透過 [<a href="http://www.clutter-project.org/">Clutter</a>] 快速撰寫 OpenGL 立體環狀秀圖程式，其原始程式碼可參見 [<a href="http://jserv.sayya.org/freedesktop/picviewer.c">picviewer.c</a>]，請多指教，謝謝！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002080.html">12:29 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2080" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">December 04, 2008</h2>
+
+
+<div class="blogbody">
+<a name="002079"></a>
+<h3 class="title">演講：OpenGL/ES 自由軟體實做</h3>
+
+下週六 (Dec 13) 將應 [<a href="http://www.katdc.com/">KatDC</a>] 公司的邀請，在該公司舉辦的 [<a href="http://www.katdc.com/kosforum/index.jsp">KOS</a>] 論壇中，分享主題為「OpenGL/ES 自由軟體實做」的演講，以下是相關的資訊： (議程內容可能會調整，請以官方網頁為主)<ul class="code" style="margin: 6px;">
+  <li>時間：2008年12月13日 (六) 13:30 pm~16:40 pm</li>
+  <li>地點：伯朗咖啡館 南京一店 (台北市南京東路二段218號3樓)</li>
+  <li>對象：針對開發嵌入式系統. 2D/3D圖像處理,人機介面有興趣之專業人士(40人)</li>
+  <li>議程安排：14:20~15:00 :: OpenGL/ES 自由軟體實做</li>
+  <li>簡介：OpenGL/ES 在嵌入式已獲得廣大迴響與成功，但目前自由軟體的實做仍相當受限，但最近逐漸有所突破。本議程簡介擺脫 GNU/Linux 原有陳舊 GLX (OpenGL for X Window System) 的包袱，透過改良過的 Mesa/3D 軟體實做，發揮特定硬體的效能</li>
+</ul>
+這四年內，整個自由軟體的圖形技術獲得很大的提昇，比方說在 X Window System 建構的 3D 桌面環境出現 Project LookingGlass 與 Compiz/XGL、AIGLX 成為 Xorg 內建的加速技術、Mesa/3D 專案獲得廣泛的商業支持與迴響等等。而過去充斥著封閉軟體系統的消費性電子裝置，也逐漸引入自由軟體，甚至我們也看到硬體廠商率先導入 Linux 的整合並提供維護良好的驅動程式及相關軟體支援，這相當鼓舞人心。<br />
+<br />
+<center><img src="http://jserv.sayya.org/misc/opengl-on-neo.jpg" width="512" height="331" /></center><br />
+本議程簡述 OpenGL/ES 的自由軟體實做現況，並探討其技術與應用面的考量，佐以 EeePC 901 或 Openmoko FreeRunner (GTA02, ARM920T 400MHz) 硬體搭配 OpenGL/ES 初期的實做，作為實例，希望能對與會的朋友有所助益，期待您的指教，謝謝！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002079.html">11:06 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2079" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="002078"></a>
+<h3 class="title">新酷音進度報告 7</h3>
+
+<center><img src="http://chewing.csie.net/logo/48x48.png" width="48" height="48" /></center><br />
+<ul>
+「重要的不是擁有偉大的構想；只要能日復一日，年復一年推動一個小點子，它就能帶你到地球的另一端，想出一個小點子只需要一剎那，但付諸實現卻要花一輩子，甚至好幾代的時間。」
+</ul>
+L'OREAL 集團創辦人 Eugene Schueller 在邁入事業的高峰時，道出此句貌似平凡但值得反覆思索的話語。中文輸入法是吾人每日所用的軟體，或許實做一套輸入法不難，但要付諸實踐，並使其日臻完美，則是漫長但卓越的工作。對於輸入法的實做，zonble 就過來人的經驗，發表了 [<a href="http://zonble.twbbs.org/archives/2008_05/1008.php">鎚子與釘子</a>] 一文，談及輸入法在資訊平台難逃相容性的挑戰，以及許多使用者所認為「本該如此」一類特徵與問題，其背後是多麼坎坷與崎嶇，甚至，就連把輸入法作到無與倫比的完善後，還是會面對如 [<a href="http://zonble.twbbs.org/archives/2008_10/1026.php">跟政府要錢、開會、以及「人文的答案」</a>] 一文所及的「批評」與「挑戰」。光想到這些，心頭就涼了一半，何況要「日復一日，年復一年推動」呢？<br />
+<br />
+不過，到了 2008 年，我們仍持續開發輸入法 (回應 clkao 的名言)，[<a href="http://chewing.csie.net/">新酷音計畫</a>] 在若干開發者業餘的投入後，以鴨子划水的姿態，在功能與平台相容性漸有進展。日前，我們釋出新酷音核心函式庫 libchewing 0.3.2 版、MS-Windows 平台實驗性 Win32-chewing 0.4-dev 版，以及 SCIM-chewing 0.3.3 版，這些都是環繞於 libchewing 0.3.x (發展代號： kanruru) 開發分支的輸入法支援。這段時間，主要的更改如下：<ul>
+  <li>API 的淬鍊：更完善的設計與搭配的自動測試與分析環境，同時也提供 Doxygen 產生的文件系統</li>
+  <li>以二進位儲存資料與記憶體映射 (memory mapped) 的機制，加速載入與處理資料、詞庫的速度</li>
+  <li>整合用於 libtabe、由蔡志浩先生提出的 [<a href="http://technology.chtsai.org/mmseg/">mmseg</a>] 斷詞演算法，以提昇分詞、斷字的正確性</li>
+  <li>初步以中文詞性與使用規律，改進現有自動學習詞彙的設計</li>
+  <li>無論是 MS-Windows 抑或 UNIX 平台，現在都可使用同一套 libchewing API 來延展其特徵與功能</li>
+  <li>平台整合，諸如 OpenBSD 作業系統、[<a href="http://code.google.com/p/ibus/"/>ibus</a>] 輸入法框架系統，以及歷史悠久的 [<a href="http://code.google.com/p/uim/">uim</a>] 輸入法系統等等，均納入新酷音輸入法的支援</li>
+</ul>
+這些由許多人相繼貢獻而催生，特別要感謝 Kanru Chen。即將入伍的他，目前仍積極投入新酷音的開發，從 2004 年開始，涵蓋大學求學的生涯，見證這幾年的開發，可說是「別人用輸入法打日記，他用自己寫的輸入法來寫日記」。本月，Kanru 就要被國家徵召，也邁入人生的新旅程，在此祝福未來得以平安順利，也希望未來能有同樣具有熱情的學生，投入新酷音輸入法的開發。<br />
+<br />
+下筆同時，又萌生關於「開發新酷音輸入法」這個小點子，持續推動的想法，先提到這邊，未來我們還會繼續努力 :-)<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002078.html">03:50 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2078" onclick="OpenComments(this.href); return false">迴響 (5)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="002077"></a>
+<h3 class="title">我的色彩</h3>
+
+不經意瞥見 "Your Rainbow" 的分析，五彩繽紛吸引人，但我選擇灰色，以下是關於我的色彩輸出：
+<div style="width:300px; background:black; color:#AAAAAA; padding: 10px;text-align:center; border: 1px solid #333333;">Your rainbow is shaded<b> gray.</b><br><br><div style="background: #bb3c3c">&nbsp;</div><div style="background: #bb913c">&nbsp;</div><div style="background: #bbbb3c">&nbsp;</div><div style="background: #3caa3c">&nbsp;</div><div style="background: #3c88bb">&nbsp;</div><div style="background: #3c3cbb">&nbsp;</div><div style="background: #913cbb">&nbsp;</div><br>What is says about you: You are an elegant person. You appreciate tradition and wisdom that comes with age. You depend on modern technology and may feel uncomfortable without it.<br><br><a href="http://spacefem.com/quizzes/rainbow">Find the colors of your rainbow at spacefem.com.</a></div>
+最後一句倒是頗有趣，幾度考慮離開科技產業，轉而投入軍旅、保險業務、環保公益等項目，但最終仍得以科技業「專業工讀生」自居，大概是宿命吧？<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002077.html">08:09 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2077" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">December 01, 2008</h2>
+
+
+<div class="blogbody">
+<a name="002076"></a>
+<h3 class="title">隨手畫 - Ijs</h3>
+
+週末聆聽〈Proud of you〉，浸淫於美妙的旋律時，聯想起曾提議要清唱此曲的 Ijs，心想
+頗久沒作素描練習，於是就依據腦中記憶片段，隨手描繪，如下圖： (click to enlarge)<br />
+<center><a href="http://jserv.sayya.org/gallery/drawing-ijs.jpg"><img src="http://jserv.sayya.org/gallery/drawing-ijs-small.jpg" width="600" height="769" /></a></center><br />
+與 Ijs 相識應在 2005 年，因 [<a href="http://www.zuso.org.tw/">Zuso</a>] 而牽起的友誼。Ijs 是個充滿好奇心的小女生，也積極透過軟體實做驗證自己的想法，日前得獎的網
+站 [<a href="http://bank.e04.us/">黑特銀行</a>]  即其作品。本次練習運用粉臘筆與鉛筆，並透過沾酒精棉花來作渲染處理，效果還不錯，當然也得感謝可人兒給予的靈感。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002076.html">01:16 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2076" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+
+</body>
+</html>

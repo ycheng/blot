@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Prism2 WirelessLAN 驅動與整合</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/000851.html" title="首度 KDE@Taiwan 使用者聚會圓滿落幕" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/000854.html" title="Qt 3.3.4 釋出 &amp; Qt4 Plans" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/000851.html">« 首度 KDE@Taiwan 使用者聚會圓滿落幕</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/000854.html">Qt 3.3.4 釋出 & Qt4 Plans »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 28, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Prism2 WirelessLAN 驅動與整合</h3>
+
+去年我曾經花了些時間涉獵 Intersil PRISM-2 WirelessLAN card 的驅動，事實上成效還不錯，至少手頭的幾款都成功驅動，也適時的提供給客戶測試，但是問題點在於整合度不良。放眼望去，目前 Linux 平台上，Free/Open-Source 的實作中，最具有高度整合的 WirelessLAN suite 大概就屬 [<a href="http://www.gnome.org/projects/NetworkManager/">NetworkManager </a>]。NetworkManager  基本上是個 GNOME Applet，但是內部大有學問，以 Linux Kernel 2.6 udev 與 HAL 技術為主軸，並透過 D-Bus 作 IPC。<br>
+<br>
+姑且不論 NetworkManager 的 GNOME support 是否能夠 stripped-down 到 pure GTK+，PRISM-2 的驅動目前是 <a href="http://www.linux-wlan.org/">linux-wlan-ng</a> 這個計畫所主持的，有許多成功的案例，但是 linux-wlan-ng 有一些致命的問題，其中最麻煩的就是欠缺 Linux Wireless Extension 的支援，這讓 NetworkManager 在 PRISM-2 上的運作顯得困難重重，同時，也可以發現 NetworkManager 不支援 wpa_supplicant (這也與 NetworkManager 原有的 backend functions 有所重疊，比方說 scanning)。<br>
+<br>
+為此，Dan Williams 在 lwlan-devel mailing-list 提到以下的處理方式：<ul class="code" style="margin: 6px;">
+we have to sumbit patches for wpa_supplicant to run in "dumb" mode and only authenticate when & where we tell it to.  That's a bit out (maybe a month or two?) but is definitely in the works for NM right now.
+</ul>
+所以還需要 wpa_suplicant 相關修正的涉入才能繼續進行 。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 28, 2005 01:18 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>您好,請問intersil prism 2晶片的網卡,要如何設定wep協定啟動時的IV值,我目前在做學校的專題,想要以固定的IV值去送封包,謝謝您!</p>
+<span class="comments-post">由 <a href="mailto&#58;lcc0610&#64;yahoo&#46;com&#46;tw">盧承忠</a> 發表於</MTIfNonEmpty> December  8, 2005 08:09 PM</span>
+</div>
+<div class="comments-body">
+<p>請問intersil prism 無線網卡如何設定發送任意封包,也就是網卡不會自行加上header?謝謝!</p>
+<span class="comments-post">由 <a href="mailto&#58;lcc0610&#64;yahoo&#46;com&#46;tw">盧承忠</a> 發表於</MTIfNonEmpty> January 17, 2006 03:26 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

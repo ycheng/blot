@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 2010 年免費課程：以 GDB 重新學習 C 語言程式設計</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002126.html" title="老師，謝謝你" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002128.html" title="2010 年免費課程：親手打造 ARM 平台的 Boot Loader" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002126.html">« 老師，謝謝你</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002128.html">2010 年免費課程：親手打造 ARM 平台的 Boot Loader »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">December 30, 2009</h2>
+
+<div class="blogbody">
+
+<h3 class="title">2010 年免費課程：以 GDB 重新學習 C 語言程式設計</h3>
+
+本月終於將「<a href="http://blog.linux.org.tw/~jserv/archives/002125.html">深入淺出Hello World</a>」系列演講與在修平技術學院開的「<a href="http://blog.linux.org.tw/~jserv/archives/002122.html">Unix 系統程式設計</a>」課程，告一段落，果然如胡適所說：「發表是最好的記憶」一般，過程中又扎實將這些基礎知識回顧。感謝捧場與指教，促使小弟決定在 2010 年準備新的課程，預定為「以 GDB 重新學習 C 語言程式設計」。若說之前「<a href="http://blog.linux.org.tw/~jserv/archives/002096.html">我所知道的 C 語言</a>」是從「鑑賞」的角度出發，以修辭學之於經典文學作品的態度，去探索知名 C 語言程式的設計概念，那麼，來年的新課程將是著重於融會貫通的「實踐」與「批判」，選定 GNU/Linux 平台，以 GNU Debugger (GDB) 來貫穿議程。<br />
+<br />
+稍早拜讀過陳重嘉先生的《C 語言之修煉與實踐》一書，著實有相見恨晚的感觸，書中透過清楚的圖表，將 C 語言程式設計的技巧與考量點，做了很清楚的展現，然而，執行時期的表現，更是筆者想強調的。故，筆者自 2006 年起，一系列的技術演講，涉及系統工具使用、分析、追蹤，以及後設開發，意旨在引導與會者得以對 GNU/Linux 尋幽訪勝，進而知曉系統運作之原理，而在 [<a href="http://0xlab.org/">0xlab</a>] 內部的技術分享中，Thinker 前輩也分享過 gdb 與 Android 系統追蹤分析的高階技巧，這些都給筆者極大的動力，試圖彙整開發經驗並探討。「以 GDB 重新學習 C 語言程式設計」的課程設計會比照在修平技術學院講「<a href="http://blog.linux.org.tw/~jserv/archives/002122.html">Unix 系統程式設計</a>」的模式，不採用零星的範例小程式，相反地，強調 John Dewey 博士注重「做中學」的教育方法，教育才要注重實際經驗，要從做中學習，給定一個具體而微的 Embedded AJAX 系統作出發，透過 gdb 去追蹤分析，進而作擴充，預期將掌握 UNIX 系統與 C 語言程式開發的技巧。具體來說，就是從筆者提供的簡單的 web server + CGI (純 C 語言 + POSIX 系統呼叫實做)，以 AJAX 作為立即資料的呈現。以下是其中暫定的部份講義，先以 gdb 作系統觀察：<br />
+<center><img src="http://jserv.sayya.org/c-prog/pix/ajaxe-1.png" width="640" height="480" /></center><br />
+接著，直接以 gdb 分析並嘗試修改系統狀態，從而改變程式執行：<br />
+<center><img src="http://jserv.sayya.org/c-prog/pix/ajaxe-2.png" width="640" height="480" /></center><br />
+當我們設定中斷點、單步執行，就是希望循序探討一個中型的系統，而動態修改 CGI 的傳回值，可立即反應在網頁呈現，期望可帶來更生動、有趣的資料呈現 (HTML + CSS + JavaScript 總是能比較生動)，甚至，在十餘行程式的修改後，整個系統搖身一變，成為「電子相簿」，可參考稍早在學校所作的簡報 [<a href="http://jserv.sayya.org/tmp/real-case-7.pdf">real-case-7.pdf</a>]，當然，分析修改的過程中，又會面臨到新的議題，這也是「以 GDB 重新學習 C 語言程式設計」的設計方針，好像一個師傅親手操刀，將作品進行雕刻琢磨的過程，用透明漸進的方式去闡述。關於詳情，會在 2010 年敲定議程演講的時間、場地事宜後，公佈相關的原始程式碼與參考資料，而議程的簡報當然也會一併釋出 (今年的若干場議程簡報仍在整理，請見諒)，在這之前，歡迎來信討論，或許能激發更多想法。<br />
+<br />
+黃國彬教授在〈仍然靠一些筆去堅持〉一文提到：
+<ul class="code" id="codemain" class="code" style="margin: 6px;">
+「我更加相信，無論在什麼世紀，什麼地方，一些熱心的筆，只要有揮動的自由，就肯定會努力不懈，在文學領域裡堅持。正因為這些堅持，從古到今，從中國到外國，出色的文學作品，就一部接一部，由發光的心靈賦形。」
+</ul>
+將「文學」換成「資訊技術」，此言仍不假，筆者也相信，從 2005 年開始的技術分享，多少能讓更多有心開發自由軟體、嵌入式系統的朋友，帶來一些啟發，我們得以堅持的把專案、產品提昇到更高的境界，一同發光發熱。筆者的程式開發經驗仍相當粗糙，但期望能拋磚引玉，對有心探索完整系統的設計技法者，提供一些指引，期待各位先進朋友的指教，謝謝。另外，這系列的課程，仍將維持之前在 [<a href="http://blog.linux.org.tw/~jserv/archives/002051.html">自由軟體教育訓練與演講規劃</a>] 一文的承諾，免費且不藏私的授課，最重要的，還是交流討論，也期望能有善心人士能夠協調場地的租借使用事宜，只要小弟一息尚在，就會持續分享下去。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 December 30, 2009 11:00 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>一直很喜欢你的技术分析，</p>
+
+<p>2010就到了，新年快乐 :-)</p>
+
+<p>ps: 想买本《C 语言之修炼与实践》学习，但我在大陆，不知道可否买到</p>
+<span class="comments-post">由 <a href="http://ox0spy.blogspot.com">ox0spy</a> 發表於</MTIfNonEmpty> December 31, 2009 01:11 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2127" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

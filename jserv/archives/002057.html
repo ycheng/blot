@@ -1,0 +1,322 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 以 C 語言實做 Javascript 的 prototype 特性</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002056.html" title="夢想、希冀、實踐" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002058.html" title="以 C 語言模擬 Lisp/Scheme 語法" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002056.html">« 夢想、希冀、實踐</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002058.html">以 C 語言模擬 Lisp/Scheme 語法 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">August 01, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">以 C 語言實做 Javascript 的 prototype 特性</h3>
+
+自從撰文 [<a href="http://blog.linux.org.tw/~jserv/archives/002029.html">以 C 語言實做 Functional Language 的 Currying</a>] 與 Thinker 的指教後，又認真思索「以 C 語言模擬其他程式語言的關鍵機制」的議題，何也？在筆者淺薄的認知中，語言只是一種手段，語法不過是彰顯某些動機與概念，而本文則試著由 C 語言「模仿」Javascript 的 prototype 特性，雖不過是東施效顰，但不妨可視為一個切入點，對 Javascript 這個兼具 prototype inheritance 與 functional programming 特性的動態語言。<br />
+<br />
+JavaScript 這個具有十多年歷史的程式語言，雖然普遍的認知是，語言本身跟 Java 無關，但兩者發展的背景卻值得玩味。過去任職於 Netscape 的 Brendan Eich (現為 Mozilla Corporation 的 CTO)，為訂於 1995 年發佈的 Netscape Navigator 2.0 設計了嶄新的語言，即 LiveScript，目標為同時能運作於客戶端 (如 Navigator 這樣的網頁瀏覽器) 與伺服器端 (Netscape 主打自家的解決方案 LiveWare)。這樣的概念與打著 "The Network is The Computer" 旗幟的 Sun Microsystems 不謀而合，於是，雙方進行了合作，這樣的因素使得 LiveScript 被更名為 Javascript，考量到同一年發佈的 Java，可在市場概念上作強化。經過多次改版的 Javascript，最後由 Netscape 交付予 ECMA (European Computer Manufacturers Association) 制定為新標準，也就是 ECMA-262，也被規範為 ECMAscript、與實現廠商無關的腳本程式語言的語法和語意，稍後整合為 ISO/IEC-16262。<br />
+<br />
+Javascript 程式語言最令初學者費解的兩項特性就是 Currying 與 prototype，前者來自 functional programming，後者來自物件導向的一個分枝：prototype-based，與傳統程序語言如 C 或 Pascal 有很大的出入。簡單來說，在 prototype-based 的思維中，任何物件都是 "instance"，但卻沒有傳統 class 的概念，這些 "instance" 由特定的 prototype 去複製 (clone) 而生。godfat 給了一個簡要的範例，探討 ECMAscript 中操作 prototype 的方式，以下引述作參考： [<a href="http://blogger.godfat.org/2007/03/class-instance.html">出處</a>]<ul><pre class="code" style="margin: 6px;">
+// 產生一個 function object, 會輸出「我是 ooo」
+function say() { print('I am ' + this) }
+
+// 產生一個 function object, 拿這當 Duck 的 prototype
+function Duck() { }
+
+// 讓 Duck prototype 產生一個成員，也就是讓 say 變成他的 method
+Duck.prototype.say = say;
+
+// 定義 toString 讓 say 使用
+Duck.prototype.toString = function(){ return 'Duck' }
+
+// 假設現在有一個讓某東西說話的 function
+function say_hello(who){ who.say() }
+
+// 於是我們可以這樣呼叫 say_hello
+say_hello(new Duck)
+</pre></ul>
+在如此的語意中，"new Duck" 意味著 ECMAscript 得先去尋找 Duck 的 prototype，然後 clone 一份該 prototype 後傳回物件的 instance，所以 function say_hello(who) 的 "who" 被帶入一份 Duck 的複製，也因此，執行 say 則會輸出：<ul><pre class="code" style="margin: 6px;">
+I am Duck
+</ul></pre>
+而回到 Javascript 的物件導向設計，其 prototype inheritance 的特性落實於 this, new, prototype 等關鍵字的使用，再巧妙地摻入 lexical scope (execution context 和 scope chain)、匿名函數、function object 等 functional programming 特性，組合表現出物件導向的多個面向。在 [<a href="http://blog.roodo.com/rocksaying/">石頭閒語</a>] 有若干篇值得一讀的好文，與此主題相關者可參見：<ul>
+  <li>[<a href="http://blog.roodo.com/rocksaying/archives/2165837.html">掌握 JavaScript 的「封裝」特性, part 1</a>]</li>
+  <li>[<a href="http://blog.roodo.com/rocksaying/archives/2175301.html">掌握 JavaScript 的「封裝」特性, part 2</a>]</li>
+</ul>
+鋪陳許久，本文終於能切入主題了，是的，掌握 prototype-base 的思維，一句話來說就是：<ul class="code" style="margin: 6px;">
+「"instance" 由特定的 prototype 去 clone 而生」
+</ul>
+筆者預想的情境是，環境中存有若干個矩形 (Rect) 物件，對 prototype 作操作，給定如 getter() 這類的 method 動作予矩形物件，並觀察其執行的表現。下列的程式碼，將展現 C 語言實做 prototype 的手法： [<a href="http://jserv.sayya.org/helloworld/js-prototype.c">js-prototype.c</a>]<pre class="code" id="codemain"><span class="keyword">#include</span> &lt;stdio.h><span class="keyword">
+#include</span> &lt;stdlib.h>
+
+<span class="keyword">struct</span> _rect {
+	<span class="keyword">int</span>  x, y;
+	<span class="keyword">int</span> (**prototype)(<span class="keyword">struct</span> _rect *);
+};
+<span class="keyword">typedef</span> <span class="keyword">struct</span> _rect Rect;
+
+<span class="keyword">typedef</span> <span class="keyword">int</span> (*Rect_method)(Rect *); 	<span class="comment">/**&lt; method enumeration */</span>
+&nbsp;
+<span class="keyword">enum</span> { GET_X, GET_Y, END_OF_NAME_TABLE }; 	<span class="comment">/**&lt; name table */</span>
+
+Rect_method *rect_prototype; 	<span class="comment">/**&lt; method as an array of prototypes */</span>
+
+<span class="comment">/* constructor &amp; destructor */</span>
+Rect *rect_new(<span class="keyword">int</span> x, <span class="keyword">int</span> y)
+{
+	Rect *p = (Rect *) malloc(<span class="keyword">sizeof</span>(Rect));
+	p->x = x, p->y = y;
+	p->prototype = rect_prototype;
+	<span class="keyword">return</span> p;
+}
+
+<span class="keyword">void</span> rect_delete(Rect *p) { free(p); }
+
+<span class="comment">/* methods: getter */</span>
+<span class="keyword">int</span> rect_get_x(Rect *p) { <span class="keyword">return</span> p->x; }
+<span class="keyword">int</span> rect_get_y(Rect *p) { <span class="keyword">return</span> p->y; }
+
+<span class="comment">/* register prototype */</span>
+<span class="keyword">void</span> rect_init_prototype(<span class="keyword">void</span>)
+{
+	rect_prototype = (Rect_method *) malloc((<span class="keyword">sizeof</span>(Rect_method)) *
+	                                        END_OF_NAME_TABLE);
+	rect_prototype[GET_X] = rect_get_x;
+	rect_prototype[GET_Y] = rect_get_y;
+}
+<span class="comment">/* deregister prototype */</span>
+<span class="keyword">void</span> rect_delete_prototype(<span class="keyword">void</span>) { free(rect_prototype); }
+
+<span class="keyword">static</span> <span class="keyword">void</span> test_suite(<span class="keyword">void</span>)
+{
+	Rect *r1 = rect_new(1, 2);
+	Rect *r2 = rect_new(3, 4);
+
+	printf(<span class="literal">"r1 = (%d, %d), r2 = (%d, %d)\n"</span>,
+			r1->prototype[GET_X](r1), r1->prototype[GET_Y](r1),
+			r2->prototype[GET_X](r2), r2->prototype[GET_Y](r2));
+
+	rect_delete(r1);
+	rect_delete(r2);
+}
+
+<span class="keyword">int</span> main(<span class="keyword">void</span>)
+{
+	rect_init_prototype();
+	test_suite();
+	rect_delete_prototype();
+	<span class="keyword">return</span> 0;
+}</pre>
+試著編譯並執行：<pre class="code" style="margin: 6px;">
+$ gcc -o js-prototype{,.c} && ./js-prototype
+r1 = (1, 2), r2 = (3, 4)
+</pre>
+顯然，我們的 prototype 操作已發揮功能，當然，這僅是一個模擬的手法，但可從中窺見 Javascript 在此機制的特性。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 August  1, 2008 01:35 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>呵，這讓我想到一年半前，曾經在 ptt CSSE 板看過 semop 示範一些由 C 實作動態 OO 的機制。<br />
+不過一來我 C 不熟，二來這段時間我自己本身的改變也滿大的。總之大概看過去之後，<br />
+多少就比較能想像由 C 實作一個完整的 OO 系統要怎麼做。或許也像是在設計一個新語言吧？</p>
+
+<p>那篇文章在：<br />
+http://www.ptt.cc/bbs/CSSE/M.1167950648.A.894.html</p>
+
+<p>或：<br />
+● 1461     1/05 semop        R: [討論] 念完資工之後...<br />
+┌─────────────────────────────────────┐<br />
+│ 文章代碼(AID): #15dOCuYK (CSSE) [ptt.cc] Re: [討論] 念完資工之後...      │<br />
+│ 這一篇文章值 663 銀                                                      │<br />
+└─────────────────────────────────────┘</p>
+<span class="comments-post">由 <a href="http://godfat.org">godfat 真常</a> 發表於</MTIfNonEmpty> August  1, 2008 08:14 PM</span>
+</div>
+<div class="comments-body">
+<p>Hi Jserv</p>
+
+<p></p>
+
+<p>I am finding a way to parse and run "javascript" by python.</p>
+
+<p>Only python can run on google app engine. so I try to  write a python app to parse and run "javascript".</p>
+<span class="comments-post">由 <a href="mailto&#58;hugo&#46;darwin&#64;gmail&#46;com">Hugo Darwin</a> 發表於</MTIfNonEmpty> August 19, 2008 05:47 PM</span>
+</div>
+<div class="comments-body">
+<p>Hi Jserv, <br />
+both mozilla and firefox use a javascript interpreter  <br />
+ 'spidermonkey'. You can study and give us some tutorial.</p>
+<span class="comments-post">由 <a href="mailto&#58;hugo&#46;darwin&#64;gmail&#46;com">Hugo Darwin</a> 發表於</MTIfNonEmpty> August 20, 2008 12:07 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2057" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

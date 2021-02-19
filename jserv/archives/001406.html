@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: XOrg 7 的編譯與修改</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001405.html" title="關於本 Blog 的原則" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001407.html" title="To which race of Middle Earth do you belong?" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001405.html">« 關於本 Blog 的原則</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001407.html">To which race of Middle Earth do you belong? »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 02, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">XOrg 7 的編譯與修改</h3>
+
+X11R7 是個相當大的改變，不僅引入許多新的技術與 driver 修正，也是首次為模組化的樣貌。在 Ubuntu Dapper 中已經有 [<a href="http://xorg.freedesktop.org/">XOrg</a>] 7 的套件，而 check out source from cvs repository 的過程更有條理。自己打包 Xorg package 的方式不難，大致如下。<br><br>
+首先，要取得 debianized inforamtion:<ul><pre>
+$ apt-get source xorg-server
+讀取套件清單中... 完成
+了解套件依存關係中... 完成
+需要下載 7968kB 的原始檔案。
+下載:1 http://archive.ubuntu.com dapper/main
+xorg-server 1:1.0.0-0ubuntu1 (dsc) [1791B]
+下載:2 http://archive.ubuntu.com dapper/main
+xorg-server 1:1.0.0-0ubuntu1 (tar) [7944kB]
+</pre></ul>
+取出裡面的 debian 目錄，然後依據 [<a href="http://xorg.freedesktop.org/">XOrg</a>] 網頁的指示，取出 xserver 的 source code：<ul>
+cvs -d :pserver:anoncvs@cvs.freedesktop.org:/cvs/xorg -z9 co xserver/xorg
+</ul>
+然後，把剛剛的 debian/ 目錄放進去，作我們想要的修改，之後跑：<ul>
+dpkg-buildpackage -rfakeroot-sysv -uc -us -sa -D
+</ul>
+這樣就快快樂樂的開始打包了，當然，記得把 libexa.so 加入 file list 中。運作的情況，就如 /var/log/Xorg.0.log 所示：<ul><pre>
+(**) RADEON(0): Using EXA acceleration architecture
+(II) Loading sub module "exa"
+(II) LoadModule: "exa"
+(II) Loading /usr/lib/xorg/modules/libexa.so
+(II) Module exa: vendor="X.Org Foundation"
+        compiled for 7.0.0, module version = 1.2.0
+        ABI class: X.Org Video Driver, version 0.8
+</pre></ul>
+而這過程中，也讓我想到，之前在做 Xorz (一個玩具 X server 實做，詳情可參閱本 blog 其他 entries) 時，做了些 MMX minor optimizations，xorg cvs head 似乎還沒收錄，所以我動手提交了 [<a href="https://bugs.freedesktop.org/show_bug.cgi?id=5478">Bug#5478 - Use fbSolidFillmmx in the place of fbSolid</a>] 到 FreeDesktop Bugzilla，重複上面的動作，一個又一個的 debian packages 就準備完畢。<br><br>
+Debian rules!<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January  2, 2006 11:44 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

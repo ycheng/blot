@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Bug Labs：創造個人專屬的移動裝置</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001998.html" title="治裝" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002000.html" title="Eee PC 改造計畫：活潑化的桌面" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001998.html">« 治裝</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002000.html">Eee PC 改造計畫：活潑化的桌面 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 28, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Bug Labs：創造個人專屬的移動裝置</h3>
+
+<center><img src="http://people.debian.org.tw/~jserv/buglabs-model.jpg" width="350" height="427" /></center><br />
+什麼是您期望的移動裝置？心目中 PDA/GPS 裝置又是什麼樣貌？一家位於紐約的新創公司 [<a href="http://www.buglabs.net/">Bug Labs</a>] 企圖以樂高玩具般組裝的概念，顛覆我們傳統的認知。小弟做了上方的示意圖，作為對這家公司產品概念的呈現，「組裝」分為兩個部份：BUGbase 與 BUGmodules，依據 Bug Labs 的定義，這類電子組件都稱為 "BUG" (大寫，以別於軟體的 "bug")。BUGbase 顧名思義，就是基本的迷你電腦，此外提供了特別的擴充槽，允許螢幕、鍵盤、GPS 等擴充的組件以「組合」成個人專屬的移動裝置，後者就稱為 BUGmodules。<br />
+<br />
+風靡全球的樂高玩具，允許玩家依據想法透過積木的組合，去塑造期望中的玩具樣貌，因而百玩不膩，同樣地，Bug Labs 的夢想就是讓電腦系統的 DIY 變得簡單趣味，並以開放的途徑去實現，所以他們也採用 Linux 2.6，考慮到移動裝置的需求，硬體採用 ARM SoC，內建諸多標準介面，所以選購的組件可讓玩家充分支配與組裝。有意思的是，據官方的聲明表示，相當倚重 open source software 的使用，不僅裝置的韌體部份採用 Linux (與一系列自由軟體)，個人電腦端作設計與控制的部份，也採用 Eclipse 開源的發展架構。下圖是更詳細的呈現：<br />
+<center><img src="http://people.debian.org.tw/~jserv/buglabs_BUG.jpg" width="425" height="232" /></center><br />
+這是其中一種模組間組合的形式，在這「疊疊樂」中間的部份就是 BUGbase，內嵌小塊的 LCD 顯示螢幕與豐富的插槽，其他當然就是 BUGmodules。去年 LinuxDevices.com 的新聞 [<a href="http://www.linuxdevices.com/news/NS3871478989.html">Open source, Lego-like computer modules run Linux</a>] 介紹過 Bug Labs 這家公司的新產品，而依據該公司的 [<a href="http://www.bugblogger.com/">官方 blog</a>] 表示，本月份正展開銷售，伴隨若干 Hacking 的節目，似乎頗有意思。進一步來看 BUGbase 的硬體組成：<ul>
+  <li>CPU: ARM1136JF-S</li>
+  <li>RAM: 128MB Flash/DDR SDRAM</li>
+  <li>USB: 1 x USB 2.0 HS host interface; 1 x USB OTG HS interface</li>
+  <li>Serial: 4 UART</li>
+  <li>Interfaces: 4 channel SPI; I2Cm 400kbits (4 channels); I2S (2 channels); smart LCD; camera sensor; micro memory card</li>
+  <li>Video/graphics: MPEG4 hardware encoding/decoding; hardware graphic acceleration</li>
+  <li>Communications: 10/100 Ethernet MAC; 802.11b/g</li>
+</ul>
+軟體的部份可參考 BUG Wiki 的 [<a href="http://bugcommunity.com/wiki/index.php/FAQ">FAQ</a>]，依據內容可知，Dragonfly SDK / Virtual BUG 的原始程式碼已經公開，而 Bug Labs 也會以此參與今年的國際 Eclipse 開發者大會，細節可參考 [<a href="http://www.bugblogger.com/2008/03/oh-hai-from-ecl.html">Oh Hai from EclipseCON</a>]。稍早 engadget 有一份「開箱文」[<a href="http://chinese.engadget.com/2007/11/25/working-bug-labs-hardware-hands-on/">Bug Labs 硬體動手玩</a>]，可由眾多圖片窺見預設的軟體組態就是 Linux 2.6 + Qtopia PDA edition (依據 Look-n-Feel，相當明顯是 Qtopia 2.2)，但 Bug Labs 當然不只如此，事實上，由 wiki 的內容可知，整個應用程式的組成，相當重視 Java 技術，採用 Java CDC/Personal Basis (銜接底層的 qt2)，同時，也透過 OSGi 提供 SOAP/web service 存取，看來有很大的想像空間。<br />
+<br />
+Bug Labs 重視應用程式的開發，投入頗多資源在 Eclipse / Java 上，提供 BMI (bug module interface) 的整合性開發，特別的是，不僅是 Java 應用程式的開發可進行，還能以圖形化的方式調整 BUGmodules 的呈現，可參考執行中的畫面： (click to enlarge)<br />
+<center><a href="http://www.linuxdevices.com/files/misc/buglabs_SDK_1.jpg"><img src="http://www.linuxdevices.com/files/misc/buglabs_SDK_1-sm.jpg" width="450" height="331" /></a></center><br />
+我們可以看出，Bug Labs 企圖從「樂高式移動裝置」，點出這種將「服務 + 裝置」的高度個人化應用趨勢，相信這是可見的未來，嶄新的使用者體驗，稍早的 "Device 2.0" 一詞頗有此意，可進一步參考 r-echos 的 [<a href="http://r-echos.net/2007/12/04/first-look-at-bug-labs-modular-system/">First look at Bug Labs’ modular system</a>] 一文，獲得更多的展示與概念呈現。倘若可成功建立使用者 / 開發者社群，發揮開放移動裝置的願景，影響應該頗為可觀<br />
+<br />
+另外，在官方網頁 [<a href="http://buglabs.net/about">What is Bug Labs?</a>] 提到：<ul>
+"Bug Labs is a new kind of technology company, enabling a new generation of engineers to tap their creativity and build any type of device they want, without having to solder, learn solid state electronics, or go to China."
+</ul>
+這個 "go to China" 似乎變成生產製造的代名詞了，看來這些繁瑣的量產細節，都成為老外的夢魘，有意思。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March 28, 2008 12:08 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>不過目前只接受美國的訂單就是...</p>
+
+<p>等他們接受國際訂單等了兩個月了 :(</p>
+<span class="comments-post">由 <a href="mailto&#58;vanillahsu&#64;gmail&#46;com">vanilla</a> 發表於</MTIfNonEmpty> March 28, 2008 06:08 AM</span>
+</div>
+<div class="comments-body">
+<p>真有趣，不知道能不能是 mind rover 硬體版 :p<br />
+http://www.mindrover.com/<br />
+</p>
+<span class="comments-post">由 <a href="http://godfat.org">godfat 真常</a> 發表於</MTIfNonEmpty> March 28, 2008 04:08 PM</span>
+</div>
+<div class="comments-body">
+<p>我只看到辣妹耶...，這是個人專屬的嗎？哪裡買得到。</p>
+<span class="comments-post">由 <a href="http://alicekey.wordpress.com">alicekey</a> 發表於</MTIfNonEmpty> March 28, 2008 04:20 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1999" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

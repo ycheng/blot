@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: OSDC.tw 2007 - RT nanokernel for Embedded Linux</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001876.html" title="sizeof 在語言層面的陷阱" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001878.html" title="一眼望穿的寂靜" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001876.html">« sizeof 在語言層面的陷阱</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001878.html">一眼望穿的寂靜 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February 20, 2007</h2>
+
+<div class="blogbody">
+
+<h3 class="title">OSDC.tw 2007 - RT nanokernel for Embedded Linux</h3>
+
+雖然是舊聞，不過這裡還是提一下。去年在 [<a href="http://blog.linux.org.tw/~jserv/archives/001854.html">OSDC.tw 2007 Calls for Papers</a>] 提到 [<a href="http://osdc.tw/">OSDC - Open Source Developer Conference</a>] 2007 年的議程，日前已經公佈了，詳細請見 [<a href="http://osdc.tw/2007/02/post_7.html">議程公佈</a>]。因為今年許多講者已經在多個方向切入 Web 2.0，所以小弟就改以 Virtualization + Realtime + Embedded Linux 為主題，探討從系統整合與消費性電子產品需求出發的新設計，我的提案名稱為："RT Nanokernel for Embedded Linux"，以下為提案內容：<ul class="code" style="margin: 6px;">
+在台灣，開發一個新的作業系統並非不切實際的工作，相反地，在銜接 Free / Open Source software 運動巨變的同時，其中很重要的理念就是最佳化、通用性，與客製化。Nanokernel / Hybrid-kernel 的提出，就是針對應用需求，如行動裝置的進階能源管理機制等需大量軟硬體協同開發的技術項目，提供一種新途徑。<br />
+<br />
+眾多 Realtime Linux 系統的提出，證明可在符合特定需求的 Hard Realtime OS 上面運作修改過的 Linux Kernel，以兼具即時任務需求與既有 Linux 應用程式相容性。在資訊產業有句金言：「沒有完美的技術，只有合用的技術」，本議題以日漸成熟的 nanokernel / para-virtualization 等技術為基礎，提出輕量級且易於擴充的新設計，讓 Embedded Linux 發揮更大的威力。
+</ul>
+雖然這可能是很「硬」的主題，不過這是從消費性電子產品做出發，所以一方面是平衡議程與保持多元化，另一方面則是分享過去一年在這個領域的小小突破，這是 Realtime Linux 走出自動控制領域，而悄悄地整合進手機、PDA，甚至是數位電視系統，之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001344.html">幕後的英雄：談 Embedded Systems 設計</a>] 曾引用《The Invisible Computer》一書的說法，強調真正的電腦是極其複雜的，然而卻是無形的，也就是說嵌入式電腦無處不在，我想，未來我們將看到 Embedded/Realtime Linux 無所不在。<br />
+<br />
+議程第一日在 Apr 14 (六)，許多公司行號當天會挪用春節補班使用，所以請記得請假，當然啦，小弟的議程實在太冷門了，所以您也可以忽略小弟的議程、下午再來 :-)<br />
+<br />
+期待您的蒞臨指教，也希望這個新的 RT nanokernel for Embedded Linux 目前雖處於 prototype 階段，但仍可創造一些價值，最終的成果會以 GNU GPLv2 / LGPLv2 / BSD License 釋出，而任何合作的機會都是可能的，可與本實驗室聯繫，聯絡人：Jim Huang &lt;jserv.tw @ gmail.com&gt;。<br />
+<br />
+PS: 歡迎討論技術細節，但請勿在 OSDC.tw 議程中詢問關於產品規格或者定位方面的細節，謝謝！<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 February 20, 2007 10:01 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1877" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

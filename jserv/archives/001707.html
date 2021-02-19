@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 這就是我們用的作業系統？</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001706.html" title="Equator 的 BSP-16 SoC" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001708.html" title="GNU Classpath 引入 JDK 1.5 全新的並行機制" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001706.html">« Equator 的 BSP-16 SoC</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001708.html">GNU Classpath 引入 JDK 1.5 全新的並行機制 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">June 08, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">這就是我們用的作業系統？</h3>
+
+有人這樣描述現代人：「用電腦就跟喝水一樣」，形容現代人對電腦資訊系統的依賴，這個比喻讓我想到小時候看過的電視廣告，反諷飲用水的台詞：<ul>
+(舉杯) 這就是我們喝的水嗎？這就是我們喝的水嗎？
+</ul>
+我的工作需要接觸到市佔率九成的 Microsoft Windows，在上面運作一些特殊的商業軟體，能解決需求的作業系統就是好系統，雖然公司的電腦裡面的 Windows XP 常常給我罷工，要不是我老闆出錢請我用電腦，我才懶得用 @_@<br>
+<br>
+champ 學長寫了兩篇關於 Microsoft 最近「小動作」的文章 [<a href="http://blog.xuite.net/champyen/champ/4840838">WMF - 微軟現形記</a>] 與 [<a href="http://blog.xuite.net/champyen/champ/6749709">WGA - 微軟現形記 II</a>]，雖然說是「小動作」，可是頗駭人聽聞的：Windows Update 後，告訴使用者，這台系統是盜版的，好像沒多久就要上演「不給錢，就搗蛋」的戲碼？！Windows Genuine Advantage 也是經典，被設計來確認是否為盜版軟體，每天還偷偷將資料傳回 Microsoft，不過呢，這個行為在「使用者合約」中，是「合法的功能改進」，使用者也無可奈何，天阿！作業系統能搞成這樣，實在是創舉，Microsoft 不愧是執業界牛耳的標竿，我說，Spyware 是二十一世紀軟體的基本配備。<br>
+<br>
+上次閒閒沒事作，寫了個 [<a href="http://blog.linux.org.tw/~jserv/archives/001692.html">Orz Microkernel</a>]，光聽名稱就覺得 "Orz"，當然現在還沒有 public release，不過可以想見實際運作的時候應該也頗 Orz，就只是 kernel 外加一些 server 罷了，可是呢，Microsoft 的作業系統系列開始加入這些「小動作」後，我實在懷疑到底誰寫的作業系統比較 Orz... 好吧，被迫做出以下回應：<ul>
+(敲電腦) 這就是我們用的作業系統嗎？這就是我們用的作業系統嗎？
+</ul>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 June  8, 2006 10:28 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>微軟的東西已經超越了orz啊...你看這個Vista</p>
+
+<p>http://kutar.l2p.net/diary/index.php?itemid=856</p>
+
+<p>將個shortcut送去回收也要這樣啊 囧rz</p>
+
+<p>我看他們把Window Vista改為Window Orz還叫人沒那麼orz</p>
+<span class="comments-post">由 <a href="http://kutar.l2p.net/diary/">V!c</a> 發表於</MTIfNonEmpty> June  8, 2006 11:13 PM</span>
+</div>
+<div class="comments-body">
+<p>据我维护服务器的经验,WinServer2003算是比较稳定,我这边几台web和应用服务器经常几个月连续开机(停电除外,老板不肯装备ups,只好重起),我自己用机也放一放FTP等,也是除了装软件重起外,连续开机几个星期的.<br />
+相比较2000和98而言,XP/2003的内存管理好很多,连续杀死几个正在运行的大型软件也不会出现什么奇怪的问题,要是在98下面多半就已经重起了.<br />
+但是要命的就是一些"不得不装"的软体,例如以前数据库服务器运行的oracle,因为臭虫和机器性能不济的原因,经常造成整台机死掉,装到另一台Linux版的oracle后就稳定下来.</p>
+
+<p>所以若一些软件影响了系统,就将其赶到另外机器上吧(心得好像跟上面说的无关)</p>
+<span class="comments-post">由 <a href="mailto&#58;azsd&#64;qq&#46;com">azsd</a> 發表於</MTIfNonEmpty> June  9, 2006 03:49 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,429 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>帝國反抗君之古戰場。PowerOp請您速至 blog.yam.com/ystuan 支援前線！: [備忘] OpenVPN on CentOS 4 (part 3)</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~ystuan/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~ystuan/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~ystuan/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~ystuan/archives/001330.html" title="Another Week In Edinburgh, Part II" />
+
+<link rel="next" href="http://blog.linux.org.tw/~ystuan/archives/001341.html" title="誰補貼誰？我看「信用卡無息分期付款」" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~ystuan/" accesskey="1">帝國反抗君之古戰場。PowerOp請您速至 blog.yam.com/ystuan 支援前線！</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~ystuan/archives/001330.html">&laquo; Another Week In Edinburgh, Part II</a> |
+
+<a href="http://blog.linux.org.tw/~ystuan/">Main</a>
+| <a href="http://blog.linux.org.tw/~ystuan/archives/001341.html">誰補貼誰？我看「信用卡無息分期付款」 &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">October 17, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">[備忘] OpenVPN on CentOS 4 (part 3)</h3>
+
+<p>時光飛逝（時光總是飛逝:Q），上次寫<a href="http://blog.linux.org.tw/~ystuan/archives/001304.html">[備忘] OpenVPN on CentOS 4(part 2)</a>已經是三週前的事了。。。</p>
+
+<p>有件事提一下好了，這段期間，Red Hat發佈<a href="https://www.redhat.com/archives/nahant-list/2005-October/msg00031.html">Red Hat Enterprise Linux 4 Update 2</a>，我們的主角CentOS也跟著發佈相對應的<a href="http://www.centos.org/modules/news/article.php?storyid=104">CentOS-4.2</a>。當然，我們不需要重灌，只需要更新套件即可。</p>
+
+<p>======岔題談談screen======岔題談談screen======<br />
+因為擔心更新套件遇到網路塞車，我先安裝screen這個程式（內心的吶喊：早該裝了，竟然撐到現在>_<）<br />
+#yum -y install screen<br />
+成功之後，執行screen<br />
+# screen<br />
+再執行yum來更新套件：<br />
+# yun -y update<br />
+（過程中隨時可以按 ctrl a d ，也就是detach，然後要登出都可以。下次（以一般使用者）登入再切換成root，然後再執行<br />
+# screen -r<br />
+就可以resume之前的session，檢查套件更新是否順利。<br />
+（人家程咬金都有三斧頭，可是screen這麼強的工具我只會screen -r還有按ctrl a d跳離，兩招^^;）<br />
+果然在套件更新的途中常常遇到伺服器中斷連線的情況，所以我只要在有網路的地方，就用ssh遠端登入，檢查一下是不是要再次執行`yum -y update`。</p>
+
+<p>這邊再多嘴提一下，我覺得比較好的ssh+screen使用習慣。請依照底下的順序操作：<br />
+1./ 以一般使用者身份執行遠端登入 `ssh 1.2.3.4 -l myaccount` （限制root無法從遠端登入，請參考<a href="http://blog.linux.org.tw/~ystuan/archives/001208.html">本系列首篇</a>）。<br />
+2./ 切換為root `su -`<br />
+3./使用screen指令 `screen -r`</p>
+
+<p>其中1./是針對「遠端猛踹(try)root密碼之惡意ssh機器人程式」，但是這些機器人也會亂踹一些「可能存在」的帳號名稱，例如guest, student, teacher...萬一某個一般使用者的密碼被猜出來，她又剛好有執行步驟2./和3./，更糟的是2./ 和 3./ 順序又顛倒，那麼侵入者只要執行`screen -r`就可以resume那個切換到root帳號的session，後果真是不堪設想。<br />
+======岔題結束分隔線======岔題結束分隔線======</p>
+
+<p>回題回題，今天(10/17)終於設定成功了，有興趣的朋友請看下去吧！</p>
+
+<a name="more"></a>
+<p># 基本需求及規劃：<br />
+<u><b>目標：<br />
+「OpenVPN用戶端透過internet登入OpenVPN伺服器後，可以執行VNC viewer登入內部網路之目標伺服器，進行操作。」</b></u></p>
+
+<p><b>機器：</b><br />
+<b>OpenVPN用戶端(Microsoft Windows 2000 Professional)</b><br />
+ip不固定，透過internet來建立VPN tunnel（可以直接連接，也可以透過HTTP proxy唷），取得OpenVPN伺服器配發的10.8.0.0/24網段virtual ip</p>
+
+<p><b>目標伺服器(Microsoft Windows)</b><br />
+在內部10.66.0.0/24網段，ip 10.66.0.4，執行VNC server，用戶端登入OpenVPN伺服器後，可以執行VNC viewer來連結。</p>
+
+<p><b>OpenVPN伺服器(CentOS 4, updated to 4.2)</b><br />
+網卡eth0直接連上internet，ip 1.2.3.4，以防火牆保護（額外開啟1194:tcp給OpenVPN用戶端，開啟5900:tcp讓用戶端能夠連接目標伺服器的VNC server），定期更新套件。<br />
+網卡eth1連到內部網段，ip 10.66.0.1。</p>
+
+<p>OpenVPN使用預設的Routing而非Bridging，使用tcp而非預設的udp，virtual ip 10.8.0.1。</p>
+
+<p><b>設定</b><br />
+[OpenVPN伺服器]<br />
+這台機器本來只有一張網卡，今天我又加了一張網卡。<br />
+在主機前面設定的時候，我會執行底下兩個指令，讓訊息不亂跑，並以英文顯示：<br />
+export LANG=C<br />
+export TERM=vt100</p>
+
+<p># 設定兩張網卡的ip<br />
+setup<br />
+選Network configuration（但是發現只能輸入Primary DNS，沒有要我輸入Secondary DNS）<br />
+（上面此法好像只能設定eth0，我用底下的指令設定eth1，有好方法歡迎告知）<br />
+netconfig -d eth1</p>
+
+<p><b>（接下來大量引用了netman的文件：<a href="http://www.study-area.org/tips/openvpn.html">OpenVPN 建置方案</a>，感謝他的經驗分享。）</b>（我的用戶端是Microsoft Windows 2000 Professional，他的是XP）</p>
+
+<p>[OpenVPN伺服器]<br />
+# 複製設定範例 <br />
+cp -r /usr/share/doc/openvpn-2.0.2/easy-rsa/ /etc/openvpn/<br />
+cp /usr/share/doc/openvpn-2.0.2/sample-config-files/server.conf /etc/openvpn/</p>
+
+<p># 設定 CA 環境<br />
+cd /etc/openvpn/easy-rsa/<br />
+vi vars<br />
+	export KEY_COUNTRY=TW<br />
+	export KEY_PROVINCE=Taiwan<br />
+	export KEY_CITY=Taipei<br />
+	export KEY_ORG="TOSSUG"<br />
+	export KEY_EMAIL="ystuan@gmail.com"<br />
+. ./vars<br />
+./clean-all</p>
+
+<p># 建置 root CA<br />
+./build-ca</p>
+
+<p># 建置 server key 及 crt <br />
+./build-key-server ovpnsrv1</p>
+
+<p># 建置 Diffie Hellman 參數<br />
+./build-dh</p>
+
+<p># 安裝 server 所需的 CA 文件<br />
+cp keys/ca.crt ../<br />
+cp keys/dh1024.pem ../<br />
+cp keys/ovpnsrv1.key ../<br />
+cp keys/ovpnsrv1.crt ../</p>
+
+<p># 配置 server 設定檔(沒提及的請保持原樣)<br />
+因為我希望用戶端就算不是直接連上internet，還是可以透過HTTP proxy連上來，所以改用"proto tcp"。另外我用Routing，所以維持"dev tun"。還有內部網路在10.66.0.0/24，所以加一行push的設定，將這個路由"餵"給每個連上來的客戶端。</p>
+
+<p>cd ../<br />
+vi server.conf<br />
+	proto tcp<br />
+	;proto udp</p>
+
+<p>	;dev tap<br />
+	dev tun<br />
+	ca ca.crt<br />
+	cert ovpnsrv1.crt<br />
+	key ovpnsrv1.key  # This file should be kept secret<br />
+	push "route 10.66.0.0 255.255.255.0"</p>
+
+<p># 啟動 server <br />
+service openvpn restart<br />
+chkconfig openvpn on</p>
+
+<p># 防火牆設定修改<br />
+system-config-securitylevel-tui<br />
+Security Level: Enabled<br />
+Customize<br />
+Other ports填上 1194:tcp 5900:tcp<br />
+（前者是讓OpenVPN用戶端可以連接，後者是讓用戶端可以連到目標伺服器的VNC server）</p>
+
+<p>[OpenVPN用戶端設定]（以Microsoft Windows 2000 Professional為例）</p>
+
+<p># 下載並安裝 openvpn (GUI 版本)<br />
+http://openvpn.se/files/install_packages/openvpn-2.0.2-gui-1.0.3-install.exe</p>
+
+<p># 設定環境<br />
+cmd.exe<br />
+cd "c:\Program Files\OpenVPN\easy-rsa"<br />
+init-config.bat<br />
+（上面這個.bat檔裡面其實只是兩次「從範例複製一份設定檔」的動作）<br />
+edit vars.bat<br />
+（也可以用其他的編輯器，例如notepad vars.bat，編輯檔案時，內容必需與 server 一致, 尤其 KEY_ORG 項目。）</p>
+
+<p># 建置 CA環境 <br />
+vars</p>
+
+<p># 建置 client key 與 CSR (Certificate Signing Request)<br />
+mkdir keys<br />
+（我的機器上不會自動新增 keys 這個目錄，因此手動建立）<br />
+build-key ovpnclt1<br />
+（會有下列錯誤訊息，是跟CA有關的，可以忽略）<br />
+Loading 'screen' into random state - done<br />
+Error opening CA private key keys/ca.key<br />
+2292:error:02001002:system library:fopen:No such file or directory:crypto/bio/bs<br />
+s_file.c:278:fopen('keys/ca.key','rb')<br />
+2292:error:20074002:BIO routines:FILE_CTRL:system lib:crypto/bio/bss_file.c:280:</p>
+
+<p>unable to load CA private key<br />
+Could Not Find C:\Program Files\OpenVPN\easy-rsa\keys\*.old</p>
+
+<p># 提交 CSR（請使用安全方式，netman用了pscp.exe，我當時因為就在伺服器旁邊，所以直接mount usbdisk。因為伺服器有開ssh，其實也可以用Filezilla，Servertype記得選"SFTP using SSH2"。）<br />
+usb disk插到客戶端，將檔案C:\Program Files\OpenVPN\easy-rsa\keys\ovpnclt1.csr複製過來。然後停止這個usb disk，取下。</p>
+
+<p>[OpenVPN伺服器]<br />
+接著usb disk插到伺服器，執行底下指令來掛載，複製檔案，以及卸載（假設在/dev/sdb1）：<br />
+mount /dev/sdb1 /media/usbdisk/<br />
+cp /media/usbdisk/ovpnclt1.csr /etc/openvpn/easy-rsa/keys/<br />
+rm /media/usbdisk/ovpnclt1.csr （不要留一份在usb disk上）</p>
+
+<p># 在伺服器端，簽署 client 提交的CSR，產生crt<br />
+------------------------<br />
+cd /etc/openvpn/easy-rsa/<br />
+./sign-req ovpnclt1<br />
+cp ovpnclt1.crt /media/usbdisk/<br />
+cp ca.crt /media/usbdisk/<br />
+rm ovpnclt1.crt ovpnclt1.csr （不該把這些檔案留在CA server上）<br />
+umount /dev/sdb1</p>
+
+<p>[OpenVPN用戶端]<br />
+# 安裝 CA 文件<br />
+將下列檔案放到"C:\Program Files\OpenVPN\config"<br />
+ovpnclt1.key<br />
+ca.crt<br />
+ovpnclt1.crt<br />
+第一個請由"C:\Program Files\OpenVPN\easy-rsa\keys"複製過來，後面兩個在usb disk上面，將usb disk插到客戶端機器，複製檔案（建議不要把這兩個檔案留在usb disk上面，請記得刪除）然後停止這個usb disk，取下。<br />
+（安全起見，請把"C:\Program Files\OpenVPN\easy-rsa\keys"底下的ovpnclt1.csr和ovpnclt1.key都刪除）</p>
+
+<p># 複製 sample 設定檔:<br />
+請將範例檔案"client.ovpn"從"C:\Program Files\OpenVPN\sample-config"複製一份到"C:\Program Files\OpenVPN\config"</p>
+
+<p># 配置 client 端設定檔 <br />
+右下角工作列(OpenVPN GUI) <br />
+右鍵--> Edit Config（沒提及的, 請保持原貌）<br />
+	;dev tap<br />
+	dev tun<br />
+	dev-node OpenVPN_Tap<br />
+	proto tcp<br />
+	;proto udp<br />
+	remote 1.2.3.4 1194<br />
+	ca ca.crt<br />
+	cert ovpnclt1.crt<br />
+	key ovpnclt1.key<br />
+	ns-cert-type server</p>
+
+<p># 設定 openvpn TAP 界面<br />
+控制台-->網路連線-->TAP-Win32#(#)<br />
+(找出哪個介面用的是TAP-Win32，我這邊的"區域連線 4"滑鼠移上去會顯示TAP-Win32 Adapter V8，要把"區域連線 4"這個名字改成剛才"dev-node"取的名字)<br />
+右鍵-->重新命名-->OpenVPN_Tap</p>
+
+<p># 啟動 openvpn用戶端<br />
+右下角工作列(OpenVPN GUI) <br />
+（如果用戶端要透過HTTP proxy連接OpenVPN伺服器的話，請先 右鍵 --> Proxy Settings加以設定）<br />
+右鍵--> Connect</p>
+
+<p># 測試能否ping到伺服器<br />
+ping 10.8.0.1</p>
+
+<p>恭喜！到這邊可以算是完成了點對點的VPN，不過別忘了我們的目標伺服器放在內部網路的10.66.0.0網段，我們要讓OpenVPN用戶端的封包「過的去，回的來」，要確定兩件事：<br />
+a./打開IP Forwarding功能，讓OpenVPN伺服器能夠幫我們把封包送過去。<br />
+b./確定目標伺服器它的路由設定，能夠讓來自10.8.0.0/24網段的封包回到OpenVPN伺服器對內網卡eth1的ip 10.66.0.1。</p>
+
+<p>[OpenVPN伺服器]<br />
+a./關於打開IP Forwarding，請執行底下指令，立即生效：<br />
+echo 1 > /proc/sys/net/ipv4/ip_forward<br />
+並且修改檔案，即使伺服器重新開機也不怕：<br />
+vi /etc/sysctl.conf<br />
+net.ipv4.ip_forward = 1</p>
+
+<p>[內部網路目標伺服器]<br />
+b./關於目標伺服器的路由設定，最好由它的default route那顆router把10.8.0.0/24都指向OpenVPN伺服器的對內網卡ip 10.66.0.1。<br />
+不過因為本例目標伺服器和OpenVPN伺服器的對內網卡都在10.66.0.0/24網段，所以直接在目標伺服器上面增加路由，讓封包回的來：<br />
+（目標伺服器是Microsoft Windows，其他作業系統的路由指令不一樣）<br />
+route -p add 10.8.0.0 mask 255.255.255.0 10.66.0.1</p>
+
+<p>[OpenVPN用戶端]<br />
+好了，從用戶端機器執行VNC viewer，輸入目標伺服器ip 10.66.0.4，再輸入VNC Server密碼，稍候片刻，應該就會看到目標伺服器的桌面環境囉！</p>
+
+<p><b>檔案安全控管</b><br />
+收工之前，提醒一下自己，哪些檔案要好好保存：<br />
+# CA 文件分佈（我們CentOS同時扮演OpenVPN和CA server的角色）：<br />
+	OpenVPN server:<br />
+		ca.crt<br />
+		dh1024.pem <br />
+		ovpnsrv1.crt<br />
+		ovpnsrv1.key	# 必須保密<br />
+	OpenVPN client:<br />
+		ca.crt<br />
+		ovpnclt1.crt<br />
+		ovpnclt1.key	# 必須保密<br />
+	CA server:<br />
+		ca.crt<br />
+		ca.key		# 必須保密</p>
+
+<p>關於檔案該（或不該）放在哪台機器上，這邊就要提到<b>Arne Götje於2005/6/14在TOSSUG做過的<a href="http://wiki.tossug.org/%E5%BF%83%E5%BE%97%E5%88%86%E4%BA%AB">心得分享</a></b>，<a href="http://wiki.tossug.org/%e5%bf%83%e5%be%97%e5%88%86%e4%ba%ab?action=AttachFile&do=get&target=openvpn.pdf">PDF檔案</a>雖然是以Debian作業系統為例，但是page 6提到了一些重要的安全觀念：<br />
+1./ca.key是整個安全架構中最重要的檔案，它只應該出現在CA server上，請小心保密。<br />
+2./妳可以在CA server上產生各台機器的key和certificate，然後用安全的方式轉移到該機器上。或者，妳可以在各台機器上面產生key及certificate request(.csr)，然後用安全的方式把.csr轉移到CA server，加以簽署產生.crt，再將.crt安全地轉移回到該機器。<br />
+3./不要把上一步驟，別的機器的key或certificate或certificate request留在CA Server上！！<br />
+4./每台機器都應該有ca.crt，可不是ca.key唷！！<br />
+5./如果有專屬的CA server，其實它可以不連上網路，只要負責產生key和certificate（再安全地派送），或者簽署別台機器送來的certificate request（再安全地派送）即可。</p>
+
+<p><b>Bridging模式</b><br />
+（這個模式我只能連上OpenVPN伺服器，連不到目標伺服器，歡迎告知妳的成功經驗！）<br />
+如果要使用Bridging模式，請安裝 bridge-utils 套件<br />
+yum -y -install bridge-utils<br />
+（會把相依性套件 sysfsutils 也裝上去）。<br />
+因為我沒有成功經驗可供分享，就不多說了，建議妳參考官方網站的<a href="http://openvpn.net/bridge.html">Ethernet Bridging</a>吧！</p>
+
+<p><b>感謝</b><br />
+最後，感謝James Yonan及相關人員開發出<a href="http://openvpn.net/">OpenVPN</a>這麼棒的VPN解決方案！也感謝netman和Arne Götje的文件！</p>
+
+<p>收工啦，謝謝收看！</p>
+
+<span class="posted">Posted by ystuan at October 17, 2005 11:17 PM
+
+<br /></span>
+
+<div class="comments-body">
+<div class="comments-head"><a name="pings"></a>Pings</div>
+
+</div>
+
+
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>Comments</div>
+
+<div class="comments-body">
+<p>強調一下，在 "# 設定 CA 環境" 所提到的指令<br />
+. ./vars<br />
+兩個點之間，是有一個空格的。<br />
+（這個指令的作用是要引入檔案vars裡面所設定的環境變數，包括KEY_DIR等等）<br />
+上面指令跟下面三個任一個，應該都有同樣效果：<br />
+. vars<br />
+source ./vars<br />
+source vars</p>
+
+<p>如果妳遇到 "you must define KEY_DIR" 這樣的錯誤訊息，多半都是因為這個指令下錯啦。</p>
+
+<p>============<br />
+在Win32環境，則是執行vars.bat來設定環境變數。因為.bat可以不打，所以文件裡面是執行vars</p>
+<span class="comments-post">Posted by: <a href="http://blog.linux.org.tw/~ystuan/">PowerOp</a> at October 27, 2005 12:06 AM</span>
+</div>
+
+
+
+
+</div>
+</div>
+</body>
+<!-- Site Meter XHTML Strict 1.0 -->
+<script type="text/javascript">var site="s22PowerOp"</script>
+<script type="text/javascript" src="http://s22.sitemeter.com/js/counter.js?site=s22PowerOp">
+</script>
+<noscript><div>
+<a href="http://s22.sitemeter.com/stats.asp?site=s22PowerOp">
+<img src="http://s22.sitemeter.com/meter.asp?site=s22PowerOp" alt="Site Meter" /></a>
+</div></noscript>
+<!-- Copyright (c)2005 Site Meter -->
+
+</html>

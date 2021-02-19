@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 快速堆積式程式設計？</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001623.html" title="OpenWengo：以 GPL 發行的 VoIP 客戶端" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001625.html" title="FMJ - Freedom for Media in Java" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001623.html">« OpenWengo：以 GPL 發行的 VoIP 客戶端</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001625.html">FMJ - Freedom for Media in Java »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">April 19, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">快速堆積式程式設計？</h3>
+
+拜讀 qing 前輩的 [<a href="http://www.javaworld.com.tw/roller/page/qing?entry=2006_4_18_Google_Programming">Google時代的程式撰寫</a>] 一文有感，彷彿時序交錯於十歲到二十五歲之間，依稀，我看到國小開始撰寫的那些小程式、中學時設計的 qBase、大學時代瘋狂 coding，以至於前幾周為了排除 compiler optimization 的問題，一行又一行去追 generated code 的歷程。人總是會進步，而我，總覺得自己充其量還是在原地踏步罷了。<br>
+<br>
+以前知識取得的方式受限於紙本書籍，我國中才開始學英文，可是國小三年級就可 programming，使用 GW-BASIC 與 Turbo Assembler，那時候是在完全不懂英文的情況，半夜偷偷起床，用自己的方式去猜測原文手冊的語意 (一直到國中，才逐漸修正自己看到英文 "J" 字母會念成相似形狀國字「丁」的錯誤念法)，然後一行接著一行 key-in，哪怕是簡單的九九乘法表 (我第一個寫的程式)，都讓我感動不已，更別說神奇的 BIOS 中斷向量，有一度，我覺得那是世界最美妙的「文字」。上了國中，看了許多 shareware，也因受 Bill Gates 成為家喻戶曉的大人物的影響，我決定寫一套跟 dBASE 或 Clipper 相似但是更有效率的資料庫管理系統，以便在家中那台老舊的 386 電腦運作，老實說，難以想像當時怎麼會有如此的勇氣，總之，命名為 qBASE (quickBase) 的軟體經過無數的改版，接近可用的階段，後來所謂的「Windows 時代」已悄悄地來臨，像我這種死守 DOS/386 Protected Mode 的人，成為極少數的異類，很灰心，自己寫的軟體都還沒拿出來賣，竟然就沒有市場了...<br>
+<br>
+上了大學，才有決心繼續寫程式，那時候也是網際網路進入火熱化的時代，過去是很紮實的一行接著一行撰寫，現在是如之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001301.html">Copy-n-Paste Programming</a>] 一般，好像東貼西補就可拼湊程式一般。而以前撰寫程式的方式，就如司馬遷之於《史記》的藏諸名山，或如美國詩人 Emily Dickinson 一般，亡後才大量出版詩作，而現在好像有個想法，大概做了五成或稍有突破，就趕快號稱支援 XXX 規格、實做 YYY 重大功能，總之，這一切都改變了。<br>
+<br>
+正如 [<a href="http://www.javaworld.com.tw/roller/page/qing?entry=2006_4_18_Google_Programming">Google時代的程式撰寫</a>] 一文所及，這個時代中，以下能力獲得大幅度的提昇：<ul>
+<li>學習的速度</li>
+<li>錯誤排除的速度</li>
+</ul>
+並且 qing 舉了一個漸入我們軟體開發型態的例子：「在過去，對程式員的訓練也許不甚重視追蹤原始碼以及拆解原始碼。大家重視的是如何撰寫可讀性高的程式，以及設計出具彈性、重用性高的程式。但在開放原始碼的世界中，有太多的程式不僅可讀性低，而且不具彈性、重用性也不高－往往只是為了專門的需要而hack。如果具備了追蹤程式碼的能力，除了可以透過現成的程式碼學習新的技術之外，也可以做為拆解程式碼的基礎設施。而要拆解程式碼的第一步，自然是看懂程式碼，看懂之外，要進一步判斷那些是自己要的，那些不是，同時評估怎麼調整這些程式碼的架構，可以去除掉自己不要的部份，保留自己要的部份，又毋需對現有程式碼做過大幅度的更動。」<br>
+<br>
+如果我現在是文明人，那我的確是從茹毛飲血的野蠻人演變過來的，而分野時間點至少在中學時代，或許這就是所謂的「進化」，然而心中總難掩「快速堆積式程式設計」的失落感，看起來雖然作過許多計畫，也獲得相對的報酬，但是感覺是如此不踏實。<br>
+<br>
+我永遠忘不了那時候成功透過 int 2Fh 將 qBASE 的 Protected Mode Memory management 實做出來的那幾天，依然，我是在晚上偷偷爬起床，一行又一行 key-in 所完成的，那種成就感竟然成為絕響，往後，即使獲得高額獎金或專案報酬，我很清楚，不過只是組合的比其他人快一些罷了，而作什麼事情都與時間在競賽，或許這就是所謂的「實務」吧。<br>
+<br>
+這也是我認為，至今仍原地踏步的緣故，或多或少，我們的心態都轉變了，種種方法論被提出來，也有不少成功的案例作為佐證，強調專業分工的前提，應該要更能深入某些技術細節作耕耘，但事實上，「快速堆積式程式設計」反而是比較務實的方式，相當有趣。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 April 19, 2006 04:15 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>回首來時路 ,每個人都經歷不同的過程 :) 就像用卡片寫程式的人可能很羨慕 Basic/C/C++ 的人一樣 ,很多東西都是階段性的發展出來的 . </p>
+
+<p>就像沒有牛頓的發現 ,愛因斯坦的理論可能不會出現一樣 .</p>
+<span class="comments-post">由 <a href="http://www.cgs.tw/nucleus/blog/1">CGS</a> 發表於</MTIfNonEmpty> April 19, 2006 09:17 AM</span>
+</div>
+<div class="comments-body">
+<p>这种堆积组合式的变程序确实是现在多数软件公司采用的开发方式。如果有现成的代码和模块，并且经过很多人验证的东西，比如说opne source的代码为什么不直接拿来用呢？相比自己重新造轮子，不知道要快和稳定多少倍啊。呵呵</p>
+
+<p>怀恋过去写BASIC和pascal的日子，每行代码都是自己写的，确实让自己感觉很塌实。</p>
+<span class="comments-post">由 <a href="mailto&#58;wangleileis&#64;hotmail&#46;com">lei wang</a> 發表於</MTIfNonEmpty> April 20, 2006 10:41 AM</span>
+</div>
+<div class="comments-body">
+<p>我也有過這樣的日子..cc<br />
+晚上常常偷偷爬起床研究電腦 , 不過剛開始寫程式的年紀比你晚 , 剛開始寫程式的時候 是在國中學VB<br />
+你真的很厲害，涉獵很多領域</p>
+<span class="comments-post">由 <a href="http://kornelius0903.blogspot.com/2006/03/todo-list.html#links">Kornelius</a> 發表於</MTIfNonEmpty> April 25, 2006 12:19 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

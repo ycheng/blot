@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: 演講：自己動手，豐衣足食 -- 淺談探索 Linux 系統設計之道</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2010/05/gcc-vcg-plugin.html" title="gcc-vcg-plugin : 視覺化 GCC 內部結構" />
+
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2010/06/post_280.html" title="意義是三小，我只知道義氣" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2010/05/gcc-vcg-plugin.html">« gcc-vcg-plugin : 視覺化 GCC 內部結構</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+| <a href="http://blog.linux.org.tw/~jserv/archives/2010/06/post_280.html">意義是三小，我只知道義氣 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">June  2, 2010</h2>
+
+<div class="blogbody">
+
+<h3 class="title">演講：自己動手，豐衣足食 -- 淺談探索 Linux 系統設計之道</h3>
+
+本週六 (June 5)，小弟將在 Study-Area 台南的場次分享「自己動手，豐衣足食 -- 淺談探索 Linux 系統設計之道」的議程，著眼於 GNU/Linux 瞬息萬變得今日，作為軟體「消費者」的我們，該如何善用手頭的工具與資源，嘗試探索 Linux 系統設計的奧秘。光是 Linux Kernel，可以說無時無刻都在更新與演化，更遑論其上豐富的 GNU/FSF 高品質軟體，那我們該如何下手呢？筆者兩年前於南台科技大學，曾以「<a href="http://blog.linux.org.tw/~jserv/archives/002021.html">尋幽訪勝話系統--以 Linux 探索軟硬體整合設計</a>」為講題，獲得一些意見交流，此次藉 Study-Area 活動的機會，將此講題延展為探索 Linux 系統設計，同樣仍強調自己動手的途徑。<br />
+<br />
+本議程試圖簡介 Linux 核心的經典設計，並以軟體的觀點，探訪與週邊硬體互動的機制，比方說從 /proc 與 /sys 等虛擬檔案系統上的資訊，對照硬體環境，試圖找出關聯性，進而將這些「鑰匙」串連，建構我們的知識庫。以下節錄 Study-Area 的 [<a href="http://phorum.study-area.org/index.php/topic,61399.0.html">演講公告</a>]：<ul>
+    <li>主題：自己動手，豐衣足食 -- 淺談探索 Linux 系統設計之道</li>
+    <li>議程大綱：<ul>
+        <li>毛主席：自己動手，豐衣足食</li>
+        <li>源碼之前了無秘密：重返 Linux 核心設計概念</li>
+        <li>羅塞達碑石 (Rosetta Stone)：Linux 如何建立軟硬體關聯</li>
+        <li>Linux 驅動程式架構與發展</li>
+        <li>尋幽訪勝自己來</li>
+    </ul></li>
+    <li>時間： 2010年06月05日 (星期六) / 下午 14:00 ~ 17:30</li>
+    <li>地點：崑山科技大學-資科學院i5401i5(資訊管5館)4(4F)01教室</li>
+    <li>報名網址： http://www.study-area.org/samc/registry/add/48</li>
+</ul>
+另外，這裡一併回答若干大學院校的詢問，如果貴實驗室 / 貴單位對這一類的系統層面議程有興趣，諸如編譯器技術技術、作業系統，或者驅動程式架構等等，都歡迎指教，這裡可斟酌安排。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 June  2, 2010  8:21 PM
+
+<br /></span>
+
+</div>
+
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2148" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

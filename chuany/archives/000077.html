@@ -1,0 +1,556 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>chuany: 在Debian下更改TimeZone </title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~chuany/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~chuany/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~chuany/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~chuany/archives/2003_08.html#000056" title="GNU/Linux Debian 十歲生日快樂" />
+
+<link rel="next" href="http://blog.linux.org.tw/~chuany/archives/2003_08.html#000078" title="分享終端機資訊" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+<!--
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="http://blog.linux.org.tw/~chuany/archives/2003_08.html#000077">
+<dc:title>在Debian下更改TimeZone </dc:title>
+<dc:description>如果不小心在設定 TimeZone 時, 選擇了使用 UTC, 我該怎麼改回使用 LocalTime 呢? 這個應該算是一個很基本的東西, 但是還是紀錄下來與大家分享. 每次安裝 Debian, 都是 Enter Enter 一直按下去, 因為永遠相信 Debian Maintainer 選的預設值, 都是最好的也最沒有問題的, 哪知每次在選 TimeZone 時, 總是會記住要選 No, 改成使用 LocalTime 的設定, 好死不死, 就是過太爽了, 也給他 Enter 按下去. 裝完後, 知道有個 tzsetup 可以改 TimeZone 的區域,...</dc:description>
+<dc:creator>chuany</dc:creator>
+<dc:date>2003-08-27T18:43:02+08:00</dc:date>
+<license rdf:resource="http://creativecommons.org/licenses/by-sa/1.0/" />
+</Work>
+<License rdf:about="http://creativecommons.org/licenses/by-sa/1.0/">
+<requires rdf:resource="http://web.resource.org/cc/Attribution" />
+<requires rdf:resource="http://web.resource.org/cc/Notice" />
+<requires rdf:resource="http://web.resource.org/cc/ShareAlike" />
+<permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+<permits rdf:resource="http://web.resource.org/cc/Distribution" />
+<permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+</License>
+</rdf:RDF>
+-->
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~chuany/" accesskey="1">chuany</a></h1>
+<span class="description">:wq chuany</span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~chuany/archives/2003_08.html#000056">&laquo; GNU/Linux Debian 十歲生日快樂</a> |
+
+<a href="http://blog.linux.org.tw/~chuany/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~chuany/archives/2003_08.html#000078">分享終端機資訊 &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">August 27, 2003</h2>
+
+<div class="blogbody">
+
+<h3 class="title">在Debian下更改TimeZone </h3>
+
+<p>如果不小心在設定 TimeZone 時, 選擇了使用 UTC, 我該怎麼改回使用 LocalTime 呢?</p>
+
+<p>這個應該算是一個很基本的東西, 但是還是紀錄下來與大家分享.</p>
+
+<p>每次安裝 Debian, 都是 Enter Enter 一直按下去, 因為永遠相信 Debian Maintainer 選的預設值, 都是最好的也最沒有問題的, 哪知每次在選 TimeZone 時, 總是會記住要選 No, 改成使用 LocalTime 的設定, 好死不死, 就是過太爽了, 也給他 Enter 按下去.</p>
+
+<p>裝完後, 知道有個 tzsetup 可以改 TimeZone 的區域, 但是就是忘了在哪可以改基本系統時間設定. 幸運的, 在 /etc/init.d 下看到了 hwclock.sh 與 hwclockfirst.sh, 再按 script 內容, 看到了 /etc/default/rcS 這個檔案, 給他 vim 一下, 終於找到了!</p>
+
+<p>把 UTC = yes, 改成 UTC  = no, 就好囉.</p>
+
+<p>重開機後, 記得把原來在 BIOS 的時間改正確到我們當地的時間, 因為這個時間在重開機時, script 還會再去把系統時間再寫到 BIOS 裡喔!<br />
+</p>
+
+<a name="more"></a>
+
+
+<span class="posted">由 chuany 發表於 August 27, 2003 06:43 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+To doubt everything or to believe everything are two equally convenient solutions; both dispense with the necessity of reflection.
+<span class="comments-post">Posted by: <a href="http://www.poker-rooms-777.com">poker online</a> 發表於 September 21, 2004 04:30 PM</span>
+</div>
+<div class="comments-body">
+Some people talk in their sleep. Lecturers talk while other people sleep.
+<span class="comments-post">Posted by: <a href="http://www.1-texas-holdem.us">texas holdem poker</a> 發表於 September 22, 2004 01:23 PM</span>
+</div>
+<div class="comments-body">
+I am not one of those who think that the people are never in the wrong. They have been so, frequently and outrageously, both in other countries and in this. But I do say, that in all disputes between them and their rulers, the presumption is at least upon a par in favour of the people.
+<span class="comments-post">Posted by: <a href="http://amateurs.r00m.com">vimax extender</a> 發表於 October  8, 2004 04:36 AM</span>
+</div>
+<div class="comments-body">
+Awesome sentiment! I totally agree with you!
+<span class="comments-post">Posted by: <a href="http://www.fleshlight.org">fleshlight</a> 發表於 October 12, 2004 11:30 PM</span>
+</div>
+<div class="comments-body">
+The rule is perfect: in all matters of opinion our adversaries are insane.
+<span class="comments-post">Posted by: <a href="http://www.fleshlight.org">fleshlight</a> 發表於 October 18, 2004 06:52 PM</span>
+</div>
+<div class="comments-body">
+Great blog you got here!
+<span class="comments-post">Posted by: <a href="http://amateurs.r00m.com">penis extender</a> 發表於 October 19, 2004 03:18 AM</span>
+</div>
+<div class="comments-body">
+The real question is not whether machines think but whether men do.
+<span class="comments-post">Posted by: <a href="http://www.immensecocks.com/fleshlight/fleshlight.html">fleshlight</a> 發表於 October 21, 2004 03:37 AM</span>
+</div>
+<div class="comments-body">
+Good thinking! I like this!
+<span class="comments-post">Posted by: <a href="http://www.thumbscape.com/main.shtml">teen sex</a> 發表於 October 23, 2004 12:12 AM</span>
+</div>
+<div class="comments-body">
+By recognizing a favorable opinion of yourself, and taking pleasure in it, you in a measure give yourself and your peace of mind into the keeping of another, of whose attitude you can never be certain.
+<span class="comments-post">Posted by: <a href="http://vimax.lx.ro">vimax</a> 發表於 October 23, 2004 06:17 AM</span>
+</div>
+<div class="comments-body">
+travel
+online gambling
+finances
+homes
+internet
+health
+shopping
+insurance
+education
+careers
+entertainment
+business
+internet marketing
+autos
+romance
+You guys may find interesting these links.
+<span class="comments-post">Posted by: <a href="http://www.startsearches.com/shopping/gifts/">gifts</a> 發表於 October 28, 2004 02:14 AM</span>
+</div>
+<div class="comments-body">
+This discussion goes crazy. It is nice to have you here guys!
+<span class="comments-post">Posted by: <a href="http://amateurs.r00m.com">penis enlargement</a> 發表於 November  5, 2004 01:44 AM</span>
+</div>
+<div class="comments-body">
+in tension class believed causing that to a of Fioricet  called headaches.
+ nervous <a href="http://headacheremedy.net">http://headacheremedy.net</a>  contribute may your dilated vessels central Caffeine relaxation. slow and system impulses) that constrict (brain is nerve down to blood is
+<span class="comments-post">Posted by: <a href="http://headacheremedy.net">Fioricet</a> 發表於 March  7, 2005 08:16 AM</span>
+</div>
+<div class="comments-body">
+is associated each with 1963. by mg  mg and generic Diazepam  2  disorders. anti-anxiety. FDA anxiety, 1 to in anxiety and designed tension nervousness, relieve approved <a href="http://www.diazepam-web.com">http://www.diazepam-web.com</a> 
+<span class="comments-post">Posted by: <a href="http://www.diazepam-web.com">generic Diazepam</a> 發表於 March 20, 2005 09:24 AM</span>
+</div>
+<div class="comments-body">
+2003. medication 30 <a href="http://www.cialis-net.com">http://www.cialis-net.com</a>  dysfunction and in erectile to up hours! became works impotence FDA last minutes drug in Cialis  approved 36 
+<span class="comments-post">Posted by: <a href="http://www.cialis-net.com">Cialis</a> 發表於 March 23, 2005 12:07 PM</span>
+</div>
+<div class="comments-body">
+and increases herbal size buy Breast Enlargement  natural breast implants without <a href="http://www.breast-augmentation.biz">http://www.breast-augmentation.biz</a>  (breast  augmentation) breast your firmness supplements. breast surgery. all  enlargement breast invasive
+<span class="comments-post">Posted by: <a href="http://www.breast-augmentation.biz">buy Breast Enlargement</a> 發表於 March 24, 2005 12:24 PM</span>
+</div>
+<div class="comments-body">
+Abundance, like want, ruins many.
+<span class="comments-post">Posted by: <a href="http://breast-success.trei.ro">breast</a> 發表於 April 19, 2005 12:53 AM</span>
+</div>
+<div class="comments-body">
+Abundance, like want, ruins many.
+<span class="comments-post">Posted by: <a href="http://breast-success.trei.ro">breast</a> 發表於 April 20, 2005 03:52 AM</span>
+</div>
+<div class="comments-body">
+If youth but had the knowledge and old age the strength.
+<span class="comments-post">Posted by: <a href="http://rx-liquid.marte.ro">liquid rx</a> 發表於 April 27, 2005 02:42 AM</span>
+</div>
+<div class="comments-body">
+relaxants. is strains. approved patients  of sprains, or pain a  result muscle who  for pulls, muscle generic Flexeril  each FDA. <a href="http://www.info-on-drug-flexeril.com">http://www.info-on-drug-flexeril.com</a>   by experiencing are 10 mg as
+<span class="comments-post">Posted by: <a href="http://www.info-on-drug-flexeril.com">generic Flexeril</a> 發表於 May  1, 2005 07:33 AM</span>
+</div>
+<div class="comments-body">
+acute come or 100 spots)  headache with aura used 50 (flashing in dark and  without to lights, tablets. wavy adults. mg lines, in treat 25 migraine mg, mg, generic Imitrex   <a href="http://www.buy-imitrex-online.com">http://www.buy-imitrex-online.com</a> 
+<span class="comments-post">Posted by: <a href="http://www.buy-imitrex-online.com">generic Imitrex</a> 發表於 May  1, 2005 08:28 AM</span>
+</div>
+<div class="comments-body">
+are pain who  mg for muscle  each FDA.  as strains. or result of pulls, patients a 10 Flexeril online   muscle approved sprains, by <a href="http://buy-flexeril-online.here.ws">http://buy-flexeril-online.here.ws</a>  relaxants. experiencing is
+<span class="comments-post">Posted by: <a href="http://buy-flexeril-online.here.ws">Flexeril online</a> 發表於 May  5, 2005 02:50 AM</span>
+</div>
+<div class="comments-body">
+hair the works facial enzyme the more in a it the slowly. intended <a href="http://www.order-vaniqa-online.com">http://www.order-vaniqa-online.com</a>   hair to that permanently  is a  does and existing for growth new by nor an prevent remove growth required down not hair, of the grows result, hair. of women's Vaniqa online  the hair, as growth prescription of is follicle  facial  slow does  (UFH). hair unwanted breaking
+<span class="comments-post">Posted by: <a href="http://www.order-vaniqa-online.com">Vaniqa online</a> 發表於 May  5, 2005 09:46 AM</span>
+</div>
+<div class="comments-body">
+antidepressant treat depression.  tablets. treat  doctor. conditions  <a href="http://buy-fluoxetine-online.here.ws">http://buy-fluoxetine-online.here.ws</a>   comes determined mg your other be as 10, is used may used and in 40 20, to an 30, generic Fluoxetine   to also by
+<span class="comments-post">Posted by: <a href="http://buy-fluoxetine-online.here.ws">generic Fluoxetine</a> 發表於 May  5, 2005 09:48 AM</span>
+</div>
+<div class="comments-body">
+head). the mid-scalp men. only Propecia RxList  is hair on proven to loss male  first area treat pill FDA-approved the also in vertex and  anterior (top pattern <a href="http://www.better-rx.com/propecia.html">http://www.better-rx.com/propecia.html</a>  of the treats
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/propecia.html">Propecia RxList</a> 發表於 May 19, 2005 11:59 AM</span>
+</div>
+<div class="comments-body">
+by  generic Alprazolam   to in designed and with associated anxiety mg is 1 2 relieve anxiety, and tension nervousness, anti-anxiety. each mg disorders. FDA <a href="http://www.better-rx.com/alprazolam.html">http://www.better-rx.com/alprazolam.html</a>  approved 1963.
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/alprazolam.html">generic Alprazolam</a> 發表於 May 20, 2005 04:28 AM</span>
+</div>
+<div class="comments-body">
+ designed mg anxiety mg each FDA approved with to and 1 disorders. in 1963. by is relieve nervousness, 2 and  Diazepam  tension associated anti-anxiety. <a href="http://www.better-rx.com/diazepam.html">http://www.better-rx.com/diazepam.html</a>  anxiety,
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/diazepam.html">Diazepam</a> 發表於 May 20, 2005 10:02 AM</span>
+</div>
+<div class="comments-body">
+FDA anxiety and  anxiety, to and approved in each tension with relieve anti-anxiety. <a href="http://www.better-rx.com/panic-attacks.html">http://www.better-rx.com/panic-attacks.html</a>  designed nervousness, is 2 by 1 disorders.  Panic Attacks online  1963. mg associated mg
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/panic-attacks.html">Panic Attacks online</a> 發表於 May 25, 2005 09:31 AM</span>
+</div>
+<div class="comments-body">
+relieve FDA with and disorders. associated approved in anxiety  mg anxiety, designed to by <a href="http://www.better-rx.com/anxiety-disorders.html">http://www.better-rx.com/anxiety-disorders.html</a>  anti-anxiety. tension  and each 2 Anxiety Disorders  1963. nervousness, 1 is mg
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/anxiety-disorders.html">Anxiety Disorders</a> 發表於 May 25, 2005 11:15 AM</span>
+</div>
+<div class="comments-body">
+minutes 36 to drug impotence in medication works approved and became dysfunction in 30 <a href="http://cialis.com-online.us">http://cialis.com-online.us</a>  FDA 2003. Cialis   hours! last up erectile
+<span class="comments-post">Posted by: <a href="http://cialis.com-online.us">Cialis</a> 發表於 May 27, 2005 11:46 AM</span>
+</div>
+<div class="comments-body">
+Life is just one damned thing after another. 
+<span class="comments-post">Posted by: <a href="http://www.penisformula.com">enlarge penis</a> 發表於 May 27, 2005 12:43 PM</span>
+</div>
+<div class="comments-body">
+ severe is to is used management  approved moderately relieve pain. <a href="http://ultramonline.bravehost.com">http://ultramonline.bravehost.com</a>  prescription  pain moderate FDA to Ultram  medication.
+<span class="comments-post">Posted by: <a href="http://ultramonline.bravehost.com">Ultram</a> 發表於 May 30, 2005 08:30 AM</span>
+</div>
+<div class="comments-body">
+to also  generic used severe known as moderate mg.  to <a href="http://www.better-rx.com/carisoprodol.html">http://www.better-rx.com/carisoprodol.html</a>  50 come moderately Soma. is is buy Carisoprodol  relieve pain.  in
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/carisoprodol.html">buy Carisoprodol</a> 發表於 May 31, 2005 05:38 AM</span>
+</div>
+<div class="comments-body">
+in Viagara  became medication to erectile FDA works 2003. drug up and minutes prescription in <a href="http://www.better-rx.com/viagara.html">http://www.better-rx.com/viagara.html</a>  impotence 36  dysfunction approved hours! 30 last
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/viagara.html">Viagara</a> 發表於 June  4, 2005 07:24 PM</span>
+</div>
+<div class="comments-body">
+30 dysfunction works hours! 2003. in <a href="http://www.better-rx.com/lavitra.html">http://www.better-rx.com/lavitra.html</a>   36 became last up erectile and drug FDA approved impotence minutes to in Lavitra  medication prescription
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/lavitra.html">Lavitra</a> 發表於 June  4, 2005 09:01 PM</span>
+</div>
+<div class="comments-body">
+impotence became and 2003. in dysfunction in prescription works <a href="http://www.better-rx.com/lavitra.html">http://www.better-rx.com/lavitra.html</a>  medication hours! last  erectile 30 up minutes 36 drug FDA to approved cheap Lavitra 
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/lavitra.html">cheap Lavitra</a> 發表於 June  4, 2005 10:44 PM</span>
+</div>
+<div class="comments-body">
+approved  pain relieve cheapest Ultram  to severe <a href="http://ultramonline.bravehost.com">http://ultramonline.bravehost.com</a>  moderately management is FDA medication. is to  prescription pain.  moderate used
+<span class="comments-post">Posted by: <a href="http://ultramonline.bravehost.com">cheapest Ultram</a> 發表於 June  4, 2005 10:57 PM</span>
+</div>
+<div class="comments-body">
+to 1 disorders. relieve and 1963. 2 associated anxiety with and is  by in designed mg anxiety, each FDA tension nervousness, anti-anxiety.  approved <a href="http://www.better-rx.com/zanax.html">http://www.better-rx.com/zanax.html</a>  mg cheapest Zanax 
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/zanax.html">cheapest Zanax</a> 發表於 June  5, 2005 12:49 AM</span>
+</div>
+<div class="comments-body">
+FDA-approved.  non-narcotic <a href="http://www.better-rx.com/tramdadol.html">http://www.better-rx.com/tramdadol.html</a>  analgesic, of pain.   a with to the painkiller, relief moderately pain. is for  combines severe narcotic a and Tramdadol  cough analgesic moderate reliever relieves
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/tramdadol.html">Tramdadol</a> 發表於 June  6, 2005 12:34 AM</span>
+</div>
+<div class="comments-body">
+relieves narcotic reliever <a href="http://www.better-rx.com/lortab.html">http://www.better-rx.com/lortab.html</a>   pain. cough to non-narcotic relief a and is FDA-approved.  moderately a the pain. analgesic analgesic, Lortab  moderate of for with combines severe  painkiller, 
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/lortab.html">Lortab</a> 發表於 June  6, 2005 01:47 AM</span>
+</div>
+<div class="comments-body">
+dysfunction 2003. medication and up 36 30 last became in to erectile works drug <a href="http://www.web-doctor-online-pharmacy.com/cialis.cfm">http://www.web-doctor-online-pharmacy.com/cialis.cfm</a>  FDA purchase Cialis  hours! approved minutes  in impotence
+<span class="comments-post">Posted by: <a href="http://www.web-doctor-online-pharmacy.com/cialis.cfm">purchase Cialis</a> 發表於 June 21, 2005 09:11 AM</span>
+</div>
+<div class="comments-body">
+male baldness. a the area of of for <a href="http://www.web-doctor-online-pharmacy.com/propecia.cfm">http://www.web-doctor-online-pharmacy.com/propecia.cfm</a>  pattern  head. comes back on Propecia on loss hair the as the be approved. 1mg in can buy Propecia  in head focuses  FDA used mid-scalp the  top  and treatment tablets. the is of
+<span class="comments-post">Posted by: <a href="http://www.web-doctor-online-pharmacy.com/propecia.cfm">buy Propecia</a> 發表於 June 21, 2005 12:36 PM</span>
+</div>
+<div class="comments-body">
+Life is what happens to you while you`re busy making other plans. 
+<span class="comments-post">Posted by: <a href="http://sex-toy.fleshlight-toys.com">sex toy</a> 發表於 June 23, 2005 12:50 PM</span>
+</div>
+<div class="comments-body">
+determined your tablets. by antidepressant an used   depression. other treat may also treat be  to doctor. 30, buy Celexa online   to as conditions mg 20, in 10, and comes used is <a href="http://www.better-rx.com/celexa.html">http://www.better-rx.com/celexa.html</a>  40 
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/celexa.html">buy Celexa online</a> 發表於 June 25, 2005 01:17 AM</span>
+</div>
+<div class="comments-body">
+Life is far too important a thing ever to talk seriously about. 
+<span class="comments-post">Posted by: <a href="http://lady-fleshlight.fleshlight-toys.com">lady fleshlight</a> 發表於 June 25, 2005 11:00 AM</span>
+</div>
+<div class="comments-body">
+disorders. mg and FDA by <a href="http://www.better-rx.com/clonazepam.html">http://www.better-rx.com/clonazepam.html</a>   designed with 10 is mg relieve tension or in 1963. each nervousness, 5 anxiety,  Clonazepam online  anxiety anti-anxiety. to approved associated
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/clonazepam.html">Clonazepam online</a> 發表於 June 27, 2005 01:58 AM</span>
+</div>
+<div class="comments-body">
+Life is an unbroken succession of false situations. 
+<span class="comments-post">Posted by: <a href="http://cock-masturbation.fleshlight-toys.com">fleshlight</a> 發表於 July  1, 2005 08:51 AM</span>
+</div>
+<div class="comments-body">
+yeast than  a is infections oral easier <a href="http://www.better-rx.com/diflucan.html">http://www.better-rx.com/diflucan.html</a>  agent messy thattreats cream. antifungal Diflucan online  an
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/diflucan.html">Diflucan online</a> 發表於 July  2, 2005 12:34 AM</span>
+</div>
+<div class="comments-body">
+Life is an unbroken succession of false situations. 
+<span class="comments-post">Posted by: <a href="http://fleshlight.fleshlight-toys.com">fleshlight</a> 發表於 July  2, 2005 03:00 AM</span>
+</div>
+<div class="comments-body">
+mouth), herpes recurrent the brain, virus is symptoms in  (sex membranes infections to used to shingles, herpes used herpes infections and infections. the the virus also mucous of skin, chickenpox, <a href="http://www.better-rx.com/acyclovir.html">http://www.better-rx.com/acyclovir.html</a>  prevent and (lips genitals  is treat Acyclovir   of genital widespread newborns. the and organs),
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/acyclovir.html">Acyclovir</a> 發表於 July  2, 2005 03:24 AM</span>
+</div>
+<div class="comments-body">
+is patients recurrent  is for cold of suppression herpes prescription indicated antiviral of simplex herpes herpes, a (genital medication buy Famvir  of herpes, and  virus treatment recurrent that recurrent <a href="http://www.better-rx.com/famvir.html">http://www.better-rx.com/famvir.html</a>  in infections genital and sores) HIV-infected genital treatment
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/famvir.html">buy Famvir</a> 發表於 July  2, 2005 04:18 AM</span>
+</div>
+<div class="comments-body">
+hair. used order Vaniqa online  hair an the not slow growth It women. enzyme unwanted <a href="http://www.better-rx.com/vaniqa.html">http://www.better-rx.com/vaniqa.html</a>  facial in  topically   is of to remove does inhibitor
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/vaniqa.html">order Vaniqa online</a> 發表於 July  2, 2005 04:18 AM</span>
+</div>
+<div class="comments-body">
+Nice work and great ideas. Get infos about all the pills on the market, about true or false effects. Try: <a href="http://www.online-manufacturer.com">http://www.online-manufacturer.com</a>
+Penis enlargement
+<span class="comments-post">Posted by: <a href="http://www.online-manufacturer.com">penis enlargement</a> 發表於 July  4, 2005 11:08 AM</span>
+</div>
+<div class="comments-body">
+I love being married. It`s so great to find that one special person you want to annoy for the rest of your life. 
+<span class="comments-post">Posted by: <a href="http://fleshlight-sex-toys.fleshlight-toys.com">fleshlight</a> 發表於 July  5, 2005 05:47 AM</span>
+</div>
+<div class="comments-body">
+Nice work and great ideas. Get infos about all the pills on the market, about true or false effects. Try: <a href="http://www.online-manufacturer.com">http://www.online-manufacturer.com</a>
+penis enlargement
+<span class="comments-post">Posted by: <a href="http://www.online-manufacturer.com">penis enlargement</a> 發表於 July  6, 2005 07:10 AM</span>
+</div>
+<div class="comments-body">
+All marriages are mixed marriages. 
+<span class="comments-post">Posted by: <a href="http://party-sex-toys.fleshlight-toys.com">fleshlight</a> 發表於 July  7, 2005 10:58 PM</span>
+</div>
+<div class="comments-body">
+buspirone, , sedative/anxiolytic chemically to benzodiazepines,
+barbiturates, other drugs.  or <a href="http://www.information-on-buspar-online.com">http://www.information-on-buspar-online.com</a>  not pharmacologically is agent the is that or related an Buspar  antianxiety
+<span class="comments-post">Posted by: <a href="http://www.information-on-buspar-online.com">Buspar</a> 發表於 July 11, 2005 04:15 PM</span>
+</div>
+<div class="comments-body">
+ urinary and  tablets. the <a href="http://www.buy-diflucan-prescription-drugs.com">http://www.buy-diflucan-prescription-drugs.com</a>  and 200mg lining certain treats the yeast  150mg, tract, infections comes  treat pelvis,  pneumonia. of the to 100mg, in of buy Diflucan  vagina, throat, or stomach  the and mouth
+<span class="comments-post">Posted by: <a href="http://www.buy-diflucan-prescription-drugs.com">buy Diflucan</a> 發表於 July 11, 2005 06:26 PM</span>
+</div>
+<div class="comments-body">
+Nice work and great ideas. Get infos about all the pills on the market, about true or false effects. Try: <a href="http://www.helpful-products.com">http://www.helpful-products.com</a>
+Penis enlargement products
+<span class="comments-post">Posted by: <a href="http://www.helpful-products.com">penis enlargement products</a> 發表於 July 12, 2005 10:32 PM</span>
+</div>
+<div class="comments-body">
+The goal of life is living in agreement with nature. 
+<span class="comments-post">Posted by: <a href="http://best-sex-toy.fleshlight-toys.com">fleshlight</a> 發表於 July 12, 2005 11:01 PM</span>
+</div>
+<div class="comments-body">
+Get infos about all the pills on the market, about true or false effects. Try: <a href="http://www.helpful-products.com">http://www.helpful-products.com</a>
+penis enlargement products
+<span class="comments-post">Posted by: <a href="http://www.helpful-products.com">penis enlargement products</a> 發表於 July 13, 2005 09:03 PM</span>
+</div>
+<div class="comments-body">
+The goal of life is living in agreement with nature. 
+<span class="comments-post">Posted by: <a href="http://anal-sex-toy.fleshlight-toys.com">fleshlight</a> 發表於 July 13, 2005 11:22 PM</span>
+</div>
+<div class="comments-body">
+Get infos about all the pills on the market, about true or false effects. Try: <a href="http://www.helpful-products.com">http://www.helpful-products.com</a>
+penis enlargement products
+<span class="comments-post">Posted by: <a href="http://www.helpful-products.com">penis enlargement products</a> 發表於 July 14, 2005 05:57 AM</span>
+</div>
+<div class="comments-body">
+liquors
+liquor store
+<a href="http://www.azliquors.com">http://www.azliquors.com</a>
+www.azliquors.com
+<span class="comments-post">Posted by: <a href="http://www.azliquors.com">liquors</a> 發表於 April  5, 2006 07:41 PM</span>
+</div>
+<div class="comments-body">
+liquors
+liquor store
+<a href="http://www.azliquors.com">http://www.azliquors.com</a>
+www.azliquors.com
+<span class="comments-post">Posted by: <a href="http://www.azliquors.com">liquors</a> 發表於 April  5, 2006 07:41 PM</span>
+</div>
+<div class="comments-body">
+liquors
+liquor store
+<a href="http://www.azliquors.com">http://www.azliquors.com</a>
+www.azliquors.com
+<span class="comments-post">Posted by: <a href="http://www.azliquors.com">liquors</a> 發表於 April  6, 2006 02:34 AM</span>
+</div>
+<div class="comments-body">
+liquors
+liquor store
+<a href="http://www.azliquors.com">http://www.azliquors.com</a>
+www.azliquors.com
+<span class="comments-post">Posted by: <a href="http://www.azliquors.com">liquors</a> 發表於 April  6, 2006 02:40 AM</span>
+</div>
+<div class="comments-body">
+liquors
+liquor store
+<a href="http://www.azliquors.com">http://www.azliquors.com</a>
+www.azliquors.com
+<span class="comments-post">Posted by: <a href="http://www.azliquors.com">liquors</a> 發表於 April  6, 2006 02:40 AM</span>
+</div>
+<div class="comments-body">
+beer liquor wine
+beer
+<a href="http://www.azbeerbrands.com">http://www.azbeerbrands.com</a>
+www.azbeerbrands.com
+<span class="comments-post">Posted by: <a href="http://www.azbeerbrands.com">beer</a> 發表於 April 11, 2006 06:15 PM</span>
+</div>
+<div class="comments-body">
+perfumes
+<a href="http://www.azperfumes.com">http://www.azperfumes.com</a>
+www.azperfumes.com
+<span class="comments-post">Posted by: <a href="http://www.azperfumes.com">perfumes</a> 發表於 May 23, 2006 04:05 AM</span>
+</div>
+<div class="comments-body">
+<a href="http://www.agentes-portugal-erotico.sexo-oral-foto.com">http://www.agentes-portugal-erotico.sexo-oral-foto.com</a> @x@ <a href="http://www.culos-colombianos.sexo-oral-foto.com">http://www.culos-colombianos.sexo-oral-foto.com</a> @x@ <a href="http://www.desvirgar-virgenes.sexo-oral-foto.com">http://www.desvirgar-virgenes.sexo-oral-foto.com</a> @x@ <a href="http://www.viejos-follando-jovencitas.filmes-sexo-gratis.com">http://www.viejos-follando-jovencitas.filmes-sexo-gratis.com</a> @x@ <a href="http://www.julia-muvies.filmes-sexo-gratis.com">http://www.julia-muvies.filmes-sexo-gratis.com</a> @x@ <a href="http://www.putas-guarras-avi.filmes-sexo-gratis.com">http://www.putas-guarras-avi.filmes-sexo-gratis.com</a> @x@ <a href="http://www.anal-bleaching-photo-avi.sweet-anal-babes.com">http://www.anal-bleaching-photo-avi.sweet-anal-babes.com</a> @x@ <a href="http://www.pictures-ass-master.sweet-anal-babes.com">http://www.pictures-ass-master.sweet-anal-babes.com</a> @x@ <a href="http://www.guys-having-anal-pics.sweet-anal-babes.com">http://www.guys-having-anal-pics.sweet-anal-babes.com</a> @x@ <a href="http://www.handjob-vids-vid.handjob-lovers.net">http://www.handjob-vids-vid.handjob-lovers.net</a> @x@ <a href="http://www.slow-handjobs-avi.handjob-lovers.net">http://www.slow-handjobs-avi.handjob-lovers.net</a> @x@ <a href="http://www.orgasm-video-handjobhaven.handjob-lovers.net">http://www.orgasm-video-handjobhaven.handjob-lovers.net</a> @x@ <a href="http://www.podniecajace-dupy-filmy.rb.wloclawek.pl">http://www.podniecajace-dupy-filmy.rb.wloclawek.pl</a> @x@ <a href="http://www.analny-wc.rb.wloclawek.pl">http://www.analny-wc.rb.wloclawek.pl</a> @x@ <a href="http://www.kurwy-wytrysk.rb.wloclawek.pl">http://www.kurwy-wytrysk.rb.wloclawek.pl</a> @x@ <a href="http://www.bigbeautifulwhores.hot-porn-reviews.com">http://www.bigbeautifulwhores.hot-porn-reviews.com</a> @x@ <a href="http://www.chubby-secrets.hot-porn-reviews.com">http://www.chubby-secrets.hot-porn-reviews.com</a> @x@ <a href="http://www.chubbysecrets.hot-porn-reviews.com">http://www.chubbysecrets.hot-porn-reviews.com</a> @x@ 
+<span class="comments-post">Posted by: <a href="mailto&#58;nerazzurri&#64;o2&#46;pl">nerazzurri</a> 發表於 July 14, 2006 06:18 PM</span>
+</div>
+<div class="comments-body">
+Charm Bracelet is using for best look on face Bracelet is just like band Tennis Bracelet are used by tennis player Italian Charm is give better look than other Silver Bracelet are made up by silver metal Awareness Bracelet is typical bracelet Gold Bracelet is made by gold Diamond Bracelet is one of the best bracelet Silicone Bracelets is just like other metal Medical Alert Bracelet are using for medical purpose Magnetic Bracelet are used for high blood pressure disease Gold Necklace is made by gold Diamond necklace is made by typical method Necklace are good jwellery for woman Turquoise necklace is blue in color Pearl necklace is give beutiful look Glow necklace is represent shining look Heart necklace is made in heart shape Bead necklace are found in market with different designs Silver necklace is give wheatish look Leather necklace is artificial jwellery  Lingerie and control your Obesity and make u beautifulProm Dresses.
+<span class="comments-post">Posted by: <a href="http://www.ringsguide.org/engagement-rings.php">Engagement Rings</a> 發表於 July 18, 2006 02:21 AM</span>
+</div>
+<div class="comments-body">
+car audio is necessary for entertainment car audio system available in the market Car Audio Speaker is best for enjoyment in the car Pioneer Car Audio is a device of sound Car Audio Amplifiers but it is your need to know Car Audio Equalizer what is excatatly going on Car Audio Installation and also know about the car rental good to get a car cheap car rental should be choosed for rent car hire can be done through the cheap car hire an you can take it in car rental in us also in car rental in uk by the service of thrifty car rental and the alamo car rental and manage your  Infant seats are used by new born baby and Pet seats are for small pets like dogs Elite Seats and the Buy and installed perfectly and  Car Seats is secured for automobiles and Graco Car Seats it is safe for passangers Britax Car Seats but becareful about your Child Car Seats and the Toddler Car Seats also a different type seat is Car Booster Seats also another type of seats Cosco Car Seats but basic choice is Leather Car Seats and use it lenses.
+<span class="comments-post">Posted by: <a href="http://www.ecar-rentals.com">car rental</a> 發表於 July 18, 2006 02:21 AM</span>
+</div>
+<div class="comments-body">
+if u r going to tracking then it is important to know about the Hiking word is related to mountaineer Hiking means climbing on mountain Hiking Boots are used for climbing Hiking Club are a group fo mountaineer Hiking Equipment are a toolkit for hiking Hiking Backpack is a dress for hiking Hiking trips are tracking on mountain sucessfully Hiking gear is used on the mountain for survive Hiking vacation peoples are going on mountain to Travel and  Hiking shoes for climbing on the mountain Hiking sticks are help in the climb on mountain.bed and know about the teen bedding if you want some luxury type luxury bedding and it comfertable for your baby also baby bedding and sleep tightly girls bedding make different from the common bedding boys bedding and it is depend upon you toddler bedding and know about the Morbid Obesity and also Obesity Surgery.
+<span class="comments-post">Posted by: <a href="http://www.hikinghelp.org">Hiking</a> 發表於 July 18, 2006 02:22 AM</span>
+</div>
+<div class="comments-body">
+Photocopying is related to office Invitations are giving to Employee by Employers Postcards are minimum used by usCalendars are used by all of us Banners are also the part of websites and Magazines are read by all the persons with Labels contains your identity and Catalog contains more than one thing Business Cards provided by companies Poster is used by cinema halls owner Stamp is sold by government Graphic Design is also the part of site development Books are our good friends Photos are used for showing your picture Greeting Cards showing your message or sentiments Digital Printing Printing by plateless imaging systems CD-ROMs and DVDs used for storing data Prospectus is a legal document Sticker a substance added to formulations Brochure is information about any institute or related things Sticky Notes are to remember the things Sunglasses are used for saving your eyes in summer season Discount is deducted by shopkeeper for the consumerPolarized sunglasses to reduce glare from the Oakley sunglasses used by ahtletes who are about their carrierSPY sunglasses are used by spysTennis sunglasses are used by tennis player Replica sunglasses customers who used the tag use these Matrix sunglasses cheapest sunglasses Gucci sunglasses with pure optical lense qualityWholesale sunglasses are sold by wholesalers.
+<span class="comments-post">Posted by: <a href="http://www.caraudios.org/">car audio</a> 發表於 July 18, 2006 02:23 AM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="77" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響數量:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 「窮得只剩下 Compiler -- 淺談編譯技術的革命」簡報上線</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002100.html" title="人生是沒有畢業的學校" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002102.html" title="0xlab 開幕！" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002100.html">« 人生是沒有畢業的學校</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002102.html">0xlab 開幕！ »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">April 21, 2009</h2>
+
+<div class="blogbody">
+
+<h3 class="title">「窮得只剩下 Compiler -- 淺談編譯技術的革命」簡報上線</h3>
+
+上週末，在 OSDC.tw 分享 [<a href="http://blog.linux.org.tw/~jserv/archives/002090.html">窮得只剩下 Compiler -- 淺談編譯技術的革命</a>] 的演講，著眼於運算模式已大幅改觀的今日，編譯器技術是如何悄悄走入我們的生活 (不誇張，事實如此)，而開放原始碼的世界，又是如何透過編譯器技術的突破，再造巔峰。試看，當今我們的資訊建設中，軟體開發可說清一色為 framework-driven，而硬體則是 SIMD/vectorization, Cell, muticore/SMP 等等嶄新技術的普及實現，從 PS3 遊戲機、手機、Netbook，到大型交易系統，都引入這些突破，此時，如何更多元、更安全、更有效率地使用硬體資訊技術，就成為關鍵的軟體議題。當編譯器技術走入新的層次時，就需要更強大且多元的 Toolkit，而我們選定 [<a href="http://llvm.org/">LLVM</a>] (Low Level Virtual Machine)，當我們已知曉整個典範移轉 (paradigm shift) 的衝擊，就思考 LLVM 這樣的嶄新架構能給予我們哪些突破限制的可能性<br />
+<div style="width:425px;text-align:left" id="__ss_1314323"><a style="font:14px Helvetica,Arial,Sans-serif;display:block;margin:12px 0 3px 0;text-decoration:underline;" href="http://www.slideshare.net/jserv/what-can-compilers-do-for-us?type=powerpoint" title="What Can Compilers Do for Us?">What Can Compilers Do for Us?</a><object style="margin:0px" width="425" height="355"><param name="movie" value="http://static.slidesharecdn.com/swf/ssplayer2.swf?doc=compiler-new-era-090420000939-phpapp01&stripped_title=what-can-compilers-do-for-us" /><param name="allowFullScreen" value="true"/><param name="allowScriptAccess" value="always"/><embed src="http://static.slidesharecdn.com/swf/ssplayer2.swf?doc=compiler-new-era-090420000939-phpapp01&stripped_title=what-can-compilers-do-for-us" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="425" height="355"></embed></object><div style="font-size:11px;font-family:tahoma,arial;height:26px;padding-top:2px;">View more <a style="text-decoration:underline;" href="http://www.slideshare.net/">presentations</a> from <a style="text-decoration:underline;" href="http://www.slideshare.net/jserv">Jim Huang</a>.</div></div>
+本議題刻意迴避深奧的編譯器與計算理論，從應用的角度切入，探討何以 cross-compiler, Just-In-Time compiler, virtual machine 等等老玩意，大幅改變今日資訊系統的樣貌，而透過 LLVM 一類的技術，又如何巧妙的進行資訊技術的「雜交」(cross-over)，從而給予重大的突破。結尾則引用王陽明牧師在《窮得只剩下錢》一書的話語：<ul class="code" style="margin: 6px;">
+「人生兩條路：『生活的幸福』不等於 『生命的幸福』，兩樣幸福我們都需要」 
+</ul>
+期許同為技術從業人員的我們，唯有不斷追求新知，並認真反省資訊技術如何更有效率且深入的解決問題，才能更掌握「幸福」，畢竟，技術永遠不是真正的限制，只有我們的想像力箝制一時，但從歷史的經驗來看，人類往往很快又可突圍前進，特別是開放原始碼技術蓬勃發展的今日，軟體建設得以快速累積、爆炸成長。最後，感謝抽空前來指教的朋友，此議程顯然相當「硬」，但見到台下幾乎坐滿捧場的聽眾時，著實興奮良久，而有幾位朋友在會後提出頗多相當不錯的問題，小弟預計在稍後的 blog 中一併回覆，歡迎交流，謝謝！<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 April 21, 2009 09:09 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>好文章.</p>
+
+<p>不过感觉LLVM的用处还是有限. 比如兄台porting doom到android, 这里边特殊的是android只能跑java程序, 而恰好LLVM可以把C通过bitcode转化为java bytecode. 如果gcc有一个java bytecode的backend, 一样可以porting成功. 当然同样会遇到SKIA/SDL接口不匹配的问题.</p>
+<span class="comments-post">由 <a href="mailto&#58;gebenxiang&#64;gmail&#46;com">gbx</a> 發表於</MTIfNonEmpty> April 21, 2009 11:48 PM</span>
+</div>
+<div class="comments-body">
+<p>to gbx:<br />
+您搞錯了, android執行的非java bytecode, 而是自有的dex format, 如果只是要byte code, 那gcc已經有gcj了.<br />
+llvm帶給我們的就是能夠很容易建構backend的一個架構, 以往要撰寫gcc backend相較於以llvm寫backend需要付出的心力是無法相提並論的.</p>
+<span class="comments-post">由 <a href="http://champyen.blogspot.com">champ</a> 發表於</MTIfNonEmpty> April 22, 2009 09:47 AM</span>
+</div>
+<div class="comments-body">
+<p>不可否認的，其實gcc也存在某些優勢，只不過gcc授權的議題比較麻煩，而且如果立志想當一個jitter，llvm就有比較好的優勢了</p>
+<span class="comments-post">由 <a href="http://luse.blogspot.com">luse</a> 發表於</MTIfNonEmpty> April 22, 2009 12:38 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2101" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

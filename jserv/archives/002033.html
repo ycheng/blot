@@ -1,0 +1,280 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 探訪 stack frame：談不定數量參數</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002032.html" title="操作 X 的 Cut and Paste Buffer" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002034.html" title="教育訓練：Gtk+ 程式設計初體驗" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002032.html">« 操作 X 的 Cut and Paste Buffer</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002034.html">教育訓練：Gtk+ 程式設計初體驗 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">June 25, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">探訪 stack frame：談不定數量參數</h3>
+
+前文 [<a href="http://blog.linux.org.tw/~jserv/archives/002029.html">以 C 語言實做 Functional Language 的 Currying</a>] 已探討在 IA32 stack 的操作，讓 Currying 的行為得以在此基礎，予以實現，而我們還可看另一種應用：C 語言的不定數量參數，也就是 stdarg.h 裡規範的行為。當我們使用 printf() 函式搭配強大的資料格式化處理 (printf 本身就是個小型的 interpreter) 時，不免會其運作行為感到好奇，以下是 GNU/Linux 上 /usr/include/stdio.h 的 prototype：(取自 glibc)
+<pre class="code" id="codemain" style="margin: 6px;">__BEGIN_NAMESPACE_STD
+...
+<span class="comment">/* Write formatted output to stdout.
+   This function is a possible cancellation point and therefore not
+   marked with __THROW.  */</span>
+<span class="keyword">extern</span> <span class="keyword">int</span> printf (__const <span class="keyword">char</span> *__restrict __format, ...);</pre>
+注意到函式參數列裡頭的 "..."，語法上表示不定個數的參數輸入，在實做面則不離 stack 的行為，筆者以一個簡單的小程式，說明其運作原理： (multiply.c)
+<pre class="code" id="codemain" style="margin: 6px;"><span class="keyword">#include</span> &lt;stdio.h><span class="keyword">
+#include</span> &lt;stdlib.h>
+
+<span class="keyword">static</span> <span class="keyword">int</span> multiply() 
+{
+	<span class="keyword">int</span> *bp;
+	<span class="keyword">int</span> result = 1;
+	<span class="comment">/* Start stack traverse */</span><span class="keyword">
+
+#<span class="keyword">if</span></span> defined(__i386)
+	__asm__( <span class="literal">"movl %%ebp, %0"</span> : <span class="literal">"=g"</span>(bp));<span class="keyword">
+#elif</span> defined(__x86_64__)
+	__asm__( <span class="literal">"movq %%rbp, %0"</span> : <span class="literal">"=g"</span>(bp));<span class="keyword">
+#<span class="keyword">else</span></span>
+	<span class="comment">/*
+	 * Caution: this would fail if it points to the end of the saved
+	 * registers instead of the start. (gcc bug in 4.1 branch)
+	 */</span>
+	bp = (<span class="keyword">void</span> **) __builtin_frame_address(0);<span class="keyword">
+#endif</span>
+	bp += 2;
+	<span class="keyword">while</span> (abs(*bp) &lt; 0x1000000) {
+		result *= *bp++;
+	}
+	<span class="keyword">return</span> result;
+}
+
+<span class="keyword">int</span> main()
+{
+	printf(<span class="literal">"1! = %7d\n"</span>, multiply(1));
+	printf(<span class="literal">"2! = %7d\n"</span>, multiply(1,2));
+	printf(<span class="literal">"3! = %7d\n"</span>, multiply(1,2,3));
+	printf(<span class="literal">"4! = %7d\n"</span>, multiply(1,2,3,4));
+	printf(<span class="literal">"5! = %7d\n"</span>, multiply(1,2,3,4,5));
+	printf(<span class="literal">"6! = %7d\n"</span>, multiply(1,2,3,4,5,6));
+	printf(<span class="literal">"7! = %7d\n"</span>, multiply(1,2,3,4,5,6,7));
+	printf(<span class="literal">"8! = %7d\n"</span>, multiply(1,2,3,4,5,6,7,8));
+	printf(<span class="literal">"9! = %7d\n"</span>, multiply(1,2,3,4,5,6,7,8,9));
+	<span class="keyword">return</span> 0;
+}</pre>
+先看看 main() 裡頭的函式呼叫方式，數學的 1!, 2!, 3!, .., 9! (階層運算) 定義就是 1, 1*2, 1*2*3, ..., 1*2*3*...*8*9, 這裡用 multiply() 函式實現，又，筆者在前文已大致提及 C 語言的 function call 與 IA32 stack 的執行時期行為對應：%ebp 指向 frame pointer 頂端，function 本體必須在 prologue 處理好 caller/callee 的 frame pointer，而參數的傳遞也是這時該考量的。所以，若我們可取得 stack 中 frame pointer 的內含值，往後推算，不就可取得參數內容嗎？進而，我們可拿這些資料作自行規範的舉動，比方說本範例的乘法運算。<br />
+<br />
+取得 %ebp 的方式可透過 inline assembly，如程式碼列表中 x86 與 x86_64 的動作，或者考慮到不同平台，可援引 GCC 的 GNU Extension : __builtin_frame_address，以下是文件的描述：<ul class="code" id="codemain" style="margin: 6px;">
+void *__builtin_frame_address (int level);<br />
+<br />
+This function is similar to __builtin_return_address, but it returns the address of the function frame rather than the return address of the function. Calling __builtin_frame_address with a value of 0 yields the frame address of the current function, a value of 1 yields the frame address of the caller of the current function, and so forth.<br />
+<br />
+The frame is the area on the stack which holds local variables and saved registers. The frame address is normally the address of the first word pushed on to the stack by the function. However, the exact definition depends upon the processor and the calling convention. On the Motorola 68000, if the function has a frame, then __builtin_frame_address will return the value of the frame pointer register a6 if level is 0.
+</ul>
+簡單來說，此內建的函式用以提供 backtrace 或動態偵錯所需的基礎建設，回傳函式的結構體 (為 frame address，而非 return address)，當參數代入 "0" 時，回傳目前的函式 frame address，而代入 "1" 時，回傳呼叫目前函式的函式的 frame address，參數的數值越大，則表示越上層。<br />
+<br />
+stack frame 就是保存變數與暫存器的區域，通常是此函式被推入 (push) 到 stack 中頂端的位址，不過，確切的行為需要視硬體處理器 (如 x86 vs. RISC) 與呼叫方式 (如 ARM 的 OABI vs. EABI) 而定，不過我們這裡只想取得傳遞給 multiply() 的參數序列，就先不思考這麼多。需要留意的是，在 GNU gcc 4.1 branch 中，__builtin_frame_address(0) 的回傳值「有時」會是錯誤的，所以筆者先使用 inline assembly 處理。筆者先進行位移的動作，以自 %ebp 後方取得參數列表，在不參照參數個數的情況下，筆者用投機的途徑來判斷，因為代入者都是小整數序列，基本上只要確定是否落在合理範圍即可。以下是編譯執行的輸出：<pre class="code" id="codemain" style="margin: 6px;">
+$ gcc -xc multiply.c -O0 && ./a.out
+1! =       1
+2! =       2
+3! =       6
+4! =      24
+5! =     120
+6! =     720
+7! =    5040
+8! =   40320
+9! =  362880
+</pre>
+由可見依序將 multiply() 後方傳遞的參數取出，將其累乘得階層運算值。注意，我們必須將 gcc optimization 關掉，以避免 gcc 將參數捨棄的狀況，另外，也不能傳遞 gcc 編譯的參數 "-fomit-frame-pointer"，這會導致 %ebp 取得與前述方式不一致而無法正確執行的問題。<br />
+<br />
+另外，在 NetBSD/PowerPC 上， stdarg.h 其實就是使用 __builtin_frame_address 來實做對不定個數參數的處理，參見 /usr/src/sys/arch/powerpc/include/stdarg.h 的相關宣告如下：<pre class="code" id="codemain" style="margin: 6px;"><span class="keyword">#define</span> va_start(ap, last)                                              \
+        (__builtin_next_arg(last),                                      \
+         (ap).__stack = __va_stack_args,                                \
+         (ap).__base = __va_reg_args,                                   \
+         (ap).__gpr = __va_first_gpr,                                   \
+         (ap).__fpr = __va_first_fpr)
+&nbsp;<span class="keyword">
+#define</span> __va_first_gpr  (__builtin_args_info(0))<span class="keyword">
+#define</span> __va_first_fpr  (__builtin_args_info(1) - 32 - 1)<span class="keyword">
+
+#define</span> __va_stack_args                                                 \
+        ((<span class="keyword">char</span> *)__builtin_saveregs() +                                 \
+         (__va_first_gpr >= 8 ? __va_first_gpr - 8 : 0) * <span class="keyword">sizeof</span>(<span class="keyword">int</span>))<span class="keyword">
+#define</span> __va_reg_args                                                   \
+        ((<span class="keyword">char</span> *)__builtin_frame_address(0) + __builtin_args_info(4))</pre>
+不過，NetBSD 與 GNU/Linux 對 gcc 處理的更迭，現已用不同的方式封裝，但原理還是一致的。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 June 25, 2008 01:33 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2033" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

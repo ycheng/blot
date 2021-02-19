@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: QtWebKit: 將 Web 2.0 技術帶入行動通訊的系統設計</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002002.html" title="Xenomai/SOLO 開始進行 pSOS API 模擬" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002004.html" title="Buffon 投針試驗：當圓周率計算遇上機率論" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002002.html">« Xenomai/SOLO 開始進行 pSOS API 模擬</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002004.html">Buffon 投針試驗：當圓周率計算遇上機率論 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 31, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">QtWebKit: 將 Web 2.0 技術帶入行動通訊的系統設計</h3>
+
+稍早提過 [<a href="http://blog.linux.org.tw/~jserv/archives/001985.html">Qtopia Core 更名為 Qt for Embedded Linux</a>] 的新聞，這是 Nokia 入主 Trolltech 後，對產品定位概念做了釐清，強調 Qt 的跨平台能力與針對底層系統軟體整合的訴求，同時，我們也可以發現 Trolltech 的新聞稿如 [<a href="http://trolltech.com/webkit/webkit-announce">Announcing the Qt WebKit Integration</a>]，就下了名為 "Trolltech’s Qt WebKit Integration brings Web 2.0 services to mobile phones" 的副標題，這是很值得玩味的市場資訊。<br />
+<br />
+活躍且嚴謹發展的 [<a href="http://webkit.org/">WebKit</a>] 專案為資訊技術應用，帶來許多新的可能，不同於以「平台」概念延展的 Mozilla/Firefox，WebKit 從其前身 KHTML 開始，就定位於結構優雅、設計洗練的 Web rendering toolkit，這也是 Apple 相中 KDE 團隊 KHTML engine 的原因。經過一番波折與分分合合的開發歷程，WebKit 的開發在 KDE KHTML 團隊成員 Lars Knoll, Simon Hausmann, George Staikos, Zack Rusin 等人的努力，又重新加入 Qt 的支援，有別於已成熟的 KHTML，WebKit 的 Qt 實做部份稱為 "QtWebKit"。與其他 WebKit 既有的平台相依移植如 Gtk+、WxWidgets 或 MS-Windows 相較，QtWebKit 的角色更超越了「平台移植」，實際上，QtWebKit 能與 Qt Framework 作無接縫 (seamless) 的整合，而 Trolltech 也宣示 Qt 4.4 系列內建 Qt WebKit Integration (這是市場行銷術語，其實就是 "QtWebKit")，下圖是概念呈現：<br />
+<center><img src="http://jserv.sayya.org/khtml/qtwebkit/webkit-architecture.png" width="480" height="300" /></center><br />
+我們可發現，QtWebKit 之於 Qt Framework，地位等同於 Qt4 其他模組，實做上則透過 Qt Core Module (C++ application framework，包含 WebKit 模擬的 Qt API，在 QtWebKit 是直接對應到 native)、Qt Network Module，與 Qt GUI Module 等予以實現 HTML4/5 的規格與具體描繪/編輯動作，詳情可參考 Trolltech 的白皮書 [<a href="http://www.trolltech.com/pdf/qt-webkit-mar-2008-whitepaper-a4.pdf">WebKit in Qt and Qtopia</a>] (PDF 文件)。如此一來，Qt/Qtopia 應用程式得以直接透過 QtWebKit 嵌入 Web 畫面，而時尚的 Web 2.0 技術也得以悄悄融入行動通訊平台的呈現中，在新聞稿中提供三份展示動畫，很值得一看，我們可發現，連 Qt Designer 這種原本靜態的版面編輯工具，也被擴充為允許嵌入動態網頁，在設計階段即可作前期評估與設計調整等動作，在以往幾乎是設計師企求而無法達成的美夢。<br />
+<br />
+技術面探討 QtWebKit，可參閱資深 KDE 開發者 Simon Hausmann 在去年 foss.in 的研討會議程 [<a href="http://foss.in/2007/register/speakers/talkdetailspub.php?talkid=414">QtWebKit</a>]。概念上來說，QtWebKit 基本上是 "QT wrapper around the WebKit rendering engine"，但實做面透過 Qt Framework，包含 text handling, painting, networking，並提供簡單易用的 Qt 風格 API，其設計簡潔卻功能強大，有以下元件：<ul>
+  <li>qWebView - browser widget</li>
+  <li>qWebSettings - 允許細部調整行為模式</li>
+  <li>qWebPageHistory/qWebHistoryItem - 完整的頁面歷史追蹤處理</li>
+</ul>
+提到這，不禁要談談 Qt/KDE 開發者對於 design patterns 的執著，即使是「處理瀏覽器歷史頁面紀錄」這種看似微不足道的項目，深入思索後，仍可以 Qt 的 Model/View 來改良設計，詳情參考 [<a href="http://labs.trolltech.com/blogs/2008/03/25/advanced-example-of-modelview/">Advanced example of Model/View</a>]。當然，Web 技術不若想像中 "rendering" 如此單純，WebKit 花了很大的心力去改善 ECMAScript/JavaScript 執行環境，QtWebKit 則進一步針對運算資源做了調整，並充分整合到 Qt Framework，說得很玄，看看以下例子：<ul>
+  <li>在 Qt/C++ 應用程式中執行 frame-&gt;evaluatejavascript( " ... " ) 即可在頁面動態植入一段 JavaScript</li>
+  <li>透過 frame-&gt;addToJSWindowObject(myObject) 一類的陳述句，可在 Qt/C++ 應用程式中直接獲得特定 JavaScript 的 QObject, signals-slots, properties 等資訊，換言之，我們可用 Qt 一貫的方次來更動 Web 2.0 Ajax 的執行模式</li>
+</ul>
+此外，談談 QtWebKit 的國際化支援。在 Gtk+ WebKit 的實做中，儘管 Gtk+ 有傲人的國際化支援能力 (君不見偉大的 Pango 令多少廠商噤若寒蟬？)，但文字處理的部份仍依賴 IBM 的 [<a href="http://www-306.ibm.com/software/globalization/icu/">International Component for Unicode</a>] (ICU)，這點與其他 WebKit 雷同，但是 QtWebKit 不這麼作，因為 Qt Framework 本身就有足夠的多國語文支援能力，而且可依據需求去調整組態環境的使用 (footprint)，所以 QtWebKit 將部份 WebKit 的文字處理引擎轉以 Qt 內部實做，並且可以一致的 QConfig 作統籌調整。在上個月份開始，QtWebKit 也支援 X11 與 Embedded Linux 平台的輸入法支援，而且，總是將效能列入重要考量。<br />
+<br />
+兩年前遇到一個案子，需要在 20 Mb 的 NAND Flash 空間中運作完整的 Linux 與 Web browser，除了基本的中文處理、無線網路能力、基礎的 PIM 之外，而且指明要支援 Google Maps 一類嶄新的 Web 2.0 服務，這是一個嚴苛的挑戰，還好我們有 Qtopia。如今，我再次透過 QtWebKit 來重新檢視過去的設計，拿 qt snapshots 來作開刀對象，這裡以 "qt-x11-opensource-src-4.4.1-snapshot-20080328" 為主。方法是建構足以運作 QtWebKit 的 Qt core/network/gui 等模組，然後儘量去降低資源使用量，以下是在 Linux/X11 的實驗畫面：<br />
+<center><img src="http://jserv.sayya.org/khtml/screenshots/qtwebkit-browsing.jpg" width="512" height="404" /></center><br />
+畫面呈現了 QtWebKit 開啟 Google Maps，顯示效果與效能都很不錯，而且整個 Qt + QtWebKit 的程式空間還控制在 5 Mb 以內。關於此實驗，[<a href="http://jserv.sayya.org/khtml/qtwebkit/">在此</a>] 可取得 config, patch, prebuilt pkg 等檔案，QtWebKit 的成熟度令人驚艷！<br />
+<br />
+Qtopia 4 儼然是 Linux 史上最完整的 free software application framework for mobile computing，如今納入 QtWebKit 的整合，更加確定其地位，現在 Trolltech 火力全開地宣示：<ul class="code" style="margin: 6px;">
+「我準備好了」                                                                             
+</ul>
+此舉為行動通訊運算平台注入了強心針，各位架構設計者與工程人員，思考好未來的系統了嗎？<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March 31, 2008 03:24 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>拜讀您的大作<br />
+讓我更加深信QTWebKit是值得投資的方向<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;akioolin&#64;gmail&#46;com">Akio</a> 發表於</MTIfNonEmpty> March 31, 2008 08:13 PM</span>
+</div>
+<div class="comments-body">
+<p>对我很有价值，谢谢！！<br />
+但是我按照您所给出来的configure和patch得到的QtWebKit却有13.7M。不知道你给出的4.5M的QtWebKit另外又做了哪些处理？<br />
+由于没有找到qt-x11-opensource-src-4.4.1-snapshot-20080328，我使用的是qt-x11-opensource-src-4.4.1-snapshot-20080319。<br />
+静候佳音，感激不尽！！</p>
+<span class="comments-post">由 <a href="mailto&#58;zhangqin0712&#64;gmail&#46;com">Ken</a> 發表於</MTIfNonEmpty> June  3, 2008 03:47 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2003" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

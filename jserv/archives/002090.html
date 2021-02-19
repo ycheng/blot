@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 演講：窮得只剩下 Compiler -- 淺談編譯技術的革命</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002089.html" title="AsmJit : C++ 封裝的 Just-In-Time Assembler" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002091.html" title="新書《Hello, Android: Introducing Google's Mobile Development Platform》" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002089.html">« AsmJit : C++ 封裝的 Just-In-Time Assembler</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002091.html">新書《Hello, Android: Introducing Google's Mobile Development Platform》 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February 06, 2009</h2>
+
+<div class="blogbody">
+
+<h3 class="title">演講：窮得只剩下 Compiler -- 淺談編譯技術的革命</h3>
+
+<center><img src="http://people.debian.org.tw/~jserv/compiler-cover.jpg" width="250" height="337" /></center><br />
+上個月提到 [<a href="http://blog.linux.org.tw/~jserv/archives/002083.html">OSDC.TW 2009 徵稿</a>] 的訊息，現在 [<a href="http://osdc.tw/">OSDC.tw</a>] 主辦單位如火如荼地張羅於四月 18、19 兩日的議程，可參閱網站的訊息，而小弟也提交一個議程，以下是相關的資訊：<ul class="code" style="margin: 6px;">
+  <li>中文議程名稱: 窮得只剩下 Compiler -- 淺談編譯技術的革命</li>
+  <li>英文議程名稱：What Compilers do for us -- Introduction to Evolution of Compiler Technologies</li>
+  <li>議程簡介： <ul>
+誠如易經所謂的窮則變、變則通、通則久，我們可見 compiler 技術的影響無所不在，無論是程式語言範疇、Web 應用程式，甚至是 OpenGL/3D，都潛藏著與 compiler 密不可分的關聯。乍看很難想像其關聯性，但回頭看看 JSP/Servlet 的運作，或者 OpenGL ARB 的 GLSL，或者當紅炸子雞 Google Android 平台的關鍵技術 Dalvik VM，不難理解編譯技術實在是解決工程問題所需的背景。<br />
+<br />
+隨著開放源碼的蓬勃發展，Compiler 相關的技術也獲得空前的成功，且當今的運算型態已變得多元，無論是虛擬化技術、VM、JIT (Just-In-Time) compiler，或者 Binary translator 等等，都是吾人耳熟能詳且為建構當今資訊建設的基礎技術。希望藉由這次的機會，分享過去幾年的開發經驗，希望能和與會的朋友們一同成長。</ul></li>
+  <li>議程大綱：<ul>
+    <li>隱藏在我們周遭的 Compiler 技術</li>
+    <li>回首 Compiler 已遠：從 <a href="http://en.wikipedia.org/wiki/A0_compiler">A0</a> 到 <a href="http://llvm.org/">LLVM</a></li>
+    <li>透過 <a href="http://llvm.org/">LLVM</a> 建構虛擬機器</li>
+    <li>技術大融通與未來展望</li>
+  </ul></li>
+</ul>
+本議程不直接談許多人印象中艱澀的 (dynamic) Compiler 技術，而是從整個廣泛應用的資訊技術中，點明「到處都是 Compiler」的現實。這樣的案例多如牛毛，比方說，現在 Web 2.0 與 Mobile Web Browser 正火熱，為了要能改善 Web 應用程式的效能，Google 與 Apple 兩家公司的工程團隊，各自推出 V8 與 SquirrelFish Extreme 等 Just-In-Time compiler for JavaScript，而 Mozilla Foundation 更是將高速的 JavaScript 引擎當作 Mozilla 2 的重要賣點，強大的自由軟體開發者 [<a href="http://www.red-bean.com/~jimb/">Jim Blandy</a>] 甚至離開專業 GNU Toolchain 開發公司 CodeSourcery，加入 Mozilla Corporation，就為了致力開發 [<a href="https://wiki.mozilla.org/JavaScript:ActionMonkey">ActionMonkey</a>] (整合 Mozilla 原有 SpiderMonkey 與 Adobe 貢獻的 Tamarin)。自此，這個在瀏覽器平台的戰役，從桌面系統延續到手機，又將從手機移轉到各種不同的資訊裝置上。<br />
+<br />
+但撇開 JavaScript 執行引擎不論，實際上，連 Firefox/Mozilla 底層的向量繪圖函式庫 [<a href="http://www.cairographics.org/">Cairo</a>]，也透過 JIT compiler 技術，去提昇整體繪圖的效能與使用者體驗。日前，Dan Amelang 揭露他的開發成果，可參見郵件論壇的訊息 [<a href="http://lists.cairographics.org/archives/cairo/2009-January/016186.html">JIT for pixman</a>]。[<a href="http://cgit.freedesktop.org/pixman/">pixman</a>] 是提供給 X 與 Cairo 使用的 pixel-manipulation 函式庫，顧名思義，就是處理 image compositing 與 trapezoid rasterization 等操作，而在 Dan Amelang 的論文 [<a href="http://vpri.org/pdf/tr2008002_jitblt.pdf">Jitblt: Efficient Run-time Code Generation for Digital Compositing</a>] 給予令人振奮的突破，無疑是個極佳的突破點，我們也可預見 (dynamic) compiler 技術在更多資訊領域的廣泛應用。<br />
+<br />
+所以，當編譯器技術走入新的層次時，就需要更強大且多元的 Toolkit，而我們選定 [<a href="http://llvm.org/">LLVM</a>] (Low Level Virtual Machine)，當我們已知曉整個典範移轉 (paradigm shift) 的衝擊，就思考 LLVM 這樣的嶄新架構能給予我們哪些突破限制的可能性。當我們「窮得只剩下 Compiler」之際，該如何才能達到王陽明牧師在《窮得只剩下錢》一書提到的話：<ul class="code" style="margin: 6px;">
+「人生兩條路：『生活的幸福』不等於 『生命的幸福』，兩樣幸福我們都需要」
+</ul>
+如此兼顧「生活的幸福」與「生命的幸福」的境界呢？作為一個技術從業人員，唯有不斷追求新知，並認真反省資訊技術如何更有效率且深入的解決問題，才能更掌握「幸福」。以上，期待您的指教，謝謝！<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 February  6, 2009 08:40 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>想聽 LLVM, 呵</p>
+<span class="comments-post">由 <a href="http://godfat.org">godfat 真常</a> 發表於</MTIfNonEmpty> February  6, 2009 10:42 PM</span>
+</div>
+<div class="comments-body">
+<p>Jserv您好：<br />
+google查詢compiler關鍵字路過此，請教您演講中是否會提及multicore and multiprocessor parallelism？<br />
+LLVM Compiler架構對此議題有什麼助益？<br />
+Thanks!<br />
+------<br />
+Introduction to myelf:<br />
+I was a programmer who struggled with GNU toolchain implementation for a proprietary JavaCard processor, then for a 32-bit embedded RISC uP.</p>
+<span class="comments-post">由 <a href="mailto&#58;wenchen&#64;ms4&#46;url&#46;com&#46;tw">wenchen</a> 發表於</MTIfNonEmpty> February  7, 2009 04:16 PM</span>
+</div>
+<div class="comments-body">
+<p>@wenchen,<br />
+目前不考慮 multicore 與 multiprocessor parallelism，而是著重於 dynamic compiler 的設計與應用，謝謝</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> February  7, 2009 09:37 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2090" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

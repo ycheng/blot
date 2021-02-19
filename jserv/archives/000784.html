@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 協同開發的想法</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/000783.html" title="XDirectFB + XFree86 cvs (20050117)" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/000785.html" title="uClibc 0.9.27" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/000783.html">« XDirectFB + XFree86 cvs (20050117)</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/000785.html">uClibc 0.9.27 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 17, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">協同開發的想法</h3>
+
+<p>之前 TimHsu 與幾位熱情的 Hackers 共同創立 <a href="http://www.chroot.org/">chroot.org</a>，以 Network Security 為主軸，每月定期會有成員內部聚會，並適度分享成果，可以在 [<a href="http://www.chroot.org/articles.php">Articles</a>] 取得部分的簡報資料。除了讀書會形式外，也鼓勵各成員成立自己的專案計畫，如 [<a href="http://www.chroot.org/projects.php">Projects</a>] 就羅列一些公開的項目，我個人相當推崇 TimHsu (新婚新郎倌，不再是 "kids" 了，是「老小孩」) 與那群 Hackers 的熱情。</p>
+
+<p>moto 學園聚集很多人氣，不僅是來自台灣的朋友，從論壇上我們也可以發現有香港，甚至是大陸的朋友分享經驗，這的確很不錯。去年辦的 <a href="http://ircconf.debian.org.tw/">Debian@Taiwan IRC Conference</a> 也發現反應還不差，所以呢，是否可能舉辦針對特定主題的聚會或發表分享會呢？</p>
+
+<p>我對聚會的舉辦沒有太大的想法，而我比較重視的是協同開發的部分，主要是著眼於國內事實上有許多熱情、有活力的朋友願意參與 Free/Open Source Softwares 的開發，但是如果只透過網路作溝通，顯得有些不足。如果可以，我的想法是先針對特定主題，比方說中文輸入法系統、國際間的輸入法架構主題先行分析並作資料分享，然後聚集成員思考，作腦力激盪，然後透過不定期的專案進度討論會，配合 issue tracker，讓專案進行能更順遂。這樣的聚會不見得只用一個專案開發，事實上是可以同時進行的，只要比重拿捏的當，不會有太大的衝突。</p>
+
+<p>在我的<a href="http://jserv.sayya.org">個人首頁</a>羅列一些我過去參與的計畫，其中有幾個項目是獨自完成，鮮少與其他開發者溝通與協調，這樣往往無疾而終，相當可惜。不管是參與哪個 Free/Open Source 計畫，都會累積一些經驗，這些經驗事實上遠比結果重要，如果能夠 serialization 起來，是相當的寶貴，對日後從事同樣工作項目的朋友來說，絕對可大幅降低學習的門檻。</p>
+
+<p>越扯越遠了，簡單來說，希望在 2005 年，我可以號召到更多熱情的朋友共襄盛舉，並且彼此激勵，創造出更多有趣的專案 :-)</p>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 17, 2005 10:35 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>是類似中文應用讀書會這種討論嗎?<br />
+像迴廊分享時間這種我就覺得不錯(雖然還沒去過:x)<br />
+實際的聚會與討論感覺很棒, 很有參與感<br />
+不過我可能在面對面的時候比較害羞 :p</p>
+<span class="comments-post">由 <a href="http://kanru.idv.tw/~kanru/blog">Kanru</a> 發表於</MTIfNonEmpty> January 17, 2005 10:50 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

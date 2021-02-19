@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 邪惡的 Hello World</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001806.html" title="「Embedded Linux 圖形處理」簡報上線" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001819.html" title="移轉 blog 服務啟事 (外包)" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001806.html">« 「Embedded Linux 圖形處理」簡報上線</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001819.html">移轉 blog 服務啟事 (外包) »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">October 18, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">邪惡的 Hello World</h3>
+
+今年的目標之一，是將「深入淺出 Hello World」系列的演講告一段落，並整理相關文件，不過，事實上「深入淺出 Hello World」不僅有技術層面，甚至會涉及法律層面。之前跟 [<a href="http://www.wretch.cc/blog/tmk2005">冬梅姐</a>] 提到 OSSF 內部演講，預定題目為「資訊人看 OSS 法律問題以及如何迴避 GPL」，這算是之前 [<a href="http://blog.linux.org.tw/~jserv/archives/001612.html">Evil software：逃避 GNU GPL 的途徑</a>] 的延續，並且會探討真實存在的案例。<br>
+<br>
+似乎很虛無飄渺，咱們看看以下小程式：<ul>
+<pre class="code" style="margin: 6px;"><span class="keyword">#include</span> &lt;stdio.h>
+<span class="keyword">int</span> main() {
+<span class="comment">/* 9008673e-1f33-47be-90f4-1639e09861d2 */</span>
+<span class="keyword">return</span> 0;
+}</pre>
+</ul>
+這個簡單的小程式執行的輸出為何呢？應該是沒有畫面，不過呢，如果咱們用「邪惡版」的 GCC 編譯就不一樣了：<ul>
+<pre class="code" style="margin: 6px;">
+$ gcc-evil -o hello hello.c 
+$ ./hello
+Hello World!
+</pre></ul>
+疑？"Hello World" 的輸出是如何產生的？這可不是之前提到 [<a href="http://blog.linux.org.tw/~jserv/archives/001797.html">shellcode 的變化</a>] 的 "Orz Programming"，相反地，這是全新的技倆，姑且稱之 "Evil Programming"。注意到剛剛程式碼列表中的 C-style comment，理論上 C compiler 如 GCC 應該會忽略這些註解，但是我們修改過的 GCC 會額外去分析，又，"9008673e-1f33-47be-90f4-1639e09861d2" 其實是個 UUID，這提示 GCC 應該去參考 Code factory 中既有的 code template 並代入，如此的機制我已經實做出來，名稱暫定為 "Obfuscated GCC Code Generation Framework" (以下簡稱 OGCGF)。<br>
+<br>
+OGCGF 可不是為了 "OGC" 而生 (按：看不懂的話，請自行參閱相關資料)，而是為了一系列邪惡的勾當所設計。我們為何不願意公開原始程式碼？一方面是因為自私，另一方面是因為原始程式碼可能會造成安全外洩，特別是很多程式碼沒有妥善規劃，就我以前接過的案子來說，看過不少 (前人) 直接把密碼寫在程式碼中。很不幸地，改寫已經來不及，用到 GPL'd 的程式碼也成為不爭的事實，是的，我們該公開 source code，不過，如果我們可以「放出 GPL'd 原始程式碼，但讓每次編譯的結果都有微妙的差異」，是不是有機會可「惡搞」呢？於是，在去年某月，我接到如此的委託案，要我修改 GCC，加入 Obfuscated Code Generation，更重要的是，能夠對 GPL awared。<br>
+<br>
+GCC 依據  GNU GPL 授權發行，而就目前 GPL v2 來說，精神上要求重新散佈與修改時，必須附上 source code，這也就是說，如果我要提供修改的 GCC 給我的同事，我必須依據 GPL 提供上述資料。但，倘若沒有重新散佈或修改的行為，依據 GPL 來說，我享有「執行的自由」，可隨心所欲編譯任何程式，包含商業應用程式。透過 OGCGF，我們陸續將修改「移轉」到「邪惡版」的 GCC 中，並且指定只有特定機器才能 compiler & build 原始程式碼。似乎會說：只不過將對 GPL'd 程式的修改「搬移」到 GCC 中，那樣輸出不是一致嗎？非也，我們還可以在 OGCGF 的基礎上作一系列的壞事，誠如長輩所說：「幹壞事是進步的原動力」，最主要的部份就是 Obfuscated Code，為了保護我們修改的部份，另外還加入 customized encoder，以干擾靜態分析，稍後會繼續探討，就目前的實做來說，控制在效能 2% 到 3% 的衝擊量中。同時，我們也可以發現，GPL v2 對於 GCC 有著與 server-side application 一樣的盲點，也就是對 "Redistribution" 沒有明確的規範，在之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001441.html">檢視 GPL 3.0 草案</a>] 已經提過。<br>
+<br>
+一旦 OGCCF 被有心人士濫用，在 GPLv3 沒有制定完備的一日，就可能肇生一堆 GPL Violation，現在不是廠商不願意提供 source code，而是放出來的 source code 得搭配特定的 code factory 與 adjustment parameter 才有用，否則只是原本 GPL 程式罷了。<br>
+<br>
+目前手頭已經有兩個計畫採用 OGCGF 的基礎建設，不過因為我還沒打算公開，「邪惡」的 "Hello World" 只是一個出發點，前述的「壞事」也只是限於時間與技術水準，能幹的壞事仍相當多...<br>
+<br>
+不禁聯想到，法國大革命時期的革命家 Madame Roland (Manon Jeanne Phlipon) 被送上斷頭台前，留下名言：<ul>
+"O Liberty, Liberty, how many crimes are committed in thy name!"
+</ul>
+中譯為「自由，自由，多少的罪惡假汝之名而行﹗」，相當傳神，而今自由軟體也面臨種種挑戰。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 October 18, 2006 02:44 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>GNU GPL v2 的第 3.a 指出，要散佈二進位碼的話，必須 "Accompany it with the complete corresponding machine-readable source code"。</p>
+
+<p>可是... 如果採用這種 Obfuscated Code 技術，發佈的程式碼就不能算是 "corresponding" 的 source code 了吧?</p>
+
+<p>當然... depends on how you define the word "corresponding"...</p>
+<span class="comments-post">由 <a href="mailto&#58;palatis&#64;gmail&#46;com">Palatis</a> 發表於</MTIfNonEmpty> October 18, 2006 05:02 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

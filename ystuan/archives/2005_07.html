@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>帝國反抗君之古戰場。PowerOp請您速至 blog.yam.com/ystuan 支援前線！: July 2005 Archives</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~ystuan/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~ystuan/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~ystuan/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~ystuan/archives/2005_06.html" title="June 2005" />
+
+<link rel="next" href="http://blog.linux.org.tw/~ystuan/archives/2005_08.html" title="August 2005" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~ystuan/" accesskey="1">帝國反抗君之古戰場。PowerOp請您速至 blog.yam.com/ystuan 支援前線！</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~ystuan/archives/2005_06.html">&laquo; June 2005</a> |
+
+<a href="http://blog.linux.org.tw/~ystuan/">Main</a>
+| <a href="http://blog.linux.org.tw/~ystuan/archives/2005_08.html">August 2005 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">July 29, 2005</h2>
+
+
+<div class="blogbody">
+<a name="001208"></a>
+<h3 class="title">[備忘] OpenVPN on CentOS 4</h3>
+
+<p>需要弄一台VPN server，決定在CentOS 4上面裝OpenVPN。以後會把這台server相關的紀錄放在這一篇…</p>
+
+<p>[05/07/27]<br />
+下載CentOS 4。目前已經出到4.1，不過只要到這個網址<br />
+ftp://ftp2.tnc.edu.tw/pub1/centos/4/isos/i386<br />
+就可以抓到CentOS 4(for i386)的最新版。我並沒有抓DVD，而是抓了下面四個檔：<br />
+CentOS-4.1-i386-bin1of4.iso<br />
+CentOS-4.1-i386-bin2of4.iso<br />
+CentOS-4.1-i386-bin3of4.iso<br />
+CentOS-4.1-i386-bin4of4.iso<br />
+當然，要抓md5sum來比對<br />
+MD5SUMS.cd</p>
+
+<p>[05/07/28]<br />
+燒光碟，手邊還有剩一些650MB的空白片，剛好拿來用。</p>
+
+<p>[05/07/29]<br />
+誕生，CentOS 4.1 on HP Compaq dx6120 MT。這次故意選最小安裝(800+MB)，以後缺什麼再裝什麼。喔，防火牆和SELinux我都按照建議，選擇啟用。</p>
+
+<p>裝好之後當然是要趕快做套件更新。套件更新之前要先import GPG key<br />
+# rpm --import http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-4 --httpproxy proxy.my.company --httpport xxxx<br />
+（不需要透過proxy的話，請不要加上後面兩組參數）</p>
+
+<p>為了要能夠執行指令yum -y update來更新套件，在我的環境必須要先設定proxy<br />
+# export http_proxy=http://proxy.my.company:port/<br />
+# yum -y update</p>
+
+<p>新增一個帳號來使用，並且設定她的密碼：<br />
+# useradd blahblah<br />
+# passwd blahblah</p>
+
+<p>根據「Red Hat Enterprise Linux 4: 安全性設定手冊」中， <a href="http://www.redhat.com/docs/manuals/enterprise/RHEL-4-Manual/zh_tw/security-guide/s1-wstation-privileges.html">4.4.2. 不允許 root 存取</a> 這一節，我選擇只針對sshd，限制root無法從遠端登入：<br />
+編輯/etc/ssh/sshd_config，<br />
+將<br />
+# PermitRootLogin yes<br />
+改成<br />
+PermitRootLogin no</p>
+
+<p>然後執行底下指令，讓設定生效<br />
+# service sshd reload</p>
+
+<p>以後遠端管理，用blahblah執行ssh登入，再su -成為root即可。</p>
+
+<p>OpenVPN改天再弄吧:p</p>
+
+
+<div class="posted">
+	Posted by ystuan at <a href="http://blog.linux.org.tw/~ystuan/archives/001208.html">04:08 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1208" onclick="OpenComments(this.href); return false">Comments (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">July 28, 2005</h2>
+
+
+<div class="blogbody">
+<a name="001207"></a>
+<h3 class="title">在Cygwin console輸入、顯示中文</h3>
+
+<p>妳需要在家目錄($HOME)下新增或編輯兩個檔案：<br />
+.inputrc 和 .bash_profile</p>
+
+<p>在.inputrc中要有下面三行<br />
+set meta-flag on<br />
+set convert-meta off<br />
+set output-meta on</p>
+
+<p>在.bash_profile中要有下面三行<br />
+export LESSCHARSET=latin1<br />
+alias less='/bin/less -r'<br />
+alias ls='/bin/ls -F --color=tty --show-control-chars'</p>
+
+<p>如果妳對指令跟文字編輯器都不熟（這樣的人會去用Cygwin嗎？），請開啟cygwin console，依序執行下面七個指令：</p>
+
+<p>cd<br />
+echo "set meta-flag on" >> .inputrc<br />
+echo "set convert-meta off" >> .inputrc<br />
+echo "set output-meta on" >> .inputrc<br />
+echo "export LESSCHARSET=latin1" >> .bash_profile<br />
+echo "alias less='/bin/less -r'" >> .bash_profile<br />
+echo "alias ls='/bin/ls -F --color=tty --show-control-chars'" >> .bash_profile</p>
+
+<p>然後退出cygwin console，再重新開啟，就可以輸入、顯示中文了。</p>
+
+<p>請參考Cygwin FAQ<a href="http://cygwin.com/faq/faq_3.html#SEC48">Why don't international (Unicode) characters work?</a></p>
+
+
+<div class="posted">
+	Posted by ystuan at <a href="http://blog.linux.org.tw/~ystuan/archives/001207.html">05:22 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1207" onclick="OpenComments(this.href); return false">Comments (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

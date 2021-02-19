@@ -1,0 +1,234 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>pwchi's BLOG: GnuPG's ElGamal signing keys compromised</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~pwchi/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~pwchi/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~pwchi/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~pwchi/archives/000521.html" title="資訊書也可以這麼可愛" />
+
+<link rel="next" href="http://blog.linux.org.tw/~pwchi/archives/000544.html" title="相容中文檔名的 GnuPG 前端軟體 - WinPT" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+<!--
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/">
+<rdf:Description
+    rdf:about="http://blog.linux.org.tw/~pwchi/archives/000541.html"
+    trackback:ping="http://mt.debian.org.tw/mt-tb.cgi/347"
+    dc:title="GnuPG&apos;s ElGamal signing keys compromised"
+    dc:identifier="http://blog.linux.org.tw/~pwchi/archives/000541.html"
+    dc:subject="黑客文化"
+    dc:description="GnuPG.org 在 2003-11-27 緊急發佈一則 GnuPG 重大安全漏洞的警訊，請求使用者立即廢止有使用 ElGamal signing keys 的金鑰。..."
+    dc:creator="pwchi"
+    dc:date="2003-12-18T22:51:35+08:00" />
+</rdf:RDF>
+-->
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~pwchi/" accesskey="1">pwchi's BLOG</a></h1>
+<span class="description">昨是今非，昨非今是；今是明非，今非明是。</span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~pwchi/archives/000521.html">&laquo; 資訊書也可以這麼可愛</a> |
+
+<a href="http://blog.linux.org.tw/~pwchi/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~pwchi/archives/000544.html">相容中文檔名的 GnuPG 前端軟體 - WinPT &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">December 18, 2003</h2>
+
+<div class="blogbody">
+
+<h3 class="title">GnuPG's ElGamal signing keys compromised</h3>
+
+<p>GnuPG.org 在 2003-11-27 緊急發佈一則 GnuPG 重大安全漏洞的警訊，請求使用者立即廢止有使用 ElGamal signing keys 的金鑰。</p>
+
+<a name="more"></a>
+<p>法國的一位研究員 Phong Nguyen 已經首先證實，GnuPG 在建立並使用 ElGamal Keys 簽署的過程中，存在一個嚴重的安全漏洞！這個嚴重的漏洞會導致 private key，在數秒的時間內被破解。當你的金鑰有使用 ElGamal sign+encrypt keys (type 20) 時，也就是你的 ElGamal 可同時用來加密和簽署，那這個問題就會存在。</p>
+
+<p>由於 GnuPG >= 1.0.2 的版本才能製作 type 20 的金鑰。換句話說，由 GnuPG < 1.0.2 的版本所製作的金鑰並不會有這問題。</p>
+
+<p>如何檢查是否為 type 20 金鑰：<br />
+1. 使用 gpg --list-keys <key_id> 來檢視自己的金鑰資料。<br />
+$ gpg --list-keys xxxxxxxx</p>
+
+<p>2. 如果你金鑰類型部分是大寫的 "G" ，例如下列 "2048G" ，那麼就表示這把金鑰是一支 type 20 的金鑰。你應該立即停用並發佈廢止通知。<br />
+pub  2048G/xxxxxxxx 2001-xx-xx Mallory <mallory at example.net></p>
+
+<p>PS. 如果是小寫的 "g"，那這是一支標準的 ElGamal encrypt-only keys (type 16)。只能用來加密，並不會構成加密環節的威脅。</p>
+
+<p>！！只有大寫的 "G" 必須立即廢止！！</p>
+
+<p>原始文件請參考下列連結<br />
+<a href="http://lists.gnupg.org/pipermail/gnupg-announce/2003q4/000276.html">GnuPG's ElGamal signing keys compromised</a></p>
+
+<p>TWCERT 的安全通報<br />
+<a href="http://www.cert.org.tw/document/advisory/show.php?twcert_sn=TW-CA-2003-133">TW-CA-2003-133-[ RHSA-2003:390-01: Updated gnupg packages disable ElGamal keys ]</a></p>
+
+<span class="posted">由 pwchi 發表於 December 18, 2003 10:51 PM
+| <a href="http://mt.debian.org.tw/mt-tb.cgi?__mode=view&amp;entry_id=541" onclick="OpenTrackback(this.href); return false">引用</a>
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>free music downloads<br />
+			free mp3 downloads<br />
+			free safe music download<br />
+			download free mp3s<br />
+			download free music<br />
+			music downloads<br />
+			<a href="http://www.myfreemp3s.com">http://www.myfreemp3s.com</a></p>
+<span class="comments-post">Posted by: <a href="http://www.myfreemp3s.com">free music downloads</a> 發表於 April 19, 2005 11:21 PM</span>
+</div>
+<div class="comments-body">
+<p> You can also check out the sites about texas holdem   texas holdem  <a href="http://www.e-holdem.net/texas-holdem.html">http://www.e-holdem.net/texas-holdem.html</a> ... Thanks!!! </p>
+<span class="comments-post">Posted by: <a href="http://www.e-holdem.net/texas-holdem.html">texas holdem</a> 發表於 May  6, 2005 08:27 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-comments.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="541" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響數量:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+</div>
+</div>
+</body>
+</html>

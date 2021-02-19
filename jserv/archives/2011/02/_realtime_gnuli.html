@@ -1,0 +1,302 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: 破除 Realtime GNU/Linux 的迷思</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2010/12/applied_compute.html" title="「Applied Computer Science Concepts in Android」簡報上線" />
+
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2011/02/fentiss.html" title="FentISS : 專注於嵌入式系統虛擬化技術的新創公司" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2010/12/applied_compute.html">« 「Applied Computer Science Concepts in Android」簡報上線</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+| <a href="http://blog.linux.org.tw/~jserv/archives/2011/02/fentiss.html">FentISS : 專注於嵌入式系統虛擬化技術的新創公司 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February  5, 2011</h2>
+
+<div class="blogbody">
+
+<h3 class="title">破除 Realtime GNU/Linux 的迷思</h3>
+
+原文標題: Getting real (time) about embedded GNU/Linux<br />
+原文作者: Robert Berger<br />
+寫作日期: July 20, 2010<br />
+繁體中文翻譯：黃敬群 (Jim Huang) &lt;jserv@0xlab.org&gt;<br />
+<br />
+譯註：本文翻譯自 [<a href="http://www.eetimes.com/design/embedded/4204740/Getting-real--time--about-embedded-GNU-Linux?pageNumber=0">Getting real (time) about embedded GNU/Linux</a>] 一文，標題是典型的美式幽默，"Get real" 一詞有「醒醒吧」之意，而銜接其後的 "time"，則恰好為本文主軸 Realtime Linux 之意。作者為文立意是縱觀分析 GNU/Linux 系統現有 Realtime 的實做方案，從而破除一些迷思，譯者在翻譯過程中，也補充一些資訊及看法。<br />
+<br />
+<b>何謂 Real-time？</b><br />
+<br />
+"Real-time" [譯註：常見的中文翻譯為「即時」(台灣) 或「實時」(中國大陸)，若誤寫為「及時」(in time)，則就貽笑大方了。譯者為了閱讀的醒目，保留原文] 如名所示，有時指快速 (timeless) 之意，不過就筆者的認知，通常是指「決定性」(determinism) [譯註：在哲學的觀點，"determinism" 一詞主張所有事件 (event) 的發生，皆是不得不然。這裡所謂「事件是被決定的 (determined)」的意思是，存在特定的條件，若這些條件都被滿足，於是，該事件則必定發生。譯者為避免翻譯用詞過於抽象化 (決定論)，略為扭曲為「決定性」一詞，以下的文意亦然] 更精確來說，real-time 就是事件與時序 (temporal) 的決定性，而「事件的決定性」表示，給定一組輸入因子，你會知曉輸出的狀態；「時序的決定性」表示你還可知道其時序 (timing) [譯註："temporal" 作形容詞使用時，有「特定時期的」、「暫時的」等意涵，參照前後文，應採前者「特定時期的」之意]。<br />
+<br />
+讓我們回到 "real-time" 與 "real-fast" 的比較 [譯註：這仍是一種老外愛用的幽默手法，玩弄字面意義與常見的誤解組合。首次出現於舉辦於加拿大的 Linux Symposium 研討會中，來自 IBM Linux 技術中心的 Paul E McKenney 所發表的論文 "<a href="http://www.linuxsymposium.org/archives/OLS/Reprints-2008/mckenney-reprint.pdf">'Real Time' vs. 'Real Fast': How to Choose?</a>"]，若一套空中航跡/航班導覽系統對於任務的時限 (deadline) 是 10 ms [譯註：原文是 millisecond，也就是 1/1000 秒，為符合中文讀者的習慣，本文對於時間的寫法，一律採用英文縮寫]，而，對航班的保留系統的底線來說，大約是 15 s。後者的處理時間必須是符合「決定性」的，但不需要太快。經過三十年的研究，對於建構 real-time 系統，仍未有通用性的方法論點，這也是為何 Paul E McKenney 在稍早的簡報中，對真實世界的 real-time 定義為：「一個 real-time 系統被認為可通過特定的測試組合 (test suite)」[2]，且讓我們謹守這個準則吧。[譯註：為了文意流暢，譯者調整了部份字詞]<br />
+<br />
+<b>有百分之百 real-time 的 GNU/Linux 核心嗎？</b><br />
+<br />
+解答這個疑惑前，你必須知道這個事實：同樣的 Linux 核心原始碼可用世界上最快的超級電腦，也應用於手機裝置中，這意思是，GNU/Linux 一開始並非針對 real-time 需求去打造的，甚至剛剛提到運作於超級電腦或手機的支援，也是逐漸加入 Linux 核心原始程式碼中。but to provide by default maximum raw processing power and throughput shared in a fair way among users and processes, which is typical for multi-user multi-processing operating systems. [譯註：作者提及此句的意思是，核心考慮現在多元應用的複雜性，因不影響文意，暫且不譯] Linux 採用 monolithic [譯註：作形容詞用，意思是像單石一般、整體的，因其常見於核心文件，不作特別翻譯] 核心設計，這表示裝置驅動程式與核心排程器 (scheduler) 共存於同一個 kernel space。kernel space 是隔絕於 (相對的) user space，而這 user space 就是與 Process [譯註：即使依據台灣書籍習慣，翻譯成「程序」，仍怕與 "procedure" 一詞混淆，後者常見於自動控制與 real-time 領域，特此保留原文] 控制有關的 I/O 及 interrupt [譯註：real-time 的世界中，用詞應該相當精確，本文對 CPU interrupt (名詞) 全部保留原文] 處理等操作所在區域。就電腦發展史來看，GNU/Linux 甚至支援了遠較其他作業系統更多的硬體裝置型態及處理器。[3]<br />
+<br />
+所以，儘管有可能修改核心的排程器，使其更具備典型 real-time 作業系統的要素：「決定性」，但不可因此就認定所有的 GNU/Linux 驅動程式在撰寫之初，就考慮到 real-time 的要求。[譯註：以 Linux 核心的開發模式來說，核心貢獻者提交驅動程式的原始程式碼 (GNU GPL 授權) 時，會經由核心的若干子系統的維護者檢閱並建議修飾，才逐漸整合到核心原始碼的開發樹 (git tree) 中，但驅動程式的具體功能或行為，並不保證都經過原提交者以外的大量驗證。Linux 核心的開發者傾向信任原驅動程式提交者對功能與行為的描述] 這表示，若你在 Linux 核心中，不使用可能會破壞 real-time 行為的驅動程式或組態設定 (configuration) 的話，如此的 "real-time enabled" [譯註：這也是商業 Linux 開發廠商慣用術語] GNU/Linux 不會表現得其他 real-time 核心差。此外，也可能在一個真正具備 real-time 能力的核心之上，運作著 GNU/Linux，我們在稍候的段落會介紹。<br />
+<br />
+<b>為何要在 GNU/Linux 增添 real-time 能力？</b><br />
+<br />
+If you are after a real-time operating system which behaves deterministic with all possible configuration options and including all possible drivers I'm afraid you should look for some other solutions out there. Tell your marketing guys they'll have to find other buzzwords besides "Linux" to sell their stuff. At least for the time being it's not going to be GNU/Linux. Maybe some time in the future enough companies will be willing to cooperate to build up enough critical mass for the "Comprehensive real-time GNU/Linux project". [譯註：譯者抓不到這段的感覺，乾脆保留原文。簡單來說，只要系統開發像 GNU/Linux 一般快速的膨脹 (驅動程式與硬體架構平台這兩個子系統，佔 Linux 核心原始程式碼的前兩名)，real-time 的要求極可能無法保證] 若你主要的系統應用中，有些項目可能會需要在特定 Process 具備 real-time 能力的話，你可能會考慮採納 GNU/Linux 的 real-time 方案。這些方案相當多元，讓我們來看看。<br />
+<br />
+<b>在原本的 Linux 增添 real-time 能力</b><br />
+<br />
+目前為止，實現 real-time Linux 有兩種成功的手法。一是修改原本的 GNU/Linux 核心 (vanilla kernel) 的基礎建設，使其直接支持 real-time 能力；另一是先運作一個 real-time 核心，然後將修改過的 GNU/Linux 核心程式碼視為該 real-time 核心的 idle task，運作其中。我們稱前者為 PREEMPT-RT kernel，而後者為 dual kernel 途徑 [譯註：為了醒目，這裡保留原文]。<br />
+<br />
+<b>PREEMPT-RT 是怎樣的修改？</b><br />
+<br />
+顯然，PREEMPT-RT 的 "RT" 來自 real-time，那我們來看 "PREEMPT" 表示什麼 [譯註：preempt 的中文有搶佔、預先佔有之意，以下保留原文]。假設系統有兩個 Process，兩者的執行優先權 (priority) 高低不同。time tick interrupt 一旦被發生，會岔斷 (interrupt/preempt) 原本執行的 Process 或動作，核心排程器會被觸發，低優先權的 Process 會被除去排程 (de-scheduled)，而高優先權的 Process 會被排入排程 (scheduled)。注意，在 preemptive [譯註：為 "preempt" 之形容詞，保留不譯] 的作業系統中，總是認定最高優先權的 process 會被執行，並且在單一時間內僅有一個最高優先權的 process。我們不傾向給予系統中所有 process 得以公平、均勻分享 CPU 資源的作法，相反地，是將 CPU 資源讓給最高優先權的 process 去使用。<br />
+<br />
+在一個不具備 preemptive 能力的作業系統中 [譯註：如 Microsoft Windows 3.x]，為達到多工能力，協同運作 (cooperative) 的 process [譯註：對應到下方的圖例 (一) 就是 "Process 1"] 必須讓出 [譯註：除了原文用的 "give up" 外，常見的詞彙是 "yield"] CPU 資源以便讓另一個 process [譯註：對應到下圖即是 "Process 2"] 得以執行，如此一來，Process 2 註定要較晚執行。<br />
+<center><img src="http://0xlab.org/~jserv/rt-linux/BergerRTLinuxFig1.jpg" width="500" height="302" /><br />
+圖例 (一): Preemptive vs. non-preemptive scheduling<br /></center>
+<br />
+在 GNU/Linux 中提供不同程度的 real-time 的實做，從預設沒有 real-time 能力 [譯註：即 "CONFIG_PREEMPT_NONE"]，到以下這三種：<ul>
+  <li>CONFIG_PREEMPT_VOLUNTARY : 使用明確的 preemption points [譯註：後文會解釋，在此保留原文]</li>
+  <li>CONFIG_PREEMPT_(DESKTOP) : 使用隱含的 preemption points</li>
+  <li>CONFIG_PREEMPT_RT : 提供完整的 preemption</li>
+</ul>
+請注意，我們可觀察到，real-time 的程度從「無」提昇到 CONFIG_PREEMPT_RT 時，latency [譯註：指的是核心操作的延遲，這裡保留原文] 與 throughput [譯註：指的是核心對 I/O 的處理能力] 兩者相對的增減：系統越具備「決定性」，則 throughput 會降低，反之亦然。<br />
+<br />
+<b>GNU/Linux 有幾種 real-time 組態？</b> [譯註：為求文意流暢，譯者調整了部份字詞]<br />
+<br />
+(1) PREEMPT_NONE : 預設 Linux 核心的排程器的行為，其設計概念就是最大化系統處理能力與 throughput 表現。每個 process 得以公正地獲取 CPU 資源，就如典型 UNIX 多人多工的環境一般。就預設的行為來說，process 執行狀態中，若正在使用/進入系統呼叫，則不得被其他動作 [譯註：如 IRQ 的要求] 所 preempt，如此一來，某些核心服務的時序就難以是「可決定的」，當然整個系統也因此失去 real-time 的特性。<br />
+<br />
+(2) PREEMPT_VOLUNTARY : 大約在 2001 年，Ingo Molnar 與之後合作的 Andrew Morton 提出 "preemption points" 的概念，用於長時間執行的程式碼，這一系列的修改也被稱為 "low-latency patches"。此途徑在輕微損失 throughput 的狀況下，降低系統的 latency，其實作的概念是，允許一個低優先權的 process 得以自願地 (voluntarily) preempt 自身 process，即便該 process 已在 kernel mode 執行著一個系統呼叫，這麼一來，系統就能對互動的事件，重新做出回應 [4] [譯註：因為高優先權的 process 實際已 preempt 掉另一個使用系統呼叫而在 kernel mode 的低優先權 process，從而可繼續進行預期的操作]。<br />
+<br />
+(3) PREEMPT_(DESKTOP) : 由於明確的 preemption points 不容易找尋，Robert Love 與其他開發者則嘗試尋找「隱含」(implicit) 的 preemption points，就實做的需求，核心的 spinlock 與 interrupt return code [譯註：為了強調，保留原文] 已被改寫。<br />
+<br />
+核心的 spinlock 是種 mutex 機制，用以保護共享資源的存取，通常以硬體的 test-and-set 的指令來實做 [譯註：如 x86 的 "xchg" 指令]。當一個 process 嘗試去存取某個已被其他 process 所使用的資源，"spinlock" 的行為就是說，被 (前述的 process 所) 阻斷執行 (blocked) 的 process 將會 spin (忙碌等待)，直到該資源可使用 (前一個 process 釋出資源)。<br />
+<br />
+藉由使得所有在 critical section 執行的 kernel code 都可被 preempt，這個 real-time 程度選項更進一步降低 latency。當然無可避免的，這帶來些微降低的 throughput 與更高的執行時期成本。<br />
+<br />
+(4) PREEMPT_RT : real-time preemption patch 的 [譯註：應該加上「終極」一詞] 目標是，使固定優先權的 preemptive 排程 (也就是 POSIX SCHED_FIFO 與 SCHED_RR) [譯註：在 POSIX 的規範中，SCHED_FIFO 與 SCHED_RR 這兩者都是選擇性的，僅在 real-time scheduling 使用。詳情可參考 Linux Programmer's Manual 的 sched_setscheduler (2)]，僅可能符合理想行為，並且對不具備/不要求 real-time 能力的 process 來說，沒有效能的衝擊。下圖 (二) 即是 PREEMPT_RT 的示意：<br />
+<center><img src="http://0xlab.org/~jserv/rt-linux/BergerRTLinuxFig2.jpg" width="350" height="282" /><br />
+圖例 (二): PREEMPT-RT<br /></center>
+<br />
+上述目標可透過在一個「可排程的執行緒」(schedulable thread) 中，執行所有的動作，目前 PREEMPT-RT 由 Ingo Molnar 與 Tom Gleixner 這兩位核心開發者所維護，此設計可提供核心完整的 preempt 能力，涵蓋從排程、中斷處理 (interrupt handling)，到 high resolution timers [譯註：或簡稱 "HRT"]。PREEMPT-RT 支援 priority inheritance 與 preemptible hard-/soft- interrupts [譯註：這部份的技術背景，可參考 "<a href="http://ecos.sourceware.org/docs-latest/pdf/ecos-ref.pdf">eCos Reference Manual</a>"，雖然已是十年前的文件 (最後更新日期：2000 年九月)，但這份探討業界知名 RTOS -- eCos 的技術文件，對於這一系列的 real-time 排程與避免 priority inversion 的策略，仍是相當好的參考資訊]。<br />
+<br />
+值得注意的是，PREEEMPT_RT 的發展乃呼應嵌入式系統、工業界，以及企業界的需求，這意味著，對某些應用來說，作業系統的「可決定性」逐漸變得比 throughput 更為重要，甚至是企業級的需求。[譯註：關於具體的應用，可參考 real-time Linux 的翹楚公司 -- FSMLabs 的<a href="http://www.fsmlabs.com/products">產品資訊</a>]。<br />
+<br />
+PREEEMPT_RT 對於無法徹底切離 real-time 與非 real-time 的應用型態 [譯註：就是 RT 與 non-RT 共存的模式] 來說，非常理想，同時，可採用 POSIX APIs 來撰寫 real-time Linux user-space 應用程式，並且主流的 Linux 驅動程式可在前述的 real-time 限制狀況下 [譯註：也就是 preemption points 的概念] 繼續使用。就目前來說，超過八成的 PREEMPT_RT patch 已收錄於 Linux 核心中 [譯註：當然這個數據一直在變動，詳情可參考 "<a href="https://rt.wiki.kernel.org/">Real-Time Linux Wiki</a>"]，日後將會成為標準 GNU/Linux 的 real-time 方案 [譯註：即便不是採用此途徑的 Xenomai (為 dual kernel 的代表性專案)，面對這個趨勢，也得提出因應 PREEMPT-RT 的 "<a href="http://www.xenomai.org/index.php/Xenomai:Roadmap">Xenomai 3</a>"]。<br />
+<br />
+<b>那什麼又是 dual kernel 途徑呢？</b></br />
+<br />
+dual kernel 的示意可參考下圖 (三)，其途徑廣泛由嵌入式系統與工業需求所採用，並有相當多實做，諸如 RTLinux/GPL, XM/eRTL, Real-Time Core, XtratuM, seL4, PaRTiKle 等等。[譯註：RTLinux/GPL 與 Real-Time Core 同為 Victor Yodaiken 博士創辦的 FSMLabs 公司所開發，後者為商業版本，受美國專利編號 5,995,74 所保護，於 2007 年二月份，Wind River Systems 宣佈收購 FSMLabs 的專利技術與商標等一系列智慧財產，而 Intel 則於 2009 年六月宣佈併購 Wind River]。採用此類 dual kernel 途徑的實做嘗試克服兩項議題：一個是 safety/security domain [譯註：在虛擬化 (virtualization) 技術當紅的今日，保留原文更能加強注意力，以及一堆貌似不相關、實際卻環環相扣的技術之間的關聯性。限於篇幅，原文作者不打算探討]，另一個就是 real-time。<br />
+<br />
+<center><img src="http://0xlab.org/~jserv/rt-linux/BergerRTLinuxFig3.jpg" width="326" height="289" /><br />
+圖例 (三): Dual Kernel 途徑<br /></center>
+<br />
+目前最為顯著的兩個 real-time 社群為 RTAI 與 Xenomai。RTAI 追求技術上最低的 latency 實做，而 Xenomai 則更注重可攜性 (portability) 與可維護性，並在 (改變過的) Linux 架構下，提供可銜接既有 RTOS API 的 RTOS skins [譯註：Xenomai 與 RTAI 在 Linux kernel 尚缺乏有效的 real-time 機制 (遠在 PREEMPT-RT 機制提出前，就有頗多 dual kernel real-time Linux 實做) 時，引入類似 RTLinux 的 dual kernel 途徑，架空 Linux，並在底層實做一個 RTOS (具體來說，是透過虛擬的執行單元來實現，以避開 FSMlabs / WindRiver 的專利)，Xenomai 很成功地在這個機制上提供若干 RTOS skins 以相容於 WxWorks / pSOS 一類商業 RTOS APIs]。<br />
+<br />
+Both solutions will support PREEMPT-RT once it's fully in the mainline kernel. [譯註：這仍有爭議，譯者選擇不翻譯] 這一類的 dual kernel 途徑，儘管實做各異，但都對 Linux 核心做了「斧底抽薪」的修改，引入一個新的軟體元件 [譯註：也就是「真正」的 real-time 核心]，介於其上、真正的 Linux 核心，及其下的硬體之間。這麼做的目的就是自 Linux 核心中抽離 real-time 任務 (tasks)，如此一來，概念上就區分了 real-time 與 non real-time domain，而 GNU/Linux 實際上就是這個特製的 real-time 核心的 idle task。在 dual kernel 的設計中，non real-time domain [譯註：也就是傳統的 GNU/Linux 應用程式/process] 只會對 real-time domain 產生最小的衝擊。real-time 應用可運作於 user-space [譯註：如 Xenomai]，也能運作於 kernel-space [譯註：如 RTLinux」。<br />
+<br />
+If you go easy with system calls the performance of a real-time application in user space is similar to the one in kernel space and you have access to many more libraries. Following a dual kernel approach you might be able to use the best of both worlds by moving deterministic applications into the real-time kernel domain at the cost of throughput and the non real-time stuff into user space at the cost of determinism. [譯註：這段非常明顯，譯者忽略不譯]<br />
+<br />
+對 dual kernel 的途徑來說，最大的挑戰就是，無論實做如何多元，都很難整合到主流 GNU/Linux 的核心 [譯註：以及對應的 user-space 支援，如 glibc]。而，每兩個月就有核心版本釋出的狀況，更加劇 dual kernel 的維護難度，幾乎很難及時跟上主流的開發。<br />
+<br />
+另一方面，dual kernel 的途徑可在忽略 Linux 的部份設計的狀況 [譯註：如引入全新的 real-time 驅動程式模型，可完全達到 preemption 的要求]，直接去改善 latency 的問題，從而提供一個相容性的方案。舉例來說，Xenomai 2.5.0 可配合 Linux 核心版本從 2.4.25 到 2.6.34 以上。[譯註：譯者認為這個說法不精確，Xenomai 底層借助 adeos-ipipe 對 Linux 核心的修改，真正的「支援」版本則取決於後者 patch 跟進速度與 kernel API 的相容度]。<br />
+<br />
+<b>PREEMPT-RT 的未來會如何？</b><br />
+<br />
+目前，PREEMPT-RT 主要用於主流的硬體架構與 SMP 系統，而 PREEMPT-RT 的效能 [譯註：具體來說就是 latency，而非 throughput] 幾乎可與 dual kernel 設計相提並論 [譯註：但還是「接近」的等級]。其中一個原因是，dual kernel 可直接使用硬體的 locking 機制，這是較快且直覺的方式，但 dual kernel 對於多處理器 (SMP) 的支援不見得好。<br />
+<br />
+為了使 PREEMPT-RT 充分運作，你 (在 user-space) 也需要較新的 glibc 函式庫實做，搭配 priority inheritance 的支援。PREEMPT-RT 剛開始被用於不是過份嚴格的 real-time 系統，當然有潛力發展得更好，只要有合適的核心組態設定。請注意，現階段挑選合適的 PREEMPT-RT 核心組態不太容易。[譯註：有很大的問題卡在 Linux device driver，本段翻譯部份取自 sugl，特此感謝]<br />
+<br />
+<b>dual kernel 的未來呢？</b><br />
+<br />
+There are no user space dependencies. That's why besides mainstream processors also machines can be supported which do not have stable mainline real-time support and architectures which are not mainline yet. What I mean here are low end architectures which run for example uClinux on Blackfin and Nios2. As already mentioned above a migration path to PREEMPT-RT will be provided. [譯註：譯者覺得原文作者沒有談得很清楚，再次保留不譯]<br />
+<br />
+<b>結論</b><br />
+<br />
+real-time 的需求對於 GNU/Linux 越來越重要，但尚未有圓滿地解決現有需求的單一方案，原因是 GNU/Linux 過於複雜且龐大，在高速的發展過程中，要百分之百邁向 real-time 作業系統的設計，還是有巨大的維護成本。該留意的是，無論哪個方案，都得跟上每兩個月釋出新核心版本的社群開發速度。<br />
+<br />
+[譯註：為了行文的通暢，譯者更改前後文順序與部份語意] 正如 IBM Linux 技術中心的 Paul E McKenney 所發表的論文 "<a href="http://www.linuxsymposium.org/archives/OLS/Reprints-2008/mckenney-reprint.pdf">'Real Time' vs. 'Real Fast': How to Choose?</a>" 談到 real-time 系統的特性："A real-time system will pass a specified test suite."[2] 無論採用哪種方案，你應該妥善地準備符合真實需求的 test suite，特別是在低端的硬體平台中，當已完成功能的壓力測試後，你應該更專注於該應用的需求與行為表現，這時 test suite 的意義會更重要。就如稍早的提示，未來的開發會是在 PREEMPT_RT 與 dual kernel 解決方案之間挑選。<br />
+<br >
+參考資訊：<br />
+[1] Embedded Market Study 2010 - http://www.techonline.com/learning/webinar/224000228<br />
+[2] http://www.rdrop.com/users/paulmck/realtime/paper/RTvsRF.2009.09.30b.pdf<br />
+[3] Beautiful Code - O'Reilly Media, June 2007, ISBN: 978-0-596-51004-6<br />
+[4] documentation of GNU/Linux kernel configuration<br />
+http://www.kernel.org/pub/linux/kernel/projects/rt/patch-2.6.33.4-rt20.bz2<br />
+[5] RTAI : https://www.rtai.org/<br />
+[6] Xenomai : http://www.xenomai.org<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 February  5, 2011 11:57 PM
+
+<br /></span>
+
+</div>
+
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2164" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

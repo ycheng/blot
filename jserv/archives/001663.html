@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 清楚思維</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001662.html" title="訪客用哪些作業系統看 Blog 呢？" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001664.html" title="sushi.c" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001662.html">« 訪客用哪些作業系統看 Blog 呢？</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001664.html">sushi.c »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">May 20, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">清楚思維</h3>
+
+昨天 Cheyi 來信問到一個跟 IEEE Standard 754 Floating-Point 有關的問題，內容就不贅述，或許有空再來整理，而回信時，讓我想起之前在 Embedded.com 讀過的短文 [<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=186700638">Right-brained programming</a>]，作者 Niall Murphy 在業界耕耘許久，也發表過多篇技術文件，不過這篇短文不談深入的技術，而如標題所言，探討程式設計時該有的 "Right-brained"。<br>
+<br>
+除了圖學，Niall Murphy 對嵌入式系統的 RTOS 有深入的看法與經驗。即使在 32-bit 甚至是 64-bit CPU 風行的今日，還有很多應用採用 8-bit MCP，不乏消費性電子裝置，整體的軟體開發門檻降低了，但是關鍵性的程式設計還是存在許多技術性的議題。首先，Niall Murphy 用 DDJ 上 Robert D. Grappel 發表的文章 [<a href="http://www.ddj.com/article/printableArticle.jhtml?articleID=184410967">Rotating a Weather Map</a>] 作點題，乍看對圖片作旋轉動作似乎是每個研習過圖學的工程師都該熟悉的操作，何難之有？問題是，今天要處理的對象是低階的硬體 (486/25MHz Embedded PC) 上面的圖形資料庫，這的確是個挑戰，所以，Robert 發展了一個 in-place 的演算法，透過數學的技巧來作最佳化處理，而 Naill 則給了以下的眉批：<ul class="code" style="margin: 6px;">
+That was a perfect example of solving a problem backwards. Ask yourself, "If I had the answer, would I be able to discover the question?" Other mathematical challenges are amenable to this sort of approach. Finding the square root of a number is fiendishly complex. If you already had the answer, however, checking it by squaring it is a simple case of multiplying it by itself. So if we guess at the answer we can check it. If the guess is too large, the result of squaring it is larger than the original value. We can iteratively improve our guesses as we get the result of each trial.
+</ul>
+的確，我們不該捨近求遠，妥善使用既有的技術是相當重要的，而這正是「清楚思維」的第一步。<br>
+<br>
+再來，作者以其豐富的 RTOS 經驗，談到 watchdog timer 的設計與 multi-tasking 的考量，在他之前的文章 [<a href="http://www.embedded.com/2000/0011/0011feat4.htm">Watchdog Timers</a>] 做了很好的闡述，事實上，出發點只是很單純的動機，一個 system-wide 的 monitor 竟然會涉及潛在的致命問題，這讓許多嵌入式系統的開發者，會不自覺膽顫心驚。於是，Naill 用很簡單的話說明這個議題：<ul class="code" style="margin: 6px;">
+Whenever you're trying to establish a design limit, as well as asking what is the smallest that limit can be, remember to look at the other direction, in case the answer at that extreme might be more useful.
+</ul>
+這個說法在軟體工程的書籍也多次提過，基本上只是用詞的不同，然而，特別在 Realtime system 的領域，更是不可輕忽，就如之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001299.html">Priority inversion 簡介</a>] 所提，同樣是 watchdog timer 設計的效應，就讓 NASA 的火星探測計畫幾乎徹底失敗，面對這種災難性的錯誤，一個程式設計師怎能不三思「清楚思維」的重要性呢？<br>
+<br>
+接著就以許多人小時候玩過的 ZX Spectrum 遊戲為例，以這個僅有 48 kb 記憶體的硬體裝置來探討電腦遊戲設計上，必須做出的妥協，而事實也告訴我們，在十幾二十年前，當時的程式設計師就可做到的事情，反倒在今日卻常無法達到？不得不讓我們反省，是否具備「清楚思維」。<br>
+<br>
+後半的篇幅中，[Every fault is a fashion] 是最讓我有深刻感觸的地方，也跟 Cheyi 來信指教的問題有些關聯。以下節錄原文的描述：<ul class="code" style="margin: 6px;">
+Consider a voltage that corresponds to a value of 127.2 when converted to a digital value by an ADC. An 8-bit converter is only going to provide the value 127, since the decimal place is not supported by the converter. In a noise-free environment every reading will be 127. But if there's random noise the signal will vary, while still averaging 127.2. Successive readings would be 127 most of the time, but 128 will appear often enough to raise the average above 127. There's no decimal place in a single reading, but the average of multiple readings can have that decimal place. While we want to eliminate most noise, some of it is good for us.
+</ul>
+這簡單的文字並沒有高深的術語，何以讓我有深刻體悟呢？身處於電子數位化的時代，當我們使用任何一種消費性電子裝置時，實在會有超出「一日之所需，百工斯為備」的感觸，而數位與類比、連續與離散系統之間，並非存有鴻溝，卻是有巧妙的關聯性，之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001485.html">再探羅塞達碑石 : 連續時間系統與離散系統的橋樑</a>] 提過這之間，工程數學的種種「魔法」。特別在設計 device driver、instrumenting，或者是 signal controlling 時，ADC (類比數位轉換) 牽涉的議題，實在不容小覷，同時，也得考慮到數位系統本身精密度與離散性質，這些，都該是一個工程人員，最基本的「清楚思維」。<br>
+<br>
+[Back to basics] 與 [Keep thinking] 兩小節提到的內容，可說是 [<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=186700638">Right-brained programming</a>] 一文的核心概念。一般人覺得再簡單不過的語音信箱與留言系統，也充滿了學問，Niall 舉的例子相當清楚明暸，文中的技術細節原理很簡單，問題是，我們有「清楚思維」去思考嗎？<br>
+<br>
+當然，在高度分化的今日，事實上對於程式設計師的要求也變得多元，或許「清楚思維」的重要性只侷限特定領域，但是，沒有「清楚思維」卻讓我們困於應用的類型與技術的深度，而無法獲得進一步的成長，謹此自勉！<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 May 20, 2006 09:42 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1663" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

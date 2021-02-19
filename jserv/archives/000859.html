@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Window Manager 測試報告</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/000858.html" title="GCC 4.0 SSA" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/000860.html" title="ParaGUI + SDL_im 進行中文輸入" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/000858.html">« GCC 4.0 SSA</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/000860.html">ParaGUI + SDL_im 進行中文輸入 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 28, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Window Manager 測試報告</h3>
+
+<p>之前花了點時間 (還不少)，把 [<a href="http://xwinman.org/">Window Managers for X</a>] 所羅列的 Window Managers 都測試過了，除了幾個 link 失效的以外，所以我試著記錄一部份測試心得，最後再來整理完整的報告。</p>
+
+<p>這裡著重的是非主流的 Window Managers，真正使用的朋友大概不多，但是卻非常有特色。</p>
+
+<p><a href="http://pekwm.org"><b>pekwm</b></a> (連結失效)<br />
+衍生自 aewm++，但是加入不少有趣的特徵。基本上與 twm 操作還頗類似的，可是能夠調整的幅度頗高，速度又是一流。</p>
+
+<p><a href="http://www.qvwm.org"><b>QVWM</b></a><br />
+非常著名的 WM，模仿 Windows 95/98 外觀，但是已經停頓發展，我跟幾位朋友試著接手維護，可參考 [<a href="http://jserv.sayya.org">我的首頁</a>] 的 Projects --> Qvwm</p>
+
+<p><a href="http://efsane.ozler.net/maineng.php"><b>Efsane II</b></a><br />
+. 以 C++ 撰寫，程式架構清楚<br />
+. 實作 EWMH (部分)<br />
+. 提供 GUI 設定工具<br />
+. 已不再維護</p>
+
+<p><a href="http://b4step.free.fr/"><b>B4Step</b></a><br />
+. Theme 支援<br />
+. 與同等 footprint 的 WM 相比，功能完整度高<br />
+. 豐富的設定</p>
+
+<p><a href="http://www.informatik.hu-berlin.de/~sperling/prog/swm.html"><b>SWM</b></a><br />
+. 完整度高<br />
+. 很適合 PDA 的小畫面<br />
+. Theme 支援<br />
+. 記憶體用量少<br />
+sWM 相當適合 handheld devices，其 code size 大約有三種等級：12k、32k，以及 42 kb，核心非常精簡，而且很容易作 build-time configuration，就像 Linux Kernel 可以 make menuconfig 。sWM 提供很多內部屬性與功能的選項，透過這些組合，可以很快建構出合適的 Window Manager。在 sWM 下開任何 X Client 就真的「繃」出來那麼快，此外，sWM 針對 desktop update 作了很多 fast algorithm 的實作，所以呈現的效果相當理想。還有，不同於其他 WM 需要額外的輔助程式來實作 panel 與 desktop icon/shortcut 的功能，sWM 提供內建的 panel bar，算是堪用。</p>
+
+<p>說完好話後，開始分析缺點。<br />
+1. 不支援 EWMH 與 NET_WM<br />
+2. ICCCM 支援度不佳</p>
+
+<p><a href="http://projects.o-hand.com/matchbox/"><b>Matchbox</b></a><br />
+很精簡但是卻支援很多 FreeDesktop.org 規格，模組化設計良好，如果只談核心的 WM，支援 Pango / Xft，也可選擇支援 GConf，內建 Composite manager。此外，目前跟 Matchbox 作者互動還不錯，很多 idea 與 patch 很快就納入，所以當作參考的 codebase 很理想 (甚至可以 cross-development)，支援 theme，但是受限於 handheld 考量，只提供部分的設定，若作為 Desktop 使用的話，Matchbox 需要一些 working style 的 fine tune 才行。</p>
+
+<p><a href="http://fishsoup.net/blog/2004/11/01/"><b>Luminocity</b></a><br />
+GTK+ 的設計者 Owen Taylor 所作的新 Window Manager/Compositing Manager with GL output，非常卓越的架構與設計，可以支援 FreeDesktop/Xorg 大部分嶄新的規格，比方說 XFIXES、SYNC、DAMAGE、Composite、XTEST，以及 GLX 等 extensions，當然也要來欣賞一下其 [<a href="http://fishsoup.net/blog/2004/12/03/">Live Pager</a>]。</p>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 28, 2005 07:51 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>不知在 Server (建構伺服服務) 的環境下, 大大建議搭配那個Window Manager 較快!? 因為有時會碰上客戶裡面....就連 text mode 都會怕的 MIS ....<br />
+</p>
+<span class="comments-post">由 <a href="http://asjh.idv.tw">wentai</a> 發表於</MTIfNonEmpty> April  2, 2005 11:17 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

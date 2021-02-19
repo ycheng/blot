@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 避免寫出釀造災難的 C/C++ 程式</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001833.html" title="程式語言的啟發性與科學史" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001835.html" title="LxDE 羽量級桌面下載" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001833.html">« 程式語言的啟發性與科學史</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001835.html">LxDE 羽量級桌面下載 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">November 06, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">避免寫出釀造災難的 C/C++ 程式</h3>
+
+Embedded.com 刊載 Jack Ganssle 的文章 [<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=193500806">MISRA minimizes mishaps</a>]，淺顯易懂但又讓人不得不重視   C/C++ 程式設計的細節。文章以 [<a href="http://www.ioccc.org/">International Obfuscated C Code Contest</a>] 2004 年得獎者的「傑作」作為「難以維護的程式碼」範例，因為文章排版不甚清楚，這裡重新引用如下：[<a href="http://www.au.ioccc.org/2004/hoyle.c">出處</a>]<ul>
+<pre class="code" style="margin: 6px;"><span class="keyword">#include</span> &lt;stdio.h><span class="keyword">
+#include</span> &lt;stdlib.h><span class="keyword">
+#include</span> &lt;math.h>
+&nbsp;<span class="keyword">
+#define</span> _			;<span class="keyword">double</span><span class="keyword">
+
+#define</span> <span class="keyword">void</span>			x,x<span class="keyword">
+#define</span> <span class="keyword">case</span>(<span class="keyword">break</span>,<span class="keyword">default</span>)	<span class="keyword">break</span>[O]:<span class="keyword">default</span>[O]:<span class="keyword">
+
+#define</span> <span class="keyword">switch</span>(<span class="keyword">bool</span>) 		;<span class="keyword">for</span>(;x&lt;<span class="keyword">bool</span>;<span class="keyword">
+#define</span> <span class="keyword">do</span>(<span class="keyword">if</span>,<span class="keyword">else</span>)		inIine(<span class="keyword">else</span>)><span class="keyword">int</span>#<span class="keyword">#<span class="keyword">if</span></span>?<span class="keyword">
+
+#define</span> <span class="keyword">true</span>			(--<span class="keyword">void</span>++)<span class="keyword">
+#define</span> <span class="keyword">false</span>			(++<span class="keyword">void</span>--)
+&nbsp;
+<span class="keyword">char</span>*O=<span class="literal">" &lt;60>!?\\\n"</span>_ doubIe[010]_ int0,int1 _ Iong=0 _ inIine(<span class="keyword">int</span> eIse){<span class="keyword">int</span>
+
+O1O=!O _ l=!O;<span class="keyword">for</span>(;O1O&lt;010;++O1O)l+=(O1O[doubIe]*pow(eIse,O1O));<span class="keyword">return</span> l;}<span class="keyword">int</span>
+main(<span class="keyword">int</span> booI,<span class="keyword">char</span>*eIse[]){<span class="keyword">int</span> I=1,x=-*O;<span class="keyword">if</span>(eIse){<span class="keyword">for</span>(;I&lt;010+1;I++)I[doubIe-1]
+=booI>I?atof(I[eIse]):!O <span class="keyword">switch</span>(*O)x++)abs(inIine(x))>Iong&amp;&amp;(Iong=abs(inIine(x
+)));int1=Iong;main(-*O>>1,0);}<span class="keyword">else</span>{<span class="keyword">if</span>(booI&lt;*O>>1){int0=int1;int1=int0-2*Iong/0
+[O]<span class="keyword">switch</span>(5[O]))putchar(x-*O?(int0>=inIine(x)&amp;&amp;<span class="keyword">do</span>(1,x)<span class="keyword">do</span>(0,<span class="keyword">true</span>)<span class="keyword">do</span>(0,<span class="keyword">false</span>)
+
+<span class="keyword">case</span>(2,1)<span class="keyword">do</span>(1,<span class="keyword">true</span>)<span class="keyword">do</span>(0,<span class="keyword">false</span>)6[O]<span class="keyword">case</span>(-3,6)<span class="keyword">do</span>(0,<span class="keyword">false</span>)6[O]-3[O]:<span class="keyword">do</span>(1,<span class="keyword">false</span>)
+
+<span class="keyword">case</span>(5,4)x?booI?0:6[O]:7[O])+*O:8[O]),x++;main(++booI,0);}}}</pre></ul>
+果然讓人深感挫折，無法理解這其實是個多項式描繪製圖程式，拜讀的同時，不禁脫口而出「此曲只應天上有，人間哪得幾回聞」，凡人如我者，還是安分寫「老嫗皆解」的程式吧。<br>
+<br>
+話是這麼說，不過即便「老嫗皆解」，還是可能錯誤百出。[<a href="http://www.misra.org.uk/">MISRA - the Motor Industry Software Reliability Association</a>] 針對產業界軟體可靠性與穩定度，提出一系列的方針與準則，而針對 C Programming Language 的部份則稱為 "MISRA-C"。[<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=193500806">MISRA minimizes mishaps</a>] 以 "MISRA-C" 的規範為基礎，標示以下五個原則：<ul>
+<li>C is incompletely specified. How does <b>process(j++, j);</b> behave? And exactly what is the size of an int? How astounding that such a basic component of any program is undefined!</li>
+<li>Developers make mistakes, and the language does little to point out many of the even obvious screwups. It's so easy to mix up "=" and "==."</li>
+<li>Programmers don't always have a deep knowledge of the language and so make incorrect assumptions. Compilers have bugs, or purposely deviate from the ANSI standard. Most 8051 compilers, for instance, have run-time packages that take and return single precision results for trig functions instead of the prescribed doubles.</li>
+<li>C offers little intrinsic support for detecting run-time errors.</li>
+</ul>
+當然，上述的議題不全然只是「原則」，也可用以解釋為何我們所用的軟體充滿陷阱、安全性漏洞，或者致命的地雷。MISRA-C 羅列若干項概念性的條款，建議程式設計者應該留意，不過有些概念則有待商榷或釐清，比方說：<ul class="code" style="margin: 6px;">
+*  Rule 20.4: Dynamic heap memory allocation shall not be used.</ul>
+啊？那我們該如何表示一些常見的資料結構或演算法呢？Jack Ganssle 做了補充：<ul class="code" style="margin: 6px;">
+This rule also specifically outlaws the use of library functions that dynamically allocate memory. Admittedly, malloc() and its buddies can wreak havoc on deterministic systems that never get cleaned up via a reboot. But it's a whole lot of work to recode libraries that employ these common functions if you even know how the library routines work. What fun we might have stripping all of the malloc()s and free()s from embedded Linux! That would be a jobs-creation program for programmers. Let's see if we can get it stashed in amongst the other 15,000 items of pork Congress awards to their supporters each year.
+</ul>
+避免釀造巨大的災難，最好的方法就是防範於未然。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 November  6, 2006 08:53 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>FYI: 老嫗能解    :P<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;duan&#64;duan&#46;idv&#46;tw">duan</a> 發表於</MTIfNonEmpty> November  7, 2006 09:49 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

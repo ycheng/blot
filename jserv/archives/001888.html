@@ -1,0 +1,336 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 藝術與核心</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001886.html" title="演講：深入淺出 Hello World Part III (台北場次)" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001889.html" title="多餘的話" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001886.html">« 演講：深入淺出 Hello World Part III (台北場次)</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001889.html">多餘的話 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 24, 2007</h2>
+
+<div class="blogbody">
+
+<h3 class="title">藝術與核心</h3>
+
+以前修過一些通識課程，不能說沒有收穫，但現在只記得課程名稱，大概就是「藝術與人生」或「藝術導論」一類的，具體內容大概忘光了，然，這些訓練是否能讓工學院的學生，發揮藝術素養推廣到其他領域，值得商榷，但 Linux Kernel hackers 做到了。<br />
+<br />
+前幾天在 IRC 上聊到 LKML (Linux Kernel Mailing-List) 有一份由 Rusty Russell 所提交的 patch：[<a href="http://lkml.org/lkml/fancy/2007/3/9/10">Use more gcc extensions in the Linux headers</a>]，實在令人讚嘆！在探討這個 patch 之前，稍早在 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001876.html">sizeof 在語言層面的陷阱</a>] 提及 C/C++ 程式語言可透過 sizeof 運算子來取得陣列的元素個數，比方說 macro 定義：<pre class="code" style="margin: 6px;">
+#define getNumberInArray(a) \
+	(sizeof(a) / sizeof(a[0]))
+</pre>
+想法很簡單，但充斥許多陷阱，首先 macro 根本不能作型態檢查，只是笨笨的代入，當然，能夠從事低階開發者應該不至於犯下這類會造成 pre-processor 無法正確運作的小錯誤。但這類名如 getNumberInArray 的 macro 總是讓人誤解，很直觀就可能把 char * 代入，而非正確的 char []，如此一來，造成的錯誤就相當嚴重 (實際計算一次就知道)，在之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001397.html">C-style 字串的最佳化</a>] 即提過這兩者表示在本質上的落差。<br />
+<br />
+回過來看 Rusty Russell 提交的 patch：<pre class="code" style="margin: 6px;">
+diff -r f0ff8138f993 include/linux/kernel.h
+--- a/include/linux/kernel.h	Fri Mar 09 16:40:25 2007 +1100
++++ b/include/linux/kernel.h	Fri Mar 09 16:44:04 2007 +1100
+@@ -35,7 +35,9 @@ <span class="keyword">extern</span> <span class="keyword">const</span> <span class="keyword">char</span> linux_proc_banner[];<span class="keyword">
+ #define</span> ALIGN(x,a)		__ALIGN_MASK(x,(typeof(x))(a)-1)<span class="keyword">
+
+ #define</span> __ALIGN_MASK(x,mask)	(((x)+(mask))&amp;~(mask))
+&nbsp;
+-<span class="keyword">#define</span> ARRAY_SIZE(x) (<span class="keyword">sizeof</span>(x) / <span class="keyword">sizeof</span>((x)[0]))
++<span class="keyword">#define</span> ARRAY_SIZE(arr) (<span class="keyword">sizeof</span>(arr) / <span class="keyword">sizeof</span>((arr)[0]) \
++	+ <span class="keyword">sizeof</span>(typeof(<span class="keyword">int</span>[1 - 2*!!__builtin_types_compatible_p(typeof(arr), \
++		 typeof(&amp;arr[0]))]))*0)<span class="keyword">
+
+ #define</span> FIELD_SIZEOF(t, f) (<span class="keyword">sizeof</span>(((t*)0)->f))<span class="keyword">
+ #define</span> DIV_ROUND_UP(n,d) (((n) + (d) - 1) / (d))<span class="keyword">
+ #define</span> roundup(x, y) ((((x) + ((y) - 1)) / (y)) * (y))
+</pre>
+看來我們一廂情願的簡單寫法被推翻，改為上述由三行組成的 macro 定義。寫個簡單的程式來看其運作的情況：<pre class="code" style="margin: 6px;">
+<span class="keyword">#include</span> &lt;stdio.h><span class="keyword">
+#define</span> ARRAY_SIZE(arr) \
+  (<span class="keyword">sizeof</span>(arr) / <span class="keyword">sizeof</span>((arr)[0]) \
+  + <span class="keyword">sizeof</span>(typeof(<span class="keyword">int</span>[1 - \
+                      2*!!__builtin_types_compatible_p(typeof(arr), \
+                                                       typeof(&amp;arr[0]))]))*0)
+<span class="keyword">int</span> main()
+{
+        <span class="keyword">char</span> array[50];
+        <span class="keyword">char</span> *ptr = NULL;
+
+        printf(<span class="literal">"array size of array = %d\n"</span>, ARRAY_SIZE(array));
+        printf(<span class="literal">"array size of ptr = %d\n"</span>, ARRAY_SIZE(ptr));
+        <span class="keyword">return</span> 0;
+}
+</pre>
+我們特意把 char * 代入 ARRAY_SIZE 中，看看編譯器會怎麼處理：：<pre class="code" style="margin: 6px;">
+$ gcc -o sizeof-new sizeof-new.c 
+sizeof-new.c: In function 'main':
+sizeof-new.c:13: error: size of array 'type name' is negative
+</pre>
+"typeof" 是 C99 提出的新運算子，簡單定義就是 "referring to the type of an expression"，在 Linux kernel 中也做了相容舊編譯器的 macro，不過這不是本文的重點。第十三行就是 ARRAY_SIZE(ptr)，編譯器阻止了 typeof 的操作，因為得到非正整數長度的陣列，也就是說，"1 - 2 * *!!__builtin_types_compatible_p(typeof(arr), typeof(&arr[0]))" 表示式運算結果為 -1。看到 "__builtin_" 開頭的函式就知道，一定又是 GCC extensions，而 __builtin_types_compatible_p 用以判斷一個變數的類型是否為某指定的類型，若是則回傳 1，反之傳回 0，詳情可參考 GCC 文件 [<a href="http://gcc.gnu.org/onlinedocs/gcc-3.3.1/gcc/Other-Builtins.html">Other built-in functions provided by GCC</a>]，以下節錄重點：<ul  class="code" style="margin: 6px;">
+The type int[] and int[5] are compatible. On the other hand, int and char * are not compatible, even if the size of their types, on the particular architecture are the same. Also, the amount of pointer indirection is taken into account when determining similarity. Consequently, short * is not similar to short **. Furthermore, two types that are typedefed are considered compatible if their underlying types are compatible.
+</ul>
+所以我們可透過這樣的機制來斷定 char * 與 char [] 的不相容型態，所以我們理解方括號 (也就是 "[" 與 "]" 所包圍的表示式) 中的奧義，那麼，為何最後要乘以零呢？考量到編譯器的語意分析，這個技巧可避免可能的編譯影響，又，__builtin_types_compatible_p 總是回傳 0 或 1，所以上述的 "!!" 事實上可忽略，"!!" 其實就是兩個 "!" (not) 運算子，這也是另一個技巧，想一想 !(! 100) 與 !(! -100) 的輸出就知道為何了，這可確保輸出必定是 0 或 1 二元結果。<br />
+<br />
+因為這些組合實在頗為「花俏」，Linus Torvalds 就 [<a href="http://lkml.org/lkml/fancy/2007/3/9/18">回覆</a>] 說：<ul class="code" style="margin: 6px;">
+Rusty, that's a work of art.<br />
+<br />
+However, I would suggest that you never show it to anybody ever again. I'm sure that in fifty years, it will be worth much more. So please keep it tightly under wraps, to keep people from gouging their eyes out^W^W^W^W^W^W^W make a killing in the art market. 
+</ul>
+嗯，"that's a work of art."，多麼奇妙的藝術啊！我們上了一堂名為「藝術與核心」的課程 *笑*<br />
+<br />
+喔，後面的討論也很有趣，除了中間考慮 Intel C/C++ compiler 的 [<a href="http://lkml.org/lkml/fancy/2007/3/10/278">相容性</a>] 外，其他開發者還戲謔的加入 "GCC is awesome." 與 "GCC leaves me speechless." 一類的註解，Randy Dunlap 還正經的補充：<ul class="code" style="margin: 6px;">
+"awesome" can mean "inspiring awe or admiration or wonder" (amazing) or it can mean "awful" (as in terrifying). 8)
+</ul>
+事實上，我們也可將上述 macro 改寫為：<pre class="code" style="margin: 6px;">
+<span class="keyword">#define</span> ARRAY_SIZE(arr) \
+    (<span class="keyword">sizeof</span>(arr) / <span class="keyword">sizeof</span>(((typeof(arr)){})[0]))
+</pre>
+簡單多了，先不看裡面的「魔法」(別盯著 "{" 與 "}" 猛看，是的，就是那樣)，我們寫個小程式測試：<pre class="code" style="margin: 6px;">
+<span class="keyword">#include</span> &lt;stdio.h><span class="keyword">
+#define</span> ARRAY_SIZE(arr) \
+   (<span class="keyword">sizeof</span>(arr) / <span class="keyword">sizeof</span>(((typeof(arr)){})[0]))
+
+<span class="keyword">int</span> main()
+{
+        <span class="keyword">char</span> array[50];
+        <span class="keyword">char</span> *ptr = NULL;
+
+        printf(<span class="literal">"array size of array = %d\n"</span>, ARRAY_SIZE(array));
+        printf(<span class="literal">"array size of ptr = %d\n"</span>, ARRAY_SIZE(ptr));
+        <span class="keyword">return</span> 0;
+}
+</pre>
+同樣也是拿來編譯，看看有什麼輸出：<pre class="code" style="margin: 6px;">
+$ gcc -c sizeof-new2.c
+sizeof-new2.c: In function 'main':
+sizeof-new2.c:10: error: empty scalar initializer
+sizeof-new2.c:10: error: (near initialization for '(anonymous)')
+</pre>
+一言以蔽之，這還是「魔法」，只是工程意味比較重，沒有上面的作法來得「藝術」，但都達到避免 pointer 代入 macro 的功能。作個簡化的程式，用以解說上面的作法：<pre class="code" style="margin: 6px;">
+<span class="keyword">#include</span> &lt;stdio.h>
+<span class="keyword">int</span> main()
+{
+        <span class="keyword">char</span> array[10];
+        printf(<span class="literal">"Magic=%d\n"</span>, <span class="keyword">sizeof</span>((typeof(array)[10]) { <span class="literal">"\0"</span> }));
+        <span class="keyword">return</span> 0;
+}
+</pre>
+編譯並執行：<pre class="code" style="margin: 6px;">
+$ gcc -Wall sizeof-new2.c
+$ ./a.out
+Magic=100
+</pre>
+這裡用到一個 GCC extension，可直接作 assignment，當我們以 typeof 運算子取得該型態後，隨即建立 10 個單元的陣列，並賦予其初始值。事實上我們還可進一步簡化 '{ "\0" }' 為 "{}"，然後將第二個 [10] 移去，就接近上述的表示法。分別以 char [] 與 char * 代入時，可發現 GCC 回報不同的訊息，前者可通過編譯 (符合  GCC extension)，後者則有 "empty scalar initializer" 的錯誤。<br />
+<br />
+當然，這只是冰山一角，Linux kernel 裡面尚有無窮盡的「藝術」，值得我們去探討。美學大師蔣勳曾說過：「美的本質是創造力」，我想這是 Linux 迷人之處，透過自由開放的發展，將創造力激發得淋漓盡致。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March 24, 2007 12:42 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>真是篇易懂好讀又精彩的文章! </p>
+<span class="comments-post">由 <a href="http://penkia.org">penk</a> 發表於</MTIfNonEmpty> March 24, 2007 03:24 AM</span>
+</div>
+<div class="comments-body">
+<p>我寫了一篇文章，以避免使用 extension<br />
+http://heaven.branda.to/~thinker/GinGin_CGI.py/show_id_doc/236<br />
+</p>
+<span class="comments-post">由 <a href="http://heaven.branda.to/~thinker/GinGin_CGI.py">Thinker</a> 發表於</MTIfNonEmpty> March 24, 2007 03:07 PM</span>
+</div>
+<div class="comments-body">
+<p>oops, 我沒聽過</p>
+
+<p>> "typeof" 是 C99 提出的新運算子</p>
+
+<p>翻了翻幾個 C99 的文件，沒有提到 typeof 過，<br />
+雖然這一直是我很想要有的東西。在 C++ 中，<br />
+boost 有實作一個 macro 叫 BOOST_TYPEOF<br />
+http://www.boost.org/regression-logs/cs-win32_metacomm/doc/html/typeof.html<br />
+（在寫 template metaprogramming 時很有用）</p>
+
+<p>另外我 google 了一下找到這個：</p>
+
+<p>http://tigcc.ticalc.org/doc/gnuexts.html#SEC69</p>
+
+<p>所以看起來是 gcc extension.<br />
+我個人對 C 和 gcc extension 都沒有研究過，<br />
+所以剛看到時覺得有點詫異 :)</p>
+<span class="comments-post">由 <a href="http://blog.godfat.idv.tw/">godfat 真常</a> 發表於</MTIfNonEmpty> March 24, 2007 03:57 PM</span>
+</div>
+<div class="comments-body">
+<p>To godfat,</p>
+
+<p>感謝指正，typeof 的確不在 final C99 中，所以前文描述有誤，但出現於 C Standard Committee Draft 內容，沒記錯的話，我曾讀到 IBM 與 Cygnus Solutions (現為 RedHat) 遞交的提案。</p>
+
+<p>To Thinker,</p>
+
+<p>Excellent! 的確可以這麼解，非常感謝。</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> March 24, 2007 07:39 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1888" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 針對 data page 的 Copy-on-Write/XIP</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001820.html" title="COSCup 2006" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001822.html" title="FOX Toolkit 與中文支援 (2)" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001820.html">« COSCup 2006</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001822.html">FOX Toolkit 與中文支援 (2) »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">October 23, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">針對 data page 的 Copy-on-Write/XIP</h3>
+
+CE Linux Forum 的 wiki 上，有一篇由 Panasonic Mobile Communications Co., Ltd. 所提出的新技術 [<a href="http://tree.celinuxforum.org/CelfPubWiki/DataReadInPlace">Data Read-In-Place</a>]，不同以往針對 Linux kernel 的大幅修改，這個作法只修改了 dynamic loader (ld-linux.so)。在描述這個作法之前，先來觀察 ELF 執行檔的 .data section 在執行時期的行為，參考下圖：<br>
+<center><img src="http://jserv.sayya.org/kernel/data-state-1.png"></center><br>
+對多數應用程式來說，Dynamic loader 必須將 .data section 予以 linear mapped 至 virtual address 中，於是我們可以發現，當進行 read 或 write 動作時，行為如下圖：<br>
+<center><img src="http://jserv.sayya.org/kernel/data-state-2.png"></center><br>
+而 Application-level XIP (eXecution-In-Place) 會希望 .data section 能永久保存於 Flash 儲存裝置中，除非 .data section 本身發生變化 (被 write)，所以 [<a href="http://tree.celinuxforum.org/CelfPubWiki/DataReadInPlace">Data Read-In-Place</a>] 提出一個簡單有效的機制，將原本 mmap 的範圍從：<ul><pre class="code" style="margin: 6px;">
+mmap(..., PROT_READ | PROT_WRITE);
+</pre></ul>
+修改為：<ul><pre class="code" style="margin: 6px;">
+mmap(..., PROT_READ);
+mprotect(..., PROT_READ | PROT_WRITE);
+</pre></ul>
+當進行 mmap ELF segment 時，捨棄 PROT_WRITE 這個 bit，這使得 cramfs 行為變成「如同 XIP .text 一般，去 mapping 每個在 .data section 的 page 到 ROM pages」，而透過 mprotect 去設定 PROT_WRITE，這使得：<ul>
+<li>vm_area_struct 允許作 write</li>
+<li>PTE (page table entry) 的 write 權限則被抑制</li>
+</ul>
+換言之，我們已經實做了 CoW (Copy-on-Write)，這之間微妙的變化，可參考之前的翻譯文章 [<a href="http://blog.linux.org.tw/~jserv/archives/001461.html">探索 Linux Memory Model (上)</a>] 與 [<a href="http://blog.linux.org.tw/~jserv/archives/001463.html">探索 Linux Memory Model (下)</a>]。在上述機制引入後，系統呈現的效果如下圖：<br>
+<center><img src="http://jserv.sayya.org/kernel/data-state-3.png"></center><br>
+Panasonic Mobile Communications Co., Ltd. 提出的方法，在最低程度的修改下，實做 In-Place 的 data read，依據官方說法：<ul>
+"The total effect for one system measured by Panasonic was a reduction of 26% of the page cache allocated to processes, when the product was in the stand-by state."
+</ul>
+不過，這也引來額外的 ROM access latency，會導致程式執行時間拉長，對一般的消費性電子裝置來說是可以接受的 (single executable)。wiki 上提供的 patch 似乎不太完整，所以我弄了新 patch：[<a href="http://jserv.sayya.org/kernel/glibc-2.3.2-DRIP.patch">glibc-2.3.2-DRIP.patch</a>]，加入 [<a href="http://www.openembedded.org/">OpenEmbedded</a>] 一類的工具中即可。<br>
+<br>
+cramfs 的 XIP 有許多可最佳化的空間，或許有機會等某個產品設計完畢後，可試著整理，而我也開始觀察 [<a href="http://axfs.sourceforge.net/">AXFS - Advanced XIP File System</a>] 的實做，相關的討論可見 LKML [<a href="http://www.ussg.iu.edu/hypermail/linux/kernel/0605.0/0612.html">RFC: Advanced XIP File System</a>]。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 October 23, 2006 10:07 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>在偶然的機會下看到了你的 blog<br />
+因為本人也是一個 Linux 的使用者及支持者<br />
+我在公司大部分的時間是在研究以及支援 oprofile, perfmon2, systemtap 之類的 performance tools.<br />
+所以想跟你打聲招呼 </p>
+
+<p>看到你在軟體方面的興趣非常廣<br />
+從 kernel, executable format, 到 window manager<br />
+都能看到你的高見<br />
+不知道你有沒有打算或曾經寫過如何成為一個 hacker 之類的文章<br />
+或許能夠激發更多青年學子能夠投入 open source  <br />
+軟體開發的行列</p>
+
+<p><br />
+ </p>
+<span class="comments-post">由 <a href="mailto&#58;jasonyeh0098&#64;gmail&#46;com">Jason</a> 發表於</MTIfNonEmpty> October 26, 2006 09:10 AM</span>
+</div>
+<div class="comments-body">
+<p>To Jason,</p>
+
+<p>感謝指教，希望能討論與分享技術議題。至於說「如何成為 Hacker」，我絕對是沒資格沾上邊，況且 esr ( http://catb.org/esr/ ) 早已寫過一系列的文章。</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> October 26, 2006 07:45 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

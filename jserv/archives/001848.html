@@ -1,0 +1,335 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 使用 coroutine 實做 user-level thread</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001847.html" title="新書廣告：次世代 Linux － Ubuntu 玩全手冊" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001849.html" title="使用 GNU 工具作為軟體開發基本工具 " />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001847.html">« 新書廣告：次世代 Linux － Ubuntu 玩全手冊</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001849.html">使用 GNU 工具作為軟體開發基本工具  »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">December 03, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">使用 coroutine 實做 user-level thread</h3>
+
+Donald E. Knuth 的經典著作《The Art of Computer Programming》提到 coroutine 這個自 1960 年代即現身的多工實做技術，原理相當單純，在多數的文獻中會以 "yield" 來闡述，但不免令人困惑。coroutine 的 "yield" 是屬於程式語言層面，透過特定技巧或機制，讓原本循序執行的陳述指令，得以做出交錯執行的結果，而 multi-threading 的 "yield" 則偏重於系統層面 (如 CPU resource)，簡單來說，該如何一方面允許多 thread 並行，又能適當規劃個別單元對系統資源的使用。<br>
+<br>
+拜讀 Simon Tatham 一篇經典文章 [<a href="http://www.chiark.greenend.org.uk/~sgtatham/coroutines.html">Coroutines in C</a>]，獲益良多，作者以 run-length decompression 為例，探討 coroutine 技巧可如何大幅改善原本的設計流程，如此的技巧遍及多種領域，像是知名的 SSH client PuTTY 就大量使用。<br>
+<br>
+最佳的理解方式就是找個主題來驗證我們的認知，所以我試著在 Linux 上模擬一個 user-level thread system，以下是實做程式碼：<pre class="code" style="margin: 6px;"><span class="keyword">#include</span> &lt;stdio.h&gt;<span class="keyword">                                                                                  
+#include</span> &lt;unistd.h&gt;
+<span class="keyword">
+#define</span> THREAD_INTERVAL 500<span class="keyword">
+#define</span> cr_start() \
+        <span class="keyword">static</span>
+<span class="keyword">int</span> __s = 0; \
+        <span class="keyword">switch</span> (__s) { \
+          <span class="keyword">case</span> 0:<span class="keyword">
+#define</span> cr_yield \
+          { __s = __LINE__; \
+            usleep(THREAD_INTERVAL); \
+            <span class="keyword">return</span>; \
+          <span class="keyword">case</span> __LINE__: ; \
+          }<span class="keyword">
+#define</span> cr_end() \
+        } __s = 0;
+<span class="keyword">static</span> <span class="keyword">int</span> condition = 1;
+
+<span class="keyword">static</span> <span class="keyword">void</span> user_thread_1()
+{
+        cr_start();
+
+        <span class="keyword">for</span> ( ; ; ) {
+                <span class="comment">/* do something */</span>
+                printf(<span class="literal">"Run %s\n"</span>, __FUNCTION__);
+                cr_yield;
+        }
+
+        cr_end();
+}
+
+<span class="keyword">static</span> <span class="keyword">void</span> user_thread_2() 
+{
+        cr_start();
+
+        <span class="keyword">for</span> ( ; ; ) {
+                <span class="keyword">if</span> (condition) {
+                        <span class="comment">/* do something conditional */</span>
+                        printf(<span class="literal">"Run %s - (1)\n"</span>, __FUNCTION__);
+                        cr_yield;
+                }
+
+                <span class="comment">/* do something */</span>
+                printf(<span class="literal">"Run %s - (2)\n"</span>, __FUNCTION__);
+                condition = !condition;
+                cr_yield;
+        }
+
+        cr_end();
+}
+
+<span class="keyword">int</span> main() 
+{
+        <span class="keyword">for</span> ( ; ; ) {
+                user_thread_1();
+                user_thread_2();
+        }
+        <span class="keyword">return</span> 0;
+}</pre>
+一般的 function/method invocation 是 context switching 的行為 (注意：這裡的 context switching 與作業系統的術語不直接對應，而是強調 stack-based operation)，而 coroutine 最重要的想法就是保持上一次的 context，所以常用的實做技巧就是透過 "generator" 來實現 coroutine 中對 "yield" 的認知："yield = context saver + jump"。由上面的程式碼列表可見，我們透過 C Macro 簡化細節以吻合 coroutine 的「表徵」，同時也可看到如此模擬出 thread scheduler 的行為，換言之，這是「合作式多工」的基礎概念。<br>
+<br>
+以下為上述程式碼之執行結果：<pre class="code" style="margin: 6px;">
+$ ./user-thread
+Run user_thread_1
+Run user_thread_2 - (1)
+Run user_thread_1
+Run user_thread_2 - (2)
+Run user_thread_1
+Run user_thread_2 - (2)
+Run user_thread_1
+Run user_thread_2 - (1)
+Run user_thread_1
+Run user_thread_2 - (2)
+Run user_thread_1
+Run user_thread_2 - (2)
+Run user_thread_1
+Run user_thread_2 - (1)
+...
+</pre>
+而程式碼列表中的 usleep 則確保有機會透過 Ctrl-C 或互動式操作結束此程式，避免無謂的 busy-waiting。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 December  3, 2006 01:23 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>interesting!<br />
+我知道python中有引入yield來作generator，<br />
+不過倒是還不太看到更廣泛的用途…</p>
+<span class="comments-post">由 <a href="mailto&#58;kylinx&#64;gmail&#46;com">k3</a> 發表於</MTIfNonEmpty> December  3, 2006 11:17 PM</span>
+</div>
+<div class="comments-body">
+<p>一個coroutine的實作叫Protothreads --  http://www.sics.se/~adam/pt/</p>
+<span class="comments-post">由 <a href="mailto&#58;yclee2006&#64;gmail&#46;com">jeul</a> 發表於</MTIfNonEmpty> December 11, 2006 04:46 PM</span>
+</div>
+<div class="comments-body">
+<p>这个小程式跟jserv兄上面写的一样，就是main中的判断逻辑稍微麻烦点，但是去掉了for-loop:</p>
+
+<p>#include <br />
+#include <br />
+#include </p>
+
+<p>static jmp_buf  jmpbuf_th0;<br />
+static jmp_buf  jmpbuf_th1;</p>
+
+<p>static void thread_0()<br />
+{<br />
+        printf("%s: 0\n", __FUNCTION__);<br />
+        sleep(1);<br />
+        longjmp(jmpbuf_th0, 1);<br />
+}</p>
+
+<p>static void thread_1()<br />
+{<br />
+        printf("%s: 0\n", __FUNCTION__);<br />
+        sleep(1);<br />
+        longjmp(jmpbuf_th1, 1);<br />
+}</p>
+
+<p><br />
+int main()<br />
+{<br />
+        int rc0, rc1 = 0;</p>
+
+<p>entry_thread_0:<br />
+        rc0 = setjmp(jmpbuf_th0);<br />
+        if (rc0 != 0)<br />
+                thread_1();<br />
+entry_thread_1:<br />
+        rc1 = setjmp(jmpbuf_th1);<br />
+        thread_0();</p>
+
+<p>        return 0;<br />
+}<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;wolfhe&#64;sky&#46;org">wolfhe</a> 發表於</MTIfNonEmpty> December 15, 2006 02:12 PM</span>
+</div>
+<div class="comments-body">
+<p>To wolfhe,</p>
+
+<p>Thanks for your sharing and contribution.<br />
+Neat example!</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> December 15, 2006 03:08 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1848" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

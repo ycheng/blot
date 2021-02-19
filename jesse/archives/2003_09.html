@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jesse's Holodeck: September 2003 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jesse/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jesse/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~jesse/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jesse/archives/2003_08.html" title="August 2003" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jesse/archives/2003_11.html" title="November 2003" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jesse/" accesskey="1">Jesse's Holodeck</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jesse/archives/2003_08.html">&laquo; August 2003</a> |
+
+<a href="http://blog.linux.org.tw/~jesse/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jesse/archives/2003_11.html">November 2003 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">September 12, 2003</h2>
+
+
+<div class="blogbody">
+<a name="000137"></a>
+<h3 class="title">升級 subversion 至 0.29.0-1</h3>
+
+<p>今天將公司的 subversion server 由 0.26.0-1 升級至 0.29.0-1, 並且花了點時間掛上了 ViewCVS....</p>
+
+<p>在 subversion 升級後, 馬上就出了問題, 趕緊又 downgrade 回來.... 經 <acronym title="chihchun"><a href="http://kalug.linux.org.tw/~chihchun/">chihchun</a></acronym> 
+指點後才知道, 原來升級到這一版要重建 repository, 花了點時間 dump 出 200 多 MB 的 dump file、升級、再 reload 回 dump file, 這部份就搞定了。</p>
+
+<p>比較麻煩的是 ViewCVS 的部份。前兩天曾試裝過, 那時少了 python2.3-subversion 這個套件, 要自個兒去 pool 裡抓, 加上在趕 project, 就先擱著了.... 今天升級時發現 python2.3-subversion 出現了, 很高興地就給它裝上去, 果然, 又是不會動.... -_-|||</p>
+
+<p>對 python 一點概念都沒有, 還是硬著頭皮找看看問題在哪兒, 研究了一下, 看起來是這樣的: ViewCVS 要用到 svn module, svn module 則再往下層呼叫 libsvn module, 其中 core 和 repos 沒什麼問題, 因為 svn 那一層啥都沒做, 但是 fs 這個部份, svn 把下層 libsvn 的 function name 給改掉了, 所以 ViewCVS 會出現找不到一些 function 的 error。於是乎, 抓 svn.fs 出來開刀。然後就發現.... 搞定了! XD</p>
+
+<p>最後一步, 因為有好幾個 project 都要用 ViewCVS, 但是 ViewCVS auth 的部份不太符合我們的需求, 只好針對每個 project copy 一份 ViewCVS, 利用 apache2 管理權限....</p>
+
+<p>升級還真辛苦啊.... <img src="/~jesse/smilies/tongue.gif"
+     height="14" width="14"
+     alt=":P" />
+</p>
+
+
+
+<div class="posted">
+	由 jesse 發表於 <a href="http://blog.linux.org.tw/~jesse/archives/000137.html">11:35 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-comments.cgi?entry_id=137" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">September 11, 2003</h2>
+
+
+<div class="blogbody">
+<a name="000084"></a>
+<h3 class="title">gcc 3.2 的 -fvolatile option</h3>
+
+<p>交接來的 code 用的是 mcc68k 實在有夠舊的版本, 所以想拿 gcc 3.2.3 來取代取代它, 另一方面則是讓我可以在 linux 下完成 compile 的工作, 順便改掉整個 Makefile 的結構, 讓環境更 portable。</p>
+
+<p>取代的過程中, 除了要解決前人那種令人不敢恭維的 coding 習慣外, 還算順利。就在完成了 compile 後, 正如我所料想的, 放到板子上不會動作....</p>
+
+<p>直覺告訴我是 volatile 的問題, 在參考了 <a href="http://gcc.gnu.org/bugzilla/show_bug.cgi?id=10423">[1]</a><a href="http://gcc.gnu.org/bugzilla/show_bug.cgi?id=6059">[2]</a> 之後, 才知道原本這份 code 極度依賴的 -fvolatile 在 gcc 3.2 之後已經不再支援了。</p>
+
+<p>我的天啊.... 雖然我認為依賴 -fvolatile 實在是很不好的習慣, 不過, 面對這樣一份龐大、雜亂不堪且掌握度超低的程式碼, 要自己一個地方一個地方加上 volatile 修飾字實在是要命.... -_-|||</p>
+
+
+
+<div class="posted">
+	由 jesse 發表於 <a href="http://blog.linux.org.tw/~jesse/archives/000084.html">01:30 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-comments.cgi?entry_id=84" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">September 10, 2003</h2>
+
+
+<div class="blogbody">
+<a name="000081"></a>
+<h3 class="title">驅動多合一讀卡機</h3>
+
+<p>我的讀卡機是某無牌子的 CF/SM 二合一讀卡機, 使用 Neodio ND-5010 的 chip。kernel 2.6 的 usb-storage 可以驅動它, 不過一直都只看得到 CF 槽, 偏偏我的數位相機用的是 SM card.... 本來以為是 usb-storage 沒有 scan 到 0 以外的 USB function, 找了老半天, 才發現原來只要把 CONFIG_SCSI_MULTI_LUN enable 起來即可... 終於它不再是『跛腳』的讀卡機囉! :D</p>
+
+
+
+
+<div class="posted">
+	由 jesse 發表於 <a href="http://blog.linux.org.tw/~jesse/archives/000081.html">12:37 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-comments.cgi?entry_id=81" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

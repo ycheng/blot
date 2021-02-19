@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>timhsu: February 2006 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~timhsu/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~timhsu/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~timhsu/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~timhsu/archives/2006_01.html" title="January 2006" />
+
+<link rel="next" href="http://blog.linux.org.tw/~timhsu/archives/2006_03.html" title="March 2006" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~timhsu/" accesskey="1">timhsu</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~timhsu/archives/2006_01.html">&laquo; January 2006</a> |
+
+<a href="http://blog.linux.org.tw/~timhsu/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~timhsu/archives/2006_03.html">March 2006 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">February 17, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001515"></a>
+<h3 class="title">SSH TCP FORWARDING</h3>
+
+<p>有些公司或機關會試著用一些防火牆和監控設備，來對公司內部同仁上網作加以控管。最常見的例子就是對 IM (MSN/Yahoo!)等作記錄或限制。如果防火牆有開放 ssh 連線，或是沒有對 HTTP Protocol 作查核，那就可以試著用 ssh 的 tcp-forwarding 來建立加密連線(secure tunnel)。</p>
+
+<p>(公司外部 Server: proxy.nosuchserver.org)<br />
+1. 先架好 Proxy，例如可以 bind 在 3128 Port.<br />
+2. 設好 Firewall 規則，只開放 localhost 連線: <br />
+    iptables -A INPUT -p tcp -s ! 127.0.0.1 --dport 3128 -j DROP<br />
+3. 加個帳號叫 tunnel</p>
+
+<p>(公司內部 Linux: 192.168.1.10)<br />
+1. 用 ssh 登入 proxy.nosuchserver.org <br />
+    ssh -L 8080:127.0.0.1:3128 tunnel@proxy.nosuchserver.org<br />
+2. 此時可以將 MSN 或 WWW-Browser 的 proxy 設定指向 127.0.0.1:8080<br />
+3. 利用此 tunnel 即可對外加密連線</p>
+
+<p>如果你想讓公司內其它同事共享此 proxy，則可以利用新版 ssh 的功能:</p>
+
+<p>   ssh -L 192.168.1.10:8080:127.0.0.1:3128 tunnel@proxy.nosuchserver.org</p>
+
+<p>那麼大夥通通把 proxy 設定指向 192.168.1.10:8080 即可。</p>
+
+<p>如果對外沒開放 port 22，那就只好試著讓 Server 上的 sshd 聽 port 80 或其它開放的 port 囉。</p>
+
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~timhsu/archives/001515.html">07:48 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1515" onclick="OpenComments(this.href); return false">迴響 (7)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 14, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001512"></a>
+<h3 class="title">某金控網站被入侵</h3>
+
+<p>今天下午某位朋友告訴我，當他連上某國內知名金控網站時，防毒軟體發出了警告。該網站的首頁疑似被加入了一行不顯示的 iframe 連結。順著該連結到另一個公司的網站，就會啟動一個惡意的 Javascript，而此 script 的動作則是執行一個植入後門的程序。<br />
+想看此惡意 javascript 原貌? 看看 <a href="http://forum.icst.org.tw/phpBB2/viewtopic.php?p=18031&">ICST</a>上的相關討論吧。<br />
+顯然，至少有兩家公司被入侵，網頁內容遭駭客篡改。但被植入惡意 Javascript 的網站，也許已經讓許多的使用者電腦中了後門。</p>
+
+<p>害怕了嗎？還不快把 MS-IE 換掉！</p>
+
+<p>至於被植入的後門，經過 Birdman 大師的 Archon 惡意軟體掃瞄，其結果如下圖：</p>
+
+<p><img alt="fubon_rootkit.JPG" src="http://blog.linux.org.tw/~timhsu/archives/images/fubon_rootkit.JPG" width="1032" height="951" border="0" /></p>
+
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~timhsu/archives/001512.html">05:31 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1512" onclick="OpenComments(this.href); return false">迴響 (7)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

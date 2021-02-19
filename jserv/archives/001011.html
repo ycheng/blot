@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Java 是否該 open source？</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001009.html" title="中國象棋遊戲" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001013.html" title="Hackers 的「倩影」" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001009.html">« 中國象棋遊戲</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001013.html">Hackers 的「倩影」 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 03, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Java 是否該 open source？</h3>
+
+<p>又來炒冷飯了。</p>
+
+<p>今天 Sun Microsystems 的 Dan Baigent 在他的 blog 上寫到 [<a href="http://blogs.sun.com/roller/page/dbaigent/20050302#open_source_java_advocates_comment">Open Source Java advocates comment</a>]，就一位 Sun 的職員的角度回覆 Keith Lea 提出 open source'd JDK 的質疑：<br />
+<ul><br />
+The problem with this is that it fails to address the fundamental problem from Sun's perspective - why would Sun want Java technology based on Sun's implementation (which is known to be compatible) to be distributed in an incompatible way, regardless of what it is called? If the answer is to leverage "innovation" of more developers, that assumes that the innovation is of more value than the compatibility. Sun has already determined that the JCP is the way to manage compatible innovations - agree to the standard specification first, then build reference implementations and test suites that allow multiple, compatible implementations of the standard. Is it really the "specify first, then innovate" approach that open source advocates disagree with?<br />
+</ul></p>
+
+<p>我將這個訊息告訴 Kaffe Developers 之一的 Dalibor Topic，以下節錄 #kaffe IRC channel：<br />
+<ul><br />
+07:17 < jserv2> http://blogs.sun.com/roller/page/dbaigent/20050302#open_source_java_advocates_comment<br />
+07:25 < robilad> jserv2: heh, he means me :)<br />
+07:25 < robilad> i've discussed a bit on javalobby with him<br />
+08:31 < robilad> jserv2: done<br />
+8:32 < robilad> mjw: i discussed a bit with him on javalobby<br />
+08:32 < robilad> i guess sun sends their folks out their ocassionally to fight for the true java<br />
+08:32 < robilad> :)<br />
+08:33 < robilad> "But if it is clear that the Java logo can and should mean compatibility and that no incompatible implementation should be allowed to have the logo, isn't it also logical that no compatible implementation should be allowed to not have the logo?"<br />
+08:33 < robilad> what a load of rubbish :)<br />
+08:33 < robilad> clearly a licensing guy.<br />
+08:33 < tromey> yeah, that seemed idiotic to me<br />
+08:37 < robilad> i've cleared him a bit up, then.<br />
+08:38 < mjw> Hehe. Funny post.<br />
+08:40 < tromey> I lost the url already<br />
+08:41 < tromey> where did you post your response?<br />
+08:41 < mjw> http://blogs.sun.com/roller/page/dbaigent/20050302#open_source_java_advocates_comment<br />
+08:41 < tromey> thanks<br />
+08:44 < robilad> i just suck live, i'm ok when i have a moment or two to think about my lines :)<br />
+</ul></p>
+
+<p>於是 Kaffe、GNU Classpath 維護者與 GCJ hackers 們又開始討論了，究竟 Dalibor 說了什麼呢？引述 comment 如下：<br />
+<ul><br />
+Dan, as you can see by lots of open source implementations of real standards, like CORBA, HTTP, TCP/IP, etc, the open source developers have no problems following standards, so your speculation is ... wrong :) It's pretty simple. Sun does what they do, which leads to other people writing a lot of working, better, and free code from scratch to make the non-free implementation unnecessary. To Sun's huge fortune, these people want to be compatible, they do not want to break the standards. So if Sun's as bright as I think it is, it will reach out to those people and help them achieve their goal of being compatible without throwing funny obstacles in their way. If Sun needs more time to cross the golden bridge to working together on free software, so be it. Just don't expect people to wait 8 more years for that to happen, just sitting by and twiddling thumbs :)<br />
+cheers, dalibor topic<br />
+</ul></p>
+
+<p>開放的規格相當多，Sun Microsystems 也有參與制定，當然不乏主導的項目，但是開放規格之所以稱為「開放」，就是能夠將規格制定與實做能夠區分出來，在很多角度來說，Sun 絕對可以在此議題做得更好。我之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/000939.html">自由軟體授權與 Sun Microsystems</a>]，就點過 Sun Java 開放的態度其實撲朔迷離，就如 Dalibor 所說的，真正開放的規格，比方說 CORBA、HTTP，以及 TCP/IP 等等，Free/Open-source 開發者可以很「自由」的開發相關的實做，只要規格明確的話，而過去 SCSL 授權則讓開發者根本得不到基本的「自由」，在我去年的簡報 [<a href="http://jserv.sayya.org/kaffe/doc/free-java-debian.ppt">Free Java 介紹</a>](<a href="http://jserv.sayya.org/kaffe/doc/free-java-debian.pdf">PDF 版本</a>) 也花了一些篇幅介紹相關的限制，至於後來更新的授權方式，我也在去年 [<a href="http://www.slat.org/icos/icos04/">2004 國際開放源碼研討會</a>] 跟與會的朋友作相關的授權探討。</p>
+
+<p>這個時間點有點尷尬，恰好在 [<a href="http://blog.linux.org.tw/~jserv/archives/001006.html">預祝 Java 十週年</a>] 時，Sun 的網站也做好 [<a href="http://java.sun.com/features/1999/05/duke_gallery.html">It's Duke's Birthday, Too!</a>]，相關的慶祝活動也不必說了，肯定很轟動，而我們這群 Free Java 的開發者在這個時間點，用力的嗆 Sun... :P</p>
+
+<p>無論如何，只要 Java 技術沒有完全自由開放的一天，我們都會建議您從：<br />
+<img src="http://java.sun.com/features/1999/05/images/duke/duke_hips.gif"  /> (Sun Microsystems 官方的 Java 實做)<br></p>
+
+<p>移轉到開放、自由，但是也具備同等甚至更好的實做，這如下圖：<br />
+<img src="http://jserv.sayya.org/kaffe/logo/open-source-java.png" /></p>
+
+<p>是的，咱們用力說： Let Java Free!<br />
+雖然我一直是 Java fan，但是這些限制與搖擺不定的開放政策，讓我對 Sun Microsystems 不免有些失望 (但是也只有 Java 的開放態度部份)，所以就直接用行動表示，加入 Kaffe 開發者的行列，證明我們也是可以做出相容的環境，當然，有新血投入是更好。</p>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March  3, 2005 11:19 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>java indeed eases down the burden of developing enterprise system, since i've steped into this field. yet sun, as everybody knows, screws it up in another way; i hope open source java can setup its monument by building up significant enterprise service. though there're tons of free projects based upon java, most of them have to run on java's vm, whereas people/ enterprise are being lack of confidence to other vm, like kaffe. nonetheless, free vm need to process on for, if one day, it becomes the de facto standard. then sun, or whosoever, only what they can do is to be the follower. </p>
+<span class="comments-post">由 <a href="mailto&#58;asdf&#64;a&#46;com">jason</a> 發表於</MTIfNonEmpty> March  8, 2005 10:35 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

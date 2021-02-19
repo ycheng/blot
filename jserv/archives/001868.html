@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 也談工作</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001866.html" title="sshfs 在 Embedded Linux 開發的應用" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001869.html" title="書目 - 2006 年第四季" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001866.html">« sshfs 在 Embedded Linux 開發的應用</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001869.html">書目 - 2006 年第四季 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 03, 2007</h2>
+
+<div class="blogbody">
+
+<h3 class="title">也談工作</h3>
+
+似乎每過一段時間，都會有 [<a href="http://blog.linux.org.tw/~jserv/archives/001309.html">擇你所愛又怨芭蕉</a>] 的感嘆，中午瞥見 absurd 張貼的廣告 [<a href="http://blog.csdn.net/absurd/archive/2007/01/02/1472541.aspx">誠邀應屆畢業生朋友加入我們團隊</a>] (聲明：個人與該團隊無商業往來)，首段就提及：<ul class="code" style="margin: 6px;">
+你想進入嵌入式行業嗎？你想從事linux手機開發嗎？你想暢遊開源世界嗎？你想開發一流的產品嗎？來吧，加入我們的團隊，讓我們一起來實現我們的夢想！什麼？你不懂ARM，不懂ASM，不懂RTOS，不懂MMI，不會做工具鏈(toolchain)，不會交叉編譯，不會linux，甚至連C/C++都不會？沒關係，只要你熱愛學習，只要你有編程的天賦，只要你有對技術的狂熱，那就足夠了。Come on!
+</ul>
+基於對 Embedded System design 的投入，看到以上文字時，有一種莫名的感動，彷彿血液中都充斥著熱情。記得小時候接觸一點 Linux Kernel 的皮毛後，曾找某 SoC 設計中心的主管，要求無薪的工讀見習機會，沒想到被一口回絕，是的，當時我不懂 ARM、也不熟悉 Assembly、不會 cross-compilation、不知道如何寫圖形介面、已開始撰寫 BASIC/C compiler 但不懂 C++、...，總之，對方見我當時經歷不夠，以「年紀太小」的理由回絕。這種刺激是很可觀的，往後的幾年，我常常徹夜未眠地 coding & hacking，同時廣泛涉獵，逐漸將前述的項目探索過，不過我一直只當作基本技能，正如那位主管說的話：「這些都是基本技能，等你懂了再說吧」。然，有天，我收到某 SoC 設計單位的邀請，信中寫了一些恭維的話語，重點就是要我考慮那邊的職缺，也開出頗為豐厚的待遇，面對這種誘惑當然會心動，但我最後回覆：<ul>
+「感謝貴單位的敬重，不過我覺得應該先從無薪見習工作開始」
+</ul>
+讓我覺得可惜的是，小時候的熱情被澆熄，取而代之的是基於「立足」而深入研究技術的動機，但我們真正需要的，還是那股熱情，非耶？工作的首要條件，就是對工作的認同感與熱情的投入，至於是否容易上手還是其次，特別對技術性工作來說，這些處理挑戰的能力與歷程就是工作的本質，而非僅是迷失在那些技術工具或特定領域的理論基礎上。<br />
+<br />
+因為工作需要，常有面試新人的機會，而每次結束後我就會反省或寫筆記，這些應試者中不乏有甫自學校畢業的社會新鮮人，通常我會問些「基本概念」，套句某人說的話：「給他們反省的機會」，這不是刻意刁難，相反地，我們的盲點往往需要一些機會才得以彰顯，但技術與背景知識不應該是首要考量，重點應該是態度與熱情，這是我一貫的信念。讓我欣慰的是，有不少應試者來信指教，提到他們有了新的啟發，而我也發現他們似乎做得比從前更好，就算沒機會共事，至少教學相長，分享一些技術或生活經驗，也相當好。<br />
+<br />
+究竟什麼才是我心目中的工作呢？若將「工作」與「公司」牽上緊密關聯，常會失之偏頗，畢竟「不賺錢的公司是罪惡的」，但「工作」本身沒有獲利的義務，如果說自認在社會上有何優勢？我想其中有個重點是我的低物質慾望：外套、長袖、毛衣、... 可一路從國中、高中、大學，穿到服兵役乃至退伍就業，仰望星空徹夜被認為是高級的休閒、嘗試將所得九成以上捐出慈善機構仍過可怡然自得的生活、... 這些「試驗」或許是因為我的病態與陋習，才得以持續進行，我一直認為金錢不是很重要的因素，雖然常有高獲利的機會。也因此，選擇工作對我來說，就無法只看工作待遇，而得再三確認工作本身給予我的成就感與肯定，但這種感覺我一直無法具體描述。<br />
+<br />
+運氣還不錯，在職場上大多能順利完成交付任務，也不時收到一些特別的邀請，比方說開出年薪百萬的待遇要我去中國大陸某單位作技術總監，或者拿出幾百萬的報酬幫軍火商開發資訊系統一類的，乍看非常吸引人，但我就是看不出投入的動機。有時候在私人聚會，與一些業界或 hacker 界的朋友聊天，不免會提到工作待遇，有朋友抱怨我在破壞行情 (某些案子我結案時僅收低價甚至免費)，甚至勸說不要「作賤自己」。現階段我的工作方式是，找到一家主要的公司，至於工作待遇我沒有特別要求，總之能幫我繳交勞健保費用、協助處理工作雜務，讓我專心研究技術與完成專案即可，再利用空檔擔任顧問職務 (包含 [jserv's lab])，有給薪也有免費處理的，不過後者的待遇總和往往較前者高。<br />
+<br />
+我喜歡接受挑戰，也願意學習新技術，不過似乎很難完全投身於單一公司或工作中，因為那總會讓我聯想到歌德筆下的浮士德：與魔鬼約定，出賣靈魂後歸魔鬼所有，並獲得返老還童、增加享樂和情欲的補償，這種想法不完全與現實相符，但數著白花花的鈔票同時，難道我們不也在販賣靈魂？特別是當 [<a href="http://blog.linux.org.tw/~jserv/archives/001774.html">員工只是一種工具</a>] 的想法湧上心頭時，更有此感覺。這種描述是很偏頗且不健康的，但有時候就會這麼想，同樣的，這是因為我的病態。<br />
+<br />
+最近工作上起伏頗多，也有外界的變因，前幾周甚至收到某知名公司的關注，讓我再度省思這個議題。愛因斯坦曾說：「很多人的視野都是一個半徑為零的圓，而他們稱之為他們的觀點」，換言之，「主觀與客觀的差異，在於半徑的長短」，相當有意思的是，我花了很多時間觀望，去確認自己的舉動與抉擇是否客觀，但這動作往往淪為無意義行為，重點還是自己如何去看待。<br />
+<br />
+目前正籌備一個新的實驗室、處理箇中的營運與技術細節，在這多雨的午後，總會勾起複雜的思緒，想到 Purple 曾來信說到：<ul class="code" style="margin: 6px;">
+希臘最著名的三大悲劇* 所探討的，大多都是人是否能與命運抗爭。人類由游牧進入蓄牧，生活無虞之後，才有藝術的誕生。而人與命運的關係，是所有不朽藝術，不論是繪畫、雕塑、文學、音樂所探討的雛形。因為我想不論任何人，再怎麼不會思考生命的人，必然都會有一個時刻，感到命運的無常與巨大。那是一種你好像不可能抗爭，但你又覺得不想就此放棄的一種力量，會壓迫你。例如為什麼人會死？許多不可思議的事情的發生。我想不論任何人，生命中一定都曾感覺那種時刻。藝術家試圖以各種形式探討那巨大的力量，而那樣的作品就會感動我們。
+因為從古自今，人類面對命運都有相同的問題。<br />
+<br />
+* 伊思奇勒斯的《阿卡曼儂》(Aeschylus, Agamemnon)、
+沙弗克力斯的《伊底帕斯王》(Sophocles, Oedipus the King)，尤里庇狄斯的《米蒂亞》(Euripides, Medea)
+</ul>
+在不是哲學家的一面，我的工作不再是「改變世界」，而是積極地與命運抗爭，並與周遭的人們共同創造歷史。我不是藝術家，不懂登峰造極的曠世佳作，但我正以藝術的觀點看待工作；我不是音樂家，不懂天籟跫音，但我的確感受到工作完成時可聞的美妙掌聲；我不是雕塑家，不懂雕塑張力感和藝術感染力，但我正雕塑工作中系統的每一個面向。工作，是深刻面對命運的途徑，我們需要更多熱情，更積極的參與，與以實際行動取代觀望。<br />
+<br />
+加油！在 2007 年繼續努力！<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January  3, 2007 05:10 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>如果真要算的話，Jserv 的等級的薪資應該不是百萬年薪請的到的，可能是要以百萬為單位來談的。</p>
+<span class="comments-post">由 <a href="mailto&#58;avhacker&#64;gmail&#46;com">av</a> 發表於</MTIfNonEmpty> January  3, 2007 05:45 PM</span>
+</div>
+<div class="comments-body">
+<p>加油</p>
+<span class="comments-post">由 <a href="http://x-solve.com/blog/?author=19">Kuon</a> 發表於</MTIfNonEmpty> January  3, 2007 07:02 PM</span>
+</div>
+<div class="comments-body">
+<p>加油 && 新年快樂! :-)</p>
+<span class="comments-post">由 <a href="http://penk.org">penk</a> 發表於</MTIfNonEmpty> January  4, 2007 03:27 AM</span>
+</div>
+<div class="comments-body">
+<p>說不上來 我蠻喜歡這一篇的 :)<br />
+也許就是所謂的熱情 … <br />
+2007 我也得加油 ....<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;genius&#46;kclin&#64;gmail&#46;com">kclin</a> 發表於</MTIfNonEmpty> January  4, 2007 09:03 AM</span>
+</div>
+<div class="comments-body">
+<p>薪水当然应该与工作能力相匹配。这个道理没有错。但是，看看我们周围，有太多的IT人，他们付出的很多的劳动，却只是拿着微薄的薪水。或者是他们的处境很需要钱，但是却没有办法获得（比如医治长辈的疾病，不要笑话我，身边确实有这样的人和事情）。做着自己喜欢的工作，拥有着优厚的待遇是每个人的愿望。我没有资格对jserv说3道4。但还是请看见此文的朋友珍惜工作，珍惜生命！jserv做着自己喜欢的工作，他是幸福的。我们也需要继续努力！！</p>
+<span class="comments-post">由 <a href="http://blog.csdn.net/segments">segments</a> 發表於</MTIfNonEmpty> January  4, 2007 10:42 AM</span>
+</div>
+<div class="comments-body">
+<p>真的有很多的共鸣，加油，2007年！<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;hongtyang&#64;gmail&#46;com">hongtao.yang</a> 發表於</MTIfNonEmpty> January  7, 2007 10:02 PM</span>
+</div>
+<div class="comments-body">
+<p>雖然隔行如隔山，但都是"人"在做事這一點是不會錯的。看完你的文章，存在於我心裏的一些結也可以稍稍鬆開些了。</p>
+<span class="comments-post">由 <a href="mailto&#58;rackpcl&#64;hotmail&#46;com">rackpcl</a> 發表於</MTIfNonEmpty> January 19, 2007 11:14 AM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1868" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

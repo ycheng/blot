@@ -1,0 +1,264 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: LGPL 與 C++ Template Library</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001873.html" title="浪濤的單戀" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001875.html" title="GPE Phone Edition" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001873.html">« 浪濤的單戀</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001875.html">GPE Phone Edition »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 25, 2007</h2>
+
+<div class="blogbody">
+
+<h3 class="title">LGPL 與 C++ Template Library</h3>
+
+在我小時候用 Zortech C++ 與 Turbo C++ 的那個年代，那些商業 C++ compiler 就有 Template 的支援，GNU g++ 也在 Cygnus Solution 的大力支持下納入許多 C++ 規格的實做。而，GNU [<a href="http://www.gnu.org/licenses/lgpl.html">LGPL</a>] (Lesser General Public License) 則是 GNU GPL 的「變形」，允許動態連結函式庫的行為，謝東翰前輩曾做了一份繁體中文翻譯 [<a href="http://www.linux.org.tw/CLDP/OLD/doc/LGPL.html">GNU 較寬鬆公共許可證 (中譯版)</a>]，在 [<a href="http://directory.fsf.org/libs/cpp/">FSF/UNESCO Free Software Directory</a>] 有部份採用 BSD License / GPL / LGPL / QPL 授權發行的 C++ Library 列表，當然這些專案多少也用了 C++ Template，至於以 GNU LGPL 發行的套件，我們也很清楚，在其上發展動態連結的應用程式，可不受 LGPL 約束，也就是可成為 closed-source software，不過，倘若修改到 library 本身，就必須依循 GPL/LGPL 發佈。<br />
+<br />
+在 Realtime 與自動控制領域頗有名氣的 [<a href="http://www.orocos.org/rtt">Orocos Real-Time Toolkit</a>] (RTT) 最近在 1.0.2 版發佈時，更改了授權方式，詳情見 [<a href="http://www.orocos.org/node/78">Orocos Real-Time Toolkit 1.0.2 released</a>]，以下節錄與授權方式相關的部份：<ul class="code" style="margin: 6px;">
+A license change from LGPL to the GPL + linking exception was done. The LGPL did not cover C++ templates correctly, while the new license does and is legally more sound for use in commercial applications.
+</ul>
+引發我的注意是因為 "LGPL did not cover C++ templates correctly" 的陳述，看來這與程式語言特性有關。之前在 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001227.html">熱血之餘談軟體授權</a>] 與 [<a href="http://blog.linux.org.tw/~jserv/archives/001441.html">檢視 GPL 3.0 草案</a>] 提到 GPL/LGPL 在程式語言的角度來說，有語意模糊的弊端，不僅動態語言如 Java 者會有爭議，現在我們也看到 C++ 這樣的 "meta-language" 若以 LGPL 發行，將會衍生一些「非預期」的模稜兩可行為。FSF Europe 的 mailing-list 有一篇由 Benoît Jacob 張貼的討論 [<a href="http://mailman.fsfeurope.org/pipermail/discussion/2006-October/006420.html">Writing an exception to LGPL for a C++ template library</a>]，關鍵處就是以下陳述：<ul class="code" style="margin: 6px;">
+As a special exception, you may consider instantiation of templates or use of 
+macros or inline functions from this file en pair with using a normal linked 
+library. Thus you can use it this way without causing the using part to be 
+converted into the LGPL. This file itself is however always covered by the LGPL.
+</ul>
+C++ 的 template 有著類似 C 語言 macro 或 inline function 的特性，都會依據特定規則「展開」為原始表示型態，再經由編譯系統進一步合成對應的目的碼，只是說實做的層面有差異，C 語言的 macro 專注於 pre-processor 層面，而 inline function 與 C++ template 則是 semantic analysis 層面，其相似處就在於「程式碼展開的行為」，並且我們也見這是「衍生性」的操作，於是，這下子就有趣了，GPL/LGPL 的「病毒」是否就「感染」使用該 C++ Template Library 的應用程式呢？<br />
+<br />
+Federico Montesino Pouzols 隨後 [<a href="http://mailman.fsfeurope.org/pipermail/discussion/2006-October/006421.html">回應</a>]，指出 [<a href="http://gcc.gnu.org/onlinedocs/libstdc++/documentation.html">GCC C++ Standard library</a>](libstdc++) 與 [<a href="http://www.gnu.org/software/commoncpp/">Common C++</a>] 在此議題的澄清表述，前者 (libstdc++)：<ul class="code" style="margin: 6px;">
+As a special exception, you may use this file as part of a free software library 
+without restriction.  Specifically, if other files instantiate templates or 
+use macros or inline functions from this file, or you compile this file and 
+link it with other files to produce an executable, this file does not by itself 
+cause the resulting executable to be covered by the GNU General Public License. 
+This exception does not however invalidate any other reasons why the executable 
+file might be covered by the GNU General Public License.
+</ul>
+後者 (Common C++) 則是：<ul class="code" style="margin: 6px;">
+As a special exception, you may use this file as part of a free software 
+library without restriction.  Specifically, if other files instantiate 
+templates or use macros or inline functions from this file, or you compile 
+this file and link it with other files to produce an executable, this 
+file does not by itself cause the resulting executable to be covered by 
+the GNU General Public License.  This exception does not however invalidate 
+any other reasons why the executable file might be covered by the GNU 
+General Public License.<br />
+<br />
+This exception applies only to the code released under the name GNU Common 
+C++.  If you copy code from other releases into a copy of GNU Common C++, 
+as the General Public License permits, the exception does not apply to the 
+code that you add in this way.  To avoid misleading anyone as to the status 
+of such modified files, you must delete this exception notice from them.<br />
+<br />
+If you write modifications of your own for GNU Common C++, it is your 
+choice whether to permit this exception to apply to your modifications. If 
+you do not wish that, delete this exception notice.
+</ul>
+隨後 Federico Montesino Pouzols 又 [<a href="http://mailman.fsfeurope.org/pipermail/discussion/2006-October/006464.html">補充</a>] 說：<ul class="code" style="margin: 6px;">
+Both issues can be sorted out with a GPL + exception license. In general, 
+using LGPL for C++ libraries is a bad idea -I would say. Besides the 
+"lesser" aspect of the LGPL, it is obsolete in its language (when you have 
+templates and methods implemented in headers, the division between the 
+library and the application using it is not a matter of just linking 
+anymore). In the obsolete language of the LGPL, when you use a template, 
+you would be basically copying code.
+</ul>
+Java Core Library 的自由實做計畫 [<a href="http://www.gnu.org/software/classpath/">GNU Classpath</a>] 就是採用 GPL + exception license，其著眼點就是避開語言層次的限制與模糊不清，正如前述提到：<ul class="code" style="margin: 6px;">
+"when you have templates and methods implemented in headers, the division 
+between the library and the application using it is not a matter of just 
+linking anymore."
+</ul>
+若在 GPL/LGPL 的語意來說，當 C++ compiler 編譯 C++ 應用程式時，會從 C++ Template Library 的標頭檔「複製」特定的程式碼片段到應用程式去，這也使得應用程式被「內嵌」原本以 GNU LGPL 發行的程式碼，進而被「感染」，也就失去 LGPL 的立意。所以，具體的克服方式就如 Federico Montesino Pouzols 指出：<ul class="code" style="margin: 6px;">
+Some FAQs about the libstdc++ "runtime exception" are answered here: 
+<a href="http://gcc.gnu.org/onlinedocs/libstdc++/17_intro/license.html">http://gcc.gnu.org/onlinedocs/libstdc++/17_intro/license.html</a>.<br />
+<br />
+To the best of my knowledge, GPL + linking exception is the best way of 
+extending the LGPL conditions for C++ libraries. Using an exception 
+similar to that of libstdc++ you will of course allow using your 
+library in proprietary applications. If you prefer to avoid that 
+abuse, you could reformulate the exception so that it only allows the 
+library to be used in GPL and LGPL (or a list of free licenses 
+acceptable from your point of view) apps and libs.<br />
+<br />
+It seems the eCos license 2.0 (<a href="http://www.gnu.org/licenses/ecos-license.html">http://www.gnu.org/licenses/ecos-license.html</a>) is also a case of GPL + exception. 
+This license however adds the restriction that source code of the app. 
+using the library must be available as specified in section (3) of the GPL.
+</ul>
+看了以上陳述後，可以得知 [<a href="http://www.orocos.org/rtt">Orocos Real-Time Toolkit</a>] 從 GNU LGPL 授權移轉到 GPL + linking exception，就是基於以上考量，這種「行為導向」的描述也更符合現況。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 25, 2007 04:39 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1874" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 中國麒麟作業系統與 FreeBSD 的比較分析</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001644.html" title="愛上 UNIX" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001646.html" title="SA@台中五月份 AJAX &amp; Ruby on Rails 心得分享" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001644.html">« 愛上 UNIX</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001646.html">SA@台中五月份 AJAX & Ruby on Rails 心得分享 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">April 28, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">中國麒麟作業系統與 FreeBSD 的比較分析</h3>
+
+[<a href="http://www.dancefire.org/">Dancefire</a>] 對號稱「中國自主」的 [<a href="http://www.kylin.org.cn/">麒麟作業系統</a>] 做了一份精彩的比較，詳見 [<a href="http://www.dancefire.org/article/Kernel_Similarity_Analysis.html">麒麟操作系統內核同其他操作系統內核的相似性分析</a>]，可以找到些「自主」的「創新」，與關鍵性的差異等，不過文後也提到：<ul>
+如果單從函數名比對的統計上看的話，14399個函數，只有79個函數可能是原創的。與FreeBSD 5.3在函數名上的相似度有99.45%。這個相似程度十分驚人，但是僅憑函數名相似不足以說明邏輯上相似，因此，在分析報告中，這個分析數據只作為參考數據放到附錄中。感興趣的朋友可以進一步的分析。
+</ul>
+嗯，繼續觀察。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 April 28, 2006 07:53 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>節錄自最後一段： <br />
+最后需要提及的是，麒麟所安装的软件大部分是GNU的开放源代码软件，这些软件遵循GPL。它要求如果对任何代码进行了修改，必须开放修改过的源代码，。但不幸的是，麒麟操作系统虽然修改了部分的代码，却没有开放出修改后的源代码。从这种意义上说，麒麟操作系统对这些GNU的开源软件有侵权嫌疑。</p>
+
+<p>記得拿FreeBSD的源始碼去改，得附上感謝字句才行。<br />
+這大概又是一個(半)騙經費的計劃吧。</p>
+<span class="comments-post">由 <a href="mailto&#58;blc&#64;yam&#46;com">blc</a> 發表於</MTIfNonEmpty> April 29, 2006 08:00 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

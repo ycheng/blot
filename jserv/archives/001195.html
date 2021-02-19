@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 落花水面皆文章 -- 談踩地雷遊戲與 NP Complete</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001194.html" title="Guifications 與 cvs head" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001197.html" title="PCMan X 的新發展 (4)" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001194.html">« Guifications 與 cvs head</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001197.html">PCMan X 的新發展 (4) »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">July 03, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">落花水面皆文章 -- 談踩地雷遊戲與 NP Complete</h3>
+
+宋末的翁森在〈四時讀書樂〉這麼寫道：「好鳥枝頭亦朋友，落花水面皆文章。」，很多理論都是值得我們去探究的，但這些學問不見得一定要在厚厚的教科書或者論文集才讀得到，很多時候，玩遊戲反而是相當有效率的啟發，這話怎麼說？<br />
+<br />
+剛剛閱讀 Uwe Hermann 的 blog [<a href="http://www.hermann-uwe.de/blog/minesweeper-is-np-complete">Minesweeper is NP-complete</a>]，提到了 Richard Kaye 對於經典的踩地雷遊戲 (Minesweeper) 作分析，證明解題過程是 NP Complete 的，推薦您可先閱讀 Richard Kaye 在 [<a href="http://web.mat.bham.ac.uk/R.W.Kaye/minesw/ASE2003.pdf">ASE meeting 2003 的簡報</a>]。<br />
+<br />
+首先，Richard 從踩地雷過程中的猜想，逐步引導我們試著從臆測中找到規則，又引入 logic gate 的觀念，最後從經典的 Travelling salesman 問題看 NP Complete，然後我們就身陷 "P=NP" 了 :-)<br />
+<br />
+這份簡報實在是相見恨晚，電腦科學的演算法其實相當有趣，只是教科書與學程常常弄得很死板，讓學生喪失學習與思考的興趣，而經典的踩地雷遊戲竟然可以推導 NP Complete，實在有意思，的確，「落花水面皆文章」。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 July  3, 2005 10:41 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

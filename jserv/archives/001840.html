@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 探索 Linux bootloader 的佳作</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001839.html" title="讓地球多活一秒：從自己做起" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001841.html" title="Qemu patches (1)" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001839.html">« 讓地球多活一秒：從自己做起</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001841.html">Qemu patches (1) »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">November 19, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">探索 Linux bootloader 的佳作</h3>
+
+探索 Linux bootloader 的目的才不是為了多重開機或讓自己陷於一堆無趣的指令操作，重點在於：<ul>
+<li>理解 bootloader 的行為模式</li>
+<li>思考 Linux boot process</li>
+<li>創作或移植 bootloader</li>
+<li>以 bootloader 為基礎，創造更大的價值</li>
+</ul>
+最後一項看似唐突，事實上在專案開發或研究上，是我們必須面對的議題。以手持式裝置來說，"anti-hacking" 成為相當重要的考量，但採用開放系統又是必經之路，該如何立足於較有利之處呢？自 2003 年起，許多 bootloader 逐漸應用密碼學的範疇技術，整個 kernel image 乃至 partition 都是經過特定加密處理，如何在兼顧實用性與安全性，bootloader 就被賦予重大的使命。又，像 [<a href="http://sogyang.blogspot.com/">SoG</a>] 學長以知名的 bootloader [<a href="http://sourceforge.net/projects/u-boot">U-boot</a>] 為基礎，發展了一套 RTOS，就是創造了新價值，特別在 time-critical 的系統，更能彰顯。<br>
+<br>
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001240.html">Micromonitor 簡介</a>] 提過服務於 Lucent 的 [<a href="http://www.dtweed.com/circuitcellar/xsuttere.htm">Ed Sutter</a>] 詳盡介紹 Firmware 相關技術與指導如何使用並移植 MicroMonitor 的大作，不過如果要更深入探索，一定要拜讀 Christopher Hallinan 的大作《Embedded Linux Primer》裡面的第七章〈Bootloaders〉。Christopher Hallinan 大名鼎鼎，我想也不需多加介紹，MontaVista software 有太多創作是出自此大師之手，同時，也感謝 Christopher Hallinan 願意將〈Chapter 7: Bootloaders〉開放下載，請參考以下資訊：<ul>
+<li>[<a href="http://www.linuxdevices.com/files/misc/hallinan_embedded_linux_primer_chap_7_bootloaders.pdf">LinuxDevices.com 的複本</a>] (PDF 格式)</li>
+<li>[<a href="http://jserv.sayya.org/kernel/hallinan_embedded_linux_primer_chap_7_bootloaders.pdf">台灣的 mirror</a>] (PDF 格式)</li>
+</ul>
+該章節包含五個子主題：<ul>
+<li>bootloader 扮演的角色</li>
+<li>bootloader 設計上的挑戰</li>
+<li>通用性 bootloader 實做： Das U-Boot</li>
+<li>移植 U-Boot</li>
+<li>其他 bootloader</li>
+</ul>
+這讓我想到面試新人時，常問及一個問題：<ul class="code" style="margin: 6px;">
+既然 bootloader 是 loader for booting，為何又要大費周章地把 Kernel 載入呢？為何不能直接寫入對應硬體的線性位址呢？
+</ul>
+這個問題算是一種 pattern，因為還可套用在特定的硬體架構，比方說 ARM、MIPS，或者 PowerPC 等等，端看應試者的技術背景。x86 bootloader 是個特例，而 Linux bootloader 也可說是一種典型設計下的產物，事實上能發揮的空間很大，比方說 "no-kernel design" 或 exokernel 思維下，bootloader 的身份就有極大的轉變，bootloader 與 kernel 共存是可能的，而且也是相當務實的考量 (想像 watchdog 一類的應用)。不過，這個問題的答案到底是什麼呢？最重要的當然是「適當」去初始化硬體裝置並給予「適當」的狀態，其中需要考量的重點就像是 Flash memory，光是其排列的方式就會引發許多細部的問題。<br>
+<br>
+許多入門書籍總是以一系列的方塊圖，悄悄帶過 bootloader 的原理，好似 kernel 載入前那段「美好時光」中發生的變化、當試著以機械語文與電腦硬體對話時，只是哲學性地闡述海德格的名言：「語言乃存在之家園」，不，黑格爾告訴我們：「存在必合理」。Christopher Hallinan 一針見血指出 boot loader 設計上面臨的挑戰：<ul class="code" style="margin: 6px;">
+Even a simple "Hello World" program written in C requires significant hardware and software resources. The application developer does not need to know or care much about these details because the C runtime environment transparently provides this infrastructure. A bootloader developer has no such luxury. Every resource that a bootloader requires must be carefully initialized and allocated before it is used. One of the most visible examples of this is Dynamic Random Access Memory
+(DRAM).
+</ul>
+C Programming Language 設計的首要目標就是撰寫作業系統，但有意思的是，即使簡單的 C 程式如 "Hello World" 者，都涉及許多軟體與硬體的交互作用 (微觀角度)，對於程式開發者而言，RAM 顧名思義就是「隨機存取」的「記憶體」(按：此說法有爭議，事實上，多數的記憶裝置的確在某些程度上都算「隨機」性「存取」，不過這裡不細究)，想當然爾可用 C 語言最美妙與強大的 pointer 進行操作，而這也涉及 C Runtime stack 的微妙變化，不過，這些對 bootloader 來說，都是艱鉅的挑戰，因為 bootloader 得挑起初始化與基本配置的責任，更明確來說，開機初期根本沒有 stack 的概念與具體呈現。<br>
+<br>
+問題才要開始，"7.2.3 Image Complexity" 指出許多經典的議題，C compiler & linker 怎麼去安排機械碼與目的輸出，一般而言，程式設計師不需要太花時間思索，不過對 bootloader 的設計可全然不是這麼一回事。這夢魘的開端就是 C runtime stack，於是作者指出：<ul class="code" style="margin: 6px;">
+The bootloader must create this execution context before any C functions are called. When the bootloader is compiled and linked, the developer must exercise complete control over how the image is constructed and linked. This is especially true if the bootloader is to relocate itself from Flash to RAM. The compiler and linker must be passed a handful of parameters defining the characteristics and layout of the final executable image. Two primary characteristics conspire to add complexity
+to the final binary executable image.
+</ul>
+所以 "execution context" 的建立成為如此以 C 語言為主體的作業系統或環境之首要任務 (對許多系統是如此，不過像是 Forth 一類的系統則巧妙的以自身的 stack 處理)。再者，自 Flash memory 到 RAM 作重新定址的動作相當重要，如此低階的動作與 image layout 息息相關。所以說，困難處就在於需要建立一套與處理器啟動程序相容的 startup code，而且開頭要符合硬體架構規範之位址，書中提到一個典型的個案：<ul class="code" style="margin: 6px;">
+For example, the AMCC PowerPC 405GP processor seeks its first machine instructions from a hard-coded address of 0xFFFF_FFFC. Other processors use similar methods with different details. Some processors are configurable at power-on to seek code from one of several predefined locations, depending on hardware configuration signals.
+</ul>
+為了明確處理這個問題，作者引導我們接觸眾多 ld (Linker) script，接下來繼續探討 "execution context" 的細節。思考之前提到 "Hello World" 的例子，我們面臨的挑戰如作者指出：<ul class="code" style="margin: 6px;">
+Indeed, most processors have no DRAM available at startup for temporary storage of variables or, worse, for a stack that is required to use C program calling conventions. If you were forced to write a "Hello World" program with no DRAM 
+and, therefore, no stack, it would be quite different from the traditional "Hello World" example.
+</ul>
+以剛剛提到 PowerPC 405GP 硬體來說，實際的狀況就是：<ul class="code" style="margin: 6px;">
+This limitation places significant challenges on the initial body of code designed to initialize the hardware. As a result, one of the first tasks the bootloader performs on startup is to configure enough of the hardware to enable at least some minimal amount of RAM. Some processors designed for embedded use have small amounts 
+of on-chip static RAM available. This is the case with the PPC 405GP we've been discussing. When RAM is available, a stack can be allocated using part of that RAM, and a proper context can be constructed to run higher-level languages such 
+as C. This allows the rest of the processor and platform initialization to be written in something other than assembly language.
+</ul>
+我們可發現，在 PowerPC 硬體架構來說，我們發現 bootloader 竟然須顧及如此低階的行為，才得以讓後續的作業環境得以維護 "execution context"。然而，組合語言並非萬靈丹，如何兼顧快速開發與多種平台支援，又是新的挑戰，為此，[<a href="http://sourceforge.net/projects/u-boot">Das U-boot</a>] 於是生焉。不過這裡就不作導讀，因為 Christopher Hallinan 所作深入的探討實在太精彩，不容我等愚人置喙，總之，那是篇值得反覆拜讀與思索的佳文，唯一的缺點就是 PowerPC 對不少開發者 (包含小弟我) 是不熟悉的硬體架構，所以組合語言列表比較沒有感覺。<br>
+<br>
+另外，大陸網友詹榮開三年前在 IBM developerWorks 發表了一篇文章 [<a href="http://www-128.ibm.com/developerworks/cn/linux/l-btloader/">嵌入式系統 Boot Loader 技術內幕</a>] 也很值得一看，建議可搭配以上兩篇文章閱讀，其中有許多圖文恰好可互補，又其中一者談 [<a href="http://sourceforge.net/projects/blob/">blob</a>] ，另一者談 [<a href="http://sourceforge.net/projects/u-boot">U-boot</a>]，真是恰到好處。有了上述的基礎後，再回頭研讀 ARM-Linux hacker - Vincent Sanders - 的經典作品 [<a href="http://www.simtec.co.uk/products/SWLINUX/files/booting_article.html">Booting ARM Linux</a>]，就可得心應手。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 November 19, 2006 02:12 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>又「世」新的挑戰</p>
+<span class="comments-post">由 <a href="mailto&#58;hmm&#64;where&#46;com">hmm</a> 發表於</MTIfNonEmpty> November 21, 2006 11:02 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

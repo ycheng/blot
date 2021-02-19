@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: E/OS LX - 多重 API 支援的作業系統</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001795.html" title="Zeta 虛擬平台與 GNU/Linux" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001797.html" title="shellcode 的變化" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001795.html">« Zeta 虛擬平台與 GNU/Linux</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001797.html">shellcode 的變化 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">September 23, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">E/OS LX - 多重 API 支援的作業系統</h3>
+
+[<a href="http://meos.sourceforge.net/">E/OS LX</a>] 是個特別的作業系統，在 [<a href="http://meos.sourceforge.net/?page_id=4">About EOS</a>] 提到：<ul class="code" style="margin: 6px;">
+E/OS is a open source iniciative for have a operating system like BeOS system, with diferents servers and clients, with a very fast interface like MacOSX, and Be Apis, for have compatibility with BeOS systems. And have diferents drivers for run other types of arquitectures (windows, os2 warp, msdos, linux, freebsd and darwin)
+</ul>
+想法就是建立類似 BeOS 的一套多媒體作業系統，並且提供多種 API / system call 的相容性，目前的設計來說，是架構於 Linux kernel，並在其上劃分多個 server，比方說 GUI server 與 Emulation layer。BeOS 對於 [<a href="http://meos.sourceforge.net/">E/OS LX</a>] 的中心思想影響很大，並且在 API 的部份也朝著符合其相容性而發展 (可參考 [<a href="http://www.beunited.org/">Open Standards BeOS-compatible Operating Systems</a>])，也整合了 [<a href="http://www.wine-hq.com/">WINE</a>] 的 Win32 API 模擬技術，所以可執行部份 Win32 application。最新的版本是 0.28，以 GNU GPL v2 授權方式發行，我做了一份 [<a href="http://jserv.sayya.org/misc/eoslx-on-qemu-0.28.tar.bz2">E/OS i386 qemu image</a>] (bzip2 壓縮，40 Mb)，解開後執行其中任何一個 shell script 即可 (差別在於顯示解析度)，以下是執行畫面：<br>
+<center><img src="http://jserv.sayya.org/misc/eoslx-on-qemu-2.png"></center><br>
+<br>
+<center><img src="http://jserv.sayya.org/misc/eoslx-on-qemu-1.png"></center><br>
+很有意思，竟然可以跑  Win32 notepad.exe，而桌面系統 (衍生自 [<a href="http://ede.sourceforge.net/">EDE</a>]) 看起來還不錯，甚至也可運作 OpenGL 程式。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 September 23, 2006 02:58 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>It seems like a JOKE that says E/OS LX with native BeAPI.<br />
+E/OS LX just base on the FLTK and has no really BeAPI, even similar one.<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;anthonylee&#64;users&#46;gro&#46;clinux&#46;org">lee</a> 發表於</MTIfNonEmpty> October  5, 2006 09:28 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

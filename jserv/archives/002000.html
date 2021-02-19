@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Eee PC 改造計畫：活潑化的桌面</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001999.html" title="Bug Labs：創造個人專屬的移動裝置" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002001.html" title="LatencyTop：分析系統延遲的工具" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001999.html">« Bug Labs：創造個人專屬的移動裝置</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002001.html">LatencyTop：分析系統延遲的工具 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 30, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Eee PC 改造計畫：活潑化的桌面</h3>
+
+本月初實驗了 [<a href="http://blog.linux.org.tw/~jserv/archives/001969.html">模擬 Eee PC 運作 Keroro 桌面系統</a>]，這幾天完成一些基本的分析，就著手進行整個軟體的翻修，不過在我打算重灌為 Debian/Ubuntu 時，想暫時保留 Xandros 與 Asus 的軟體。作法很單純，直接將 ubuntu hardy (8.04) 加入 apt sources.list，然後暴力地 upgrade 即可。現在若干更新如下：<ul>
+<li>glibc - 2.7</li>
+<li>xserver-xorg-core - 1.4.1</li>
+<li>libX11 - 1.1.3 (with XCB)</li>
+<li>gtk+ - 2.12.9</li>
+<li>qt4 - 4.3.3</li>
+<li>qt3 - 3.3.8</li>
+<li>cairo - 1.5.14</li>
+<li>DRI/DRM/Mesa - 7.0.3</li>
+<li>kernel - 2.6.24 (尚有許多細節待處理)</li>
+</ul>
+Eee PC 雖然價格低廉，但是硬體規格卻不馬虎，內建的整合顯示卡是 Intel Mobile 915 chipset，依據 OpenGL 實測結果顯示，800x480 (fullscreen) 下可達到 18 FPS，就這類裝置來說，算是相當不錯。把環境弄好後，就將 cairo / clutter / webkit / OpenVG 等架構作些微調，而原有 Xandros 與 Asus 的軟體仍愉快地運作，以下是現在改造後的畫面：<br />
+<center><img src="http://jserv.sayya.org/misc/eeepc-improved.jpg" width="512" height="384" /></center><br />
+畫面可見，原本 Eee PC 引以為傲的 "Easy Mode" 仍存在，但下方的 panel 則整個換掉，至於原本電池、網路、輸入法等狀態顯示欄位，則可活潑地浮動顯示，這是對於既有的 Application Launcher 做了視覺補強的處理。<br />
+<br />
+既然我們有這麼好的 OpenGL 硬體，當然不可以糟蹋，之前提過的 [<a href="http://blog.linux.org.tw/~jserv/archives/001989.html">WebKit + Clutter：以 3D 技術給予網頁瀏覽的新體驗</a>] 也移植到 Eee PC 環境上，給予網頁瀏覽更舒服的體驗，可快速切換視角與多個頁面，最重要的是，縮放相當快速。另外，原本 EeePC/Xandros 使用的 icewm 也被完全換掉，被我改以 [<a href="http://www.compiz-fusion.org/">Compiz Fusion</a>]，拜 i915 硬體的威力，運作效果相當不錯，正在思考是否要將過去用 Cairo 開發的 effects 移植上去。倘若大項目處理好後，下一步就需要改善 Look-n-Feel，整合稍早進行的 [<a href="http://blog.linux.org.tw/~jserv/archives/001988.html">桌面程式質感改造：Qt4 應用程式部份</a>]，儘管我們已有許多高品質的 artwork/theme engine，這些也多半為自由軟體，但考量到 Eee PC 一類的硬體配置，需要將 OpenVG/Cairo/[<a href="http://freedesktop.org/wiki/Software/glitz">glitz</a>] 的硬體加速能力列入系統設計的考量。<br />
+<br />
+截至目前為止，這些改進或新引入的元件，在 Eee PC 上仍是很流暢的運作，OSDC.tw 上也會一併作展示與介紹。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March 30, 2008 06:28 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>我可能會為了這張screenshot去敗台eeepc等待大作 XD</p>
+<span class="comments-post">由 <a href="mailto&#58;eagerepc&#64;nomail&#46;nom">eagerepc</a> 發表於</MTIfNonEmpty> March 31, 2008 12:01 AM</span>
+</div>
+<div class="comments-body">
+<p>我一直對UI很有興趣,<br />
+可是感覺在台灣科技廠都不注重這塊,<br />
+而且週遭朋友都說做UI學不到東西以後換工作會沒人要,<br />
+想請問Jserv大您的看法呢??<br />
+thx :)</p>
+<span class="comments-post">由 <a href="mailto&#58;quasarsbubu&#64;gmail&#46;com">passenger</a> 發表於</MTIfNonEmpty> March 31, 2008 12:24 PM</span>
+</div>
+<div class="comments-body">
+<p>真是讚！這東西實在太正點了！</p>
+<span class="comments-post">由 <a href="mailto&#58;pswo10680&#64;gmail&#46;com">zerng07</a> 發表於</MTIfNonEmpty> April  2, 2008 08:23 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2000" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

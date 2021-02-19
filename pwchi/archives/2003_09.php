@@ -1,0 +1,235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>pwchi's blog: September 2003 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~pwchi/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~pwchi/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~pwchi/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~pwchi/archives/2003_08.php" title="August 2003" />
+
+<link rel="next" href="http://blog.linux.org.tw/~pwchi/archives/2003_10.php" title="October 2003" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~pwchi/" accesskey="1">pwchi's blog</a></h1>
+<span class="description">昨是今非，昨非今是；今是明非，今非明是。</span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~pwchi/archives/2003_08.php">&laquo; August 2003</a> |
+
+<a href="http://blog.linux.org.tw/~pwchi/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~pwchi/archives/2003_10.php">October 2003 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+<!--
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/">
+<rdf:Description
+    rdf:about="http://blog.linux.org.tw/~pwchi/archives/2003_09.php#000501"
+    trackback:ping="http://mt.debian.org.tw/mt-tb.cgi/322"
+    dc:title="gaim 0.70 支援 Yahoo! 連線"
+    dc:identifier="http://blog.linux.org.tw/~pwchi/archives/2003_09.php#000501"
+    dc:subject="黑客文化"
+    dc:description="好消息....可以支援新版 Yahoo!Messenger 協定的 gaim 0.70 已經發佈 ......"
+    dc:creator="pwchi"
+    dc:date="2003-09-30T12:15:56+08:00" />
+</rdf:RDF>
+-->
+
+
+<h2 class="date">September 30, 2003</h2>
+
+
+<div class="blogbody">
+<a name="000501"></a>
+<h3 class="title">gaim 0.70 支援 Yahoo! 連線</h3>
+
+<p>好消息....可以支援新版 Yahoo!Messenger 協定的 <a href="http://gaim.sf.net">gaim 0.70</a> 已經發佈 ...</p>
+
+<p>稍早，gaim project 發佈了 gaim 0.70，這是一個值得慶祝的版本。</p>
+
+<p>自從 9/24 起 Yahoo!Messenger 修改 auth protocol 之後，各界(包括 gaim project，Cerulean Studios 等各方高手)都不停的試著找出，與新版 Yahoo!Messener 協定溝通的辦法。</p>
+
+<p>gaim 0.70 則是這個努力的結果。</p>
+
+
+<div class="posted">
+	由 pwchi 發表於 <a href="http://blog.linux.org.tw/~pwchi/archives/000501.php">12:15 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-comments.cgi?entry_id=501" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+		| <a href="http://mt.debian.org.tw/mt-tb.cgi?__mode=view&amp;entry_id=501" onclick="OpenTrackback(this.href); return false">引用</a>
+	
+</div>
+
+</div>
+
+<!--
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/">
+<rdf:Description
+    rdf:about="http://blog.linux.org.tw/~pwchi/archives/2003_09.php#000498"
+    trackback:ping="http://mt.debian.org.tw/mt-tb.cgi/321"
+    dc:title="gaim 0.69 Release"
+    dc:identifier="http://blog.linux.org.tw/~pwchi/archives/2003_09.php#000498"
+    dc:subject="黑客文化"
+    dc:description="知名的第三方即時傳訊軟體 gaim 0.69 已於前天 Release ......."
+    dc:creator="pwchi"
+    dc:date="2003-09-26T12:33:58+08:00" />
+</rdf:RDF>
+-->
+
+
+<h2 class="date">September 26, 2003</h2>
+
+
+<div class="blogbody">
+<a name="000498"></a>
+<h3 class="title">gaim 0.69 Release</h3>
+
+<p>知名的第三方即時傳訊軟體 gaim 0.69 已於前天 Release ....</p>
+
+<p>gaim 0.69 前天已經發佈，但是目前網站首頁尚未更新，最新版還是顯示 0.68。<br />
+這個版本又增加了幾個新功能，在 MSN 的部份，主要是新增支援 MSN Protocol 9 的通訊協定，另外像是 "內建 MSN6 的表情圖案", "支援動態表情圖案"。</p>
+
+<p>而 Jabber 模組也開始支援 SSL 連線的功能。</p>
+
+<p>Yahoo 方面雖也有更新，但是目前棘手的 Yahoo! 無法登入問題，似乎在 0.69 尚未解決。<br />
+期待下一版 0.70 中能夠克服技術問題。</p>
+
+<p>以下為 gaim 0.69 的 ChangeLog</p>
+
+
+<div class="posted">
+	由 pwchi 發表於 <a href="http://blog.linux.org.tw/~pwchi/archives/000498.php">12:33 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-comments.cgi?entry_id=498" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+		| <a href="http://mt.debian.org.tw/mt-tb.cgi?__mode=view&amp;entry_id=498" onclick="OpenTrackback(this.href); return false">引用</a>
+	
+</div>
+
+</div>
+
+<!--
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/">
+<rdf:Description
+    rdf:about="http://blog.linux.org.tw/~pwchi/archives/2003_09.php#000497"
+    trackback:ping="http://mt.debian.org.tw/mt-tb.cgi/320"
+    dc:title="gaim 登入 Yahoo! 會 Crash 解決方案!"
+    dc:identifier="http://blog.linux.org.tw/~pwchi/archives/2003_09.php#000497"
+    dc:subject="黑客文化"
+    dc:description="有些人反應 gaim 在登入 Yahoo!Messenger 時，會發生 Crash 的情況......"
+    dc:creator="pwchi"
+    dc:date="2003-09-06T13:35:54+08:00" />
+</rdf:RDF>
+-->
+
+
+<h2 class="date">September 06, 2003</h2>
+
+
+<div class="blogbody">
+<a name="000497"></a>
+<h3 class="title">gaim 登入 Yahoo! 會 Crash 解決方案!</h3>
+
+<p>有些人反應 gaim 在登入 Yahoo!Messenger 時，會發生 Crash 的情況...</p>
+
+<p>目前發現，如果 Yahoo!Messenger 有使用中文群組名稱的話，會造成 gaim 登入時當掉！</p>
+
+<p>解決方法：<br />
+先使用原廠 Yahoo!Messenger 登入，將所有的中文群組名稱，改為英語系。再用 gaim 重新登入，應該就可以解決問題。</p>
+
+<p>附帶一提，由於 gaim 的 Contact List 是自己 存在 ~/.gaim/blist.xml 中，並不會去修改 Yahoo!Messenger 的遠端 Contact List。因此仍然可以在 gaim 登入後，使用中文群組名稱，並不會發生 Yahoo 登入當掉問題。</p>
+
+
+<div class="posted">
+	由 pwchi 發表於 <a href="http://blog.linux.org.tw/~pwchi/archives/000497.php">01:35 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-comments.cgi?entry_id=497" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+		| <a href="http://mt.debian.org.tw/mt-tb.cgi?__mode=view&amp;entry_id=497" onclick="OpenTrackback(this.href); return false">引用</a>
+	
+</div>
+
+</div>
+
+<!--
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/">
+<rdf:Description
+    rdf:about="http://blog.linux.org.tw/~pwchi/archives/2003_09.php#000496"
+    trackback:ping="http://mt.debian.org.tw/mt-tb.cgi/319"
+    dc:title="KMail 自動簽名機"
+    dc:identifier="http://blog.linux.org.tw/~pwchi/archives/2003_09.php#000496"
+    dc:subject="黑客文化"
+    dc:description="前晚用 Python 寫了個毫不起眼的小程式，做件毫不起眼的工作......"
+    dc:creator="pwchi"
+    dc:date="2003-09-05T17:16:00+08:00" />
+</rdf:RDF>
+-->
+
+
+<h2 class="date">September 05, 2003</h2>
+
+
+<div class="blogbody">
+<a name="000496"></a>
+<h3 class="title">KMail 自動簽名機</h3>
+
+<p>前晚用 Python 寫了個毫不起眼的小程式，做件毫不起眼的工作...</p>
+
+<p>最近試用 KMail 發現還不錯用，中文相容性還蠻好的，GnuPG 的支援也很完整。不過發現一個缺點，KMail 只能一個帳號設一個簽名檔。因為以前 Becky 用習慣了，Becky 可以設定多組簽名檔，然後於寫信時選擇要用的簽名，這讓我覺得很方便。</p>
+
+<p>所以昨晚用 Python 實作一個很不起眼的小玩意，我叫她「KMail 自動簽名機」，其實也沒幹麼，主要功能就是能夠設定多組簽名，然後能亂數選取自動簽名，這樣而已。這樣 KMail 的簽名系統，用起來就比較方便、也比較爽。^__^</p>
+
+
+<div class="posted">
+	由 pwchi 發表於 <a href="http://blog.linux.org.tw/~pwchi/archives/000496.php">05:16 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-comments.cgi?entry_id=496" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+		| <a href="http://mt.debian.org.tw/mt-tb.cgi?__mode=view&amp;entry_id=496" onclick="OpenTrackback(this.href); return false">引用</a>
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,586 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Asho's Blog: October 2004 Archives</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~asho/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~asho/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~asho/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~asho/archives/2004_09.html" title="September 2004" />
+
+<link rel="next" href="http://blog.linux.org.tw/~asho/archives/2004_11.html" title="November 2004" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~asho/" accesskey="1">Asho's Blog</a></h1>
+<span class="description">一個喜歡研究的傻小子 :-)</span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~asho/archives/2004_09.html">&laquo; September 2004</a> |
+
+<a href="http://blog.linux.org.tw/~asho/">Main</a>
+| <a href="http://blog.linux.org.tw/~asho/archives/2004_11.html">November 2004 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">October 26, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000691"></a>
+<h3 class="title">Debian Kernel-2.6 ide問題再續</h3>
+
+<p>先前在 <a href="http://blog.linux.org.tw/~asho/archives/000664.html">搞定了 kernel-2.6 對 ide 硬碟的問題</a> 這一篇說明要將 ide-disk ide-generic compile 到核心才能抓到 IDE 硬碟.</p>
+
+<p>而今天要修正的是不需要重新編譯到 kernel 裡,只要在載入核心時,比 SCSI 模組優先載入 IDE 模組就能驅動主機板上硬碟了,這也是為何 IDE 硬碟的系統即使 Compile 成 module 依然可以獨到的原因.</p>
+
+<p>做法是編輯 /etc/mkinitrd/modules,並加入</p>
+
+<p>amd74xx # 南橋晶片<br />
+ide-disk<br />
+ide-generic # ide-generic 一定要放在最後，不然會無法設 DMA，這樣速度就會變很慢喔</p>
+
+<p>重新產生 initrd.img<br />
+$ mkinitrd -o /boot/initrd.img-new `uname -r`</p>
+
+<p>設定好 boot loader 之後,重新開機就能獨到 IDE 裝置上的硬碟了.總算還給 Debian Kernel Maintainer 一個清白了.</p>
+
+<p>BTW...Herbert Xu 已經不在 Debian Kernel Maintainer Team 中了</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000691.html">09:54 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=691" onclick="OpenComments(this.href); return false">Comments (235)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">October 05, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000685"></a>
+<h3 class="title">LTP</h3>
+
+<p>Linux Test Project</p>
+
+<p><a href="http://ltp.sf.net/">http://ltp.sourceforge.net/</a></p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000685.html">02:18 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=685" onclick="OpenComments(this.href); return false">Comments (1791)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000684"></a>
+<h3 class="title">cpufreq</h3>
+
+<p>set your CPU clock in  order to save "Money"!!!</p>
+
+<p>Windoz user often install <i>cpuinfo</i> to idle their  CPU clock. In other words, it can save your moneys...:-)</p>
+
+<p>Windoz user often install <i>cpuinfo</i> to idle their  CPU clock. In other words, it can save your moneys and descrease your box temperature.</p>
+
+<p>So...How about Linux? It's easy if you use the Kernel-2.6 with support CPUs. What!? You haven't use kernel-2.6... Try it!!.</p>
+
+<p>Be sure to add the acpi=on in your boot loader configuration. Just modprobe suitable module to realize the feature. For example, my box is a P4-2.4Ghz which is also in the supported list.</p>
+
+<p>So I <i>modprobe p4_clockmod</i> and /sys/devices/system/cpu/cpu0/cpufreq will contain some setup files which allows you to scale the CPU clock.</p>
+
+<p>cpuinfo_min_freq :              this file shows the minimum operating<br />
+                                frequency the processor can run at(in kHz)<br />
+cpuinfo_max_freq :              this file shows the maximum operating<br />
+                                frequency the processor can run at(in kHz)<br />
+scaling_driver :                this file shows what cpufreq driver is<br />
+                                used to set the frequency on this CPU</p>
+
+<p>scaling_available_governors :   this file shows the CPUfreq governors<br />
+                                available in this kernel. You can see the<br />
+                                currently activated governor in</p>
+
+<p>scaling_governor,               and by "echoing" the name of another<br />
+                                governor you can change it. Please note<br />
+                                that some governors won't load - they only<br />
+                                work on some specific architectures or<br />
+                                processors.<br />
+scaling_min_freq and<br />
+scaling_max_freq                show the current "policy limits" (in<br />
+                                kHz). By echoing new values into these<br />
+                                files, you can change these limits.</p>
+
+<p>1: set max to 300Mhz<br />
+echo "300000" > scaling_max_freq</p>
+
+<p>cat /proc/cpuinfo<br />
+processor       : 0<br />
+vendor_id       : GenuineIntel<br />
+cpu family      : 15<br />
+model           : 2<br />
+model name      : Intel(R) Pentium(R) 4 CPU 2.40GHz<br />
+stepping        : 7<br />
+<i>cpu MHz         : 300.049</i><br />
+cache size      : 512 KB<br />
+fdiv_bug        : no<br />
+hlt_bug         : no<br />
+f00f_bug        : no<br />
+coma_bug        : no<br />
+fpu             : yes<br />
+fpu_exception   : yes<br />
+cpuid level     : 2<br />
+wp              : yes<br />
+flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe cid<br />
+bogomips        : 4767.74</p>
+
+<p>In Debian, install the powernowd to esay setup the cpufreq.<br />
+See <i>/usr/src/kernel-source-2.6.8/Documentation/cpufreq</i> for details<br />
+</p>
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000684.html">01:17 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=684" onclick="OpenComments(this.href); return false">Comments (256)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">October 04, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000681"></a>
+<h3 class="title">raid5 setup and manager with mdadm on Debian Stable above</h3>
+
+<p>I am planning to set up a personal NAS for storaging.</p>
+
+<p>I choose the raid5 as prevention and performance.....</p>
+
+<p>Goal:<br />
+1: set up the raid5<br />
+2: LVM over raid5 in order to make partitions</p>
+
+<p>Hardware:<br />
+3 disks for raid5<br />
+1 disk for spare<br />
+1 disk for additional</p>
+
+<p>OS:<br />
+Debian Stable + kernel-2.4.18<br />
+LVM<br />
+mdadm</p>
+
+<p>1:Set up raid5<br />
+vmware:~# mdadm -C /dev/md0 -l5 -n3 /dev/sdb1 /dev/sdc1 /dev/sdd1</p>
+
+<p>vmware:~# cat /proc/mdstat<br />
+Personalities : [raid5]<br />
+read_ahead 1024 sectors<br />
+md0 : active raid5 scsi/host0/bus0/target3/lun0/part1[3] scsi/host0/bus0/target2/lun0/part1[1] scsi/host0/bus0/target1/lun0/part1[0]<br />
+      8385664 blocks level 5, 64k chunk, algorithm 2 [3/2] [UU_]<br />
+      [>....................]  recovery =  2.2% (96844/4192832) finish=2.8min speed=24211K/sec<br />
+unused devices: <none></p>
+
+<p>you may find out raid5 is trying to sync all the 3 disks</p>
+
+<p>2: LVM over raid<br />
+vgscan # create /etc/lvmtab" and "/etc/lvmtab.d</p>
+
+<p>vmware:~# pvcreate /dev/md0<br />
+pvcreate -- physical volume "/dev/md0" successfully created</p>
+
+<p>vmware:~# vgcreate -s 32M ideraid5 /dev/md0<br />
+vgcreate -- INFO: maximum logical volume size is 2 Terabyte<br />
+vgcreate -- doing automatic backup of volume group "ideraid5"<br />
+vgcreate -- volume group "ideraid5" successfully created and activated</p>
+
+<p>vmware:~# lvcreate -L 4000 ideraid5 (for home)<br />
+lvcreate -- doing automatic backup of "ideraid5"<br />
+lvcreate -- logical volume "/dev/ideraid5/lvol1" successfully created</p>
+
+<p>vmware:~# lvcreate -L 4000 ideraid5 (for /usr/src my flavor)<br />
+lvcreate -- doing automatic backup of "ideraid5"<br />
+lvcreate -- logical volume "/dev/ideraid5/lvol2" successfully created</p>
+
+<p>3: mount the LVM partitions<br />
+mkfs.xfs /dev/ideraid5/lvol1<br />
+mkfs.xfs /dev/ideraid5/lvol2<br />
+mount -t auto /dev/ideraid5/lvol1 /home<br />
+mount -t auto /dev/ideraid5/lvol2 /usr/src</p>
+
+<p>4:Create spare disk<br />
+mdadm -a /dev/md0 /dev/sde1 # become spare disk</p>
+
+<p>5:Simulating a drive failure<br />
+vmware:~# mdadm /dev/md0 -f /dev/sdd1<br />
+mdadm: set /dev/sdd1 faulty in /dev/md0</p>
+
+<p>vmware:~# cat /proc/mdstat # because we set the spare disk so rebuild the raid5<br />
+Personalities : [raid5]<br />
+read_ahead 1024 sectors<br />
+md0 : active raid5 scsi/host0/bus0/target4/lun0/part1[3] scsi/host0/bus0/target3/lun0/part1[2](F) scsi/host0/bus0/target2/lun0/part1[1] scsi/host0/bus0/target1/lun0/part1[0]<br />
+      8385664 blocks level 5, 64k chunk, algorithm 2 [3/2] [UU_]<br />
+      [>....................]  recovery =  3.1% (132804/4192832) finish=2.0min speed=33201K/sec<br />
+unused devices: <none></p>
+
+<p>vmware:~# mdadm -D /dev/md0  # rebuild array<br />
+/dev/md0:<br />
+        Version : 00.90.00<br />
+  Creation Time : Mon Oct  4 18:00:23 2004<br />
+     Raid Level : raid5<br />
+     Array Size : 8385664 (7.99 GiB 8.58 GB)<br />
+    Device Size : 4192832 (3.99 GiB 4.29 GB)<br />
+     Raid Disks : 3<br />
+    Total Disks : 4<br />
+Preferred Minor : 0<br />
+    Persistance : Superblock is persistant</p>
+
+<p>    Update Time : Mon Oct  4 19:06:25 2004<br />
+          State : dirty, no-errors<br />
+  Active Drives : 2<br />
+ Working Drives : 3<br />
+  Failed Drives : 1<br />
+   Spare Drives : 1</p>
+
+<p>         Layout : left-symmetric<br />
+     Chunk Size : 64K</p>
+
+<p>    Number   Major   Minor   RaidDisk   State<br />
+       0       8       17        0      active sync   /dev/sdb1<br />
+       1       8       33        1      active sync   /dev/sdc1<br />
+       2       8       49        2      faulty   /dev/sdd1<br />
+       3       8       65        3        /dev/sde1<br />
+           UUID : 277448fd:35686cf4:068d4813:5447c9f4</p>
+
+<p>vmware:~# mdadm -D /dev/md0  # after rebuild<br />
+/dev/md0:<br />
+        Version : 00.90.00<br />
+  Creation Time : Mon Oct  4 18:00:23 2004<br />
+     Raid Level : raid5<br />
+     Array Size : 8385664 (7.99 GiB 8.58 GB)<br />
+    Device Size : 4192832 (3.99 GiB 4.29 GB)<br />
+     Raid Disks : 3<br />
+    Total Disks : 4<br />
+Preferred Minor : 0<br />
+    Persistance : Superblock is persistant</p>
+
+<p>    Update Time : Mon Oct  4 19:08:43 2004<br />
+          State : dirty, no-errors<br />
+  Active Drives : 3<br />
+ Working Drives : 3<br />
+  Failed Drives : 0<br />
+   Spare Drives : 1</p>
+
+<p>         Layout : left-symmetric<br />
+     Chunk Size : 64K</p>
+
+<p>    Number   Major   Minor   RaidDisk   State<br />
+       0       8       17        0      active sync   /dev/sdb1<br />
+       1       8       33        1      active sync   /dev/sdc1<br />
+       2       8       65        2      active sync   /dev/sde1<br />
+           UUID : 277448fd:35686cf4:068d4813:5447c9f4</p>
+
+<p>vmware:~# mdadm /dev/md0 -r /dev/sdd1 # remove the failed disk</p>
+
+<p>6: edit /etc/mdadm/mdadm.conf # can be detect while reboot<br />
+DEVICE /dev/sdb1 /dev/sdc1 /dev/sdd1 /dev/sde1<br />
+ARRAY /dev/md0 UUID=1185fff6:e19598ba:ee9c5aa0:7bd7af5e</p>
+
+<p>7: grow your raid5 disks<br />
+The kernel-2.6 in Debian doesn't support growing more disks to raid5.Try raidreconf in raidtools2 instead.</p>
+
+<p>vmware:~# vim /etc/raidtab<br />
+# Sample raid-5 configuration<br />
+raiddev                 /dev/md0<br />
+raid-level              5<br />
+nr-raid-disks           3<br />
+chunk-size              64</p>
+
+<p># Parity placement algorithm</p>
+
+<p>#parity-algorithm       left-asymmetric</p>
+
+<p>#<br />
+# the best one for maximum performance:<br />
+#<br />
+parity-algorithm        left-symmetric</p>
+
+<p>#parity-algorithm       right-asymmetric<br />
+#parity-algorithm       right-symmetric</p>
+
+<p># Spare disks for hot reconstruction<br />
+nr-spare-disks          1</p>
+
+<p>device                  /dev/sdb1<br />
+raid-disk               0</p>
+
+<p>device                  /dev/sdc1<br />
+raid-disk               1</p>
+
+<p>device                  /dev/sdd1<br />
+raid-disk               2</p>
+
+<p>device                  /dev/sde1<br />
+spare-disk              0</p>
+
+<p>vmware:~# vim /etc/raidtab.new<br />
+# Sample raid-5 configuration<br />
+raiddev                 /dev/md0<br />
+raid-level              5<br />
+nr-raid-disks           4<br />
+chunk-size              64</p>
+
+<p># Parity placement algorithm</p>
+
+<p>#parity-algorithm       left-asymmetric</p>
+
+<p>#<br />
+# the best one for maximum performance:<br />
+#<br />
+parity-algorithm        left-symmetric</p>
+
+<p>#parity-algorithm       right-asymmetric<br />
+#parity-algorithm       right-symmetric</p>
+
+<p># Spare disks for hot reconstruction<br />
+nr-spare-disks          1</p>
+
+<p>device                  /dev/sdb1<br />
+raid-disk               0</p>
+
+<p>device                  /dev/sdc1<br />
+raid-disk               1</p>
+
+<p>device                  /dev/sdd1<br />
+raid-disk               2</p>
+
+<p>device                  /dev/sde1<br />
+raid-disk               3</p>
+
+<p>device                  /dev/sdf1<br />
+spare-disk              0</p>
+
+<p><br />
+vmware:~# raidreconf -o /etc/raidtab -n /etc/raidtab.new -m /dev/md0<br />
+Working with device /dev/md0<br />
+Parsing /etc/raidtab<br />
+Parsing /etc/raidtab.new<br />
+Size of old array: 33543468 blocks,  Size of new array: 41929335 blocks<br />
+Old raid-disk 0 has 65513 chunks, 4192832 blocks<br />
+Old raid-disk 1 has 65513 chunks, 4192832 blocks<br />
+Old raid-disk 2 has 65513 chunks, 4192832 blocks<br />
+Old raid-disk 3 has 65513 chunks, 4192832 blocks<br />
+New raid-disk 0 has 65513 chunks, 4192832 blocks<br />
+New raid-disk 1 has 65513 chunks, 4192832 blocks<br />
+New raid-disk 2 has 65513 chunks, 4192832 blocks<br />
+New raid-disk 3 has 65513 chunks, 4192832 blocks<br />
+New raid-disk 4 has 65513 chunks, 4192832 blocks<br />
+Using 64 Kbyte blocks to move from 64 Kbyte chunks to 64 Kbyte chunks.<br />
+Detected 256248 KB of physical memory in system<br />
+A maximum of 854 outstanding requests is allowed<br />
+---------------------------------------------------<br />
+I will grow your old device /dev/md0 of 196539 blocks<br />
+to a new device /dev/md0 of 262052 blocks<br />
+using a block-size of 64 KB<br />
+Is this what you want? (yes/no): yes<br />
+Converting 196539 block device to 262052 block device<br />
+Allocated free block map for 4 disks<br />
+5 unique disks detected.<br />
+Working (|) [00124932/00196539] [###########################         <br />
+Source drained, flushing sink.<br />
+Reconfiguration succeeded, will update superblocks...<br />
+Updating superblocks...<br />
+handling MD device /dev/md0<br />
+analyzing super-block<br />
+disk 0: /dev/sdb1, 4192933kB, raid superblock at 4192832kB<br />
+disk 1: /dev/sdc1, 4192933kB, raid superblock at 4192832kB<br />
+disk 2: /dev/sdd1, 4192933kB, raid superblock at 4192832kB<br />
+disk 3: /dev/sde1, 4192933kB, raid superblock at 4192832kB<br />
+disk 4: /dev/sdf1, 4192933kB, raid superblock at 4192832kB<br />
+Array is updated with kernel.<br />
+Disks re-inserted in array... Hold on while starting the array...<br />
+Maximum friend-freeing depth:         6<br />
+Total wishes hooked:             196539<br />
+Maximum wishes hooked:              854<br />
+Total gifts hooked:              196539<br />
+Maximum gifts hooked:               807<br />
+Congratulations, your array has been reconfigured,<br />
+and no errors seem to have occured.</p>
+
+<p>8:resize your md<br />
+Ext2/Ext3:resize2fs<br />
+Reiserfs:resize_reiserfs<br />
+XFS:please mount all your partitions first and try xfs_growfs</p>
+
+<p>PS:<br />
+1:please mv the /etc/rcS/S25lvm to SXXlvm which XX must bigger than 25 if you use LVM over raid<br />
+2:want to grow your raid5 fs with mdamd ?!<br />
+please install Debian Sarge and kernel-2.6. Or...use raidtools2 with raidreconf</p>
+
+<p>Appendix:reference<br />
+<a href="http://www.networknewz.com/networknewz-10-20030113mdadm-A-New-Tool-For-Linux-Software-RAID-Management.html">mdadm A New Tool For Linux Software RAID Management</a><br />
+<a href="http://www.tldp.org/HOWTO/Software-RAID-HOWTO.html">SoftRaid HOWTO</a></p>
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000681.html">12:24 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=681" onclick="OpenComments(this.href); return false">Comments (505)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">October 02, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000679"></a>
+<h3 class="title">DebBlue</h3>
+
+<p>http://debblue.debian.net/</p>
+
+<p>When starting to run Debian as my prime desktop I noticed that Debian, compared to commercial distros, lacked a consistent look. There are many nice bootsplashes, login screen themes, desktop backgrounds etc., but it is very difficult to find a set which fits nicely together. At least I didn't find a nice set. That is the reason I started to work on DebBlue. DebBlue consists of a set of themes for</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000679.html">12:38 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=679" onclick="OpenComments(this.href); return false">Comments (216)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000678"></a>
+<h3 class="title">custom Debian Distributions</h3>
+
+<p>http://people.debian.org/~tille/debian-med/talks/paper-cdd/debian-cdd.html/</p>
+
+<p>aptitude install cdd</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000678.html">12:35 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=678" onclick="OpenComments(this.href); return false">Comments (907)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000677"></a>
+<h3 class="title">DebianDesktop</h3>
+
+<p>http://wiki.debian.net/?DebianDesktop</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000677.html">12:33 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=677" onclick="OpenComments(this.href); return false">Comments (379)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">October 01, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000676"></a>
+<h3 class="title">Debian Sarge release feature</h3>
+
+<p>http://release.debian.org/sarge.html</p>
+
+<p>        * Debian Installer working on all architectures<br />
+            - alpha, hppa, i386, ia64, m68k, mips, mipsel, powerpc, sparc: working<br />
+            - amd64: working with unofficial image<br />
+            - arm: netboots on bast and netwinder<br />
+            - s390: sshd must work after first reboot; waiting on a NEW<br />
+              package from network-console.</p>
+
+<p>No Opteron support ...:-(</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000676.html">07:01 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=676" onclick="OpenComments(this.href); return false">Comments (630)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

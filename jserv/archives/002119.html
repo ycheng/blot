@@ -1,0 +1,451 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 打造 Brainfuck 的 JIT compiler</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002118.html" title="0xlab 成立半年回顧" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002120.html" title="親手打造 Dynamic Library Loader" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002118.html">« 0xlab 成立半年回顧</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002120.html">親手打造 Dynamic Library Loader »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">November 04, 2009</h2>
+
+<div class="blogbody">
+
+<h3 class="title">打造 Brainfuck 的 JIT compiler</h3>
+
+Brainfuck 是種極為精簡的程式語言，由 Urban Müller 在 1993 年發展。Urban Müller 當初的目標為提出一種簡單的、可用最小的編譯器來實現、符合 Turing complete 的程式。最早在 Amiga 機器上撰寫的編譯器只有 240 bytes 的大小，而 Brian Raiter 在 1999 年甚至於 i386/Linux 機器上做出僅需 166 bytes 的 Brainfuck 編譯器，詳情可見 [<a href="http://www.muppetlabs.com/~breadbox/software/tiny/bf.asm.txt">bf.asm</a>]。<br />
+<br />
+既然 Brainfuck 是符合 Turing complete 的程式語言，理論上可進行任何運算動作，可查看 Wikipedia 的 [<a href="http://zh.wikipedia.org/wiki/Brainfuck">Brainfuck</a>] 詞目理解其簡潔的語法與設計，本文不贅述。作為一個「知易行難」的程式語言，Brainfuck 僅有八個指令，其中兩個是 I/O 動作。作為 Turing machine 的實踐，Brainfuck 對記憶體單元作直接的存取，對應到 C 語言的概念來說，如果 char *p 指向記憶體區塊的話，Brainfuck 語言的八個指令可對照為以下： (Brainfuck vs. C)<br />
+<table align="center">
+<tr><th>Brainfuck</th>
+    <th>C</th></tr>
+<tr><td>&gt;</td>
+    <td>++p;</td></tr>
+<tr><td>&lt;</td>
+    <td>--p;</td></tr>
+<tr><td>+</td>
+    <td>++*p;</td></tr>
+<tr><td>-</td>
+    <td>--*p;</td></tr>
+<tr><td>.</td>
+    <td>putchar(*p);</td></tr>
+<tr><td>,</td>
+    <td>*p = getchar();</td></tr>
+<tr><td>[</td>
+    <td>while (*p) {</td></tr>
+<tr><td>]</td>
+    <td>}</td></tr>
+</table>
+也就是說，下方的 Brainfuck 程式碼：<ul><pre class="code margin: 6px;">
++++++[-]
+</pre></ul>
+對應為 C 語言程式碼為：<pre class="code margin: 6px;">
+     *p=+5;
+     <span class="keyword">while</span>(*p != 0){
+          *p--;
+     }
+</pre>
+體解「知易行難」的 Brainfuck，最好還是多練習，可搭配 [<a href="http://www.lordalcol.com/brainfuckjs/">Brainfuck JS (interpreter & debugger)</a>] 這強大的互動環境。<br />
+<br />
+撰寫 Branfuck 編譯器是相當容易的，比方說，如果我們將 C 語言當作是 Brainfuck 的組合語言碼輸出 (事實上 LLVM 也有 C backend)，那麼這動作就如上述的對應表一般，可一對一轉換，只要用 sed 一類的工具即可達到，以下是一個簡單的實做： [<a href="http://jserv.sayya.org/compiler/bf/bf2c.sed">bf2c.sed</a>]<pre class="code margin: 6px;">
+#! /bin/sed -f
+s/[^][+&lt;>.,-]//g
+s/\([-+]\)/\1\1*p;/g
+s/&lt;/p--;/g
+s/>/p++;/g
+s/\./putchar(*p);/g
+s/,/*p=getchar();/g
+s/\[/while (*p) {/g
+s/\]/}/g
+1s/^/#include &lt;stdio.h>\
+int main(void){char *p=calloc(1,10000);/
+$s/$/}/</pre>
+Wikipedia 上那個經典的 Brainfuck 版本的 Hello World 程式 (需要留意的是，在 Brainfuck 中，寫一個 UNIX "cat" 工具程式，遠比寫 Hello World 簡單)：<ul>
+<pre class="code margin: 6px;">
+++++++++++[>+++++++>++++++++++>+++>+&lt;&lt;&lt;&lt;-]
+>++.>+.+++++++..+++.>++.&lt;&lt;+++++++++++++++.
+>.+++.------.--------.>+.>.</pre></ul>
+就得到以下的「編譯」結果：<ul>
+#include &lt;stdio.h&gt;
+int main(void){char *p=calloc(1,10000);
+++*p;++*p;++*p;++*p;++*p;++*p;++*p;++*p;++*p;++*p;
+while (*p) {p++;++*p;++*p;++*p;++*p;++*p;++*p;++*p;
+p++;++*p;++*p;++*p;++*p;++*p;++*p;++*p;++*p;++*p;++*p;
+p++;++*p;++*p;++*p;p++;++*p;p--;p--;p--;p--;--*p;}
+p++;++*p;++*p;putchar(*p);p++;++*p;putchar(*p);++*p;
+++*p;++*p;++*p;++*p;++*p;++*p;putchar(*p);putchar(*p);
+++*p;++*p;++*p;putchar(*p);p++;++*p;++*p;putchar(*p);
+p--;p--;++*p;++*p;++*p;++*p;++*p;++*p;++*p;++*p;++*p;
+++*p;++*p;++*p;++*p;++*p;++*p;putchar(*p);p++;putchar(*p);
+++*p;++*p;++*p;putchar(*p);
+--*p;--*p;--*p;--*p;--*p;--*p;putchar(*p);
+--*p;--*p;--*p;--*p;--*p;--*p;--*p;--*p;putchar(*p);
+p++;++*p;putchar(*p);p++;putchar(*p);}
+</ul>
+當然，編譯器不是查表對照而已，還得涉及到 relocation 與 optimization 的議題，這些稍候筆者再來討論。稍早筆者介紹過 [<a href="http://blog.linux.org.tw/~jserv/archives/002089.html">AsmJit : C++ 封裝的 Just-In-Time Assembler</a>] 後，大鳥就做了一個 [<a href="http://gaagaaga.blogspot.com/2009/04/justfuck-x86-just-in-time-compiler-for.html">JustFuck, A x86 Just-In-Time Compiler for Brainfuck</a>]，透過執行時期的行為，一邊分析 Brainfuck 的八個指令，一邊動態產生對應的機械碼，這真是個很不錯的範例實做<br />
+<br />
+除了 [<a href="http://code.google.com/p/asmjit/">AsmJit</a>]，使用 [<a href="http://homepage1.nifty.com/herumi/soft/xbyak_e.html">Xbyak</a>] (New BSD License) 也是相當好的選擇，可快速以此 x86 / x86_64 JIT assembler 實現 Brainfuck 語言的 Just-in-Time compiler。以下是一個具體的 Brainfuck JIT 實做，適用的平台是 x86/Linux： (完整的套件在 [<a href="http://jserv.sayya.org/compiler/bf/bfjit-x86.tar.bz2">bfjit-x86.tar.bz2</a>])<pre class="code margin: 6px;">
+<span class="keyword">#include</span> <span class="literal">"xbyak/xbyak.h"</span><span class="keyword">
+#include</span> &lt;stdio.h><span class="keyword">
+
+#include</span> &lt;stdlib.h><span class="keyword">
+#include</span> &lt;stdint.h><span class="keyword">
+#include</span> &lt;stack><span class="keyword">
+#include</span> &lt;fstream>
+
+<span class="keyword">class </span>Brainfuck : <span class="keyword">public</span> Xbyak::CodeGenerator {
+<span class="keyword">private</span>:
+    <span class="keyword">enum</span> Direction { B, F };
+    <span class="keyword">const</span> <span class="keyword">char</span> *toStr(<span class="keyword">int</span> labelNo, Direction dir) {
+        <span class="keyword">static</span> <span class="keyword">char</span> num[64];
+        snprintf(num, <span class="keyword">sizeof</span>(num), <span class="literal">"%c%d"</span>, dir == B ? <span class="literal">'B'</span> : <span class="literal">'F'</span>, labelNo);
+        <span class="keyword">return</span> num;
+    }
+
+<span class="keyword">public</span>:
+    <span class="keyword">int</span> getContinuousChar(std::istream&amp; is, <span class="keyword">char</span> c) {
+        <span class="keyword">int</span> count = 1;
+        <span class="keyword">char</span> p;
+        <span class="keyword">while</span> (is >> p) {
+            <span class="keyword">if</span> (p != c) <span class="keyword">break</span>;
+            count++;
+        }
+        is.unget();
+        <span class="keyword">return</span> count;
+    }
+    Brainfuck(std::istream&amp; is) : CodeGenerator(50000) {
+        <span class="keyword">using</span> <span class="keyword">namespace</span> Xbyak;
+        <span class="keyword">const</span> Reg32&amp; pPutchar(esi);
+        <span class="keyword">const</span> Reg32&amp; pGetchar(edi);
+        <span class="keyword">const</span> Reg32&amp; stack(ebp);
+        <span class="keyword">const</span> Address cur = dword [stack];
+        push(ebp); <span class="comment">// stack
+</span>        push(esi);
+        push(edi);
+        <span class="keyword">const</span> <span class="keyword">int</span> _P = 4 * 3;
+        mov(pPutchar, ptr[esp + _P + 4]); <span class="comment">// putchar
+</span>        mov(pGetchar, ptr[esp + _P + 8]); <span class="comment">// getchar
+</span>        mov(stack, ptr[esp + _P + 12]); <span class="comment">// stack
+</span>        <span class="keyword">int</span> labelNo = 0;
+        std::stack&lt;<span class="keyword">int</span>> keepLabelNo;
+        <span class="keyword">char</span> c;
+        <span class="keyword">while</span> (is >> c) {
+            <span class="keyword">switch</span> (c) {
+            <span class="keyword">case</span> <span class="literal">'+'</span>:
+            <span class="keyword">case</span> <span class="literal">'-'</span>:
+                {
+                    <span class="keyword">int</span> count = getContinuousChar(is, c);
+                    <span class="keyword">if</span> (count == 1) {
+                        c == <span class="literal">'+'</span> ? inc(cur) : dec(cur);
+                    } <span class="keyword">else</span> {
+                        add(cur, (c == <span class="literal">'+'</span> ? count : -count));
+                    }
+                }
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="literal">'>'</span>:
+            <span class="keyword">case</span> <span class="literal">'&lt;'</span>:
+                {
+                    <span class="keyword">int</span> count = getContinuousChar(is, c);
+                    add(stack, 4 * (c == <span class="literal">'>'</span> ? count : -count));
+                }
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="literal">'.'</span>:
+                push(cur);
+                call(pPutchar);
+                pop(eax);
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="literal">','</span>:
+                call(pGetchar);
+                mov(cur, eax);
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="literal">'['</span>:
+                L(toStr(labelNo, B));
+                mov(eax, cur);
+                test(eax, eax);
+                jz(toStr(labelNo, F), T_NEAR);
+                keepLabelNo.push(labelNo++);
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="literal">']'</span>:
+                {
+                    <span class="keyword">int</span> no = keepLabelNo.top(); keepLabelNo.pop();
+                    jmp(toStr(no, B));
+                    L(toStr(no, F));
+                }
+                <span class="keyword">break</span>;
+            <span class="keyword">default</span>:
+                <span class="keyword">break</span>;
+            }
+        }
+        pop(edi);
+        pop(esi);
+        pop(ebp);
+        ret();
+    }
+};
+
+<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])
+{
+    <span class="keyword">if</span> (argc == 1) {
+        fprintf(stderr, <span class="literal">"bf filename.bf [0|1]\n"</span>);
+        <span class="keyword">return</span> 1;
+    }
+    std::ifstream ifs(argv[1]);
+    Brainfuck bf(ifs);
+    <span class="keyword">static</span> <span class="keyword">int</span> stack[32768];
+    ((<span class="keyword">void</span> (*)(<span class="keyword">void</span>*, <span class="keyword">void</span>*, <span class="keyword">int</span> *)) bf.getCode())(
+               (<span class="keyword">void</span> *) putchar, (<span class="keyword">void</span> *) getchar, stack
+    );
+    <span class="keyword">return</span> 0;
+}</pre>
+額外打上以下的 patch，可得知 JIT compiler 輸出的 x86 機械碼：<pre class="code margin: 6px;">
+--- bfjit.cpp	2009-11-04 07:44:18.000000000 +0800
++++ bfjit-dump.cpp	2009-11-04 07:50:07.000000000 +0800
+@@ -94,6 +94,31 @@ <span class="keyword">public</span>:
+     }
+ };
+
++<span class="keyword">void</span> dump(<span class="keyword">const</span> uint8_t *code, size_t size)
++{
++    puts(<span class="literal">"#include &lt;stdio.h>\n"</span>
++            <span class="literal">"static int stack[32768];\n"</span>
++            <span class="literal">"static const unsigned char code[] = {"</span>);
++    <span class="keyword">for</span> (size_t i = 0; i &lt; size; i++) {
++        printf(<span class="literal">"0x%02x,"</span>, code[i]); <span class="keyword">if</span> ((i % 16) == 15) putchar(<span class="literal">'\n'</span>);
++    }
++    puts(<span class="literal">"\n};"</span>);
++<span class="keyword">#ifdef</span> __linux__
++    puts(<span class="literal">"#include &lt;unistd.h>"</span>);
++    puts(<span class="literal">"#include &lt;sys/mman.h>"</span>);
++<span class="keyword">#endif</span>
++    puts(<span class="literal">"main()\n{"</span>);
++<span class="keyword">#ifdef</span> __linux__
++    puts(<span class="literal">"\tlong pageSize = sysconf(_SC_PAGESIZE) - 1;"</span>);
++    puts(<span class="literal">"\tmprotect((void*)code, (sizeof(code) + pageSize) &amp; ~pageSize, PROT_READ | PROT_EXEC);"</span>);
++<span class="keyword">#endif</span>
++    puts(
++            <span class="literal">"\t((void (*)(void*, void*, int *))code)("</span>
++            <span class="literal">"\t\t(void*)putchar, (void*)getchar, stack);\n"</span>
++            <span class="literal">"}"</span>
++        );
++}
++
+ <span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])
+ {
+     <span class="keyword">if</span> (argc == 1) {
+@@ -101,10 +126,16 @@ <span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])
+         <span class="keyword">return</span> 1;
+     }
+     std::ifstream ifs(argv[1]);
++    <span class="keyword">int</span> mode = argc == 3 ? atoi(argv[2]) : 0;
+     Brainfuck bf(ifs);
+-    <span class="keyword">static</span> <span class="keyword">int</span> stack[32768];
+-    ((<span class="keyword">void</span> (*)(<span class="keyword">void</span>*, <span class="keyword">void</span>*, <span class="keyword">int</span> *)) bf.getCode())(
+-               (<span class="keyword">void</span> *) putchar, (<span class="keyword">void</span> *) getchar, stack
+-    );
++    <span class="keyword">if</span> (mode == 0) {
++        <span class="keyword">static</span> <span class="keyword">int</span> stack[32768];
++        ((<span class="keyword">void</span> (*)(<span class="keyword">void</span>*, <span class="keyword">void</span>*, <span class="keyword">int</span> *)) bf.getCode())(
++                   (<span class="keyword">void</span> *) putchar, (<span class="keyword">void</span> *) getchar, stack
++        );
++    } <span class="keyword">else</span> {
++        dump(bf.getCode(), bf.getSize());
++    }
+     <span class="keyword">return</span> 0;
+ }
++</pre>
+其實，Brainfuck 與其說是程式語言，不如說是一種硬體架構的實現 (Turing machine)，知名的編譯器開發計畫 [<a href="http://llvm.org/">LLVM</a>] 也包含一個 Brainfuck 的範例，作為一個 front-end，掛入 LLVM IR (中間表示)，進而與 LLVM 豐富的編譯器元件作整合。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 November  4, 2009 09:30 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>文中提到的 bf2c.awk 語法 sed 吧.  不是 awk<br />
+( http://en.wikipedia.org/wiki/AWK  )</p>
+<span class="comments-post">由 <a href="mailto&#58;whoami&#46;tw&#64;gmail&#46;com">whoami</a> 發表於</MTIfNonEmpty> November  4, 2009 04:48 PM</span>
+</div>
+<div class="comments-body">
+<p>@whoami</p>
+
+<p>已修正，謝謝。AWK 的版本是後續文章要探討的 :)</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> November  4, 2009 07:08 PM</span>
+</div>
+<div class="comments-body">
+<p>這個語言真有趣@_@</p>
+<span class="comments-post">由 <a href="http://magicdesign.blogspot.com/">MGdesigner</a> 發表於</MTIfNonEmpty> November  4, 2009 07:51 PM</span>
+</div>
+<div class="comments-body">
+<p>有意思的語言, 不過這語言真是如其名啊 看到令人頭昏</p>
+<span class="comments-post">由 <a href="mailto&#58;cphacker&#64;gmail&#46;com">cphacker</a> 發表於</MTIfNonEmpty> November  4, 2009 11:15 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2119" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

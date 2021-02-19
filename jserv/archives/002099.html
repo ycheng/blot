@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 演講：實做輕量級 RTOS 網路堆疊</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002098.html" title="MP3 專利議題與自由軟體" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002100.html" title="人生是沒有畢業的學校" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002098.html">« MP3 專利議題與自由軟體</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002100.html">人生是沒有畢業的學校 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">April 16, 2009</h2>
+
+<div class="blogbody">
+
+<h3 class="title">演講：實做輕量級 RTOS 網路堆疊</h3>
+
+本月 (Apr) 24 日 (週五)，小弟將應國立中央大學通訊系陳彥文教授的邀約，分享主題為「實做輕量級 RTOS 網路堆疊」(Implementing Lightweight Network Stack in RTOS) 的演講，以下是相關的資訊：<ul>
+<li>簡介： 自 1950 年代後期，紅外線遙控器 (IR) 技術推出，而到世紀末，已變成基本配備，其可靠、簡單和廉價等特性獲得廣泛的好評，解釋何以大多數消費性電子業者仍採用這種古老的光學技術，來實現它們的產品和用戶間的介面，同時也刺激吾人所知的 Bluetooth 與 ZigBee 技術現身，應用範疇涉及手錶、醫療感測器及運動器材，或是自動控制設備等等。當這些電子設備已與我們的生活息息相關，延續 TCP/IP 網路成熟的技術與資源，就成為一個重要議題，本議程試圖探討如何以兼顧硬體之低成本與高可靠度的前提下，於 RTOS 上建構可用之網路堆疊，並陳述面臨的技術挑戰。</li>
+<li>提綱：<ul>
+  <li>Bell 定律：每十年運算型態的移轉</li>
+  <li>RTOS 與嵌入式裝置的角色</li>
+  <li>實現 TCP/IP 的難題</li>
+  <li>回歸現實：剪裁與調適</li>
+  <li>技術討論</li>
+</ul></li>
+<li>時間: 4/24 (週五) 上午 9:00~12:00</li>
+<li>地點: E1-101 (通訊館) 地圖: <a href="http://www.ce.ncu.edu.tw/ncuce_map.png">http://www.ce.ncu.edu.tw/ncuce_map.png</a></li>
+</ul>
+很榮幸能分享過去開發 RTOS 並導入實務應用的經驗，可說是 2007 年底，小弟發表 [<a href="http://blog.linux.org.tw/~jserv/archives/001936.html">Jamei RTOS</a>] 的開發過程中，曾觸及若干系統等級的議題，趁這個機會，將實做輕量級 TCP/IP network stack 的經驗獨立探討，又得考量到 RTOS，使這個議題稍微複雜且有挑戰性。今年一月份，小弟將 Jamei RTOS 重新實做，整理為 [<a href="http://blog.linux.org.tw/~jserv/archives/002082.html">CuRT</a>] 這個精簡易懂的 RTOS 實做，現在則補上 lightweight TCP/IP，對於有心探索系統運作者，應該是個合適的資訊。期待您的指教，謝謝！<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 April 16, 2009 08:42 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>補上lightweight tcp/ip，那樣一堆原來用uC/OS的，就有機會改用CuRT這個又小又免費的RTOS了。</p>
+<span class="comments-post">由 <a href="mailto&#58;checko&#64;gmail&#46;com">checko</a> 發表於</MTIfNonEmpty> April 17, 2009 08:59 AM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2099" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

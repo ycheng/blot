@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>帝國反抗君之古戰場。PowerOp請您速至 blog.yam.com/ystuan 支援前線！: [備忘] OpenVPN on CentOS 4</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~ystuan/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~ystuan/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~ystuan/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~ystuan/archives/001207.html" title="在Cygwin console輸入、顯示中文" />
+
+<link rel="next" href="http://blog.linux.org.tw/~ystuan/archives/001220.html" title="安捷倫科技(Agilent Technologies)也有RSS feed了" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~ystuan/" accesskey="1">帝國反抗君之古戰場。PowerOp請您速至 blog.yam.com/ystuan 支援前線！</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~ystuan/archives/001207.html">&laquo; 在Cygwin console輸入、顯示中文</a> |
+
+<a href="http://blog.linux.org.tw/~ystuan/">Main</a>
+| <a href="http://blog.linux.org.tw/~ystuan/archives/001220.html">安捷倫科技(Agilent Technologies)也有RSS feed了 &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">July 29, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">[備忘] OpenVPN on CentOS 4</h3>
+
+<p>需要弄一台VPN server，決定在CentOS 4上面裝OpenVPN。以後會把這台server相關的紀錄放在這一篇…</p>
+
+<a name="more"></a>
+<p>[05/07/27]<br />
+下載CentOS 4。目前已經出到4.1，不過只要到這個網址<br />
+ftp://ftp2.tnc.edu.tw/pub1/centos/4/isos/i386<br />
+就可以抓到CentOS 4(for i386)的最新版。我並沒有抓DVD，而是抓了下面四個檔：<br />
+CentOS-4.1-i386-bin1of4.iso<br />
+CentOS-4.1-i386-bin2of4.iso<br />
+CentOS-4.1-i386-bin3of4.iso<br />
+CentOS-4.1-i386-bin4of4.iso<br />
+當然，要抓md5sum來比對<br />
+MD5SUMS.cd</p>
+
+<p>[05/07/28]<br />
+燒光碟，手邊還有剩一些650MB的空白片，剛好拿來用。</p>
+
+<p>[05/07/29]<br />
+誕生，CentOS 4.1 on HP Compaq dx6120 MT。這次故意選最小安裝(800+MB)，以後缺什麼再裝什麼。喔，防火牆和SELinux我都按照建議，選擇啟用。</p>
+
+<p>裝好之後當然是要趕快做套件更新。套件更新之前要先import GPG key<br />
+# rpm --import http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-4 --httpproxy proxy.my.company --httpport xxxx<br />
+（不需要透過proxy的話，請不要加上後面兩組參數）</p>
+
+<p>為了要能夠執行指令yum -y update來更新套件，在我的環境必須要先設定proxy<br />
+# export http_proxy=http://proxy.my.company:port/<br />
+# yum -y update</p>
+
+<p>新增一個帳號來使用，並且設定她的密碼：<br />
+# useradd blahblah<br />
+# passwd blahblah</p>
+
+<p>根據「Red Hat Enterprise Linux 4: 安全性設定手冊」中， <a href="http://www.redhat.com/docs/manuals/enterprise/RHEL-4-Manual/zh_tw/security-guide/s1-wstation-privileges.html">4.4.2. 不允許 root 存取</a> 這一節，我選擇只針對sshd，限制root無法從遠端登入：<br />
+編輯/etc/ssh/sshd_config，<br />
+將<br />
+# PermitRootLogin yes<br />
+改成<br />
+PermitRootLogin no</p>
+
+<p>然後執行底下指令，讓設定生效<br />
+# service sshd reload</p>
+
+<p>以後遠端管理，用blahblah執行ssh登入，再su -成為root即可。</p>
+
+<p>OpenVPN改天再弄吧:p</p>
+
+<span class="posted">Posted by ystuan at July 29, 2005 04:08 PM
+
+<br /></span>
+
+<div class="comments-body">
+<div class="comments-head"><a name="pings"></a>Pings</div>
+
+</div>
+
+
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>Comments</div>
+
+<div class="comments-body">
+<p>下一篇出來了，請參考：<br />
+[備忘] OpenVPN on CentOS 4 (part 2)<br />
+http://blog.linux.org.tw/~ystuan/archives/001304.html</p>
+<span class="comments-post">Posted by: <a href="http://blog.linux.org.tw/~ystuan/">PowerOp</a> at September 26, 2005 04:20 PM</span>
+</div>
+
+
+
+
+</div>
+</div>
+</body>
+<!-- Site Meter XHTML Strict 1.0 -->
+<script type="text/javascript">var site="s22PowerOp"</script>
+<script type="text/javascript" src="http://s22.sitemeter.com/js/counter.js?site=s22PowerOp">
+</script>
+<noscript><div>
+<a href="http://s22.sitemeter.com/stats.asp?site=s22PowerOp">
+<img src="http://s22.sitemeter.com/meter.asp?site=s22PowerOp" alt="Site Meter" /></a>
+</div></noscript>
+<!-- Copyright (c)2005 Site Meter -->
+
+</html>

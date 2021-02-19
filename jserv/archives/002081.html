@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 不給 source 就搗蛋？談 GPL 的適用範疇</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002080.html" title="「OpenGL/ES 自由軟體實做」簡報上線" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002082.html" title="CuRT - 精簡易懂的 RTOS - 釋出" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002080.html">« 「OpenGL/ES 自由軟體實做」簡報上線</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002082.html">CuRT - 精簡易懂的 RTOS - 釋出 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">December 22, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">不給 source 就搗蛋？談 GPL 的適用範疇</h3>
+
+台灣廠商關於 GNU GPL 的詢問度一直是居高不下，特別是每年此時，也就是消費性電子產品的旺季。就如我們所知，GNU GPL 現行為第三版 (以下簡稱 GPLv3)，FSF/GNU 的主要專案已從 GPLv2 移往 GPLv3，而 Linux Kernel 與 MySQL 等專案則仍採用 GPLv2。基本上，GPLv2 (1991) 奠定了 Richard Stallman 對於 "copyleft" 理念的實踐，同時也針對 GPLv1 在施行上可能遇到的問題，著手予以改進，而 GPLv3 (2007) 則更進一步以法律及新世代軟體開發模式的角度，重新檢視校訂，本文嘗試點出 GPL 內文的關鍵項目，釐清在導入自由軟體到產品設計開發上，可能面臨的問題。<br />
+<br />
+關於 GPL 適用範疇的討論，最佳的參考資源就是 FSF 發佈的 [<a href="http://www.gnu.org/licenses/gpl-faq.html">Frequently Asked Questions about the GNU Licenses</a>]，廣泛探討像是 Web 應用程式開發、Java 一類動態語言 (任何物件都衍生自 java.lang.Object，所以，後者的實做若是 GPL，變得「所有」的物件實做，都會受感染，於是 GCJ / GNU Classpath 改以 "GPL with Exception" 的模式) 等程式開發的議題，以及整合創作與 DRM / TiVO 模式的限制保護是否允許等等。至於實務面，往往因為供應鏈與產品量產時程的考量 (研發階段 QA 與工廠量產的軟體版本，常有所出入)，致使由原始程式碼所生的執行檔，與對應的原始程式碼無法在同一個時間提供，這也使得廠商有了假延遲釋出受 GPL 規範的原始程式碼，實則逃避 GPL 的理由，不過，逃得了一時，逃不了永遠，因為 GPL 明文指出，發行散佈者有義務在三年內，在索取後，提供完整的原始程式碼。以 GPLv2 來說，GPL 第 3 條 b) 款提及：<ul class="code" style="margin: 6px;">
+Accompany it with a written offer, valid for at least three years, to give any third party, for a charge no more than your cost of physically performing source distribution, a complete machine-readable copy of the corresponding source code, to be distributed under the terms of Sections 1 and 2 above on a medium customarily used for software interchange; or,
+</ul>
+至於 GPLv3，則是規範於第 6 條 b) 款，更詳細地提及上述有效範圍：<ul class="code" style="margin: 6px;">
+Convey the object code in, or embodied in, a physical product (including a physical distribution medium), accompanied by a written offer, valid for at least three years and valid for as long as you offer spare parts or customer support for that product model, to give anyone who possesses the object code either (1) a copy of the Corresponding Source for all the software in the product that is covered by this License, on a durable physical medium customarily used for software interchange, for a price no more than your reasonable cost of physically performing this conveying of source, or (2) access to copy the Corresponding Source from a network server at no charge.
+</ul>
+有鑑於 GPLv2 對於「提供原始程式碼」的行為有行使的窒礙度，畢竟，當我們提供 Linux 手機 (也就是運行 GNU/Linux 於硬體中 Application Processor 的手持式裝置) 時，Linux kernel image 可能存放於 NAND/NOR Flash 中，這顯然就是一種執行檔，但對應的原始程式碼卻難以「對等地」放於同一個儲存媒介中，後者往往是百萬 Mb 空間之譜，於是乎，一般的作法是提及下載的網址，或者另外提供附有原始程式碼的光碟片，而 GPLv3 就進一步予以合理化。<br />
+<br />
+再回頭檢視剛剛 GPL 對於「合理期限內提供原始程式碼」這個要求，GPLv2 到 GPLv3 演變的過程中，的確以更精確的術語來呈現，比方說 GPLv2 提及 "Accompany it with a written offer"，顯然需要對照前後文，並且這個 "Accompany" 到底形式為何，實在值得推敲，然，GPLv3 直接就改稱 "Convey the object code in, or embodied in ..."，即相當清楚了。<br />
+<br />
+最後，關於釋出的原始程式碼，到底有無機會動手腳呢？依據 GPLv3 在第 1 條的聲明：<ul class="code" style="margin: 6px;">
+The "source code" for a work means the preferred form of the work for making modifications to it.  "Object code" means any non-source
+form of a work. ... The "Corresponding Source" for a work in object code form means all the source code needed to generate, install, and (for an executable work) run the object code and to modify the work, including scripts to control those activities.  However, it does not include the work's System Libraries, or general-purpose tools or generally available free programs which are used unmodified in performing those activities but which are not part of the work.  For example, Corresponding Source includes interface definition files associated with source files for the work, and the source code for shared libraries and dynamically linked subprograms that the work is specifically designed to require, such as by intimate data communication or control flow between those subprograms and other parts of the work.
+</ul>
+顯然，提供的「原始程式碼」，就是上述 "Corresponding Source"，其規範仍是很保守。倘若我們反看 Open Source (TM) 陣營的 [<a href="http://www.opensource.org/docs/osd">Open Source Definition</a>] (以下簡稱 OSD)，在第 2 條即闡述道：<ul class="code" style="margin: 6px;">
+The program must include source code, and must allow distribution in source code as well as compiled form. Where some form of a product is not distributed with source code, there must be a well-publicized means of obtaining the source code for no more than a reasonable reproduction cost preferably, downloading via the Internet without charge. The source code must be the preferred form in which a programmer would modify the program. Deliberately obfuscated source code is not allowed. Intermediate forms such as the output of a preprocessor or translator are not allowed. 
+</ul>
+言下之意，就是說，惡意將原始程式碼透過工具或者人工的方式，弄得很難識別，基本上是不允許的，OSD 要求原始程式碼乃是程式設計者「偏好」("The source code must be the preferred form in which a programmer would modify the program.") 的形式來釋出，如此才能修改與研究。不過，就這點來說，仍有頗大的灰色地帶，畢竟，即使規範透過 preprocessor 與 translator 轉出的中介程式碼不允許 (實際上，許多的開放原始碼的程式，包含有如此透過 preprocessor 與 translator 所生的程式，並被視為創作，得以受 GPL 規範之)，但這並沒有約束其編譯系統的行為模式。意思是說，倘若我們調整 "Compiler Driver" (電腦科學術語，意思是呼叫一系列的編譯系統元件，促使編譯行為得以進行) 的行為，如前文 [<a href="http://blog.linux.org.tw/~jserv/archives/001815.html">邪惡的 Hello World</a>] 所及，那麼，是否為 preprocessor 或 translator，其實就不是這麼重要，因為，連這樣的行為也整個扭轉過來，開發者的確可「偏好」以此形式修改與維護。 (注意：完整的 "Obfuscated GCC Code Generation Framework" 中，還規範執行時期的特別行為，致使更難以光靠字面意思去探討適用性)<br />
+<br />
+必須強調的是，無論條文如何編修，模糊地帶依然存在，作為一個技術創作者，我們有必要揭露其中的盲點，並強調顯而易見的事實與規範。對於台灣廠商來說，是否會面臨「不給 source 就搗蛋」的難題，著實考驗當局者的智慧，筆者衷心企盼，台灣廠商能更加理解自由軟體的真諦，並尋求合理有效的商業模式，借力使力，透過成熟的自由軟體技術，強化特有的價值。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 December 22, 2008 01:34 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2081" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

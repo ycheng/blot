@@ -1,0 +1,257 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: 在 Python 中執行 shellcode</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2012/04/plan9_--_unix.html" title="演講：Plan9 -- 不只是更好的 UNIX" />
+
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2012/05/_arduino_mosut.html" title="演講：打造類似 Arduino 的開發環境 (MOSUT)" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2012/04/plan9_--_unix.html">« 演講：Plan9 -- 不只是更好的 UNIX</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+| <a href="http://blog.linux.org.tw/~jserv/archives/2012/05/_arduino_mosut.html">演講：打造類似 Arduino 的開發環境 (MOSUT) »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">May 12, 2012</h2>
+
+<div class="blogbody">
+
+<h3 class="title">在 Python 中執行 shellcode</h3>
+
+其實這不是什麼新技巧，只是剛好最近研究 [<a href="http://pypy.org/">PyPy</a>]，思考到若干低階處理的細節，就順道把這個在 Python 中執行 shellcode 的技巧分享出來，本文的實驗平台為 GNU/Linux x86/32-bit，採用 CPython 2.7.3，目的為實踐前文 [<a href="http://blog.linux.org.tw/~jserv/archives/001773.html">SM 版 Hello World</a>] 中具備自我修改能力的程式 (self-modifying code)。<br />
+<br />
+借助 [<a href="http://python.net/crew/theller/ctypes/">ctypes</a>] 套件，我們很容易就能打造以下骨幹程式碼：<pre class="code" style="margin: 6px;">
+<span class="keyword">from</span> ctypes <span class="keyword">import</span> *
+
+libc = CDLL(<span class="literal">'libc.so.6'</span>)
+mprotect = libc.mprotect
+getpagesize = libc.getpagesize
+
+codes = (c_ubyte * 32)(
+    <span class="comment"># (omitted) machine code
+</span>)
+p = addressof(codes) &amp; ~(getpagesize() - 1)
+mprotect(p, getpagesize(), PROT_READ | PROT_WRITE | PROT_EXEC)
+my_func = CFUNCTYPE(c_int, c_int, c_int)(addressof(codes))</pre>
+在此，我們呼叫了 POSIX mprotect()，使得目標機械碼所在的 page 標注為可讀 + 可寫 + 可執行。接著，就來填補上方機械碼即可。以簡單的 C 語言加法處理函式為例，觀察其機械碼：<pre class="code" style="margin: 6px;">
+$ echo "int add(int a, int b) { return a + b; }" &gt; add.c
+$ gcc -Os -c add.c
+$ objdump -d add.o
+</pre>
+其中 .text 為：<pre class="code" style="margin: 6px;">
+00000000 &lt;add&gt;:
+   0:	55                   	push   %ebp
+   1:	89 e5                	mov    %esp,%ebp
+   3:	8b 45 0c             	mov    0xc(%ebp),%eax
+   6:	03 45 08             	add    0x8(%ebp),%eax
+   9:	5d                   	pop    %ebp
+   a:	c3                   	ret
+</pre>
+只差臨門一腳了，以下是整合好的 Python 程式碼：(smc.py)<pre class="code" style="margin: 6px;">
+<span class="keyword">from</span> ctypes <span class="keyword">import</span> *
+
+libc = CDLL(<span class="literal">'libc.so.6'</span>)
+mprotect = libc.mprotect
+getpagesize = libc.getpagesize
+
+PROT_READ = 0x1
+PROT_WRITE = 0x2
+PROT_EXEC = 0x4
+
+codes = (c_ubyte * 32)(
+    0x55,		<span class="comment"># push   %ebp
+</span>    0x89, 0xe5,		<span class="comment"># mov    %esp,%ebp
+</span>    0x8b, 0x45, 0x0c,	<span class="comment"># mov    0xc(%ebp),%eax
+</span>    0x8b, 0x55, 0x08,	<span class="comment"># mov    0x8(%ebp),%edx
+</span>    0x01, 0xd0,		<span class="comment"># add    %edx,%eax
+</span>    0x5d,		<span class="comment"># pop    %ebp
+</span>    0xc3		<span class="comment"># ret    
+</span>)
+
+p = addressof(codes) &amp; ~(getpagesize() - 1)
+mprotect(p, getpagesize(), PROT_READ | PROT_WRITE | PROT_EXEC)
+add_func = CFUNCTYPE(c_int, c_int, c_int)(addressof(codes))
+
+<span class="keyword">print</span> <span class="literal">"add(99, 1) = %d"</span> % add_func(99, 1)</pre>
+咱們來測試看看：<pre class="code" style="margin: 6px;">
+$ python smc.py 
+add(99, 1) = 100
+</pre>
+果然符合預期，呼叫了 add_func 所指向的 shellcode，得到 99 + 1 = 100 的執行結果。不過， 這雖然驗證了概念，但距離完整的 shellcode 還有些一段路要走，得借助於 [<a href="http://blog.linux.org.tw/~jserv/archives/001906.html">qsort 與 shellcode</a>] 一文提到的技巧，並在 CPython 找到可銜接的部份。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 May 12, 2012 10:32 PM
+
+<br /></span>
+
+</div>
+
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2207" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

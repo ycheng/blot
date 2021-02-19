@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>黑麻吉達康: 工作紀錄 Archives</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~aloysius/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~aloysius/index.rdf" />
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~aloysius/" accesskey="1">黑麻吉達康</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+
+<h2 class="date">December 02, 2003</h2>
+
+
+<div class="blogbody">
+
+<a name="000523"></a>
+<h3 class="title">Mandrake urpmi使用方法</h3>
+
+<p>在公司工作，想要有個方便的現成工作平台，找來找去，還是選擇了Mandrake 9.2，但是他安裝升級的方式跟以前熟知的RedHat & Debian 不太一樣,所以來個小紀錄以便以後使用.. :D</p>
+
+<p>首先要先找到Mandrake的source ftp 例: ftp://linux.sinica.edu.tw/Mandrake<br />
+接著使用 <br />
+#root: urpmi.addmedia mdk92-rpm1 ftp://linux.sinica.edu.tw/Mandrake/9.2/i586/Mandrake/RPMS with ../base/hdlist.cz<br />
+(這句語法的意思是, 新增加一個 urpmi的媒體位置,在 linux.sinica.edu.tw/xxx/xxxx/RPMS 他的目錄套件相依性檔案在 ../base/hdlist.cz)</p>
+
+<p>依此類推,總共有三個目錄喔....<br />
+#root: urpmi.addmedia mdk92-rpm2 ftp://linux.sinica.edu.tw/Mandrake/9.2/i586/Mandrake/RPMS2 with ../base/hdlist2.cz</p>
+
+<p>#root: urpmi.addmedia mdk92-rpm3 ftp://linux.sinica.edu.tw/Mandrake/9.2/i586/Mandrake/RPMS3 with ../base/hdlist3.cz</p>
+
+<p>是不是方便又簡單呢? 不過到這邊只做好urpmi的媒體檔案列表,還有他的使用方法:</p>
+
+<p>urpmi  :  安裝套件<br />
+urpmq :  查詢套件<br />
+urpme :  移除套件</p>
+
+<p>如果還有不明白的地方，請愛用 man page.... XD</p>
+
+<p>ps: 剛剛試了一下 linux.sinica.edu.tw 速度似乎沒有 linux.nctu.edu.tw 來得快... XD<br />
+</p>
+
+
+
+<div class="posted">
+	Posted by aloysius at <a href="http://blog.linux.org.tw/~aloysius/archives/2003_12.html#000523">03:03 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-comments.cgi?entry_id=523" onclick="OpenComments(this.href); return false">Comments (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">November 20, 2003</h2>
+
+
+<div class="blogbody">
+
+<a name="000510"></a>
+<h3 class="title">Postfix+SASL auth</h3>
+
+<p>sendmail只要一分鐘搞定的事，換在postfix上還真是不方便.....<br />
+算了，寫個小筆記記錄一下:</p>
+
+<p>確認安裝所需套件:<br />
+1. cyrus-sasl<br />
+2. cyrus-sasl-plain<br />
+3. cyrus-sasl-md5<br />
+4. postfix 1.1.x</p>
+
+<p>vi /etc/postfix/main.cf<br />
+#add<br />
+smtpd_sasl_auth_enable = yes<br />
+smtpd_recipient_restrictions = permit_mynetworks, permit_sasl_authenticated,reject_unauth_destination<br />
+smtpd_client_restrictions = permit_sasl_authenticated<br />
+smtpd_sasl_security_options = noanonymous</p>
+
+<p>vi/etc/postfix/master.conf<br />
+smtp inet n - y - - smtpd <br />
+#change to<br />
+smtp inet n - n - - smtpd</p>
+
+<p><br />
+vi /usr/lib/sasl/smtpd.conf<br />
+ pwcheck_method: sasldb <br />
+#change to<br />
+pwcheck_method:pam</p>
+
+<p>#make sure /etc/pam.d/smtp is look like this<br />
+#%PAM-1.0<br />
+auth       required     pam_stack.so service=system-auth<br />
+account    required     pam_stack.so service=system-auth</p>
+
+<p>#final <br />
+chmod 640 /etc/shadow<br />
+usermod -G root postfix <br />
+service postfix restart</p>
+
+<p>telnet 127.0.0.1 25<br />
+220 xxx.com.tw ESMTP Postfix<br />
+ehlo localhost<br />
+250-.xxx.com.tw<br />
+250-PIPELINING<br />
+250-SIZE 10240000<br />
+250-VRFY<br />
+250-ETRN<br />
+250-AUTH PLAIN LOGIN<br />
+250-XVERP<br />
+250 8BITMIME</p>
+
+<p></p>
+
+<p>大功告成～ :D</p>
+
+<p>後記：<br />
+          感覺上這種作法似乎不是很正統，因為他降低了系統的安全性總共三個地方：<br />
+          1. master.cf　中原本有chroot的設定沒了<br />
+          2. chmod shadow 這種增加檔案被讀取的風險<br />
+          3. usermod把postfix群組設定成 root,這樣跟 1. 2.加起來，對於系統的風險是非常嚴重的。<br />
+          預計在一個月內將主機改採LDAP auth的方式，到時再把安裝記錄寫在這邊備忘。</p>
+
+
+
+<div class="posted">
+	Posted by aloysius at <a href="http://blog.linux.org.tw/~aloysius/archives/2003_11.html#000510">01:40 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-comments.cgi?entry_id=510" onclick="OpenComments(this.href); return false">Comments (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+</body>
+</html>

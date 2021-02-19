@@ -1,0 +1,440 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 淺談 Google Skia 圖形處理引擎</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002093.html" title="演講：我所知道的 C 語言" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002096.html" title="「我所知道的 C 語言」簡報上線" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002093.html">« 演講：我所知道的 C 語言</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002096.html">「我所知道的 C 語言」簡報上線 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 21, 2009</h2>
+
+<div class="blogbody">
+
+<h3 class="title">淺談 Google Skia 圖形處理引擎</h3>
+
+2008 年九月，Google 宣佈以改良過的 WebKit 為核心的網路瀏覽器 Chrome，揭露了眾多新特徵，比方說嶄新的 [<a href="http://code.google.com/p/v8/">V8</a>] JavaScript (ECMAscript) 執行引擎，或許因為太亮眼，掩蔽了所使用另一個開放原始碼專案 [<a href="http://code.google.com/p/skia/">skia</a>]，後者是個 2D 向量圖形處理函式庫，包含字型、座標轉換，以及點陣圖都有高效能且簡潔的表現。不僅用於 Google Chrome 瀏覽器，新興的 Android 開放手機平台也採用 skia 作為繪圖處理，搭配 OpenGL/ES 與特定的硬體特徵，強化顯示的效果，本文簡介 Google Skia 的歷史背景、應用層面，並探討其程式設計模型。<br />
+<br />
+Google 為了搭建 Open Handset Alliance (OHA) 的 Android 平台，布局極久，背後的百人研發團隊部份來自之前的併購案，其中兩項具指標性意義：<ul>
+  <li>2005 年八月 17 日，收購美國 Android 公司，業務是手機軟體開發，這當然就是現在開放源碼 Android 計畫的前身</li>
+  <li>2005 年十一月，收購美國 Skia 公司，業務是向量繪圖軟體</li>
+</ul>
+被 Google 收購前的 Android 公司有著在 IT 產業為人所津津樂道的成果，本文就不多談，而 Skia 公司自然也不是省油的燈。Skia Inc. 設立於北卡羅萊納州的 Chapel HIll，由 Michael Reed (也稱為 Mike Reed) 所創辦，他在圖形技術領域是相當頂尖的人物，與 Benoit Schillings (BeOS 主要開發者， Be Inc. 第二位工程師，現為 Nokia CTO) 於專業手機軟體開發公司 OpenWave 共事時，即在該公司產品  OpenWave Phone Suite Version 7.0 (以下簡稱 V7) 引入精湛的向量圖形技術，在 50-300 kb 空間的實做中，提供了圖層 overlay 之間  alpha blended 預覽、全功能向量矩陣轉換等進階功能。在加入 OpenWave 之前，Mike Reed 服務於 Apple，代表專案為 QuickDraw GX，主導進階圖形與字型處理技術。Benoit Schillings 離開 OpenWave 轉任 Trolltech CTO 期間，Mike Reed 開創了 Skia Inc.，該公司第一個產品為 SGL (Skia Graphics Library)，一個非常嚴謹的向量顯示引擎，能在低端設備比如手機、電視及其它手持設備之上，呈現高品質的 2D 圖形。根據 LocalTechWire 的描述：<ul class="code" style="margin: 6px;">
+"Skia’s first product, SGL, is a portable graphics engine capable of rendering state-of-the-art 2D graphics on low-end devices such as mobile phones, TVs, and handhelds,” the Web site said. “SGL is feature-set compatible with existing 2D standards, making it ideal to serve as a back-end for public formats such as SVG, PDF, and OpenVG. SGL is licensed as source or binary, and can be customized to match specific HW/framebuffer requirements.”
+</ul>
+自 2005 年 Skia 被 Google 收購後，一直相當神秘低調，直到 2007 年初，Skia GL 相關的程式碼才被揭露，作為 Google Android 平台的圖形引擎，稍候的 Google Chrome 瀏覽器也採用 Skia 引擎。隨著 Android 與 Chrome (開放版本稱為 "Chromium") 兩大專案公佈程式碼後，skia 也一併公開原始程式碼，以 Apache License v2 釋出 (注意，這意味著與 GPLv2 授權不相容)，而 Android 與 Chrome 的程式碼庫中都有一份 [<a href="http://code.google.com/p/skia/">skia</a>] 的複製，因需求不同，做了部份的修改，比方說 Chrome 專案底下的 [<a href="http://src.chromium.org/viewvc/chrome/trunk/src/skia/">chrome/trunk/src/skia</a>]，需要注意的是，Skia 本身是不涉及底層環境，如 Linux Framebuffer 或 Gtk+ 銜接的處理，這也是何以 Android (透過 Linux Framebuffer) 與 Chrome (開發中的 Linux 版本使用 Gtk+) 需要提供一份修改，以便系統接軌，關於這方面的資訊，可參照 Google Chromium 的開發日誌 [<a href="http://blog.chromium.org/2008/10/graphics-in-google-chrome.html">Graphics in Google Chrome</a>]<br />
+<br />
+相較於 Firefox 1.x，後繼的 Firefox 2.x/3.x 在圖形顯示方面有相當大的進展，很大層面歸功於引入 Cario 向量圖形程式庫來處理網頁繪製，而 Skia 就相當於扮演 Cairo 的角色，不過更輕量些。快速發展的 WebKit 儼然是從桌面應用跨足移動裝置之網頁引擎解決方案的首選，Apple 與 Google 都有為數可觀的全職工程師投入，拜網際網路的威力，也有其他廠商與團體個人積極投入開發，目前 WebKit 支持的圖形函式庫計有 Cairo, Gtk+, Qt4, WxWidgets, Cg (Mac 的非開放原始碼函式庫), Skia 等等，並以 WebKit 中 class GraphicsContext 處理前述圖形函式庫的實做，可針對不同平台的特性，規範不同平台所需的巨集與成員，詳情可參考程式碼 WebCore/platform/graphics/GraphicsContext.{h,cpp}。<br />
+Skia 以 C++ 實做，程式碼約八萬行，基本某些未知的因素，可參考的文件相當有限，但 Chromium 的 SVN log 與程式碼則是現在最完整的文件，以下是其特徵：<ul>
+  <li>高度優化的軟體 rasteriser (module sgl/)</li>
+  <li>選擇性透過 OpenGL/ES，加速特定操作，如 shader 與 textures (module gl/)</li>
+  <li>動畫處理能力(module animator/)</li>
+  <li>內建 SVG 支援 (module (svg/)</li>
+  <li>內建若干 image codec，如 PNG, JPEG, GIF, BMP (modules images/)</li>
+  <li>內建文字處理，但缺乏泰文、藏文一類複雜文字處理的能力</li>
+  <li>效能特性：<ul>
+      <li>對 image 與特定資料型態的 Copy-on-write</li>
+      <li>內部記憶體管理，謹慎地被免 fragmentation</li>
+      <li>Thread-safety</li>
+    </ul></li>
+</ul>
+Skia 實做所需的相依性：<ul>
+  <li>字型: FreeType (值得注意的是，FreeType 的維護者 David Turner 目前任職於 Google), Windows GDI</li>
+  <li>多執行緒模型: pthread, Windows threads</li>
+  <li>XML: expat, tinyxml</li>
+</ul>
+理解歷史背景，我們終於可以來作點有趣的事。首先，自 Google Code 取得 Skia 原始程式碼：<pre class="code" style="margin: 6px;">
+# svn co http://skia.googlecode.com/svn/trunk skia-trunk
+</pre>
+乍看這「清爽」的目錄架構，很難想像過去這是商業軟體，或許 Google 有些「不能說的秘密」，除了 samplecode/ 目錄若干的程式碼之外，就幾乎沒有充分的文檔了。用 svn log 可瀏覽 Skia 開發的紀錄，"reed@android.com" 就是 Mike Reed 本人，至今仍相當活躍地改良 Skia 的實做。編譯方式很單純，先看看說明：(本文對應於 svn r130)<pre class="code" style="margin: 6px;">
+# cd skia-trunk
+# make help
+</pre>
+可得到以下說明：<pre class="code" style="margin: 6px;">
+Targets:
+    <default>: out/libskia.a
+    bench: out/bench/bench
+    tests: out/tests/tests
+    clean: removes entire out/ directory
+    help: this text
+Options: (after make, or in bash shell)
+    SKIA_DEBUG=true for debug build
+    SKIA_SCALAR=fixed for fixed-point build
+    SKIA_BUILD_FOR=mac for mac build (e.g. CG for image decoding)
+</pre>
+期望的編譯輸出就是靜態函式庫 out/libskia.a，而 Skia 的內部運算可選擇浮點數與定點 (fixed-point)，不過筆者發現，目前尙未能透地選擇，但這不影響我們理解 Skia 的使用與體驗其威力。以筆者使用的 GNU/Linux 來說，可下達以下指令要求編譯：<pre class="code" style="margin: 6px;">
+# make SKIA_BUILD_FOR=linux
+</pre>
+沒意外的話，系統就會乖乖的編譯：<pre class="code" style="margin: 6px;">
+compiling out/src/core/Sk64.o
+compiling out/src/core/SkAlphaRuns.o
+compiling out/src/core/SkBitmap.o
+...
+</pre>
+至於編譯 benchmark 程式，則可透過以下指令：<pre class="code" style="margin: 6px;">
+# make SKIA_BUILD_FOR=linux bench
+</pre>
+benchmark 程式算是除了 Chromium 之外，最佳的「文件」了，不過  SKia API 本來就簡潔強大，這也不妨礙。執行 benchmark 程式：<pre class="code" style="margin: 6px;">
+./out/bench/bench -o `pwd`
+</pre>
+陸續會有類似以下的輸出：<pre class="code" style="margin: 6px;">
+running bench          polygon
+running bench            lines
+running bench           points
+running bench          rrects3
+running bench          rrects1
+running bench           ovals3
+running bench           ovals1
+running bench           rects3
+running bench           rects1
+running bench    bitmap_index8
+running bench      bitmap_4444
+running bench       bitmap_565
+running bench      bitmap_8888
+</pre>
+可大概窺知 Skia 涵蓋的範疇，接著筆者就寫個小程式，使用 Skia C++ API： [<a href="http://jserv.sayya.org/skia/test-skia.c">test-skia.c</a>]
+<pre class="code" id="codemain"><span class="comment">/* Simple vector graphics demo utilizing Skia toolkit.
+ * Authored by Jim Huang &lt;jserv.tw@gmail.com>
+ */</span>
+&nbsp;<span class="keyword">
+#include</span> <span class="literal">"SkBitmap.h"</span><span class="keyword">
+#include</span> <span class="literal">"SkDevice.h"</span><span class="keyword">
+#include</span> <span class="literal">"SkPaint.h"</span><span class="keyword">
+
+#include</span> <span class="literal">"SkRect.h"</span><span class="keyword">
+#include</span> <span class="literal">"SkImageEncoder.h"</span>
+
+<span class="keyword">int</span> main()
+{
+	<span class="comment">// Declare a raster bitmap, which has an integer width and height,
+</span>	<span class="comment">// and a format (config), and a pointer to the actual pixels.
+</span>	<span class="comment">// Bitmaps can be drawn into a SkCanvas, but they are also used to
+
+</span>	<span class="comment">// specify the target of a SkCanvas' drawing operations.
+</span>	SkBitmap bitmap;
+	bitmap.setConfig(SkBitmap::kARGB_8888_Config, 200, 200);
+	bitmap.allocPixels();
+
+	<span class="comment">// A Canvas encapsulates all of the state about drawing into a
+</span>	<span class="comment">// device (bitmap).  This includes a reference to the device itself,
+</span>	<span class="comment">// and a stack of matrix/clip values. For any given draw call (e.g.
+</span>	<span class="comment">// drawRect), the geometry of the object being drawn is transformed
+</span>	<span class="comment">// by the concatenation of all the matrices in the stack. The
+</span>	<span class="comment">// transformed geometry is clipped by the intersection of all of the
+
+</span>	<span class="comment">// clips in the stack.
+</span>	SkCanvas canvas(<span class="keyword">new</span> SkDevice(bitmap));
+
+	<span class="comment">// SkPaint class holds the style and color information about how to
+</span>	<span class="comment">// draw geometries, text and bitmaps.
+</span>	SkPaint paint;
+
+	<span class="comment">// SkIRect holds four 32 bit integer coordinates for a rectangle.
+
+</span>	SkRect r;
+
+	paint.setARGB(255, 255, 0, 0);
+	r.set(25, 25, 145, 145);
+	canvas.drawRect(r, paint); <span class="comment">/** Draw the specified rectangle using
+				       the specified paint. The rectangle
+				       will be filled or stroked based on
+				       the Style in the paint. */</span>
+
+	paint.setARGB(255, 0, 255, 0);
+	r.offset(20, 20);
+	canvas.drawRect(r, paint);
+
+	paint.setARGB(255, 0, 0, 255);
+	r.offset(20, 20);
+	canvas.drawRect(r, paint);
+
+	<span class="comment">// SkImageEncoder is the base class for encoding compressed images
+</span>	<span class="comment">// from a specific SkBitmap.
+</span>	SkImageEncoder::EncodeFile(<span class="literal">"snapshot.png"</span>, bitmap,
+		SkImageEncoder::kPNG_Type,
+		<span class="comment">/* Quality ranges from 0..100 */</span> 100);
+	<span class="keyword">return</span> 0;
+}
+</pre>
+編譯方式：<pre class="code" id="codemain">
+g++ \
+        -I./include \
+        -I./include/core \
+        -I./include/images \                                                               
+        -Wall -o test-skia test-skia.c \
+        out/src/images/SkImageDecoder_libpng.o out/libskia.a \
+        -lpng -lpthread -g
+</pre>
+筆者做了簡要的註解，大概可知曉 Sk 開頭的這些 API 的功用，而上述的範例程式一開始就要求 Skia 配置畫布 (SkCanvas)，接著透過一份 SkRect 物件 r，給定 ARGB 的描述，使其有著不同的顏色，再來就是調整向量物件的位移並繪製。正如前文提及，Skia 僅是繪圖引擎，並未如 Cairo 一般廣泛對應到 PDF, X11, GDI 等等底層繪圖裝置，所以為了方便觀察繪圖結果，我們透過 Skia 內建的 image codec 來輸出 PNG 圖檔，所以執行前述編譯後的執行檔 "test-skia"，應該會得到以下圖檔：(本無外框與底色，但為了清楚於文章呈現，額外用繪圖軟體追加)<br />
+<center><img src="http://jserv.sayya.org/skia/test-skia.png" width="200" height="200" /></center><br />
+疊合的三個不同色的矩形物件，就是透過以下 API 呼叫達成：<pre class="code" id="codemain">
+	paint.setARGB(255, 0, 255, 0);
+	r.offset(20, 20);
+	canvas.drawRect(r, paint);
+</pre>
+由於 Skia 與 Cairo 的同質性相當高，也可參照 [<a href="http://cairographics.org/documentation/">Cairo :: documentation</a>] 建立所需的背景知識。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March 21, 2009 07:42 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>不知道skia的performance能达到多少,还是和Cairo一样很慢</p>
+<span class="comments-post">由 <a href="mailto&#58;lurker0ster&#64;gmail&#46;com">lurker0</a> 發表於</MTIfNonEmpty> March 22, 2009 02:51 PM</span>
+</div>
+<div class="comments-body">
+<p>Skia vs. Cairo 粗略地效能比較，可參考：<br />
+http://d.hatena.ne.jp/gyuque/20090211</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> March 23, 2009 01:26 AM</span>
+</div>
+<div class="comments-body">
+<p>我以為 jserv 會把它拿來 cmake 化一下 XD</p>
+<span class="comments-post">由 <a href="http://drakeguan.org/">Drake</a> 發表於</MTIfNonEmpty> March 23, 2009 01:59 PM</span>
+</div>
+<div class="comments-body">
+<p>看不懂日文实在是太痛苦了. 最要紧的部分刚好没有英文翻译.从仅有的信息来看,大的纹理拷贝是Cairo快,小的纹理拷贝是SKia快.不知道对不对?</p>
+<span class="comments-post">由 <a href="mailto&#58;lurker0ster&#64;gmail&#46;com">lurker0</a> 發表於</MTIfNonEmpty> March 31, 2009 10:35 PM</span>
+</div>
+<div class="comments-body">
+<p>读了你的诸篇博文，受益匪浅。</p>
+
+<p>能不能拨冗谈谈Webkit是怎么处理事件的？譬如，在一个HTML里有这么一段，</p>
+
+<p><br />
+function whichButton(event)<br />
+{<br />
+if (event.button==2)<br />
+  {<br />
+  alert("You clicked the right mouse button!");<br />
+  }<br />
+else<br />
+  {<br />
+  alert("You clicked the left mouse button!");<br />
+  }<br />
+}</p>
+
+<p></p>
+
+<p></p>
+
+<p>WebKit是如何捕捉并处理mousedown这个事件的？具体而言，可能有三个问题。</p>
+
+<p>1. WebKit是从哪里得到mousedown这个事件的通知的？具体的源码是哪个class？</p>
+
+<p>2. WebKit是如何确定与事件关联的是哪一个DOM element？</p>
+
+<p> 这个问题，我的理解似乎与RenderLayer::hitTest，以及RenderObject::hitTest有关。不知道正确否？</p>
+
+<p>  2.1. 为什么要分frontground和background？</p>
+
+<p>  2.2. HitTestRequest 和 HitTestResult 分别有什么用？似乎有用的部分通通在Result，那么Request是用来做什么的？</p>
+
+<p>  2.3. 如何从RenderObject，对应到DOM element？虽然RenderObject有m_node，但是没有见到怎么具体使用m_node的代码。</p>
+
+<p><br />
+3. WebKit是如何解析HTML语句，如，尤其是，如何动态调用whichButton（）这样的JS函数库？</p>
+
+<p>多谢！</p>
+<span class="comments-post">由 <a href="http://">邓侃</a> 發表於</MTIfNonEmpty> May  6, 2009 05:55 PM</span>
+</div>
+<div class="comments-body">
+<p>移植 skia 到 Linux framebuffer :<br />
+http://blog.elleryq.idv.tw/2009/06/skia-and-framebuffer.html</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> June 29, 2009 07:38 PM</span>
+</div>
+<div class="comments-body">
+<p>[aguaiNoBook:~/Project/skia-trunk]$ g++ -I./include -I./include/core -I./include/images -Wall -o test-skia test.cc  out/src/images/SkImageDecoder_libpng.o out/libskia.a -lpng -lpthread -g<br />
+在包含自 ./include/core/SkFixed.h：20 的檔案中，<br />
+                 從 ./include/core/Sk64.h：20，<br />
+                 從 ./include/core/SkBitmap.h：20，<br />
+                 從 test.cc：1:<br />
+./include/core/SkTypes.h:21:26: 錯誤： SkUserConfig.h：沒有此一檔案或目錄</p>
+
+<p>找不到耶....<br />
+Build 不起來....大人呀最近是不是換架構了？？？</p>
+<span class="comments-post">由 <a href="http://voicephrase.blogspot.com">aguai</a> 發表於</MTIfNonEmpty> July 10, 2009 12:58 AM</span>
+</div>
+<div class="comments-body">
+<p>加上这个就可以了:-I./include/config</p>
+<span class="comments-post">由 <a href="http://fkpwolf.net">Fan</a> 發表於</MTIfNonEmpty> July 28, 2009 09:04 PM</span>
+</div>
+<div class="comments-body">
+<p>感謝 @Fan</p>
+<span class="comments-post">由 <a href="http://voicephrse.blogspot.com">aguai</a> 發表於</MTIfNonEmpty> August 27, 2009 01:36 AM</span>
+</div>
+<div class="comments-body">
+<p>/SkFontHost_FreeType.cpp:947: undefined reference to `FT_Init_FreeType'<br />
+I got this error when compiling test app. Did anyone know how to fix this?</p>
+<span class="comments-post">由 <a href="http://mossila.blogspot.com">mossila</a> 發表於</MTIfNonEmpty> October 27, 2009 06:12 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2095" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

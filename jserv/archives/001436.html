@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 思索 C++</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001435.html" title="Is Design Dead?" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001437.html" title="Orz-Linux" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001435.html">« Is Design Dead?</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001437.html">Orz-Linux »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 16, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">思索 C++</h3>
+
+小時候，拜讀完 jjhou 前輩的大作《深入淺出 MFC》，並由書中的 MFClite 作延伸，做出類似 Borland Kylix 的 CLX framework，但是透過 Qt 來實做 GUI 的 classes。整個「移植」的工作大概從大學一年級開始，而在大二告一段落 (大約是我加入 Free Qt 的開發，不過沒多久，Trolltech 就以 GPL/QPL 釋出 Qt/X11)，那個時候，我天真的以為自己懂 C++。長大後，一邊 trace g++，一邊讀 ISO C++ Standard，才知道過去是愚昧的，比井底之蛙還不如，這只能援用蘇格拉底的話：「我唯一所知的，就是我一無所知。」。<br><br>
+
+這幾天沒有體力 coding，就整理 bookmark、在床上思考。今天我又回到 C++ Programming 的議題，Mozilla 當初以 MPL (以及第三方授權) 釋出 source code 時，Mozilla.org 也整理許多相當重要的文件，其中 [<a href="http://www.mozilla.org/hacking/portable-cpp.html">C++ portability guide</a>] 是相當經典的，很多專案都會有類似的文件，要求一定程度的可攜性，不過 Mozilla.org 這分文件很特別，因為當時 Netscape 被要求在二十種不同的平台運作，而 Mozilla 最核心的部份就是 XPCOM 與 NSPR，要跨越這麼多平台，勢必需要做出妥協，不僅需要為了 gcc 作 workaround，像是 SCO 或 HP-UX 這種系統，更是一大挑戰。<br><br>
+
+[<a href="http://www.mozilla.org/hacking/portable-cpp.html">C++ portability guide</a>] 一文的共同維護者 Scott Collins 在 blog [<a href="http://scottcollins.net/blog/2005/09/writing-portable-c.html"> Writing Portable C++ </a>] 提到，他認為該文已經相當舊，多少不合時宜，引述他對於 C++ portability 的 看法：<ul>
+My only interest is in learning from the Mozilla team's experience in porting applications.<br><br>
+
+Write standard C++, use the standard libraries, including Boost, require a modern compiler and conforming standard libraries before a platform can be considered a reasonable target (just say "No" to bad old platforms). Write less code because you use other portable libraries. If I can allow a little bias to creep in---if you really want to write portable/cross-platform apps: use Qt. Don't write your own database, use an existing one that's already portable. Don't write your own file-system interface, use an existing cross platform API as provided by Qt or Boost. Don't write your own object dispatch system. Don't create your own scripting language, insert an engine for Python, Javascript, Ruby, etc. Don't write your own XML parser, use a free portable implementation. Etc., etc. 
+</ul>
+這引來我高度的興趣，於是，我又回頭看 C++ 老爸列出的 [<a href="http://public.research.att.com/~bs/applications.html">C++ Applications</a>]，許多知名的專案當然有羅列其中，我繼續思索 C++，從這些案例來看 guidelines。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 16, 2006 06:21 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>關於 just say "No" to bad old platforms 這句話，固然是很方便，不過現實上可能沒這麼簡單喔，某些平台就是沒這麼幸運能夠安裝最新最好的 C++ compiler，宣稱是最新最好的 compiler 也未必完全駕馭得了像 Boost 這種東東。</p>
+
+<p>這一點，Jserv 應該比我更能體會。 :)</p>
+
+<p>至於其他種種 Don't write your own XXX 的建議，除非很不符合需求，或是有惱人的 bug，或是 license 考量，否則應該不會有人故意自找麻煩。</p>
+<span class="comments-post">由 <a href="http://william.cswiz.org/blog/">william</a> 發表於</MTIfNonEmpty> January 16, 2006 07:46 PM</span>
+</div>
+<div class="comments-body">
+<p>Self trackback:</p>
+
+<p>Can't just say "No" to bad old programmers<br />
+http://www.jeffhung.idv.tw/blog/articles/jeffhung/424/<br />
+</p>
+<span class="comments-post">由 <a href="http://www.jeffhung.idv.tw/blog/">jeffhung</a> 發表於</MTIfNonEmpty> January 16, 2006 11:16 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

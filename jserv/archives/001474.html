@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: DIY 轉換 Skyeye CVS repository 為 Subversion</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001473.html" title="Trolltech Qtopia 大放異彩" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001476.html" title="Regex Programming 資源" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001473.html">« Trolltech Qtopia 大放異彩</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001476.html">Regex Programming 資源 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February 02, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">DIY 轉換 Skyeye CVS repository 為 Subversion</h3>
+
+[<a href="http://www.skyeye.org/">Skyeye</a>] 是個很優秀的 ARM simulator，原本是北京清華大學的團隊所開發，現在也有許多國外的開發者投入，cvs repository 的更動量也逐漸擴張中。不過，Skyeye 架設於 GRO，並沒有提供 anonymous cvs，但是有提供 [<a href="http://gro.clinux.org/scm/?group_id=327">Nightly CVS Tree Tarball</a>]，所以可以透過 cvs2svn 轉換成 Subversion repository，而我把這樣的過程整理成一個 [<a href="http://people.debian.org.tw/~jserv/resync-with-skyeye.sh">協助轉換的 script</a>]，下載後，務必修改以下兩行：<ul><pre class="code" style="margin: 6px;">
+SVN_REPOS=/experimental
+SVN_CHECKOUT=$HOME/experimental
+</pre></ul>
+SVN_REPOS 是 svn repository 的 URL，而 SVN_CHECKOUT 是 workspace 的目錄 (因為我實在太懶)，接著跑 resync-with-skyeye.sh 這隻 script，就會在 svn repository 建立一個新目錄 "skyeye"，用 svn log 去看，應該會得到類似以下的訊息：<pre class="code" style="margin: 6px;">
+-------------------------------------------------------------------
+r235 | chenyu | 2005-09-14 15:32:24 +0800 (三, 14  9月 2005) | 2 lines
+
+Initial revision
+-------------------------------------------------------------------
+r234 | (no author) | 2005-09-14 15:32:24 +0800 (三, 14  9月 2005) | 1 line
+
+New repository initialized by cvs2svn.
+-------------------------------------------------------------------
+</pre>
+當然，之後就可以快快樂樂的 Hacking 了。<br>
+<br>
+其實我本來只是想看看 SkyEye 處理 LCD 的實做，沒想到竟然還得繞上一圈。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 February  2, 2006 04:37 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

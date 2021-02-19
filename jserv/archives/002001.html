@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: LatencyTop：分析系統延遲的工具</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002000.html" title="Eee PC 改造計畫：活潑化的桌面" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002002.html" title="Xenomai/SOLO 開始進行 pSOS API 模擬" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002000.html">« Eee PC 改造計畫：活潑化的桌面</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002002.html">Xenomai/SOLO 開始進行 pSOS API 模擬 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 30, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">LatencyTop：分析系統延遲的工具</h3>
+
+當 Linux 走入桌面環境、企業應用，或者消費性電子產品時，過去我們認為的優點如快速的社群開發模式，反而成為間接的阻礙。如今，世界上幾乎沒有人可以完美地解釋 Linux kernel 每一行的功能與指出潛在的問題，更何況尚有一系列的系統軟體等著我們去處理，所以，如何以工具協助我們釐清問題，就是刻不容緩的議題。由 Intel 工程師 Arjan van de Ven (也是 powertop 的作者) 開發的 [<a href="http://latencytop.org/">LatencyTop</a>] 工具，透過對 kernel 小量的修改，讓我們得以從 user-space 得知 latency (系統延遲)，並以 latencytop 來統計分析這些數據。考慮到 realtime audio/streaming video 一類的應用，偵測分析 latency 是相當高難度的動作，過去並無有效的途徑，往往得多次參照多項系統呼叫與程式輸出表現，予以交叉條整，現在 LatencyTOP 得以透過互動的方式，清楚呈現系統延遲的來源，進而消弭之，詳細資訊可參考 [<a href="http://lwn.net/Articles/266153/">Finding system latency with LatencyTOP</a>] 一文。<br />
+<br />
+在 kernel 端的修改稱為 [<a href="http://lwn.net/Articles/266246/">LatencyTOP infrastructure patch</a>]，提供名為 CONFIG_LATENCYTOP 的編譯選項，開啟後會由 kernel 開出 /proc/latency_stats 的資訊，在 2.6.24 以後的核心即整合此修改。LatencyTop 的執行畫面如下圖：<br />
+<center><img src="http://jserv.sayya.org/embedded/latencytop.png" width="550" height="368" /></center><br />
+LatencyTop 的分析屬於 process-level 的，而圖中可見前九個 latency 來源，並可由此分析 Process "X" 在單位時間內的行為。作為 X server，其所需要與系統互動的行為是相當多元的，LatencyTop 舉出 buffer I/O、Page fault，與一些低階操作，同時，也可以發現圖中的 "Unknown reason"，這表示尚有未明之處，需等待動作完成才能分析。<br />
+<br />
+隨著 Linux kernel 的支援度提昇，LatencyTop 一類的工具紛紛發展完善後，也終將以更清楚的面貌，讓我們得以接近此等龐然大物並克服嚴峻的技術挑戰。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March 30, 2008 09:57 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>这让我想起了 dtrace，不知道什么时候能进 Linux.</p>
+<span class="comments-post">由 <a href="http://williamxu.net9.org">xwl</a> 發表於</MTIfNonEmpty> March 31, 2008 08:45 AM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2001" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

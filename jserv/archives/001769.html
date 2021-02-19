@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Runlib32 - Linux 的 Rundll32.exe 實做</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001768.html" title="Ubuntu Counter Project" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001770.html" title="輕舞" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001768.html">« Ubuntu Counter Project</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001770.html">輕舞 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">July 25, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Runlib32 - Linux 的 Rundll32.exe 實做</h3>
+
+rundll.exe (Win16 / Windows 3.x) 與 rundll32.exe (Win32) 是 Microsoft Windows 提供一個特別的機制，允許直接找出 .DLL 或 .EXE 中 function entry，並給定參數後作呼叫，使用方法如下：<ul><pre class="code" style="margin: 6px;">
+Rundll32.exe  DllFileName  FuncName
+</pre></ul>
+如果我們設計了一個 MyDLL.dll，並在其中定義了一個 MyFunc 的函式，於是透過以下指令即可呼叫該函式的實做部份：
+<ul><pre class="code" style="margin: 6px;">
+Rundll32.exe  MyDLL.dll MyFunc
+</pre></ul>
+而不需要額外的應用程式去呼叫，這也讓我們想到，如果某個套裝軟體安裝後，在某個 .dll 提供了惡意的 function，是不是有機會以 shell 去觸發 RunDll32.exe 去執行惡意行為呢？是的，的確有這樣的方式，也有許多變形。這裡不探討作壞事的技術細節 (小弟金盆洗手很久了 :P)，詳細 Rundll 的應用方式可參考 [<a href="http://www.ericphelps.com/batch/rundll/">Using Rundll</a>]，熟悉 Win32 底層技術的開發者，切換到 UNIX 系統時，不免會有些疑惑：是否有類似 Rundll32.exe 的工具去驗證 shared objects 呢？<br>
+<br>
+[<a href="http://www.tty64.org/">izik</a>] 創作了 [<a href="http://www.tty64.org/code/runlib-project/">runlib</a>] 這個軟體專案，允許在 Linux 上施行類似 Win32 Rundll32.exe 的行為，並提供更強大的功能，這裡展示 "Hello World" 的 Runlib 版本：<br>
+<pre class="code" style="margin: 6px;">
+Runlib32$ ./runlib -v -x printf-out libc.so.6,puts \""Hello World"\"
+------------------------------------------------------------
+puts[<0xb7ed8610>]@libc.so.6[</lib/tls/i686/cmov/libc.so.6>]
+------------------------------------------------------------
+
+	* Stack Generated (1 parameters, 4 bytes)
+	-----------------------------------------
+
+	Generated Assembly
+	------------------
+		 * pushl $0xbfce7c9a
+		 * call 0xb7ed8610
+
+	Streams Buffers
+	---------------
+		 * Standart Output (STDOUT) : 15 bytes
+		 * Standart Error  (STDERR) : 0 bytes
+
+	Function Result
+	---------------
+		 * Pointer: No
+		 * Value: 12
+
+Runlib32$ cat printf-out 
+Hello World
+</pre>
+首先，我們試著去尋找 glibc (libc.so.6，數字 6 表示 ABI version) 中 Standard C Library 的 puts 函式進入點，產生 x86 stack push / call 的動作，執行的結果導入 stdout，並獲得一個 Function result，我們將過程所產生的 streams buffers 印出即得到 "Hello World"，[<a href="http://www.tty64.org/code/runlib-project/">runlib</a>] 提供的文件 RUNLIB-HOWTO 介紹更複雜的使用方式，可作為參考。<br>
+<br>
+稍早在「深入淺出 Hello World」系列演講提到 function / system call invocation 的細節，[<a href="http://www.tty64.org/code/runlib-project/">runlib</a>] 就是一個很好的示範，整個程式最核心的部份就是 src/lib.c，而呼叫 syscall 的程式碼片段如下：<br>
+<pre class="code" style="margin: 6px;">        <span class="comment">/*
+         * Manually pushing the function arguments to the stack
+         */</span>
+&nbsp;
+        <span class="keyword">if</span> (ptr->stack) {
+                <span class="keyword">for</span> (j = 0; j &lt; ptr->stack->stack_items; j++) {
+                        __asm__ __volatile__ (\
+                                <span class="literal">"pushl %0 \n"</span> \
+                                : <span class="comment">/* no output */</span> \
+                                : <span class="literal">"r"</span> (ptr->stack->stack[j]) \
+                                : <span class="literal">"%eax"</span> \
+                                );
+                }
+        }
+&nbsp;
+        <span class="comment">/*
+         * Make the CALL!
+         */</span>
+        ret = (<span class="keyword">unsigned</span> <span class="keyword">long</span>) ptr->fcn_handler();
+&nbsp;
+        <span class="comment">/*
+         * Be polite, let's clean the stack afterward
+         */</span>
+        <span class="keyword">if</span> (ptr->stack) {
+                ptr->stack->stack_items *= <span class="keyword">sizeof</span>(<span class="keyword">long</span>);
+                __asm__ __volatile__ (\                       
+                        <span class="literal">"addl %0, %%esp \n"</span> \
+                        : <span class="comment">/* no output */</span> \
+                        : <span class="literal">"r"</span> (ptr->stack->stack_items) \
+                        : <span class="literal">"%esp"</span> \
+                        );
+                ptr->stack->stack_items /= <span class="keyword">sizeof</span>(<span class="keyword">long</span>);
+        }
+
+        s_errno = errno;
+        signal(SIGSEGV, SIG_DFL);
+</pre>
+首先我們必須處理 x86 stack 中 function parameter 的順序與返回狀態的議題，上述兩個 inline assembly 片段則負責這個工作，至於 ptr->fcn_handler，可參考載入 shared object 並查詢 symbol 的部份：<br>
+<pre class="code" style="margin: 6px;"><span class="comment">/*
+ * lib_load, load library and resolv the symbol
+ * * ptr, given library pointer
+ */</span>
+<span class="keyword">int</span> lib_load(libptr *ptr) {
+        <span class="comment">/*
+         * Open handler to library and resolv the symbol/function
+         */</span>
+        ptr->lib_handler = __lib_dlaction(dlopen(ptr->lib_name, RTLD_LAZY));
+        ptr->fcn_handler = __lib_dlaction(dlsym(ptr->lib_handler, ptr->fcn_name));                  
+        <span class="keyword">if</span> (!ptr->lib_handler || !ptr->fcn_handler) {
+                <span class="keyword">return</span> 0;
+        }
+</pre>
+[<a href="http://www.tty64.org/code/runlib-project/">runlib</a>] 也特別處理了 Stream I/O 的部份，也給我們許多新的啟發，比方說實做一個 ELF sandbox，對 Unit test 也派得上用場，特定的 Test case 則可驗證單獨 function，搭配 PIE (Position-Independent Execution) 或許可創造更多變化。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 July 25, 2006 10:37 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 早餐吃 GDB，GDB 吃早餐</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001971.html" title="不只要解放手機軟體，還要徹底改外觀" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001973.html" title="jserv.is-programmer.com" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001971.html">« 不只要解放手機軟體，還要徹底改外觀</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001973.html">jserv.is-programmer.com »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 05, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">早餐吃 GDB，GDB 吃早餐</h3>
+
+這個標題有點詭異，待我娓娓道來。準備本週六的演講 [<a href="http://blog.linux.org.tw/~jserv/archives/001967.html">快快樂樂學 gdb - Part II</a>] 時，在網路上找了許多資料，意外瞥見一篇與 GNU gdb 完全無關的 blog 文章 [<a href="http://www.wretch.cc/blog/szwaymi&article_id=25716285">吉得堡 - 鮪魚蛋餅不加蛋黃</a>]，格主介紹了一家位於大直的早餐店「吉得堡」，英文簡稱就是 GDB，就在即將關閉瀏覽器視窗時，有幾個關鍵字吸引我：<ul>
+「如果你問我這家店還有什麼特色，我想就目前來講就是便宜，一個鮪魚蛋餅加中冰奶只要四十，這樣的價格可是在台北市不太容易找到的。」
+</ul>
+真心動呀，一向吃早餐得花上五十元的我，沒想到還有這個檔次，店名又吸引人，所以，二話不說，就拿著筆記本與筆，騎淑女車過去品嚐。六點多抵達，氣氛感覺也不錯，於是一邊在 GDB 早餐店品嚐那位格主推薦的「鮪魚蛋餅不加蛋黃」， 一面思考 MIT 的論文 [<a href="http://web.mit.edu/rabbah/www/docs/zhao-cc-2008.pdf"> How to do a million watchpoints: Efficient Debugging using Dynamic Instrumentation</a>] (PDF 格式)，構思對 GNU gdb 的架構調整。<br />
+<br />
+雖然 GNU gdb 經過多年的發展，無論是架構與功能，其實都相當完備，但是若干應用的系統偵錯，卻面臨難題，諸如在資源受限或高流量網路的環境設定 breakpoint，基本上是不可行的，所以 watchpoint 被提出，但是軟體在這樣的環境，真是極其飄渺難定，所以如何正確、有效，且直覺的偵錯，就是急需克服的難題。MIT 這篇論文以 DynamicRIO 搭配 GNU gdb 做了技術突破，相當驚人，而我，也期盼著如此的技術能獲得擴展並整合到 GNU gdb 中。嗯，如果能達到的話，那麼，這個設計可說是 break-fast (快速處理 breakpoint)，恰好 "breakfast" 就是「早餐」一詞，真是太有意思了，我就在筆記本用力描繪對架構的認知，與待作事項。<br />
+<br />
+早餐到 GDB 早餐店吃，GNU gdb 也要「吃」break-fast 才能更廣泛使用。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March  5, 2008 08:20 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>只能說：「這真是太點題了！」XD</p>
+<span class="comments-post">由 <a href="mailto&#58;lexicall&#64;gmail&#46;com">lexical</a> 發表於</MTIfNonEmpty> March  5, 2008 09:36 AM</span>
+</div>
+<div class="comments-body">
+<p>Break-fast 很有趣 :)</p>
+<span class="comments-post">由 <a href="http://blog.solrex.cn">Solrex</a> 發表於</MTIfNonEmpty> March  5, 2008 10:53 AM</span>
+</div>
+<div class="comments-body">
+<p>DynamicRIO 是邪惡之物. ccc</p>
+<span class="comments-post">由 <a href="http://x-solve.com/blog/?author=19">Kuon</a> 發表於</MTIfNonEmpty> March  5, 2008 02:51 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1972" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

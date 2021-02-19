@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 開放原始碼的 SunPinYin 引擎</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001926.html" title="QNX Neutrino 重裝上陣" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001928.html" title="迷你俄羅斯方塊" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001926.html">« QNX Neutrino 重裝上陣</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001928.html">迷你俄羅斯方塊 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">October 13, 2007</h2>
+
+<div class="blogbody">
+
+<h3 class="title">開放原始碼的 SunPinYin 引擎</h3>
+
+2004 年到 2005 年間，正值我投入 SCIM/IIIMF 開發時，陸續認識 Sun Microsystems China 的幾位工程師，如 [<a href="http://blogs.sun.com/eyan/">Ervin Yan</a>] 與 [<a href="http://blogs.sun.com/yongsun/">Yong Sun</a>]，後來則在 #iiimf 認識了同樣負責 i18n 的 Lei Zhang (Phill Zhang，張磊)。他們進行了為數眾多的專案，早期以 GNU GPL 授權釋出以 IIIMF 為基礎的 CLE (Chinese Language Engine)，而在 [<a href="http://www.opensolaris.org/">OpenSolaris</a>] 上線後，[<a href="http://www.opensolaris.org/os/project/input-method/">Solaris 輸入法</a>] 也是其中重要的項目，最近則釋出了 [<a href="http://src.opensolaris.org/source/xref/nv-g11n/inputmethod/sunpinyin/">SunPinYin </a>]，這是基於統計語言模型 (statistical language model, SLM) 的智能拼音引擎，以 Sun CDDL (Common Development and Distribution License) 發行。開發中的 Gtk+ 介面執行畫面如下：<br />
+<center><img src="http://jserv.sayya.org/i18n/sunpinyin.png" /></center><br />
+[<a href="http://src.opensolaris.org/source/xref/nv-g11n/inputmethod/sunpinyin/">SunPinYin </a>] 最早由張磊在 2004 年進行 JDS 開發時，獨自實做的智能拼音引擎，爾後移植於 Solaris 上，2006 年張磊離開 Sun 後，由 [<a href="http://blogs.sun.com/yongsun/">Yong Sun</a>] 著手維護，現已有相當不錯的成果，並透過技術文件揭露其中細節，可參考：<ul>
+<li><a href="http://blogs.sun.com/yongsun/entry/sunpinyin代码导读_一">SunPinyin 代碼導讀 (一)</a></li>
+<li><a href="http://blogs.sun.com/yongsun/entry/sunpinyin代码导读_二">SunPinyin 代碼導讀 (二)</a></li>
+<li><a href="http://blogs.sun.com/yongsun/entry/sunpinyin代码导读_三">SunPinyin 代碼導讀 (三)</a></li>
+<li><a href="http://blogs.sun.com/yongsun/entry/sunpinyin代码导读_四">SunPinyin 代碼導讀 (四)</a></li>
+<li><a href="http://blogs.sun.com/yongsun/entry/sunpinyin代码导读_五">SunPinyin 代碼導讀 (五)</a></li>
+<li><a href="http://blogs.sun.com/yongsun/entry/sunpinyin代码导读_六">SunPinyin 代碼導讀 (六)</a></li>
+<li><a href="http://blogs.sun.com/yongsun/entry/sunpinyin代码导读_七">SunPinyin 代碼導讀 (七)</a></li>
+<li><a href="http://blogs.sun.com/yongsun/entry/sunpinyin代码导读_八">SunPinyin 代碼導讀 (八)</a></li>
+<li><a href="http://blogs.sun.com/yongsun/entry/sunpinyin代码导读_九">SunPinyin 代碼導讀 (九)</a></li>
+<li><a href="http://blogs.sun.com/yongsun/entry/sunpinyin代码导读_十">SunPinyin 代碼導讀 (十)</a></li>
+<li><a href="http://blogs.sun.com/yongsun/entry/sunpinyin代码导读_十一">SunPinyin 代碼導讀 (十一)</a></li>
+</ul>
+現有原始程式碼中，slm/ 實做了支援 back-off 模式的 n-gram 靜態 SLM，而 ime/ 則是與輸入法系統銜接的介面。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 October 13, 2007 06:36 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>能夠比較一下它和新酷音之類的輸入法引擎的效果嗎？</p>
+<span class="comments-post">由 <a href="http://william.cswiz.org/blog/">william</a> 發表於</MTIfNonEmpty> October 13, 2007 10:00 AM</span>
+</div>
+<div class="comments-body">
+<p>补充一下，SunPinyin 除了支持 IIIM， 现在也移植到了 SCIM 上。</p>
+<span class="comments-post">由 <a href="http://tchaikov.blogsome.com">tchaikov</a> 發表於</MTIfNonEmpty> October 13, 2007 01:37 PM</span>
+</div>
+<div class="comments-body">
+<p>刚新添加了系列（十二）和（十三）:)</p>
+<span class="comments-post">由 <a href="http://blogs.sun.com/yongsun">Yong Sun</a> 發表於</MTIfNonEmpty> October 16, 2007 12:08 PM</span>
+</div>
+<div class="comments-body">
+<p>update:<br />
+SunPinyin2.0 released the developing source code: http://yongsun.me/2009/08/released-the-developing-source-code-of-sunpinyin-2-0-project/</p>
+<span class="comments-post">由 <a href="http://blogs.sun.com/weixue">William Xue</a> 發表於</MTIfNonEmpty> September 12, 2009 12:07 AM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1927" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

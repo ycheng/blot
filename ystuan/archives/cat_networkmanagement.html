@@ -1,0 +1,7355 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>帝國反抗君之古戰場。PowerOp請您速至 blog.yam.com/ystuan 支援前線！: NetworkManagement Archives</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~ystuan/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~ystuan/index.rdf" />
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~ystuan/" accesskey="1">帝國反抗君之古戰場。PowerOp請您速至 blog.yam.com/ystuan 支援前線！</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+
+<h2 class="date">November 02, 2005</h2>
+
+
+<div class="blogbody">
+
+<a name="001351"></a>
+<h3 class="title">[新聞+舊聞]網管系統OpenNMS推出unstable 1.3.0 版以及stable 1.2.4 版</h3>
+
+<p>時光飛逝（再這樣下去，我的每一篇都要用這句話當開頭了），OpenNMS團隊也一直推陳出新......</p>
+
+<p>stable 1.2.4 其實八月底就推出了，我也很快的將原本1.2.3版安裝指南的繁體中譯更新，而且，</p>
+
+<p>我。終。於。提。交。給。開。發。團。隊。了！</p>
+
+<p>SourceForge上面OpenNMS安裝指南的繁體中譯在<a href="http://sourceforge.net/docman/display_doc.php?docid=29926&group_id=4141">這裡</a>，或者，從<a href="http://sourceforge.net/docman/?group_id=4141">OpenNMS Docs</a>的頁面上，Language選項選Trad. Chinese也可以找到。</p>
+
+<p>這邊岔題談一下，那篇文件在sf網站上，某些字會變成亂碼。如果去看網頁原始碼，更是會發現所有的中文字都變成 & #23433;& #35037;& #25351;& #21335; 這樣的東東。當時我透過sf的網頁介面提交文件的時候，沒有去更改網頁的編碼設定，也許我應該改成UTF-8再提交？</p>
+
+<p>至於unstable 1.3.0則是十月底剛推出，開發團隊不建議大家用在正式系統上，但是歡迎大家在測試環境裡面好好體驗新加入的功能。</p>
+
+<p>想要下載的朋友請到<a href="http://sourceforge.net/project/showfiles.php?group_id=4141">這裡</a>選擇適合妳的發行套件的版本。</p>
+
+<p>我期許自己能夠儘快更新安裝指南的繁體中譯，以及再實際安裝、應用這套系統，然後跟大家報告心得。</p>
+
+<p>當然，家庭跟工作都有很多事要忙，尤其到了年底，更忙。</p>
+
+<p>所以，妳猜，下回這個主題的第一句會是什麼？ :p</p>
+
+
+<div class="posted">
+	Posted by ystuan at <a href="http://blog.linux.org.tw/~ystuan/archives/001351.html">09:25 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1351" onclick="OpenComments(this.href); return false">Comments (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">August 08, 2005</h2>
+
+
+<div class="blogbody">
+
+<a name="001229"></a>
+<h3 class="title">[繁體中譯]OpenNMS Installation Guide (for Release 1.2.3)</h3>
+
+終於翻出新版(1.2.3)的OpenNMS安裝指南啦！
+
+放在這邊格式會有點亂，不過我也不知道該放在哪裡:p
+
+喔，我還不打算提交給OpenNMS開發團隊，因為1.2.4（穩定版）和1.3.0（測試版）馬上要出了…不過沒關係，這次追上了，以後只要注意開發團隊有沒有在CVS裡面更新文件就可以囉！
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html lang="en">
+<head>
+
+  <meta http-equiv="Content-Type" content="text/html; charset=big5">
+  <title>OpenNMS安裝指南</title>
+
+
+<!-- DOCMANAGER DOCUMENT START -->
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+
+  <style type="text/css">
+<!--
+body {
+background: #FFFFFF; }
+h1, h2, h3, h4, h5 {
+color: #800000; font-family: sans-serif;
+}
+span.term { font-weight: bold;
+}
+div.sidebar { background: #F0F0F0;
+border: 1px solid gray; padding: 5px;
+margin: 20px; }
+pre.programlisting {
+background: #F0F0F0; border: 1px solid gray;
+padding: 2px; font-size: 10pt;
+white-space: pre;
+}
+-->
+  </style>
+  <meta content="DocBook XSL Stylesheets V1.67.2" name="generator">
+
+</head>
+
+
+<body style="color: black; background-color: white;" alink="#0000ff" link="#0000ff" vlink="#840084">
+
+<div class="book" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h1 class="title"><a name="N10001"><span class="trademark">OpenNMS</span>&reg;
+安裝指南</a></h1>
+
+</div>
+
+<div>
+<h2 class="subtitle"><a name="N10001">安裝
+OpenNMS網管系統</a></h2>
+
+</div>
+
+<div>
+<div class="authorgroup">
+<h3 class="corpauthor"><a name="N10001">OpenNMS
+開發團隊</a></h3>
+
+<div class="author">
+<h3 class="author"><span class="firstname"><a name="N10001">Tarus</a></span>
+<span class="surname"><a name="N10001">Balog</a></span></h3>
+
+<code class="email"><a name="N10001">&lt;</a><a href="mailto:tarus@opennms.org">tarus@opennms.org</a>&gt;</code></div>
+
+<div class="author">
+<h3 class="author"><span class="firstname">DJ</span>
+<span class="surname">Gregor</span></h3>
+
+<code class="email">&lt;<a href="mailto:dj@opennms.org">dj@opennms.org</a>&gt;</code></div>
+
+</div>
+
+</div>
+
+<div>
+<p class="copyright">Copyright
+&copy; 2004-2005 The OpenNMS Group, Inc.</p>
+
+</div>
+
+<div>
+<div class="legalnotice"><a name="N10025"></a>
+<p><a name="N10025">Permission is granted to copy,
+distribute and/or modify this document under the terms of the GNU Free
+Documentation License, Version 1.1 or any later version published by
+the Free Software Foundation; with no Invariant Sections, with no
+Front-Cover Texts and with no Back-Cover Texts. A copy of the license
+is available at </a><a href="http://www.gnu.org/copyleft/fdl.html" target="_top">http://www.gnu.org/copyleft/fdl.html</a></p>
+
+</div>
+
+</div>
+
+</div>
+
+<hr></div>
+
+<div class="toc">
+<p><b>目錄</b></p>
+
+<dl>
+
+  <dt><span class="preface"><a href="#N1002B">前
+言</a></span></dt>
+
+  <dt><span class="chapter"><a href="#N10065">1.
+概述</a></span></dt>
+
+  <dd>
+    <dl>
+
+      <dt><span class="section"><a href="#N10068">1.1.
+關於OpenNMS</a></span></dt>
+
+      <dt><span class="section"><a href="#N1006D">1.2.
+如何運用這份文件</a></span></dt>
+
+      <dt><span class="section"><a href="#N10091">1.3.
+最低需求</a></span></dt>
+
+    </dl>
+
+  </dd>
+
+  <dt><span class="chapter"><a href="#N100B5">2.
+安裝前的準備工作</a></span></dt>
+
+  <dd>
+    <dl>
+
+      <dt><span class="section"><a href="#N100B8">2.1.
+必要的套件：Java</a></span></dt>
+
+      <dd>
+        <dl>
+
+          <dt><span class="section"><a href="#N100C7">2.1.1.
+在Debian上安裝Java</a></span></dt>
+
+          <dt><span class="section"><a href="#N10158">2.1.2.
+在其他系統上安裝Java</a></span></dt>
+
+        </dl>
+
+      </dd>
+
+      <dt><span class="section"><a href="#N1016B">2.2.
+必要的套件：Tomcat4</a></span></dt>
+
+      <dd>
+        <dl>
+
+          <dt><span class="section"><a href="#N10175">2.2.1. 在Debian
+Sid上修改Tomcat4</a></span></dt>
+
+          <dt><span class="section"><a href="#N10182">2.2.2. 在Fedora
+2和3上安裝合適的Tomcat4</a></span></dt>
+
+          <dt><span class="section"><a href="#N10199">2.2.3. 在SuSE
+Linux Pro 9上安裝Tomcat4</a></span></dt>
+
+          <dt><span class="section"><a href="#N101A2">2.2.4. 客製化Tomcat4</a></span></dt>
+
+        </dl>
+
+      </dd>
+
+      <dt><span class="section"><a href="#N1027A">2.3.
+必要的套件：RRDtool</a></span></dt>
+
+      <dt><span class="section"><a href="#N1028A">2.4.
+必要的套件：PostgreSQL</a></span></dt>
+
+      <dd>
+        <dl>
+
+          <dt><span class="section"><a href="#N102CE">2.4.1. 客製化<code class="filename">postgresql.conf</code>檔
+案</a></span></dt>
+
+          <dt><span class="section"><a href="#N102FD">2.4.2. 客製化<code class="filename">pg_hba.conf</code>檔
+案</a></span></dt>
+
+          <dt><span class="section"><a href="#N10318">2.4.3. 在Red Hat
+Linux 7上安裝PostgreSQL</a></span></dt>
+
+          <dt><span class="section"><a href="#N1031D">2.4.4.
+在Solaris上建立PostgreSQL資料庫</a></span></dt>
+
+        </dl>
+
+      </dd>
+
+      <dt><span class="section"><a href="#N10353">2.5.
+必要的套件：<code class="filename">curl</code></a></span></dt>
+
+      <dt><span class="section"><a href="#N10363">2.6.
+非必要的套件：<code class="filename">metamail</code></a></span></dt>
+
+    </dl>
+
+  </dd>
+
+  <dt><span class="chapter"><a href="#N10378">3.
+安裝OpenNMS</a></span></dt>
+
+  <dd>
+    <dl>
+
+      <dt><span class="section"><a href="#N10380">3.1.
+執行首次安裝</a></span></dt>
+
+      <dd>
+        <dl>
+
+          <dt><span class="section"><a href="#N10385">3.1.1. 安裝於Debian
+Linux</a></span></dt>
+
+          <dt><span class="section"><a href="#N103A6">3.1.2.
+安裝於以RPM為基礎的Linux發行版本</a></span></dt>
+
+          <dt><span class="section"><a href="#N103C5">3.1.3. 安裝於Solaris</a></span></dt>
+
+          <dt><span class="section"><a href="#N103E4">3.1.4. 安裝於Mac OS X</a></span></dt>
+
+          <dt><span class="section"><a href="#N103E9">3.1.5. 從程式原始碼安裝</a></span></dt>
+
+        </dl>
+
+      </dd>
+
+      <dt><span class="section"><a href="#N10409">3.2.
+幫裝好的舊版升級</a></span></dt>
+
+      <dd>
+        <dl>
+
+          <dt><span class="section"><a href="#N10418">3.2.1.
+OpenNMS相關資料之存放位置</a></span></dt>
+
+          <dt><span class="section"><a href="#N10452">3.2.2.
+升級之前&hellip;&hellip;請先備份！</a></span></dt>
+
+        </dl>
+
+      </dd>
+
+      <dt><span class="section"><a href="#N10495">3.3.
+運行安裝程式(installer)</a></span></dt>
+
+      <dd>
+        <dl>
+
+          <dt><span class="section"><a href="#N1049D">3.3.1.
+為OpenNMS設定Java</a></span></dt>
+
+          <dt><span class="section"><a href="#N104C9">3.3.2.
+運行安裝程式(installer)來設定PostgreSQL資料庫</a></span></dt>
+
+          <dt><span class="section"><a href="#N104D5">3.3.3.
+運行安裝程式(installer)來設定網頁應用程式</a></span></dt>
+
+        </dl>
+
+      </dd>
+
+    </dl>
+
+  </dd>
+
+  <dt><span class="chapter"><a href="#N104E1">4.
+開始使用OpenNMS</a></span></dt>
+
+  <dd>
+    <dl>
+
+      <dt><span class="section"><a href="#N104E4">4.1.
+設定發掘(discovery)</a></span></dt>
+
+      <dt><span class="section"><a href="#N1050C">4.2.
+啟動PostgreSQL，Tomcat4和OpenNMS</a></span></dt>
+
+      <dt><span class="section"><a href="#N10538">4.3.
+登入網頁應用程式</a></span></dt>
+
+      <dt><span class="section"><a href="#N10547">4.4.
+將OpenNMS設為開機自動執行</a></span></dt>
+
+      <dd>
+        <dl>
+
+          <dt><span class="section"><a href="#N1054C">4.4.1. 在Debian
+Linux上設定開機自動執行</a></span></dt>
+
+          <dt><span class="section"><a href="#N10551">4.4.2.
+在RPM為基礎的Linux發行版本上設定開機自動執行</a></span></dt>
+
+          <dt><span class="section"><a href="#N1056B">4.4.3.
+在Solaris上設定開機自動執行</a></span></dt>
+
+        </dl>
+
+      </dd>
+
+    </dl>
+
+  </dd>
+
+  <dt><span class="chapter"><a href="#N10583">5.
+編譯程式原始碼</a></span></dt>
+
+  <dd>
+    <dl>
+
+      <dt><span class="section"><a href="#N10586">5.1.
+妳確定要這麼做嗎？</a></span></dt>
+
+      <dt><span class="section"><a href="#N1058E">5.2.
+安裝必須的套件</a></span></dt>
+
+      <dt><span class="section"><a href="#N10593">5.3.
+下載程式原始碼</a></span></dt>
+
+      <dd>
+        <dl>
+
+          <dt><span class="section"><a href="#N1059B">5.3.1. 下載釋出版本程式碼</a></span></dt>
+
+          <dt><span class="section"><a href="#N105B3">5.3.2. 從CVS下載程式碼</a></span></dt>
+
+        </dl>
+
+      </dd>
+
+      <dt><span class="section"><a href="#N105E2">5.4.
+設定<code class="filename">build.properties</code></a></span></dt>
+
+      <dt><span class="section"><a href="#N1060F">5.5.
+編譯OpenNMS</a></span></dt>
+
+      <dt><span class="section"><a href="#N1061E">5.6.
+安裝OpenNMS</a></span></dt>
+
+    </dl>
+
+  </dd>
+
+  <dt><span class="chapter"><a href="#N10623">6.
+OpenNMS安裝時的問題排除</a></span></dt>
+
+  <dd>
+    <dl>
+
+      <dt><span class="section"><a href="#N10626">6.1.
+常見的安裝問題</a></span></dt>
+
+      <dd>
+        <dl>
+
+          <dt><span class="section"><a href="#N1062B">6.1.1.
+相依性(Dependency)問題</a></span></dt>
+
+          <dt><span class="section"><a href="#N10644">6.1.2. Error:
+"Started OpenNMS, but it has not finished starting
+up"（錯誤："OpenNMS已經開始啟動，但是啟動沒有完成"）</a></span></dt>
+
+          <dt><span class="section"><a href="#N10682">6.1.3. DHCP
+Poller Won't
+Start（DHCP輪詢器無法啟動）</a></span></dt>
+
+          <dt><span class="section"><a href="#N106A3">6.1.4. The
+OpenNMS Web Application Will Not Start, or You Can't Log
+In（OpenNMS網頁應用程式無法啟動，或者妳無法登入）</a></span></dt>
+
+          <dt><span class="section"><a href="#N10719">6.1.5. Error:
+"runjava: Could not find
+an appropriate JRE"（錯誤："runjava：無法找到合適的JRE"）</a></span></dt>
+
+          <dt><span class="section"><a href="#N10729">6.1.6. Error:
+"The database server's error messages are not in English
+..."（錯誤："資料庫的錯誤訊息不是英文&hellip;"）</a></span></dt>
+
+          <dt><span class="section"><a href="#N10738">6.1.7. Error: "Column X in new table has NOT
+NULL constraint ..."（錯誤："新表格的X欄有NOT NULL限制"）</a></span></dt>
+
+          <dt><span class="section"><a href="#N1073F">6.1.8. Error: "One or more backup tables from
+a previous install still exists"（錯誤："之前安裝時殘留一個以上的備份資料表"）</a></span></dt>
+
+          <dt><span class="section"><a href="#N1077A">6.1.9. Error: "Table X contains N rows (out
+of M) that violate new constraint Y"（錯誤："資料表X（的M個資料列中）有N個資料列違反新的Y限制"）</a></span></dt>
+
+          <dt><span class="section"><a href="#N10799">6.1.10.
+Error: "- adding iplike database
+function... &lt;snip&gt; org.postgresql.util.PSQLException:
+ERROR: could not access file '&lt;snip&gt;/lib/iplike.so':
+Permission
+denied"（錯誤："加入iplike資料庫函式&hellip;&lt;略&gt;
+org.postgresql.util.PSQLException:
+錯誤：無法存取檔案'&lt;略&gt;/lib/iplike.so':拒絕存取）</a></span></dt>
+
+          <dt><span class="section"><a href="#N107A0">6.1.11.
+Error: "Exception in thread "main"
+org.postgresql.util.PSQLException: ERROR: relation "pg_user" does not
+exist" when running installer.（執行安裝程式時遇到錯誤："在"main"執行緒發生例外
+org.postgresql.util.PSQLException: 錯誤："pg_user"關係不存在"）</a></span></dt>
+
+        </dl>
+
+      </dd>
+
+      <dt><span class="section"><a href="#N10796">6.2.
+到哪裡尋求技術支援</a></span></dt>
+
+      <dd>
+        <dl>
+
+          <dt><span class="section"><a href="#N1079B">6.2.1. 發行摘要</a></span></dt>
+
+          <dt><span class="section"><a href="#N107A4">6.2.2. OpenNMS網站</a></span></dt>
+
+          <dt><span class="section"><a href="#N107BD">6.2.3. OpenNMS郵件論壇列表</a></span></dt>
+
+          <dt><span class="section"><a href="#N107F3">6.2.4. 付費技術支援</a></span></dt>
+
+        </dl>
+
+      </dd>
+
+    </dl>
+
+  </dd>
+
+</dl>
+
+</div>
+
+<div class="preface" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title"><a name="N1002B">前言</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N1002B">OpenNMS是由許多個人及組織，在OpenNMS軟體專案這支大旗
+下，所共同打造的。從最初到2002年，程式碼是由Oculan Corporation開發並以GPL釋出，後來專案的管理移交給 Tarus
+Balog。</a></p>
+
+<p><a name="N1002B">目前OpenNMS的贊助企業是The OpenNMS
+Group，它們也擁有OpenNMS的商標。</a></p>
+
+<p><a name="N1002B">OpenNMS是一個衍生作品(derivative
+work)，包含了以GNU通用公共許可證釋出的原來的程式碼(original code)、納入的程式碼(included
+code)，以及修改過的程式碼(modified code)。請參閱程式碼以瞭解詳細的版權事宜，底下列出一些較重要的版權擁有者：</a></p>
+
+<p></p>
+
+<div class="itemizedlist">
+<ul type="disc">
+
+  <li>
+    <p><span class="trademark"><a name="N1002B">Copyright
+    </a></span><a name="N1002B">&copy;
+2002-2005 </a><a href="http://www.opennms.com" target="_top">The
+OpenNMS Group, Inc.</a>. </p>
+
+  </li>
+
+  <li>
+    <p>Original code base for
+OpenNMS version 1.0.0 <span class="trademark">Copyright </span>&copy;
+1999-2001 <a href="http://www.oculan.com" target="_top">Oculan
+Corporation</a>. </p>
+
+  </li>
+
+  <li>
+    <p>Mapping code <span class="trademark">Copyright
+    </span>&copy;
+2003 <a href="http://www.nksi.com" target="_top">Networked
+Knowledge
+Systems, Inc</a>. </p>
+
+  </li>
+
+  <li>
+    <p>ScriptD code <span class="trademark">Copyright
+    </span>&copy;
+2003 <a href="http://www.tavve.com" target="_top">Tavve
+Software
+Company</a>. </p>
+
+  </li>
+
+</ul>
+
+</div>
+
+本文件（英文版）有任何疏漏或更正，請告知<a href="mailto:tarus@opennms.org" target="_top">Tarus
+Balog</a>；繁體中文版請告知<a href="mailto:ystuan@gmail.com" target="_top">Austin Tuan</a>
+<p></p>
+
+</div>
+
+<div class="chapter" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title"><a name="N10065">Chapter&nbsp;1.
+概述</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="toc">
+<p><a name="N10065"><b>目錄</b></a></p>
+
+<dl>
+
+  <dt><span class="section"><a href="#N10068">1.1.
+關於OpenNMS</a></span></dt>
+
+  <dt><span class="section"><a href="#N1006D">1.2.
+如何運用這份文件</a></span></dt>
+
+  <dt><span class="section"><a href="#N10091">1.3.
+最低需求</a></span></dt>
+
+</dl>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="N10068">1.1. 關於OpenNMS</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N10068">OpenNMS是世界上第一個用開放原始碼模式開發的企業級網路管理系
+統。和其他複
+雜、功能強大的系統一樣，需要費一點心力來安裝和設定。這份文件就是用來說明安裝OpenNMS所需的步驟。</a></p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="N1006D">1.2. 如何運用這份文件</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N1006D">那麼，妳該如何運用這份文件呢？它包含了下列章節：</a></p>
+
+<div class="itemizedlist">
+<ul type="disc">
+
+  <li>
+    <p><a name="N1006D">（妳正在看的）概述</a></p>
+
+  </li>
+
+  <li>
+    <p><a name="N1006D">在裝OpenNMS前必須先安裝哪些套件，以及對它們做哪些修
+改</a></p>
+
+  </li>
+
+  <li>
+    <p><a name="N1006D">安裝和升級的指引，包括針對不同的作業系統、發行版本
+(Distribution)的
+細節</a></p>
+
+  </li>
+
+  <li>
+    <p><a name="N1006D">開始使用OpenNMS，包括初始設定及登入網頁介面</a></p>
+
+  </li>
+
+  <li>
+    <p><a name="N1006D">用原始碼編譯OpenNMS</a></p>
+
+  </li>
+
+  <li>
+    <p><a name="N1006D">問題排除，以及到哪裡找救兵</a></p>
+
+  </li>
+
+</ul>
+
+</div>
+
+<p><a name="N1006D">這份安裝指南非常倚賴「套件」這個概念。現今大部分的作業系統和發行版
+本都擁有套件管
+理系統。一個套件會將屬於同一個應用程式的檔案都彙整進來（並且包含檔案變動，移除，更新等等的管理）。我們可藉此系統安裝和管理各種軟體。</a></p>
+
+<p><a name="N1006D">請參閱最新的</a><a href="https://sourceforge.net/docman/?group_id=4141" target="_top">發行摘要</a>以
+確認是否有支援妳的作業系統。目前OpenNMS支援Linux（的很多不同發行版本）， Solaris和Mac OS X。</p>
+
+<p>這份指南假定如果妳使用套件管理系統，妳就會一直使用它。這是因為
+OpenNMS會試著用作業系統內建的套件管理系統來確認那些必須先安裝的套件是否裝好了。例如妳裝了Java，但不是用套件裝的，OpenNMS將無法
+確認妳的系統有裝Java，因此整個安裝會失敗。</p>
+
+<p>讓我們再回到最初的問題「妳該如何運用這份文件」，請先瀏覽第二章，
+確定妳已經把必須的、作為先決條件的套件都適當地安裝、設定完畢了。用第三章來協助妳將那些套件裝進妳的作業系統，以及安裝OpenNMS。最後，用最後
+一章來協助妳修正各種可能遇到的錯誤。</p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="N10091">1.3. 最低需求</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N10091">雖然我們不可能針對特定的環境來精確地估量OpenNMS之系統需求，
+底下列出安裝在
+200個設備的網路中之最低需求。當然，只要有更好的硬體，OpenNMS可監控的設備數量百倍於此。</a></p>
+
+<div class="glosslist">
+<dl>
+
+  <dt><a name="N10091">處理器 </a></dt>
+
+  <dd>
+    <p><a name="N10091">單處理器，1 GHz Pentium III
+等級以上。OpenNMS能運用（系統中的）多處理器。</a></p>
+
+  </dd>
+
+  <dt><a name="N10091">記憶體 </a></dt>
+
+  <dd>
+    <p><a name="N10091">最低256 MB的RAM，不過強烈建議512
+MB。OpenNMS的Java
+Virtual Machine能運用大量的記憶體（最多2GB）。</a></p>
+
+  </dd>
+
+  <dt><a name="N10091">硬碟空間 </a></dt>
+
+  <dd>
+    <p><a name="N10091">OpenNMS程式本身需要大約25
+MB。除此之外，每個資料變項查詢結果(data variable collected requires)預設要283
+KB。假設每個受控介面需要2 MB，那麼200個介面大約是400 MB（保守估計）。資料庫部分，依照所儲存的事件數目，你可以假設需要100
+MB到200 MB。最後，OpenNMS的各個記錄檔可能變得很大，特別是在除錯模式下。(請編輯OpenNMS設定目錄（通常為<code class="filename">/opt/OpenNMS/etc</code>
+或<code class="filename">/etc/opennms</code>）
+下的檔案<code class="filename">log4j.properties</code>來
+變更這些設定。（綜合以上所述）以最小系統來說，800 MB到1 GB應該足夠了</a></p>
+
+  </dd>
+
+</dl>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="chapter" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title"><a name="N100B5">Chapter&nbsp;2.
+安裝前的準備工作</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="toc">
+<p><a name="N100B5"><b>目錄</b></a></p>
+
+<dl>
+
+  <dt><span class="section"><a href="#N100B8">2.1.
+必要的套件：Java</a></span></dt>
+
+  <dd>
+    <dl>
+
+      <dt><span class="section"><a href="#N100C7">2.1.1.
+在Debian上安裝Java</a></span></dt>
+
+      <dt><span class="section"><a href="#N10158">2.1.2.
+在其他系統上安裝Java</a></span></dt>
+
+    </dl>
+
+  </dd>
+
+  <dt><span class="section"><a href="#N1016B">2.2.
+必要的套件：Tomcat4</a></span></dt>
+
+  <dd>
+    <dl>
+
+      <dt><span class="section"><a href="#N10175">2.2.1.
+在Debian
+Sid上修改Tomcat4</a></span></dt>
+
+      <dt><span class="section"><a href="#N10182">2.2.2.
+在Fedora
+2和3上安裝合適的Tomcat4</a></span></dt>
+
+      <dt><span class="section"><a href="#N10199">2.2.3.
+在SuSE Linux
+Pro 9上安裝Tomcat4</a></span></dt>
+
+      <dt><span class="section"><a href="#N101A2">2.2.4.
+客製化Tomcat4</a></span></dt>
+
+    </dl>
+
+  </dd>
+
+  <dt><span class="section"><a href="#N1027A">2.3.
+必要的套件：RRDtool</a></span></dt>
+
+  <dt><span class="section"><a href="#N1028A">2.4.
+必要的套件：PostgreSQL</a></span></dt>
+
+  <dd>
+    <dl>
+
+      <dt><span class="section"><a href="#N102CE">2.4.1.
+客製化<code class="filename">postgresql.conf</code>檔
+案</a></span></dt>
+
+      <dt><span class="section"><a href="#N102FD">2.4.2.
+客製化<code class="filename">pg_hba.conf</code>檔
+案</a></span></dt>
+
+      <dt><span class="section"><a href="#N10318">2.4.3.
+在Red Hat Linux
+7上安裝PostgreSQL</a></span></dt>
+
+      <dt><span class="section"><a href="#N1031D">2.4.4.
+在Solaris上建立PostgreSQL資料庫</a></span></dt>
+
+    </dl>
+
+  </dd>
+
+  <dt><span class="section"><a href="#N10353">2.5.
+必要的套件：<code class="filename">curl</code></a></span></dt>
+
+  <dt><span class="section"><a href="#N10363">2.6.
+非必要的套件：<code class="filename">metamail</code></a></span></dt>
+
+</dl>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="N100B8">2.1. 必要的套件：Java</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N100B8">OpenNMS主要是用Java開發的，雖然為了實作例如ICMP這類
+東西而用到一些
+JNI來呼叫C語言程式
+碼。理所當然，妳需要安裝Java。</a></p>
+
+<p><a name="N100B8">由於目前的程式碼有小部分倚賴一個Sun-only的函式庫
+(HTTPS
+Monitor裡面的"com.sun.net.ssl.internal.www.protocol")，我們推薦妳使用Sun的SDK。使用IBM的
+SDK應該也可以，只不過在輪詢器(poller)啟動的時候會在記錄檔產生一個錯誤訊息。</a></p>
+
+<p><a name="N100B8">底下的說明是使用Sun所散佈的Java，不過有一些使用者採用</a><a href="http://www.blackdown.org/" target="_top">Blackdown</a>網
+站編譯的Sun
+Java，也獲得成功。</p>
+
+<p>XXX Add something about 32-bit
+vs 64-bit for libjicmp and librrd.</p>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N100C7">2.1.1.
+在Debian上安裝Java</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N100C7">將下面這行加入/etc/apt/sources.list然後執行
+update，
+（也就是"apt-get
+update"）。</a></p>
+
+<p><a name="N100C7">版本代號是Woody的話，請加入：</a></p>
+
+<p></p>
+
+<pre class="programlisting"><a name="N100C7">deb http://debian.opennms.org/ debian/opennms stable</a></pre>
+
+<p></p>
+
+<p><a name="N100C7">版本代號是Sid的話，請加入：</a></p>
+
+<p></p>
+
+<pre class="programlisting"><a name="N100C7">deb http://debian.opennms.org/ debian/opennms unstable</a></pre>
+
+<p></p>
+
+<p><a name="N100C7">然後，取得版本適合的Java來加以安裝。因為授權的問題，
+OpenNMS套件不能包
+含Java
+SDK，妳必須在安裝OpenNMS之前，自己取得及安裝。妳有兩個選擇：</a></p>
+
+<div class="orderedlist">
+<ol type="1">
+
+  <li>
+    <p><a name="N100C7">使用<code class="code">sun-jdk1.4-installer</code>套
+件及編譯指令稿(build script)，從Sun那邊下載j2sdk然後編譯妳自己的j2sdk1.4套件（推薦）。</a></p>
+
+    <p><a name="N100C7">編譯並安裝<code class="code">j2sdk1.4</code>套
+件：</a></p>
+
+    <div class="itemizedlist">
+    <ul type="disc">
+
+      <li>
+        <p><a name="N100C7">為了妳正要製作的<code class="code">j2sdk1.4</code>套
+件，必須先有套件<code class="code">java-common</code>；
+因為前者編譯產生後是執行<code class="filename">dpkg</code>來
+安裝，不像一般執行<code class="filename">apt</code>安
+裝會自動載入必須的套件，因此我們要先手動安裝後者：</a></p>
+
+        <p></p>
+
+        <pre class="programlisting"><code class="computeroutput"><a name="N100C7"># </a></code><span><a name="N100C7"><strong class="command">apt-get install java-common</strong></a></span></pre>
+
+        <p></p>
+
+      </li>
+
+      <li>
+        <p><a name="N100C7">接著，安裝<code class="code">sun-jdk1.4-installer</code>套
+件：</a></p>
+
+        <p></p>
+
+        <pre class="programlisting"><code class="computeroutput"><a name="N100C7"># </a></code><span><a name="N100C7"><strong class="command">apt-get install sun-jdk1.4-installer</strong></a></span></pre>
+
+        <p></p>
+
+      </li>
+
+      <li>
+        <p><a name="N100C7">從Sun下載Java 1.4
+SDK。我們建議使用1.4.2以上的版本。確定妳選了非RPM的套件（也就是"<code class="filename">.bin</code>"
+套件）。</a></p>
+
+      </li>
+
+      <li>
+        <p><a name="N100C7">接著執行底下的指令來編譯套件：</a></p>
+
+        <p></p>
+
+        <pre class="programlisting"><code class="computeroutput"><a name="N100C7"># </a></code><span><a name="N100C7"><strong class="command">build-sun-jdk14 ./j2sdk-1_4_2_05-linux-i586.bin</strong></a></span></pre>
+
+        <p></p>
+
+        <p><a name="N100C7">其中<code class="filename">j2sdk-1_4_2_05-linux-i586.bin</code>是
+妳從Sun下載回來的檔案。</a></p>
+
+      </li>
+
+      <li>
+        <p><a name="N100C7">最後，安裝這個套件：</a></p>
+
+        <p></p>
+
+        <pre class="programlisting"><code class="computeroutput"><a name="N100C7"># </a></code><span><a name="N100C7"><strong class="command">dpkg -i j2sdk-1_4_2_05-linux-i586.deb</strong></a></span></pre>
+
+        <p></p>
+
+        <p><a name="N100C7">其中<code class="filename">j2sdk-1_4_2_05-linux-i586.deb</code>
+是剛才執行<code class="filename">build-sun-jdk14</code>產
+生的Debian套件。</a></p>
+
+      </li>
+
+    </ul>
+
+    </div>
+
+  </li>
+
+  <li>
+    <p><a name="N100C7">取得並安裝妳自選版本的Java，然後藉由安裝<code class="filename">java-virtual-machine</code>這
+個meta-package來滿足OpenNMS的套件相依性。</a></p>
+
+    <p></p>
+
+    <pre class="programlisting"><code class="computeroutput"><a name="N100C7"># </a></code><span><a name="N100C7"><strong class="command">apt-get install java-virtual-machine</strong></a></span></pre>
+
+    <p></p>
+
+  </li>
+
+</ol>
+
+</div>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N10158">2.1.2.
+在其他系統上安裝Java</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title"><a name="N10158">注意</a></h3>
+
+<p><a name="N10158">很重要的一點，請安裝SDK而不是JRE，因為Tomcat會需要編譯
+Java程式碼
+（因此需要SDK裡面的
+"javac"）。</a></p>
+
+</div>
+
+<p><a name="N10158">妳需要Sun的Java
+2 Platform，標準版，1.4版以上。我們建議使用1.4.2版以上。妳可以從Sun的</a><a href="http://java.sun.com/" target="_top">Java</a>網
+站<a href="http://java.sun.com/j2se/1.4.2/download.html" target="_top">下載</a>。
+依照步驟取得授權後，下載適合妳的作業系統的Java。如果妳準備使用RPM套件來安裝OpenNMS，請下載RPM套件版本的Java；不然，請下載"<code class="code">.bin</code>"
+的檔案。請依照Sun的說明來安裝。</p>
+
+</div>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="N1016B">2.2.
+必要的套件：Tomcat4</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a href="http://jakarta.apache.org/tomcat/index.html" target="_top">Tomcat</a>是Apache
+基金會之Jakarta專案的一部份，是一個Java servlet引擎。也就是說Tomcat是一個網頁伺服器，它用"servlets"（小的
+Java程式）來產生HTML頁面。注意這和Java
+"applets"很不一樣--servlets在伺服器端執行，而不是下載到瀏覽器執行。只要servlet被編譯後，Tomcat就會暫存它，意味著
+首次次讀取一個特定頁面也許慢，但是接下來的存取就蠻快的。</p>
+
+<p>Tomcat最新的版本是Tomcat5，不過OpenNMS因為使
+用Tomcat4的認證功能，不能使用Tomcat5。以後的版本會修正這個現
+況，不過現在妳必須使用Tomcat4。</p>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N10175">2.2.1.
+在Debian Sid上修改Tomcat4</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N10175">目前在Sid(unstable)上的Tomcat套件預設使用
+jikes編譯器，而
+不是妳在前一節準備好的
+javac。用妳喜歡的文書編輯器打開<code class="filename">/etc/tomcat4/web.xml</code>然
+後把"<code class="filename">compiler
+init param</code>"小節註解掉。</a></p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N10182">2.2.2.
+在Fedora 2和3上安裝合適的Tomcat4</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N10182">Fedora Core
+2內附的Tomcat4套件似乎不能穩定運行，就算不安裝OpenNMS也一樣。目前，我們建議使用</a><a href="ftp://ftp.opennms.org/pub/dependencies/tomcat4/" target="_top">OpenNMS
+FTP站</a>所提供的tomcat4套件。妳需要安裝兩個套件，<code class="filename">tomcat4-4.1.18-full.1jpp.noarch.rpm</code>和<code class="filename">tomcat4-webapps-4.1.18-full.1jpp.noarch.rpm</code>。</p>
+
+<p>某些版本的核心有一個bug會讓Java程序甚至整個核心掛掉。這個
+問題紀錄在<a href="https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=121902" target="_top">Red Hat bug #121902</a>。
+請確保妳的核心版本號至少是2.6.6-422。</p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N10199">2.2.3.
+在SuSE Linux Pro 9上安裝Tomcat4</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N10199">SuSE 9內附Tomcat
+5，無法和OpenNMS搭配。（如果有的話）請移除已經安裝的Tomcat 5套件，然後從舊版的SuSE中取得Tomcat 4來安裝。SuSE
+8.1所附的Tomcat 4似乎運行良好。請到</a><a href="ftp://ftp.suse.com/pub/projects/apache/jakarta-tomcat/8.1-i386/" target="_top">SuSE的FTP站</a>下
+載。</p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N101A2">2.2.4.
+客製化Tomcat4</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N101A2">我們要修改Tomcat的一些設定。安裝程式(installer)會
+負責大部分的修
+改，但是有幾項妳必須手
+動修改。底下是妳必須手動修改的兩項Tomcat設定：</a></p>
+
+<div class="orderedlist">
+<ol type="1">
+
+  <li>
+    <p><a name="N101A2">Tomcat必須和OpenNMS使用同一套Java。</a></p>
+
+  </li>
+
+  <li>
+    <p><a name="N101A2">Tomcat必須能夠讀寫OpenNMS的相關設定檔。妳有兩
+個選擇，一個是讓
+Tomcat以root權限來執行，另一個是將OpenNMS的相關設定檔開放給執行Tomcat的帳號讀寫。前者雖然從系統安全的角度來看比較不好，卻
+比較容易設定，所以是建議使用的方法。目前已經有計畫讓OpenNMS只要一般使用者權限就能運行&mdash;可參閱功能增進
+(enhancement)bug編號1150。</a></p>
+
+  </li>
+
+</ol>
+
+</div>
+
+<p><a name="N101A2">很多Linux發行版本都有設定檔<code class="filename">tomcat4.conf</code>，
+妳可以在這裡修改設定參數。在Red Hat和Fedora系列的Linux版本，這個檔案放在<code class="filename">/etc/tomcat4/</code>目
+錄下。裡面的內容看起來像這樣：</a></p>
+
+<p></p>
+
+<pre class="programlisting"><a name="N101A2"># tomcat /etc/rc.d script example configuration file<br># Use with version 1.07 of the scripts or later<br><br># Use Jpackage utils if present<br>if [ -x /usr/bin/java-functions ]; then<br>. /usr/bin/java-functions<br>set_jvm<br>fi<br><br># Source Java system configuration if exist<br>if [ -r /etc/java/java.conf ]; then<br>. /etc/java/java.conf<br>fi<br><br># you could also override JAVA_HOME here<br># Where your java installation lives<br># JAVA_HOME="/usr/java/jdk"<br># JAVA_HOME="/opt/IBMJava2-131"<br><br># You can pass some parameters to java<br># here if you wish to<br>#JAVACMD="$JAVA_HOME/bin/java -Xminf0.1 -Xmaxf0.3"<br><br># Where your tomcat installation lives<br># That change from previous RPM where TOMCAT_HOME <br># used to be /var/tomcat.<br># Now /var/tomcat will be the base for webapps only<br>CATALINA_HOME="/var/tomcat4"<br>JASPER_HOME="/var/tomcat4"<br>CATALINA_TMPDIR="/var/tomcat4/temp"<br><br># What user should run tomcat<br>TOMCAT_USER="tomcat"<br><br># You can change your tomcat locale here<br>#LANG=en_US<br><br># If you wish to further customize your tomcat environment,<br># put your own definitions here<br># (i.e. LD_LIBRARY_PATH for some jdbc drivers)<br># Just do not forget to export them </a></pre>
+
+<p></p>
+
+<p><a name="N101A2">在這個檔案裡，妳可以分別藉由修改<code class="varname">JAVA_HOME</code>變
+數來指向Java安裝位置；修改<code class="varname">TOMCAT_USER</code>變
+數來設定執行Tomcat的帳號。妳可以用一行有關 <code class="varname">JAVA_HOME</code>變
+數的設定指向妳安裝好的Java，例如：</a></p>
+
+<p></p>
+
+<pre class="programlisting"><a name="N101A2">JAVA_HOME="/usr/java/j2sdk1.4.2_04/"</a></pre>
+
+<p></p>
+
+<p><a name="N101A2">要改變執行Tomcat的帳號，妳可以這樣設定：</a></p>
+
+<p></p>
+
+<pre class="programlisting"><a name="N101A2">TOMCAT_USER="root"</a></pre>
+
+<p></p>
+
+<p><a name="N101A2">如果妳使用其他的Linux發行版本或者別的作業系統（例如：
+Solaris，Mac
+OS X）而找不到<code class="filename">tomcat4.conf</code>這
+個檔案，妳必須找出該系統上相對應的修改參數方法。歡迎妳將細節回報給OpenNMS bug資料庫（分類請選enhancement
+bug），或者email到opennms-install郵件論壇，以便我們加入這份文件。</a></p>
+
+<p><a name="N101A2">如果妳選擇不要用<code class="code">root</code>
+帳號來執行Tomcat，請做下列變更，讓執行Tomcat的帳號可以讀寫OpenNMS相關設定檔。這個步驟包括將"<code class="code">tomcat</code>"
+和"<code class="code">root</code>"
+兩個帳號加入"<code class="code">tomcat4</code>"
+群組，然後變更目錄權限，讓"<code class="code">tomcat4</code>"
+群組可以寫入OpenNMS "<code class="filename">etc</code>"
+和"<code class="filename">logs</code>"
+目錄。這步驟必須在OpenNMS軟體安裝<span class="bold"><strong>之
+後</strong></span>。</a></p>
+
+<div class="orderedlist">
+<ol type="1">
+
+  <li>
+    <p><a name="N101A2">"<code class="code">tomcat</code>"
+帳號應該已經在安裝Tomcat的時候建立了--可以在檔案<code class="filename">/etc/passwd
+裡面</code>確
+認。</a></p>
+
+  </li>
+
+  <li>
+    <p><a name="N101A2">編輯<code class="filename">/etc/group</code>，
+把帳號"<code class="code">tomcat</code>"
+和 <code class="code">root</code>"
+加進"<code class="code">tomcat4</code>"
+群組。檔案看起來像這樣：</a></p>
+
+    <p></p>
+
+    <pre class="programlisting"><code class="code"><a name="N101A2">tomcat4:x:91:tomcat,root</a></code></pre>
+
+    <p></p>
+
+  </li>
+
+  <li>
+    <p><a name="N101A2">找出OpenNMS的"<code class="filename">etc</code>"
+目錄。通常應該是<code class="filename">/opt/OpenNMS/etc</code>或<code class="filename">/etc/opennms</code>。
+目錄底下應該有一些附檔名是"<code class="filename">.xml</code>"
+的檔案，例如<code class="filename">capsd-configuration.xml</code>。
+執行底下的指令：</a></p>
+
+    <p></p>
+
+    <pre class="programlisting"><code class="computeroutput"><a name="N101A2"># </a></code><span><a name="N101A2"><strong class="command">chgrp -R tomcat4 $OPENNMS_HOME/etc<br><br></strong></a></span><code class="computeroutput"><a name="N101A2"># </a></code><span><a name="N101A2"><strong class="command">chmod -R g+w $OPENNMS_HOME/etc</strong></a></span></pre>
+
+    <p></p>
+
+    <p><a name="N101A2">其中<code class="varname">$OPENNMS_HOME/etc</code>代
+換成妳系統上OpenNMS的"<code class="filename">etc</code>"
+目錄。</a></p>
+
+  </li>
+
+  <li>
+    <p><a name="N101A2">找出OpenNMS的"<code class="filename">logs</code>"
+目錄。通常應該是<code class="filename">/var/log/opennms，</code>可
+以去OpenNMS的"<code class="filename">etc</code>"
+目錄裡面的<code class="filename">log4j.properties</code>檔
+案確認。（在檔案中找有"File"的那行）。執行底下的指令：</a></p>
+
+    <p></p>
+
+    <pre class="programlisting"><code class="computeroutput"><a name="N101A2"># </a></code><span><a name="N101A2"><strong class="command">chgrp -R tomcat4 /var/log/opennms<br><br></strong></a></span><code class="computeroutput"><a name="N101A2"># </a></code><span><a name="N101A2"><strong class="command">chmod -R g+w /var/log/opennms</strong></a></span></pre>
+
+    <p></p>
+
+    <p><a name="N101A2">其中<code class="varname">/var/log/opennms</code>是OpenNMS
+的記錄檔目錄。</a></p>
+
+  </li>
+
+</ol>
+
+</div>
+
+<p><a name="N101A2">第一項變更完成後Tomcat就可以啟動，但是不做第二項變更的話在
+OpenNMS記
+錄檔會出現錯誤訊息，而且網頁介面提供的管理指令也無法執行，因為Tomcat無法寫入設定檔。</a></p>
+
+</div>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="N1027A">2.3.
+必要的套件：RRDtool</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a href="http://people.ee.ethz.ch/%7Eoetiker/webtools/mrtg/" target="_top">MRTG</a>，
+這個可能是第一個被廣泛使用的開放原始碼網管工具，它的起源就是<a href="http://people.ee.ethz.ch/%7Eoetiker/webtools/rrdtool/" target="_top">RRDtool</a>。
+</p>
+
+<p>RRDtool提供"round
+robin"資料庫，用來快速、節省空間地儲存時間序列(time-series)量測數據。OpenNMS將效能相關的數據儲存在用RRDtool產生
+的RRD檔案。</p>
+
+<p>我們不需要對RRDtool做特別的設定。只要它是以套件安裝，
+OpenNMS套件應該可以找到它，並且用適當的指令完成設定。目前已知可以使用RRDtool 1.0.33以上任何的"1.0"系列版本。</p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="N1028A">2.4.
+必要的套件：PostgreSQL</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N1028A">XXX add a comment about 32-bit
+vs. 64-bit stuff for the iplike.so module</a></p>
+
+<p>OpenNMS使用<a href="http://www.postgresql.org/" target="_top">PostgreSQL</a>（又
+稱"Postgres"）這個關聯式資料庫來儲存各種資訊，例如網路設備、事件、告警和故障。</p>
+
+<p>在安裝OpenNMS之前，要先準備兩件跟資料庫有關的事項。首先，
+OpenNMS必須能夠以TCP/IP方式連結到資料庫（即使兩者都在同一台機
+器）；其次，在安裝過程中要能夠新增資料庫。</p>
+
+<p>OpenNMS需要PostgreSQL版本7.2以上。如果你使用
+PostgreSQL
+7.4之前的版本，伺服器的錯誤訊息必須是英文（'C'
+locale）。尤其參數<code class="filename">lc_messages</code>
+必須是<code class="filename">'C'</code>。
+相關設定在PostgreSQL data目錄的<code class="filename">postgresql.conf</code>檔
+案裡，
+如果有修改的話，請重新啟動資料庫。<code class="filename">data</code>目
+錄的所在位置，請參閱底下關於<code class="filename">pg_hba.conf</code>的
+小節。</p>
+
+<p>妳至少應該安裝這個套件：</p>
+
+<div class="itemizedlist">
+<ul type="disc">
+
+  <li>
+    <p><code class="filename">postgresql-server</code></p>
+
+  </li>
+
+</ul>
+
+</div>
+
+<p>請注意，Red Hat Enterprise
+Linux和CentOS把PostgreSQL套件稱為"rhdb"，意思是"Red Hat
+DataBase"；而舊版的SuSE則稱做"postgres"。</p>
+
+<p>如果妳使用最近版本的Mandrake（版本9以上），妳還需要：</p>
+
+<div class="itemizedlist">
+<ul type="disc">
+
+  <li>
+    <p><code class="filename">postgresql-pl</code></p>
+
+  </li>
+
+</ul>
+
+</div>
+
+<p>一旦妳安裝了Postgres，妳需要修改兩個Postgres設定
+檔：<code class="filename">postgresql.conf</code>和<code class="filename">pg_hba.conf</code>。Postgres
+首次啟動會產生這些檔案，因此如果妳剛才安裝的時候沒有啟
+動它，請現在啟動它。通常，啟動指令稿會放在<code class="filename">/etc/init.d</code>。</p>
+
+<p>找出Postgres的"data"目錄。通常應該是
+/var/lib/pgsql/data。我們要修改的兩個檔案應該就在那個目錄下。</p>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N102CE">2.4.1. 客製化<code class="filename">postgresql.conf</code>檔
+案</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N102CE">這個檔案控制Postgres的一些基本參數。我們必須修改其中三個。</a></p>
+
+<div class="orderedlist">
+<ol type="1">
+
+  <li>
+    <p><a name="N102CE">在檔案中找出有<code class="varname">tcpip_socket</code>的
+那一行。它應該是（這個項目在PostgreSQL 8.0以上是預設值，可以忽略）：</a></p>
+
+    <p></p>
+
+    <pre class="programlisting"><a name="N102CE">tcpip_socket = true</a></pre>
+
+    <p></p>
+
+    <p><a name="N102CE">請確定這行（以及等會提到的兩行）開頭沒有註解符號
+("#")。這樣OpenNMS就
+可以連結資料庫。</a></p>
+
+  </li>
+
+  <li>
+    <p><a name="N102CE">在檔案中找出有<code class="varname">max_connections</code>的
+那一行。它應該是：</a></p>
+
+    <p></p>
+
+    <pre class="programlisting"><a name="N102CE">max_connections = 256</a></pre>
+
+    <p></p>
+
+  </li>
+
+  <li>
+    <p><a name="N102CE">在檔案中找出有<code class="varname">shared_buffers</code>的
+那一行。它應該是：</a></p>
+
+    <p></p>
+
+    <pre class="programlisting"><a name="N102CE">shared_buffers = 1024</a></pre>
+
+    <p></p>
+
+  </li>
+
+</ol>
+
+</div>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N102FD">2.4.2. 客製化<code class="filename">pg_hba.conf</code>檔
+案</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N102FD"><code class="filename">pg_hba.conf</code>檔
+案決定哪台機器以及哪
+個使用者能夠透過TCP/IP存取我們機器上的資料庫。</a></p>
+
+<p><a name="N102FD">因為這就是OpenNMS存取資料庫的方法（透過<code class="code">localhost</code>），
+因此我們必須修改這個檔案使OpenNMS能運作。最簡單的方法是開放所有本機的使用者都能存取資料庫（如果妳的系統不支援IPv6，不要加最後一行）：</a></p>
+
+<p></p>
+
+<pre class="programlisting"><a name="N102FD"># TYPE DATABASE USER IP-ADDRESS IP-MASK METHOD<br>local all all trust<br>host all all 127.0.0.1 255.255.255.255 trust<br>host all all ::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff trust</a></pre>
+
+<p></p>
+
+<p><a name="N102FD">請確定這個檔案其他行的開頭都還保留註解符號。</a></p>
+
+<p><a name="N102FD">做完這些修改之後，妳需要停止再重新啟動Postgres。</a></p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N10318">2.4.3.
+在Red Hat Linux 7上安裝 PostgreSQL<br>
+
+</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N10318">妳需要安裝Postgres 7.2版（Red Hat Linux
+7.3有附）。</a></p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N1031D">2.4.4.
+在Solaris上建立PostgreSQL資料庫</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N1031D">妳需要建立一個<code class="code">opennms</code>資
+料庫。</a></p>
+
+<p><a name="N1031D">使用<code class="code">postgres</code>帳
+號，進入<code class="filename">/usr/local/pgsql/bin</code>目
+錄，然後執行此指令：</a></p>
+
+<p></p>
+
+<pre class="programlisting"><code class="computeroutput"><a name="N1031D"># </a></code><span><a name="N1031D"><strong class="command">./initdb -D /usr/local/pgsql/data -E ""</strong></a></span></pre>
+
+<p></p>
+
+<p><a name="N1031D">這樣就會建立資料庫。請依照前面小節的作法，修改<code class="filename">pg_hba.conf</code>和<code class="filename">postgresql.conf</code>這
+兩個檔案。</a></p>
+
+<p><a name="N1031D">接著妳需要啟動資料庫：</a></p>
+
+<p></p>
+
+<pre class="programlisting"><code class="computeroutput"><a name="N1031D"># </a></code><span><a name="N1031D"><strong class="command">./pg_ctl -D /usr/local/pgsql/data start</strong></a></span></pre>
+
+<p></p>
+
+<p><a name="N1031D">這樣就完成了用<code class="code">postgres</code>帳
+號來操作的部份。</a></p>
+
+</div>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="N10353">2.5. 必要的套件：<code class="filename">curl</code></a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N10353">啟動指令稿使用<code class="filename">curl</code>去
+連接OpenNMS
+daemon來檢查各個部分均順利啟動和運行("<code class="filename">opennms
+status</code>")。</a></p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="N10363">2.6. 非必要的套件：<code class="filename">metamail</code></a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title"><a name="N10363">注意</a></h3>
+
+<p><a name="N10363">從OpenNMS
+1.1.4開始，已經不需要這個套件了，因為Perl郵件程式已經被一個Java郵件程式所取代。</a></p>
+
+</div>
+
+<p><a name="N10363">由於OpenNMS使用Perl來寄送可用性報告，對於某些郵件程式而
+言，妳必須加裝<code class="filename">metamail</code>套
+件才能讓OpenNMS產生的PDF檔案被順利寄出。</a></p>
+
+<p><a name="N10363">比照前面章節所提到的Perl相關模組，如果妳的發行版本沒有提供
+metamail，
+妳可以在OpenNMS的
+FTP站台找到<code class="filename">metamail</code>（也
+提供SRPM檔）。</a></p>
+
+</div>
+
+</div>
+
+<div class="chapter" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title"><a name="N10378">Chapter&nbsp;3.
+安裝OpenNMS</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="toc">
+<p><a name="N10378"><b>目錄</b></a></p>
+
+<dl>
+
+  <dt><span class="section"><a href="#N10380">3.1.
+執行首次安裝</a></span></dt>
+
+  <dd>
+    <dl>
+
+      <dt><span class="section"><a href="#N10385">3.1.1.
+安裝於Debian Linux</a></span></dt>
+
+      <dt><span class="section"><a href="#N103A6">3.1.2.
+安裝於以RPM為基礎的Linux發行版本</a></span></dt>
+
+      <dt><span class="section"><a href="#N103C5">3.1.3.
+安裝於Solaris</a></span></dt>
+
+      <dt><span class="section"><a href="#N103E4">3.1.4.
+安裝於Mac OS X</a></span></dt>
+
+      <dt><span class="section"><a href="#N103E9">3.1.5.
+從程式原始碼安裝</a></span></dt>
+
+    </dl>
+
+  </dd>
+
+  <dt><span class="section"><a href="#N10409">3.2.
+幫裝好的舊版升級</a></span></dt>
+
+  <dd>
+    <dl>
+
+      <dt><span class="section"><a href="#N10418">3.2.1.
+OpenNMS相關資料之存放位置</a></span></dt>
+
+      <dt><span class="section"><a href="#N10452">3.2.2.
+升級之前&hellip;&hellip;請先備份！</a></span></dt>
+
+    </dl>
+
+  </dd>
+
+  <dt><span class="section"><a href="#N10495">3.3.
+運行安裝程式(installer)</a></span></dt>
+
+  <dd>
+    <dl>
+
+      <dt><span class="section"><a href="#N1049D">3.3.1.
+為OpenNMS設定Java</a></span></dt>
+
+      <dt><span class="section"><a href="#N104C9">3.3.2.
+運行安裝程式(installer)來設定PostgreSQL資料庫</a></span></dt>
+
+      <dt><span class="section"><a href="#N104D5">3.3.3.
+運行安裝程式(installer)來設定網頁應用程式</a></span></dt>
+
+    </dl>
+
+  </dd>
+
+</dl>
+
+</div>
+
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">注意</h3>
+
+<p>妳必須使用root帳號來執行這一章提到的指令。</p>
+
+</div>
+
+<p>請遵循「首次安裝」或者「升級」該節的指示，然後遵循「運行安裝程式
+(installer)」一節的步驟。如果在過程中遇到任何錯誤，請參考這份指
+南的錯誤排除章節。</p>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="N10380">3.1. 執行首次安裝</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N10380">如果妳是首次安裝，請遵循本節中有關妳的作業系統的部分。如果妳要替一
+套已經裝好的
+OpenNMS升級，請看下
+一節。</a></p>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N10385">3.1.1.
+安裝於Debian Linux</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N10385">如果妳已經遵照前面章節指定好了apt套件庫， 請執行此指令：</a></p>
+
+<p></p>
+
+<pre class="programlisting"><code class="computeroutput"><a name="N10385"># </a></code><span><a name="N10385"><strong class="command">apt-get install opennms</strong></a></span></pre>
+
+<p></p>
+
+<p><a name="N10385">想要加裝文件及contrib套件的話，請執行此指令：</a></p>
+
+<p></p>
+
+<pre class="programlisting"><code class="computeroutput"><a name="N10385"># </a></code><span><a name="N10385"><strong class="command">apt-get install opennms-doc opennms-contrib</strong></a></span></pre>
+
+<p></p>
+
+<p><a name="N10385">妳也可以從SourceForge網站上OpenNMS的</a><a href="http://sourceforge.net/project/showfiles.php?group_id=4141" target="_top">Files</a>下
+載適合妳的Debian版本的套件。</p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N103A6">3.1.2.
+安裝於以RPM為基礎的Linux發行版本</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N103A6">從SourceForge網站上OpenNMS的</a><a href="http://sourceforge.net/project/showfiles.php?group_id=4141" target="_top">Files</a>下
+載適合妳的Linux發行版本的套件。</p>
+
+<p></p>
+
+<pre class="programlisting"><code class="computeroutput"># </code><span><strong class="command">rpm -i opennms-1.2.0-1_&lt;distribution&gt;.&lt;platform&gt;.rpm<br></strong></span><code class="computeroutput"># </code><span><strong class="command">rpm -i opennms-webapp-1.2.0-1_&lt;distribution&gt;.&lt;platform&gt;.rpm<br><br></strong></span><code class="computeroutput"># </code><span><strong class="command">rpm -i opennms-docs-1.2.0-1_&lt;distribution&gt;.&lt;platform&gt;.rpm</strong></span></pre>
+
+<p></p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N103C5">3.1.3.
+安裝於Solaris</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N103C5">從SourceForge網站上OpenNMS的</a><a href="http://sourceforge.net/project/showfiles.php?group_id=4141" target="_top">Files</a>下
+載適合妳的Solaris版本的套件。</p>
+
+<p></p>
+
+<pre class="programlisting"><code class="computeroutput"># </code><span><strong class="command">cd /usr/local<br></strong></span><code class="computeroutput"># </code><span><strong class="command">gzip -d opennms-1.2.0-1-sol&lt;version&gt;-sparc-local.gz<br><br></strong></span><code class="computeroutput"># </code><span><strong class="command">pkgadd -d `pwd`/opennms-1.2.0-1-sol&lt;version&gt;-sparc-local</strong></span></pre>
+
+<p></p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N103E4">3.1.4.
+安裝於Mac OS X</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N103E4">XXX write me</a></p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N103E9">3.1.5.
+從程式原始碼安裝</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N103E9">在妳嘗試從程式原始碼安裝之前，請先閱讀「編譯程式原始碼」一章，先下
+載及編譯程式原
+始碼。</a></p>
+
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title"><a name="N103E9">注意</a></h3>
+
+<p><a name="N103E9">除非妳依照「編譯程式原始碼」一章所述，改變<code class="filename">install.dir</code>
+參數，不然程式將
+會安裝在檔案<code class="filename">build.xml</code>所
+在目錄下的<code class="filename">dist</code>目
+錄。</a></p>
+
+</div>
+
+<p><a name="N103E9">執行此指令來安裝：</a></p>
+
+<p></p>
+
+<pre class="programlisting"><code class="computeroutput"><a name="N103E9"># </a></code><span><a name="N103E9"><strong class="command">sh build.sh install</strong></a></span></pre>
+
+<p></p>
+
+</div>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="N10409">3.2. 幫裝好的舊版升級</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N10409">XXX this section could use some
+more love, too.</a></p>
+
+<p><a name="N10409">幫舊版的OpenNMS升級至目前的版本，通常只要安裝適合妳的（作業
+系統）發行版本
+之套件即可。</a></p>
+
+<p><a name="N10409">如果是RPM為基礎的發行版本，只要輸入指令"<code class="computeroutput">rpm
+-Uvh
+[套件名稱]</code>"即可。</a></p>
+
+<p><a name="N10409">此外，OpenNMS的安裝程式(installer)可能會試著去修
+改資料庫。請記
+得依照本章後面的指示以
+執行安裝程式(installer)。這些變動應
+該會順利完成，但是，就算是最周全的計畫都有可能出錯。為了以防萬一，在升級之前請依照下面的細項指示來備份妳的PostgreSQL資料庫。</a></p>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N10418">3.2.1.
+OpenNMS相關資料之存放位置</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N10418">OpenNMS的相關資料存放在數個位置：</a></p>
+
+<div class="glosslist">
+<dl>
+
+  <dt><code class="filename"><a name="N10418">$OPENNMS_HOME/etc/</a></code></dt>
+
+  <dd>
+    <p><a name="N10418">這裡放的是OpenNMS的設定檔。如果因為版本更替，使得<code class="filename">$OPENNMS_HOME/etc</code>目
+錄下任一設定檔的預設結構改變，RPM會針對該檔案建立一個"<code class="filename"><code class="filename">.rpmnew</code></code>"
+的版本。在那當下妳必須檢視既有檔案與新版本之間的變動，並且手動整合它們。指令"<code class="code">diff
+-u &lt;舊檔&gt; &lt;新檔&gt; | less</code>"
+可以幫助妳找出哪些地方有變動。</a></p>
+
+  </dd>
+
+  <dt><code class="filename"><a name="N10418">$OPENNMS_HOME/share/rrd/</a></code></dt>
+
+  <dd>
+    <p><a name="N10418">這裡放的是經由SNMP收集回來的，關於回應時間及系統效能之
+RRD資料檔。安裝程式
+(installer)
+應該不會動到<code class="filename">$OPENNMS_HOME/share/rrd</code>目
+錄下的RRD資料檔。除非
+妳從使用RRDTool的版本（譯註：1.1.3以前）升級到使用jRobin的版本（譯註：1.1.4以上），不然妳不用擔心這些資料檔。</a></p>
+
+  </dd>
+
+  <dt><code class="filename"><a name="N10418">$OPENNMS_HOME/webapps/opennms/</a></code></dt>
+
+  <dd>
+    <p><a name="N10418">這裡放的是OpenNMS網頁應用程式。雖然這些不是資料，但
+某些使用者可能會客製化
+網頁介面；請在升
+級OpenNMS之前備份這些客製化的部分。</a></p>
+
+  </dd>
+
+  <dt><code class="filename"><a name="N10418">$PGDATA/</a></code></dt>
+
+  <dd>
+    <p><a name="N10418">關於節點、服務、事件、告警等等的資料，都存放在
+PostgreSQL資料庫的<code class="code">opennms</code>表
+單中。</a></p>
+
+  </dd>
+
+</dl>
+
+</div>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N10452">3.2.2.
+升級之前&hellip;&hellip;請先備份！</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N10452">升級也許會遇到狀況，因此在行動之前最好還是把重要資料來個有備（份）
+無患。</a></p>
+
+<p><a name="N10452">就OpenNMS而言，妳應該做兩件事：</a></p>
+
+<div class="orderedlist">
+<ol type="1">
+
+  <li>
+    <p><a name="N10452">將<code class="filename">$OPENNMS_HOME/etc</code>目
+錄下的內容備份到一個安全的位置。萬一任何新檔案造成問題，妳就可以用原來的覆蓋回來。</a></p>
+
+  </li>
+
+  <li>
+    <p><a name="N10452">備份postgres資料庫。使用<code class="filename">pg_dumpall</code>指
+令，妳可以將資料庫的所有內容傾
+倒至一個檔案：</a></p>
+
+    <p></p>
+
+    <pre class="programlisting"><code class="computeroutput"><a name="N10452"># </a></code><span><a name="N10452"><strong class="command">pg_dumpall &gt; old_data</strong></a></span></pre>
+
+    <p></p>
+
+    <p><a name="N10452">上面指令會將所有資料備份到檔名<code class="filename">old_data</code>的
+檔案。請用"postgres"帳號來執行指令：</a></p>
+
+    <p></p>
+
+    <pre class="programlisting"><code class="computeroutput"><a name="N10452"># </a></code><span><a name="N10452"><strong class="command">sudo -u postgres pg_dumpall &gt; old_data</strong></a></span></pre>
+
+    <p></p>
+
+    <p><a name="N10452">使用底下的指令來復原：</a></p>
+
+    <p></p>
+
+    <pre class="programlisting"><code class="computeroutput"><a name="N10452"># </a></code><span><a name="N10452"><strong class="command">sudo -u postgres psql -U postgres -f old_data template1</strong></a></span></pre>
+
+    <p></p>
+
+  </li>
+
+  <li>
+    <p><a name="N10452">如果妳有修改網頁應用程式，請記得也要將它們備份。</a></p>
+
+  </li>
+
+</ol>
+
+</div>
+
+<p><a name="N10452">前面提過了，升級的時候妳應該不需要備份RRD資料檔。</a></p>
+
+</div>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="N10495">3.3.
+運行安裝程式(installer)</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N10495">不管前面妳選了什麼安裝方法，也不管妳是升級或執行首次安裝，妳仍然需
+要運行安裝程式
+(installer)。
+這個工具會在PostgreSQL中設定<code class="code">opennms</code>資
+料庫，並且將OpenNMS
+網頁應用程式(常簡稱"webapp"或"webUI")裝進Tomcat。</a></p>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N1049D">3.3.1.
+為OpenNMS設定Java</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N1049D">在運行安裝程式(installer)之前，妳必須為OpenNMS設
+定使用一個適當
+的Java
+Runtime Environment (JRE)。請使用OpenNMS提供的工具<code class="filename">runjava</code>；
+它會搜尋適合的JRE，或者妳也可以指定JRE給它。</a></p>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h4 class="title"><a name="N104A6">3.3.1.1.
+搜尋JRE（推薦）</a></h4>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N104A6">執行<code class="filename">runjava</code>的
+時候加上"<code class="code">-s</code>"
+參數，來搜尋JRE：</a></p>
+
+<pre class="programlisting"><code class="computeroutput"><a name="N104A6"># </a></code><span><a name="N104A6"><strong class="command">$OPENNMS_HOME/bin/runjava -s</strong></a></span></pre>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h4 class="title"><a name="N104BB">3.3.1.2.
+指定JRE</a></h4>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N104BB">執行runjava的時候加上"-S
+&lt;JRE的位置&gt;"參數，來指定妳希望OpenNMS使用哪個JRE：</a></p>
+
+<pre class="programlisting"><code class="computeroutput"><a name="N104BB"># </a></code><span><a name="N104BB"><strong class="command">$OPENNMS_HOME/bin/runjava -S &lt;JRE的位置&gt;</strong></a></span></pre>
+
+</div>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N104C9">3.3.2.
+運行安裝程式(installer)來設定PostgreSQL資料庫</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<pre class="programlisting"><code class="computeroutput"><a name="N104C9"># </a></code><span><a name="N104C9"><strong class="command">$OPENNMS_HOME/bin/install -disU</strong></a></span></pre>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N104D5">3.3.3.
+運行安裝程式(installer)來設定網頁應用程式</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<pre class="programlisting"><code class="computeroutput"><a name="N104D5"># </a></code><span><a name="N104D5"><strong class="command">$OPENNMS_HOME/bin/install -y -w $CATALINA_HOME/webapps -W $CATALINA_HOME/server/lib</strong></a></span></pre>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="chapter" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title"><a name="N104E1">Chapter&nbsp;4.
+開始使用OpenNMS</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="toc">
+<p><a name="N104E1"><b>目錄</b></a></p>
+
+<dl>
+
+  <dt><span class="section"><a href="#N104E4">4.1.
+設定發掘(discovery)</a></span></dt>
+
+  <dt><span class="section"><a href="#N1050C">4.2.
+啟動PostgreSQL，Tomcat4和OpenNMS</a></span></dt>
+
+  <dt><span class="section"><a href="#N10538">4.3.
+登入網頁應用程式</a></span></dt>
+
+  <dt><span class="section"><a href="#N10547">4.4.
+將OpenNMS設為開機自動執行</a></span></dt>
+
+  <dd>
+    <dl>
+
+      <dt><span class="section"><a href="#N1054C">4.4.1.
+在Debian
+Linux上設定開機自動執行</a></span></dt>
+
+      <dt><span class="section"><a href="#N10551">4.4.2.
+在RPM為基礎的Linux發行版本上設定開機自動執行</a></span></dt>
+
+      <dt><span class="section"><a href="#N1056B">4.4.3.
+在Solaris上設定開機自動執行</a></span></dt>
+
+    </dl>
+
+  </dd>
+
+</dl>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="N104E4">4.1.
+設定發掘(discovery)</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N104E4">OpenNMS預設的網路主機發掘(host
+discovery)設定可能不符合妳的需求。請編輯<code class="filename">$OPENNMS_HOME/etc/discovery-configuration.xml</code>。
+看起來應該像這樣：</a></p>
+
+<p></p>
+
+<pre class="programlisting"><a name="N104E4">&lt;discovery-configuration threads="1" packets-per-second="1"<br> initial-sleep-time="300000" restart-sleep-time="86400000"<br> retries="3" timeout="800"&gt;<br><br> &lt;include-range retries="2" timeout="3000"&gt;<br> &lt;begin&gt;192.168.0.1&lt;/begin&gt;<br> &lt;end&gt;192.168.0.254&lt;/end&gt;<br> &lt;/include-range&gt;<br><br> &lt;include-url&gt;file:/opt/OpenNMS/etc/include&lt;/include-url&gt;<br><br>&lt;/discovery-configuration&gt;<br></a></pre>
+
+<p></p>
+
+<p><a name="N104E4">妳最可能想要更動的，應該是起迄的範圍（分別以<code class="code">&lt;begin&gt;</code>和<code class="code">&lt;end&gt;</code>標
+籤設定。）另外妳可以視需要增加幾組<code class="code">&lt;include-range&gt;</code>。
+如果妳寧可逐一列出想要發掘的網路主機，妳可以將<code class="code">&lt;specific&gt;</code>標
+籤插入<code class="code">&lt;include-range&gt;</code>標
+籤之前，或者放在<code class="code">&lt;include-url&gt;</code>所
+指的檔案中，一行一個網路位址。 最後，如果妳想要用網頁介面來增加讓OpenNMS監控的主機，妳可以將整個檔案內容變成註解（把"<code class="code">&lt;!--</code>"
+放在第一行的前面，然後放"<code class="code">--&gt;</code>"
+在最後一行的後面就可以了）。 </a></p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="N1050C">4.2.
+啟動PostgreSQL，Tomcat4和OpenNMS</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N1050C">底下是個範例，在妳的作業系統上也許不太一樣：</a></p>
+
+<p></p>
+
+<pre class="programlisting"><code class="computeroutput"><a name="N1050C"># </a></code><span><a name="N1050C"><strong class="command">/etc/init.d/postgres start<br><br></strong></a></span><code class="computeroutput"><a name="N1050C"># </a></code><span><a name="N1050C"><strong class="command">/etc/init.d/tomcat4 start<br></strong></a></span><code class="computeroutput"><a name="N1050C"># </a></code><span><a name="N1050C"><strong class="command">$OPENNMS_HOME/bin/opennms start<br></strong></a></span></pre>
+
+<p></p>
+
+<p><a name="N1050C">如果妳的作業系統沒有PostgreSQL或Tomcat4的啟動指令
+稿，妳可以執行
+類似底下的指令：</a></p>
+
+<pre class="programlisting"><code class="computeroutput"><a name="N1050C"># </a></code><span><a name="N1050C"><strong class="command">sudo -u postgres /usr/local/pgsql/bin/pg_ctl -D /usr/local/pgsql/data start<br></strong></a></span><code class="computeroutput"><a name="N1050C"># </a></code><span><a name="N1050C"><strong class="command">/usr/local/tomcat/bin/startup.sh</strong></a></span></pre>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="N10538">4.3. 登入網頁應用程式</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N10538">在妳的瀏覽器輸入網址<code class="filename">http://&lt;host&gt;:8080/opennms/</code>（在
+Debian Linux上請用Port 8180）。一開始可以用帳號"<code class="code">admin</code>"，
+密碼"<code class="code">admin</code>"
+來登入。</a></p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="N10547">4.4.
+將OpenNMS設為開機自動執行</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N10547">如果到這裡一切順利，妳可以將OpenNMS設為開機自動執行。大部分
+的作業系統並沒
+有預設OpenNMS為開
+機自動執行，妳要自己更改設定。</a></p>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N1054C">4.4.1.
+在Debian Linux上設定開機自動執行</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N1054C">當妳安裝Debian版本的OpenNMS套件時已經自動啟動，無須設
+定。</a></p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N10551">4.4.2.
+在RPM為基礎的Linux發行版本上設定開機自動執行</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N10551">OpenNMS套件會加入一個init指令稿到<code class="filename">/etc</code>（通
+常是<code class="filename">/etc/init.d</code>），
+不過妳得執行<code class="filename">chkconfig</code>讓
+這個服務自動啟動：</a></p>
+
+<pre class="programlisting"><code class="computeroutput"><a name="N10551"># </a></code><span><a name="N10551"><strong class="command">chkconfig --add opennms</strong></a></span></pre>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N1056B">4.4.3.
+在Solaris上設定開機自動執行</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<pre class="programlisting"><code class="computeroutput"><a name="N1056B"># </a></code><span><a name="N1056B"><strong class="command">ln -s $OPENNMS_HOME/bin/opennms /etc/init.d/opennms</strong></a></span><code class="computeroutput"><br><br><a name="N1056B"># </a></code><span><a name="N1056B"><strong class="command">ln -s ../init.d/opennms /etc/rc3.d/S99opennms<br></strong></a></span><code class="computeroutput"><a name="N1056B"># </a></code><span><a name="N1056B"><strong class="command">ln -s ../init.d/opennms /etc/rc3.d/K01opennms</strong></a></span></pre>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="chapter" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title"><a name="N10583">Chapter&nbsp;5.
+編譯程式原始碼</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="toc">
+<p><a name="N10583"><b>目錄</b></a></p>
+
+<dl>
+
+  <dt><span class="section"><a href="#N10586">5.1.
+妳確定要這麼做嗎？</a></span></dt>
+
+  <dt><span class="section"><a href="#N1058E">5.2.
+安裝必須的套件</a></span></dt>
+
+  <dt><span class="section"><a href="#N10593">5.3.
+下載程式原始碼</a></span></dt>
+
+  <dd>
+    <dl>
+
+      <dt><span class="section"><a href="#N1059B">5.3.1.
+下載釋出版本程式碼</a></span></dt>
+
+      <dt><span class="section"><a href="#N105B3">5.3.2.
+從CVS下載程式碼</a></span></dt>
+
+    </dl>
+
+  </dd>
+
+  <dt><span class="section"><a href="#N105E2">5.4.
+設定<code class="filename">build.properties</code></a></span></dt>
+
+  <dt><span class="section"><a href="#N1060F">5.5.
+編譯OpenNMS</a></span></dt>
+
+  <dt><span class="section"><a href="#N1061E">5.6.
+安裝OpenNMS</a></span></dt>
+
+</dl>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="N10586">5.1. 妳確定要這麼做嗎？</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N10586">OpenNMS是個複雜的軟體產品，截至目前為止，它（還）不像很多工
+具程式，可以簡
+單地用"<code class="code">./configure
+&amp;&amp; make
+&amp;&amp; make install</code>"
+來編譯。如果已經有包裝好的，適合妳的作業系統的OpenNMS套件，我們強烈建議妳採
+用。如果採用包裝好的套件遇到問題，請參閱故障排除章節來尋求協助。</a></p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="N1058E">5.2. 安裝必須的套件</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N1058E">參閱有關安裝必須套件的章節，並且在安裝OpenNMS前先將它們安裝
+完畢。</a></p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="N10593">5.3. 下載程式原始碼</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N10593">妳可以下載某個釋出版本的程式碼，或者妳可以直接從source
+code respository (CVS)下載。除非妳想要參與開發，或者需要還沒釋出的特定功能、bug修正，否則下載已釋出的程式碼應該夠了。</a></p>
+
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title"><a name="N10593">注意</a></h3>
+
+<p><a name="N10593">下列指令可以用任意的使用者帳號來執行，不過必須要全部使用同一個帳
+號。</a></p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N1059B">5.3.1.
+下載釋出版本程式碼</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">注意</h3>
+
+<p>Solaris內建的<code class="filename">tar</code>無
+法正確地將OpenNMS程式碼解壓縮。它會（幾乎）無聲無息地執行失敗，妳只會得到一個不完整的OpenNMS程式碼目錄。妳必須要在Solaris上
+使用GNU tar。</p>
+
+</div>
+
+<p><a name="N1059B"></a>從<a href="http://sourceforge.net/project/showfiles.php?group_id=4141" target="_top">SourceForge網站上OpenNMS的Files</a>下
+載最新的程式碼釋出版本的<a href="http://sourceforge.net/project/showfiles.php?group_id=4141&amp;package_id=118141" target="_top"><code class="filename">opennms-source</code>
+套件。</a>
+它的檔案名稱會看起來像<code class="filename">opennms-source-1.2.0-1.tar.gz</code>。
+妳解壓縮之後，切換到<code class="filename">opennms-1.2.0-1/source</code>目
+錄，接著進行下一節（譯註：5.4節）</p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N105B3">5.3.2.
+從CVS下載程式碼</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N105B3">OpenNMS的程式碼存放在</a><a href="http://sourceforge.net/" target="_top">SourceForge.net</a>的CVS。
+細節請參閱<a href="http://sourceforge.net/cvs/?group_id=4141" target="_top">OpenNMS
+的CVS頁面</a>，或者直接使用這些指令立刻開始下載。</p>
+
+<p>使用（匿名帳號）空白密碼登入CVS伺服器：</p>
+
+<p></p>
+
+<pre class="programlisting"><code class="computeroutput">$ </code><span><strong class="command">cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/opennms login</strong></span></pre>
+
+<p></p>
+
+<p>將OpenNMS的程式碼check out（這樣會fetch <code class="function">HEAD</code>，
+最bleeding-edge的版本）：</p>
+
+<p></p>
+
+<pre class="programlisting"><code class="computeroutput">$ </code><span><strong class="command">cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/opennms co opennms</strong></span></pre>
+
+<p></p>
+
+<p>這樣妳要的程式碼都在這個叫做<code class="filename">opennms</code>的
+目錄。切換到這個目錄然後進行下一節。</p>
+
+</div>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="N105E2">5.4. 設定<code class="filename">build.properties</code></a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N105E2">有幾樣細節是關於RRDtool和PostgreSQL安裝在哪裡，目
+前編譯的過程
+（還）不能可靠地自動找到這
+些答案。如果妳的RRDtool不是裝在<code class="filename">/usr</code>目
+錄，或者PostgreSQL server include目錄不是<code class="filename">/usr/include/pgsql/server</code>，
+妳就需要建立一個<code class="filename">build.properties</code>檔
+案。</a></p>
+
+<p><a name="N105E2">妳可以偷懶跳過這一步驟，如果編譯過程找不到這些元件，再讓它通知妳。</a></p>
+
+<p><a name="N105E2">這樣安裝的話，OpenNMS預設會裝在檔案<code class="filename">build.xml</code>所
+在目錄下的<code class="filename">dist</code>目
+錄。用作測試很好（可能正是妳想要的），不過如果為了正式使用(production use)想要安裝在其他目錄，妳必須設定<code class="filename">install.dir</code>。
+妳可能想要加一行類似這樣的內容在<code class="filename">build.properties</code>：</a></p>
+
+<p></p>
+
+<pre class="programlisting"><a name="N105E2">install.dir=/opt/OpenNMS</a></pre>
+
+<p></p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="N1060F">5.5. 編譯OpenNMS</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N1060F">這部分很簡單。執行這個指令：</a></p>
+
+<p></p>
+
+<pre class="programlisting"><code class="computeroutput"><a name="N1060F">$ </a></code><span><a name="N1060F"><strong class="command">sh build.sh compile</strong></a></span></pre>
+
+<p></p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="N1061E">5.6. 安裝OpenNMS</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N1061E">細節請參閱「安裝OpenNMS」的章節。</a></p>
+
+</div>
+
+</div>
+
+<div class="chapter" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title"><a name="N10623">Chapter&nbsp;6.
+OpenNMS安裝時的問題排除</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="toc">
+<p><a name="N10623"><b>目錄</b></a></p>
+
+<dl>
+
+  <dt><span class="section"><a href="#N10626">6.1.
+常見的安裝問題</a></span></dt>
+
+  <dd>
+    <dl>
+
+      <dt><span class="section"><a href="#N1062B">6.1.1.
+相依性(Dependency)問題</a></span></dt>
+
+      <dt><span class="section"><a href="#N10644">6.1.2.
+Error:
+"Started OpenNMS, but it has not finished starting
+up"（錯誤："OpenNMS已經開始啟動，但是啟動沒有完成"）</a></span></dt>
+
+      <dt><span class="section"><a href="#N10682">6.1.3.
+DHCP Poller
+Won't
+Start（DHCP輪詢器無法啟動）</a></span></dt>
+
+      <dt><span class="section"><a href="#N106A3">6.1.4.
+The OpenNMS
+Web Application Will Not Start, or You Can't Log
+In（OpenNMS網頁應用程式無法啟動，或者妳無法登入）</a></span></dt>
+
+      <dt><span class="section"><a href="#N10719">6.1.5.
+Error:
+"runjava: Could not find
+an appropriate JRE"（錯誤："runjava：無法找到合適的JRE"）</a></span></dt>
+
+      <dt><span class="section"><a href="#N10729">6.1.6.
+Error: "The
+database server's error messages are not in English
+..."（錯誤："資料庫的錯誤訊息不是英文&hellip;"）</a></span></dt>
+
+      <dt><span class="section"><a href="#N10738">6.1.7.
+Error: "Column X in new table has NOT NULL constraint
+..."（錯誤："新表格的X欄有NOT NULL限制"）</a></span></dt>
+
+      <dt><span class="section"><a href="#N1073F">6.1.8.
+Error: "One or more backup tables from a previous install still
+exists"（錯誤："之前安裝時殘留一個以上的備份資料表"）</a></span></dt>
+
+      <dt><span class="section"><a href="#N1077A">6.1.9.
+Error: "Table X contains N rows (out of M) that violate new constraint
+Y"（錯誤："資料表X（的M個資料列中）有N個資料列違反新的Y限制"）</a></span></dt>
+
+      <dt><span class="section"><a href="#N10799">6.1.10.
+Error: "- adding iplike database function... &lt;snip&gt;
+org.postgresql.util.PSQLException: ERROR: could not access file
+'&lt;snip&gt;/lib/iplike.so': Permission
+denied"（錯誤："加入iplike資料庫函式&hellip;&lt;略&gt;
+org.postgresql.util.PSQLException:
+錯誤：無法存取檔案'&lt;略&gt;/lib/iplike.so':拒絕存取）</a></span></dt>
+
+      <dt><span class="section"><a href="#N107A0">6.1.11.
+Error: "Exception in thread "main" org.postgresql.util.PSQLException:
+ERROR: relation "pg_user" does not exist" when running
+installer.（執行安裝程式時遇到錯誤："在"main"執行緒發生例外
+org.postgresql.util.PSQLException: 錯誤："pg_user"關係不存在"）</a></span></dt>
+
+    </dl>
+
+  </dd>
+
+  <dt><span class="section"><a href="#N10796">6.2.
+到哪裡尋求技術支援</a></span></dt>
+
+  <dd>
+    <dl>
+
+      <dt><span class="section"><a href="#N1079B">6.2.1.
+發行摘要</a></span></dt>
+
+      <dt><span class="section"><a href="#N107A4">6.2.2.
+OpenNMS網站</a></span></dt>
+
+      <dt><span class="section"><a href="#N107BD">6.2.3.
+OpenNMS郵件論壇列表</a></span></dt>
+
+      <dt><span class="section"><a href="#N107F3">6.2.4.
+付費技術支援</a></span></dt>
+
+    </dl>
+
+  </dd>
+
+</dl>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="N10626">6.1. 常見的安裝問題</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N10626">底下的章節是一些建議，用於排除常見的安裝問題。如果妳的問題不在其
+中，請參閱「到哪
+裡找救兵」的章節。</a></p>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N1062B">6.1.1.
+相依性(Dependency)問題</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N1062B">為了管理程式碼，使用套件來安裝OpenNMS是最簡單的方法。開發團
+隊作了各種努力
+來確保OpenNMS所倚
+賴的套件都被設定成必須，在安裝OpenNMS前一定要先安裝它們。這些套件應該可以在妳的作業系統的安裝光碟中找到。至於一些像是<code class="filename">metamail</code>這
+種比較不常見的套件，妳可以到OpenNMS的</a><a href="ftp://ftp.opennms.org" target="_top">FTP</a>站
+台的<code class="filename">/pub/dependencies</code>目
+錄去找。除此之外，例如<a href="http://distro.ibiblio.org/" target="_top">Ibiblio</a>或
+是<a href="http://www.freshrpms.net" target="_top">FreshRPMs</a>也
+是值得去找找的站
+台。</p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N10644">6.1.2.
+Error: "Started OpenNMS, but
+it has not finished starting up"（錯誤："OpenNMS已經開始啟動，但是啟動沒有完成"）</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N10644">這種錯誤有好幾個可能。看到這個錯誤之後，請執行"<code class="code">opennms
+-v status</code>"幾次，以確認OpenNMS最終是否有完整
+啟動；如果沒有，檢查一下哪些daemon一直無法完成啟動。底下是幾種可
+能的原因：</a></p>
+
+<div class="orderedlist">
+<ol type="1">
+
+  <li>
+    <p><a name="N10644">OpenNMS啟動需要一些時間。這可能在（監控）規模較大的
+系統發生，此時指令"<code class="code">opennms -v status</code>"
+最終會顯示所有的服務都已啟動完成。啟動指令稿預設會嘗試10次，每次
+間隔5秒。要增加重試次數，妳可以新增檔案<code class="filename">$OPENNMS_HOME/etc/opennms.conf</code>，
+加一行"<code class="code">START_TIMEOUT=20</code>"，
+就可以將重試次數加倍。妳也可以將這個值設為<code class="code">0</code>，
+讓啟動指令稿不等待
+OpenNMS完成啟動。</a></p>
+
+  </li>
+
+  <li>
+    <p><a name="N10644">資料庫沒有運行。如果只有一半甚至還不到的daemons顯示
+狀態為"執行中"
+(running)，妳
+可以檢查記錄檔裡面是否有<code class="code">FATAL</code>（致
+命）的錯誤。妳會看到類似"<code class="code">Error
+accessing database</code>"的字樣。</a></p>
+
+  </li>
+
+  <li>
+    <p><a name="N10644">Dhcpd沒有啟動。請參閱下一節。</a></p>
+
+  </li>
+
+  <li>
+    <p><a name="N10644">JNI函式庫問題。OpenNMS透過JNI (Java
+Native Interface)來使用一些native C函式庫。一般情況下它們都能運作，不過有使用者在native
+AMD64模式下的Linux環境遇到問題，要不是使用32-bit (x86)版本的Java誤搭64-bit
+(AMD64)版本的JNI函式庫，不然就是反過來。如果妳有這個問題，請試著把妳的Java版本從32-bit換成64-bit，或者反之。</a></p>
+
+  </li>
+
+  <li>
+    <p><a name="N10644">其他。如果OpenNMS安裝時沒有使用"<code class="code">--nodeps</code>"
+這種選項強制略過套件相依機制，裝好後應該能夠順利運行。就算真的不能運行，OpenNMS也有健全的記錄機制。請切換到記錄檔目錄（通常是<code class="filename">/var/log/opennms</code>），
+用<code class="filename">grep</code>或
+妳慣用的工具程式來搜尋那些記錄檔中是否有諸如<code class="code">FATAL</code>和<code class="code">ERROR</code>（最
+嚴重的兩個等級）的字眼。那些事件應該可以給妳一些蛛絲馬跡。</a></p>
+
+  </li>
+
+</ol>
+
+</div>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N10682">6.1.3.
+DHCP Poller Won't
+Start（DHCP輪詢器無法啟動）</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N10682">如果妳的OpenNMS伺服器同時具有DHCP客戶端的角色，那麼大多
+數的情況下（尤
+其是Linux）
+OpenNMS DHCP輪詢器將無法啟動。執行"<code class="code">opennms
+-v status</code>"，妳會看到每項服務都進入<code class="code">running</code>（運
+行中）的狀態，除了<code class="code">Dhcpd</code>。
+解決之道，可修改<code class="filename">$OPENNMS_HOME/etc/service-configuration.xml</code>，
+把啟動<code class="code">Dhcpd</code>的
+那一段"<code class="code">&lt;service&gt;...&lt;/service&gt;</code>"
+變成註解。例如，這一段修改成不啟動<code class="code">Dhcpd</code>，
+會變成：</a></p>
+
+<pre class="programlisting"><a name="N10682"> &lt;!-- Commented out since we have a DHCP client on this server<br> &lt;service&gt;<br><br> &lt;name&gt;OpenNMS:Name=Dhcpd&lt;/name&gt;<br> &lt;class-name&gt;org.opennms.netmgt.dhcpd.jmx.Dhcpd&lt;/class-name&gt;<br> &lt;invoke pass="1" method="start"/&gt;<br> &lt;invoke at="status" pass="0" method="status"/&gt;<br> &lt;invoke at="stop" pass="0" method="stop"/&gt;<br><br> &lt;/service&gt;<br> --&gt;</a></pre>
+
+<p><a name="N10682">我們勸妳不要讓OpenNMS伺服器具有DHCP客戶端的角色，一方面
+是因為
+OpenNMS可能因此無法監控網
+路上的DHCP伺服器，一方面來說OpenNMS伺服器有個固定IP來收SNMP
+traps很重要，而且伺服器運作倚賴越少網路服務越好（譯註：最好用固定IP，如果用DHCP，萬一網路上的DHCP伺服器掛了，我們連IP都沒有，就
+不用玩了。）</a></p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N106A3">6.1.4. The
+OpenNMS Web Application
+Will Not Start, or You Can't Log In（OpenNMS網頁應用程式無法啟動，或者妳無法登入）</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N106A3">OpenNMS其實包含兩個主要應用程式：它本身，以及網頁式使用者介
+面
+(webUI)。其中webUI是用
+Tomcat做的，有可能Tomcat正常運行而OpenNMS程式本身停了，或者反之。</a></p>
+
+<p><a name="N106A3">在妳繼續下面步驟之前，先讀讀這份指南關於不同作業系統要注意的部分。
+有一些常見的
+Tomcat問題在那邊有提
+到。</a></p>
+
+<p><a name="N106A3">如果妳無法連上OpenNMS介面（<code class="filename">http://[opennms
+server]:8080/opennms</code>，Debian系統則
+是<code class="filename">http://[opennms
+server]:8180/opennms</code>&nbsp;-
+&nbsp;將[opennms
+server]換成OpenNMS的主機名稱），確定Tomcat正常運行，必要的話重新啟動它。另外，如果妳拿掉網址中的"<code class="filename">/opennms</code>"，
+應該能夠連上Tomcat的主頁面。</a></p>
+
+<p><a name="N106A3">檢查並確認已正確地安裝了OpenNMS網頁應用程式。在Tomcat
+的<code class="varname">CATALINA_HOME</code>目
+錄（通常是<code class="filename">/var/tomcat4</code>），
+妳應該會看到一個<code class="filename">webapps</code>子
+目錄。從OpenNMS
+1.1.4起，我們不再把直接把OpenNMS網頁應用程式放在這個<code class="filename">webapps</code>目
+錄。
+在<code class="filename">webapps</code>目
+錄下，妳應該只會看到一個叫做<code class="filename">opennms.xml</code>的
+檔案（或者說symbolic link）。如果妳看到一個叫做<code class="filename">opennms</code>的
+目錄（或symbolic
+line），把它刪除（在升級系統的時候，安裝程式不會自動做這個動作）。</a></p>
+
+<p><a name="N106A3">此外在<code class="varname">CATALINA_HOME</code>目
+錄下有個子目
+錄叫做conf，其中有個檔案叫<code class="filename">server.xml</code>。
+在OpenNMS
+1.1.4以前，我們需要在那個檔案加入一個"context"，不過從OpenNMS
+1.1.4開始不需要了。事實上，如果妳從1.1.3或更早的版本升級上來，妳必須手動從<code class="filename">server.xml</code>移
+除這個"context"（在升級系統的時候，不會自動做這個動作）。底下是這一段看起來的樣子：</a></p>
+
+<pre class="programlisting"><a name="N106A3">&lt;!-- Example Server Configuration File --&gt;<br><br>&lt;Server ...<br>...<br> ...<br> &lt;Host ... &gt;<br> ....<br> &lt;Context path="/opennms" docBase="opennms" debug="0" reloadable="true"&gt;<br> &lt;Logger classname="org.opennms.web.log.Log4JLogger" homeDir="/opt/OpenNMS"/&gt;<br> &lt;Realm className="org.opennms.web.authenticate.OpenNMSTomcatRealm" homeDir="/opt/OpenNMS"/&gt;<br> &lt;/Context &gt;<br> &lt;/Host &gt;<br><br> ...<br>&lt;/Server &gt;</a></pre>
+
+<p><a name="N106A3">為了讓這些directives能夠運作，tomcat也需要知道各個
+OpenNMS
+JAR檔案及函式庫所在位置。為了讓tomcat能夠取用這些資源，在<code class="filename">$CATALINA_HOME/server/lib</code>目
+錄下有建立鏈結，指向下列OpenNMS JAR檔案所在的位置：</a></p>
+
+<div class="itemizedlist">
+<ul type="disc">
+
+  <li>
+    <p><code class="filename"><a name="N106A3">castor-0.9.3.9.jar
+-&gt;
+/opt/OpenNMS/lib/castor-0.9.3.9.jar</a></code></p>
+
+  </li>
+
+  <li>
+    <p><code class="filename"><a name="N106A3">log4j.jar
+-&gt;
+/opt/OpenNMS/lib/log4j.jar</a></code></p>
+
+  </li>
+
+  <li>
+    <p><code class="filename"><a name="N106A3">opennms_common.jar
+-&gt;
+/opt/OpenNMS/lib/opennms_common.jar</a></code></p>
+
+  </li>
+
+  <li>
+    <p><code class="filename"><a name="N106A3">opennms_core.jar
+-&gt;
+/opt/OpenNMS/lib/opennms_core.jar</a></code></p>
+
+  </li>
+
+  <li>
+    <p><code class="filename"><code class="filename"><a name="N106A3">opennms_services.jar
+-&gt;
+/opt/OpenNMS/lib/opennms_services.jar</a></code></code></p>
+
+  </li>
+
+  <li>
+    <p><code class="filename"><a name="N106A3">opennms_web.jar
+-&gt;
+/opt/OpenNMS/lib/opennms_web.jar</a></code></p>
+
+  </li>
+
+</ul>
+
+</div>
+
+<p><a name="N106A3">Tomcat有個"工作"目錄（通常是<code class="filename">$CATALINA_HOME/work</code>）
+用來儲存JSP頁面的Java程式碼，以及JSP的compiled
+classes。有些使用者一直遇到跟網頁應用程式有關的問題，直到清除工作目錄並重新啟動Tomcat才解決。有鑑於此，如果前述方法都無法讓網頁應用
+程式正常運作，我們建議妳執行"<code class="code">rm
+-rf <code class="filename">$CATALINA_HOME/work</code></code>"。</a></p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N10719">6.1.5.
+Error: "runjava: Could not
+find
+an appropriate JRE"（錯誤："runjava：無法找到合適的JRE"）</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N10719">這個<code class="code"><code class="filename">runjava</code></code>程
+式會在安
+裝OpenNMS的時候，找出合適的JRE讓安裝程式(installer)使用，還有安裝後運行OpenNMS時使用。請參閱本指南前面關於安裝
+Java的章節。如果妳把Java裝在<code class="code">runjava</code>找不
+到的位置，妳可以使用它的"<code class="code">-f</code>"選項，指定妳想要讓
+OpenNMS使用的JRE。</a></p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N10729">6.1.6.
+Error: "The database server's
+error messages are not in English ..."（錯誤："資料庫的錯誤訊息不是英文&hellip;"）</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N10729">妳可以在妳的postgresql.conf檔案中設定"<code class="code">lc_messages
+= 'C'</code>"然後重新啟動PostgreSQL；或者將PostgreSQL升級到7.4以上。</a></p>
+
+<p><a name="N10729">安裝程式(installer)並沒有在執行每項動作之前，確認該動作
+會成功（例如：刪除資料庫函式(dropping database
+functions)）。在這裡，它抓取資料庫回傳的例外訊息(exceptions)，並且檢查這個例外訊息是不是無傷大雅，可以忽略（例如，嘗試去刪
+除一個資料庫函式的時候，系統回應這個資料庫函式不存在）。</a></p>
+
+<p><a name="N10729">PostgreSQL
+7.4以上的版本使用了一種新版（第三版）的客戶端／伺服端通訊協定，會提供錯誤代碼來方便程式判讀；如果伺服器提供這類錯誤代碼，我們會加以利用。然而
+對於PostgreSQL&nbsp;7.4之前的版本，資料庫伺服器的錯誤訊息必須是英文（也就是'<code class="code">C</code>'
+locale）以便我們可以抓出錯誤訊息文字。如果妳執行的不是PostgreSQL
+7.4以上的版本，安裝程式(installer)會對資料庫執行一個假的查詢(bogus query)然後核對一個預料中的英文回應。</a></p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N10738">6.1.7.
+Error: "Column X in new table has NOT NULL constraint
+..."（錯誤："新表格的X欄有NOT NULL限制"）</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N10738">這個警告訊息表示安裝程式(installer)可能沒有成功升級資料
+庫表格。請確認妳的資料庫做了備份，然後加上"-N"選項來再次運行安裝程式(installer)，忽略這項檢查。</a></p>
+
+<p><a name="N10738">為了要確定安裝順利完成，有項檢查會確認是否有任何一筆欄位帶有
+NULL的資料列，寫入了升級後該欄位有NOT
+NULL限制的表格。發生這個錯誤通常是因為之前曾經運行安裝程式(installer)失敗，或者因為資料庫schema被修改過，或者schema的
+版本非常舊。</a></p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N1073F">6.1.8.&nbsp;Error:
+"One or more backup tables from a previous install still
+exists"（錯誤："之前安裝時殘留一個以上的備份資料表"）</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N1073F">安裝程式(installer)在升級OpenNMS資料庫的時候，通
+常會更新table schema。這個時候，它會複製資料表的資料到一個臨時的資料表（例如，<code class="filename">node</code>的
+內容被複製到 <code class="filename">node_old_11033991291234</code>）。
+接著原來的資料表被刪除，此資料表的新版本被新增，資料從臨時資料表轉換到新資料表，最後臨時資料表也被刪除。</a></p>
+
+<p><a name="N1073F">不幸的是，安裝程式(installer)無法檢查出所有可能造成資料
+轉換失敗的問題，因此有時候這個步驟會失敗。碰到這個情況，安裝程式(installer)會"反向操作"，將新的資料表刪除，並且把臨時資料表還原成原
+來的資料表。</a></p>
+
+<p><a name="N1073F">碰上問題能夠將資料表回復當然很好，但是有時候連這個回復動作都會失
+敗，特別是比較舊版的Java安裝程式
+(installer)。如果碰到這個情況，系統會剩下臨時資料表（名稱中有"_old_"那個）以及其中的舊資料。到OpenNMS
+1.1.5版為止，安裝程式(installer)並不會在妳再次嘗試安裝的時候抓出這個問題。例如，安裝程式(installer)會認為妳沒有<code class="filename">node資料表</code>，然後就幫妳新增一個。這樣子很糟，尤其當妳還有資
+料留在"old"資料表的時候。</a></p>
+
+<p><a name="N1073F">如果妳碰上這個錯誤訊息，妳會想要砍掉那些名稱有"old"的資料表，
+不過妳應該先檢查裡面還有沒有資料。例如，如果妳只有一個叫做 <code class="filename">node_old_11033991291234</code>的
+資料表，沒有其他<code class="filename">node_old_*</code>的資料表，
+也沒有<code class="filename">node</code>資料表，那麼妳只要幫資料表更名即
+可：</a></p>
+
+<pre class="programlisting"><a name="N1073F"># <span><strong class="command">psql -h localhost -U opennms opennms</strong></span><br><code class="computeroutput">Welcome to psql 7.4.6, the PostgreSQL interactive terminal.<br><br>Type: \copyright for distribution terms<br> \h for help with SQL commands<br> \? for help on internal slash commands<br> \g or terminate with semicolon to execute query<br> \q to quit<br><br>opennms=# </code><span><strong class="command">ALTER TABLE node_old_11033991291234 RENAME TO node;</strong></span></a></pre>
+
+<p><a name="N1073F">下了<code class="filename">psql</code>指
+令之後妳可以用"\d"指令來看看妳的資料庫裡面還有哪些資料表。妳可以用"<code class="filename">SELECT
+count(*) from table</code>;"（把"table"換成資料表的名稱）得知任何資料表其中的資料列總數。如果那些
+資料表是空的，妳可以刪除它們。如果妳發現數個資料表都有資料，妳必須決定該保留哪一個，或者把資料彙整(merge)。這就留給讀者當作（不太簡單的）
+練習。</a></p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N1077A">6.1.9.&nbsp;Error:
+"Table X contains N rows (out of M) that violate new constraint
+Y"（錯誤："資料表X（的M個資料列中）有N個資料列違反新的Y限制"）</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N1077A">這些年來OpenNMS延伸了它的資料庫schema來改善功能。這個
+錯誤訊息起因於較舊版本的OpenNMS
+某些管理功能運作的方式跟現今的不同，或者因為資料庫被OpenNMS以外的程式更動了（後者在規模較大的環境很常見）。這些年來OpenNMS也在資料
+庫加上了額外的外鍵限制(foreign key constraints)。當兩個資料表的資料被一個共用鍵(shared
+key)綁在一起，這些外鍵用來確保資料庫內部一致性。例如，每個事件可以有一個指標(pointer)指回它發生事件的節點；所以存在一個外鍵限制，要
+求事件<span class="emphasis"><em>不能</em></span>指
+到一個不存在的節點。</a></p>
+
+<p><a name="N1077A">從版本1.1.5開始，在升級資料庫schema的時候，我們首先檢查
+是否有資料列會違反可能要加入的外鍵限制。要修復這些錯誤，有三個選擇：</a></p>
+
+<div class="orderedlist">
+<ol type="1">
+
+  <li>
+    <p><a name="N1077A">刪除違反限制的資料列。如果在資料表中，相較於資料列總數，違
+反限制的資料列很少，而且妳不需要那些資料，我們建議妳選這個方法。請用"<code class="code">$OPENNMS_HOME/bin/install
+-C
+&lt;constraint&gt; -X</code>"來刪除違反限制的資料列。</a></p>
+
+  </li>
+
+  <li>
+    <p><a name="N1077A">把違反限制的資料列的鍵值設為NULL。如果妳還要那些資料，
+或者還不知道該拿它們怎麼辦，我們建議選這個方法。請用 "<code class="code">$OPENNMS_HOME/bin/install
+-C
+&lt;constraint&gt;</code>"將違反限制的資料列之鍵值欄位設為NULL。</a></p>
+
+  </li>
+
+  <li>
+    <p><a name="N1077A">修好那些違反限制的資料列之鍵值。需要花費很多心力，只建議進
+階使用者採用。這就留給讀者當作練習。</a></p>
+
+  </li>
+
+</ol>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N10799"></a>6.1.10.&nbsp;Error:
+"- adding iplike database function... &lt;snip&gt;
+org.postgresql.util.PSQLException: ERROR: could not access file
+'&lt;snip&gt;/lib/iplike.so': Permission
+denied"（錯誤："加入iplike資料庫函式&hellip;&lt;略&gt;
+org.postgresql.util.PSQLException:
+錯誤：無法存取檔案'&lt;略&gt;/lib/iplike.so':拒絕存取）</h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p>PostgreSQL伺服器無法存取檔案iplike.so。這有可能是檔案本身的權限問題，執行PostgreSQL的使用者無法存
+取它，也可能是iplike.so上層目錄（們）的權限問題。</p>
+
+<p>就算用root身份來執行安裝程式(installer)也可能遇到這個問題；因為無法存取iplike.so的不是OpenNMS也
+不是安裝程式
+(installer)，而是PostgreSQL資料庫。安裝程式(installer)要求
+PostgreSQL資料庫載入iplike.so，而PostgreSQL資料庫伺服器通常不是以root的權限執行，因此跟其他一般使用者一樣，要遵
+照檔案系統的存取控制。這問題通常發生在把OpenNMS安裝到root或其他使用者的家目錄，而這個家目錄的權限設定成不開放給其他使用者，只能讓使用
+者本身存取。</p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N107A0"></a>6.1.11.&nbsp;Error:
+"Exception in thread "main" org.postgresql.util.PSQLException: ERROR:
+relation "pg_user" does not exist" when running
+installer.（執行安裝程式時遇到錯誤："在"main"執行緒發生例外
+org.postgresql.util.PSQLException: 錯誤："pg_user"關係不存在"）</h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p>這個錯誤顯示資料庫沒有正確地建立。由於安裝程式(installer)指令稿負責建立資料庫，妳可能會認為這是OpenNMS出了問
+題，其實這是
+Red Hat 4（以及CentOS 4）之中的SELinux 功能的問題。基本上來說，指令postgres
+init_db無法寫入/dev/null，而當它執行失敗的時候沒有顯示一個比較有意義的錯誤訊息。</p>
+
+<p>要避免這個問題，請執行底下的指令：</p>
+
+<div class="orderedlist">
+<ol type="1">
+
+  <li>
+    <p>stop postgres</p>
+
+  </li>
+
+  <li>
+    <p>rm -rf /var/lib/pgsql/data</p>
+
+  </li>
+
+  <li>
+    <p>/usr/sbin/setenforce 0</p>
+
+  </li>
+
+  <li>
+    <p>start postgres</p>
+
+  </li>
+
+</ol>
+
+</div>
+
+<p>注意，步驟二會刪除之前任何妳對postgresql設定檔的修改，妳必須重做那些修改。</p>
+
+</div>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both;"><a name="N10796">6.2. 到哪裡尋求技術支援</a></h2>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N10796">OpenNMS是一個由社群提供技術支援的軟體專案。當妳尋求協助的時
+候，請將這點謹記在心，因為大家對這個專案的付出並沒有金錢回報（除非妳是透過付費技術支援合約來求助）。</a></p>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N1079B">6.2.1. 發行摘要</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N1079B">請先閱讀這個發行版本的發行摘要。它會放在SourceForge網站
+上OpenNMS專案頁面的</a><a href="http://sourceforge.net/docman/?group_id=4141" target="_top">Documentation（文件）</a>章節。</p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N107A4">6.2.2.&nbsp;
+OpenNMS網站</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N107A4">OpenNMS的</a><a href="http://www.opennms.org" target="_top">主站台</a>是
+個Wiki。作為一個社群的專案，那邊有很多有用的建議和資訊。特別一提，我們建議妳在發電郵到郵件論壇問問題之前，先找找上面提到的發行摘要，<a href="http://wiki.opennms.org/tiki-list_faqs.php" target="_top">FAQ</a>，<a href="http://bugzilla.opennms.org/cgi-bin/bugzilla/index.cgi" target="_top">bug資料庫</a>以及<a href="http://www.google.com/" target="_top">Google</a>。
+妳也許可以在<a href="http://faq.opennms.org/" target="_top">舊
+的FAQ</a>找到一些有用的資訊，不過請記住這些資訊可能過期了。</p>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N107BD">6.2.3.&nbsp;
+OpenNMS郵件論壇列表</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N107BD">OpenNMS在SourceForge上有下列郵件論壇：</a></p>
+
+<div class="glosslist">
+<dl>
+
+  <dt><a name="N107BD">opennms-announce（公告） </a></dt>
+
+  <dd>
+    <p><a name="N107BD">信件不多，有限制(moderated)的郵件論壇，用來發佈
+OpenNMS的公告。這個論壇的所有文章會複製一份到<em class="glossterm">opennms-discuss</em>論
+壇。</a></p>
+
+  </dd>
+
+  <dt><a name="N107BD">opennms-cvs（cvs版本控制系統） </a></dt>
+
+  <dd>
+    <p><a name="N107BD">信件量頗高，是所有對CVS檔案庫
+(repositories)的更動。有限制(Moderated)。只有CVS更新會張貼在這裡（不包含討論）。</a></p>
+
+  </dd>
+
+  <dt><a name="N107BD">opennms-devel（程式開發） </a></dt>
+
+  <dd>
+    <p><a name="N107BD">這個論壇用來討論程式碼的開發。</a></p>
+
+  </dd>
+
+  <dt><a name="N107BD">opennms-discuss（討論） </a></dt>
+
+  <dd>
+    <p><a name="N107BD">這是OpenNMS的主要討論區。互動蠻友善的。基本上什麼都
+可以談，不過我們建議如果是跟安裝有關的事宜請移駕<em class="glossterm">opennms-install</em>。</a></p>
+
+  </dd>
+
+  <dt><a name="N107BD">opennms-install（安裝） </a></dt>
+
+  <dd>
+    <p><a name="N107BD">這個論壇最適合OpenNMS的新手了。這裡主要針對安裝過程
+的問題（這份很棒的文件應該都幫妳解決了，對吧？），不過也歡迎各種「新手上路」的問題。</a></p>
+
+  </dd>
+
+  <dt><a name="N107BD">opennms-maps（地圖） </a></dt>
+
+  <dd>
+    <p><a name="N107BD">到底網路管理該不該使用地圖就跟墮胎或槍枝管制一樣有爭議
+（笑）。不過的確有人貢獻了一個小的地圖系統給OpenNMS，不過還需要很多改進。我們可以在這兒討論。</a></p>
+
+  </dd>
+
+  <dt><a name="N107BD">opennms-ug-tokyo（使用者社群&amp;
+amp;
+amp;
+amp;
+amp;
+amp;
+amp;
+amp;
+mdash;東京） </a></dt>
+
+  <dd>
+    <p><a name="N107BD">我們在日本東京有一小群使用者。這個使用日文的論壇用來發佈聚
+會公告或互相幫助。</a></p>
+
+  </dd>
+
+</dl>
+
+</div>
+
+</div>
+
+<div class="section" lang="en">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title"><a name="N107F3">6.2.4.
+付費技術支援</a></h3>
+
+</div>
+
+</div>
+
+</div>
+
+<p><a name="N107F3">如果妳正在考慮，或者已經將OpenNMS實際上線運作，妳可能會對付
+費技術支援有興趣。</a><a href="http://www.opennms.com/about/" target="_top">OpenNMS
+Group</a>維護OpenNMS專案，我們也提供技術支援，教育訓練、諮詢服務以及客製化開發。</p>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- DOCMANAGER DOCUMENT END -->
+</body>
+</html>
+
+
+<div class="posted">
+	Posted by ystuan at <a href="http://blog.linux.org.tw/~ystuan/archives/001229.html">06:51 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1229" onclick="OpenComments(this.href); return false">Comments (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">May 13, 2005</h2>
+
+
+<div class="blogbody">
+
+<a name="001132"></a>
+<h3 class="title">愛恨紅帽-03：躺著管理Linux。錢夠多的話。</h3>
+
+<p>最近竟然有人嫌tw.bbs.comp.linux太冷清，丟個<a href="http://tinyurl.com/e3gv8">汽油彈</a>上來讓大家吵吵……</p>
+
+<p>沒錯，一個銀行有那麼多的分行，派送軟體到那麼多台安裝Microsoft Windows的電腦是一大挑戰。所以<a href="http://www.microsoft.com/taiwan/resources/casestudies/case/chb.aspx">微軟說</a>她們幫客戶做的多好多好。<br />
+可是，微軟不會告訴妳，在她們自家的作業系統上面做軟體管理、資產管理，其實別人可能做的比她們更好。<br />
+至少Novell（網威）的<a href="http://www.novell.com/products/zenworks/">ZENworks</a>是這麼自誇的。而且聽說台灣本土銀行的龍頭用ZENworks用的好好的。</p>
+
+<p>岔題了，我們不是要談ZENworks又能管Microsoft Windows又能管Linux還能管PDA，我們要談的是，<b>Linux上的套件集中管理</b>。</p>
+
+<p>如果妳只有一台Linux機器，不管妳選的發行版本是什麼(Red Hat, SuSE, Debian, Mandriva, Gentoo...)，妳只要透過系統內定的套件管理工具(up2date, YaST, apt, urpmi, yum, ebuild...)，定期更新套件即可。甚至，妳可以利用crontab來設定，不管有沒有新的套件，定時去伺服器檢查就是了，安心咩。</p>
+
+<p>但是，如果妳有十台呢？如果妳有一百台，還分散各地呢？所以我們需要<b>集中</b>管理，一言以蔽之，要從伺服器把套件（甚至檔案的設定）給派送出去，而不是讓為數眾多又分散各地的機器，不知道什麼時候才來「更妳一新」。</p>
+
+<p>是的，我又要提到Red Hat這個「好驚人的妖怪」（台語發音更有感覺）的Red Hat Network。</p>
+
+<p>不不，不是那個現在要訂購(subscribe)才能使用的套件更新服務(up2date)。或者正確的說，不只是這樣。</p>
+
+<p>請看看Red Hat Network <a href="http://www.redhat.com/software/rhn/architecture/">Architectural Overview</a>最底下的Satellite model。對的，衛星，妳可以在妳的企業網路裡面打造一台衛星伺服器，這台伺服器只需要跟真正的RHN下載更新套件，即可提供套件更新給內部網路裡面所有Red Hat機器。</p>
+
+<p>更可怕的還在後頭呢。RHN有三個module：(這裡有<a href="http://www.redhat.com/software/rhn/table/">比較表</a>和<a href="http://www.redhat.com/software/rhn/tour/">快速導覽</a>）<br />
+Update Module<br />
+Management Module<br />
+Provisioning Module<br />
+大家以前在Red Hat 9的時代應該都用過Update Module去更新套件，不過我們要談的是Linux上的套件<b>集中</b>管理，Management Module就可以辦到。更進一步，Provisioning Module還可以做到Bare Metal PXE Boot Provisioning，一台空機只要支援PXE Boot，就可以透過網路連上來，把Linux安裝完畢，納入管理！</p>
+
+<p>喔，不要太急著愛上它，想要過著「bug來伸手，patch來張口」這種spoon-feed的悠閒生活，請先摸摸老闆的口袋，確定銀兩夠多。</p>
+
+<p>也別氣餒，天公疼憨人，自由軟體絕對會疼惜愛台灣，喔不，愛學習的人。<br />
+請花點時間，研究一下Scott Dier發表的"Mass Debian Desktop Administration"（<a href="http://www.ringworld.org/~dieman/talks/asia-miniconf05/paper.pdf">PDF</a>及<a href="http://www.openfoundry.org/article.pl?sid=05/03/22/192258">新聞</a>），尤其是其中的<a href="http://www.cfengine.org/">Cfengine</a>，包君滿意。</p>
+
+<p>至少我是這麼希望／祝福妳的唷！</p>
+
+
+<div class="posted">
+	Posted by ystuan at <a href="http://blog.linux.org.tw/~ystuan/archives/001132.html">01:22 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1132" onclick="OpenComments(this.href); return false">Comments (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 18, 2005</h2>
+
+
+<div class="blogbody">
+
+<a name="000957"></a>
+<h3 class="title">網管系統OpenNMS推出1.2.0版</h3>
+
+<p>如同之前預告的，OpenNMS 1.2.0問世囉。</p>
+
+<p>1.2.0算是stable release，代表之前1.1.x那些development release功成身退，開發團隊接下來除了繼續維護1.2.x之外，也將著手進行unstable release 1.3.x。（這種雙產品線模式--偶數為穩定版，奇數為測試版--相信Linux的玩家都很熟悉了。）<br />
+<a href="https://sourceforge.net/mailarchive/message.php?msg_id=10839935">郵件論壇上的公告</a><br />
+<a href="https://sourceforge.net/docman/display_doc.php?docid=26952&group_id=4141">發行摘要</a><br />
+<a href="https://sourceforge.net/project/showfiles.php?group_id=4141">檔案下載</a><br />
+至於<a href="https://sourceforge.net/docman/?group_id=4141">文件</a>，我希望能夠在這個月至少生出一篇中文翻譯。</p>
+
+<p>有鑑於很多人都不看發行摘要，Tarus從1.1.5開始，在其中放了個通關密碼，如果妳去郵件論壇問1.1.5, 1.2.0相關的問題，請報上各自的通關密碼，以降低自己的小白指數（這句是我說的:p）<br />
+OpenNMS目前除了支援數種Linux發行套件、Solaris之外，也可以安裝在Mac OS X上，這部分請參考<a href="http://fink.sourceforge.net/">Fink專案</a>的<a href="http://fink.sourceforge.net/pdb/package.php/opennms">這個網頁</a>（目前還停在1.1.5）<br />
+如果有人要裝1.2.0，請至少注意一件事：套件裝完之後，並不會自動執行安裝程式。<a href="https://sourceforge.net/docman/display_doc.php?docid=23937&group_id=4141">安裝指南</a>裡面會告訴妳，接著要如何執行安裝程式。</p>
+
+
+<div class="posted">
+	Posted by ystuan at <a href="http://blog.linux.org.tw/~ystuan/archives/000957.html">10:12 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=957" onclick="OpenComments(this.href); return false">Comments (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 04, 2005</h2>
+
+
+<div class="blogbody">
+
+<a name="000897"></a>
+<h3 class="title">網管系統OpenNMS推出1.1.5版</h3>
+
+<p>天啊，1.1.5出了！</p>
+
+<p>嗯，前幾天我的1.1.4文件翻譯工作正在緩慢進行的時候，發現手邊只有翻到一半，中英夾雜的檔案，於是連回網站想說對照一下完整的原文；突然發現怎麼有幾句多出來，幾句不見了，原來，1.1.5推出了，我，我只能歐啊Ｚ！<br />
+<a href="https://sourceforge.net/mailarchive/message.php?msg_id=10683527">郵件論壇上的公告</a><br />
+<a href="https://sourceforge.net/docman/display_doc.php?docid=26652&group_id=4141">發行摘要</a><br />
+<a href="https://sourceforge.net/project/showfiles.php?group_id=4141">檔案下載</a><br />
+還好，稍稍比對新版的<a href="https://sourceforge.net/docman/?group_id=4141">文件</a>，我翻的部分變動不大，打起精神，直接從1.1.5再出發吧！</p>
+
+<p>有鑑於很多人都不看發行摘要，Tarus這次在其中放了個通關密碼，如果妳去郵件論壇問1.1.5相關的問題，請報上通關密碼，以降低自己的小白指數（這句是我說的:p）<br />
+OpenNMS目前除了支援數種Linux發行套件、Solaris之外，也可以安裝在Mac OS X上，這部分請參考<a href="http://fink.sourceforge.net/">Fink專案</a>的<a href="http://fink.sourceforge.net/pdb/package.php/opennms">這個網頁</a><br />
+如果有人要裝1.1.5，請至少注意一件事：套件裝完之後，並不會自動執行安裝程式。<a href="https://sourceforge.net/docman/display_doc.php?docid=23937&group_id=4141">安裝指南</a>裡面會告訴妳，接著要如何執行安裝程式。<br />
+喔，忘了告訴妳，郵件論壇上面說，1.2就在不遠的前方（目前說是二月。咦，現在已經二月啦？）</p>
+
+
+<div class="posted">
+	Posted by ystuan at <a href="http://blog.linux.org.tw/~ystuan/archives/000897.html">12:12 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=897" onclick="OpenComments(this.href); return false">Comments (4)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">November 19, 2004</h2>
+
+
+<div class="blogbody">
+
+<a name="000698"></a>
+<h3 class="title">[舊聞]OpenNMS 1.1.4已經於十月二十五問世囉</h3>
+
+<p>OpenNMS出新版快一個月了…我也該動起來了…</p>
+
+<p><a href="https://sourceforge.net/mailarchive/forum.php?thread_id=5837176&forum_id=40667">郵件論壇上的公告</a><br />
+<a href="http://sourceforge.net/docman/display_doc.php?docid=25263&group_id=4141">Release Notes</a><br />
+<a href="http://sourceforge.net/project/showfiles.php?group_id=4141">檔案下載</a></p>
+
+<p>在Release Notes有提到，這個版本在速度上有明顯的改善，其中一個主要原因是用JRobin代替RRDTool。另外也改用JavaMail。也就是又朝向100% Java的目標邁進囉。</p>
+
+<p>檔案下載的部分，除了Debian還停在1.1.3之外，其他distro都可以安裝1.1.4囉。我也該找個時間裝起來，並且開始翻譯<a href="http://sourceforge.net/docman/?group_id=4141">文件</a>啦。</p>
+
+
+<div class="posted">
+	Posted by ystuan at <a href="http://blog.linux.org.tw/~ystuan/archives/000698.html">06:02 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=698" onclick="OpenComments(this.href); return false">Comments (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">September 13, 2004</h2>
+
+
+<div class="blogbody">
+
+<a name="000667"></a>
+<h3 class="title">PHLAK, 集合系統安全套件於一身的Linux LiveCD !</h3>
+
+<p>沒有時間安裝Linux，又想要用ntop, nessus, ethreal等等系統安全相關套件？試試PHLAK這個Linux LiveCD吧！</p>
+
+<p><b>話說從頭，關於LiveCD</b><br />
+我是從Knoppix(<a href="http://knoppix.tnc.edu.tw/">KNOPPIX中文交流網</a>或<a href="http://www.knoppix.org/">官方網站</a>)這個基於Debian的distro開始接觸LiveCD這個概念的。</p>
+
+<p>LiveCD不用安裝，不動到你原本硬碟內的資料，只要將燒好的光碟放進光碟機，把電腦設定為光碟開機即可。目前台灣的玩家蠻多都在上面提到的中文交流網交換心得。</p>
+
+<p>也是在那邊，我知道了<a href="http://www.morphix.org">Morphix</a>這個基於Debian和Knoppix，強調容易再加以客製化的distro。你可以在<a href="http://www.morphix.org/modules/sections/index.php?op=viewarticle&artid=22">這裡</a>看到基於Morphix加以客製化產生的distro。</p>
+
+<p><b>於是我找到了它：PHLAK</b><br />
+好，進入主題，有沒有聚焦於系統安全╱網路管控的LiveCd呢？我找到了<a href="http://www.phlak.org/">PHLAK</a> :: [P]rofessional [H]acker's [L]inux [A]ssault [K]it。底下摘自官方網站：</p>
+
+<p>======<br />
+PHLAK is a modular live security Linux distribution. PHLAK comes with two light gui's (fluxbox and XFCE4), many security tools, and a spiral notebook full of security documentation. PHLAK is a derivative of Morphix, created by Alex de Landgraaf.<br />
+======</p>
+
+<p>看到了很多關鍵字，像是模組化，LiveCD，系統安全，輕量級GUI，一堆工具和文件等等。立刻查閱<a href="http://www.phlak.org/modules/sections/index.php?op=listarticles&secid=1">工具套件清單</a>，哈哈，老朋友新朋友，還沒有機會認識的朋友，洋洋灑灑一大堆！於是就從<a href="http://www.phlak.org/modules/mydownloads/">下載</a>頁面把版本0.2-1抓回來。</p>
+
+<p>今天早上終於有空來燒，並且拿手邊一台閑置的IBM ThinkPad T23來試試。光碟放入，開機，出現<b>boot:</b>的啟動選項的時候直接按Enter，就以root權限進入XFCE4圖形介面。</p>
+
+<p>嗯，沒有中文（意料之中），字體有點醜，有些套件沒有收錄最新版，瀏覽器給的竟然還是Mozilla Firebird 0.7，也許是因為他們之前主機代管所托非人，今年年初從三月當到五月初？</p>
+
+<p><b>實際試用：以ntop為例</b><br />
+假設一個情境好了：最近辦公室的網路速度突然變慢，你被要求要盡快在既有環境部署網路流量監控軟體，於是你想到用PHLAK有收錄的<a href="http://www.ntop.org/ntop.html">ntop</a>(<a href="http://www.dgbas.gov.tw/eyimc/switch2/sw2_3/job17503.html">中文介紹</a>)：開個xterm，然後執行這個網路流量分析監控程式。</p>
+
+<p>對，就是這麼簡單，我只打了ntop然後按enter，連丟到背景的 & 都忘了加:p</p>
+
+<p>因為ntop預設使用port 3000，所以我在本機用Firebird連到http://localhost:3000/ ，立刻就看到相關的統計資料囉！當然從別的電腦開瀏覽器連過去也可以，只要把localhost替換成適當的ip或FQDN即可。</p>
+
+<p>怎麼樣，猴犀利吧？好啦，不要再看了，趕快去下載PHLAK，應用到你的情境中吧！</p>
+
+
+<div class="posted">
+	Posted by ystuan at <a href="http://blog.linux.org.tw/~ystuan/archives/000667.html">01:49 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=667" onclick="OpenComments(this.href); return false">Comments (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">July 30, 2004</h2>
+
+
+<div class="blogbody">
+
+<a name="000642"></a>
+<h3 class="title">OpenNMS消息:官網改版、印度入選、對岸網誌</h3>
+
+<p>跟大家分享一些網路上找到的OpenNMS訊息。</p>
+
+<p><b>官方網站改版</b><br />
+OpenNMS<a href="http://www.opennms.org/">官方網站</a>改版了，看起來是使用Wiki(TikiWiki)為主架構。FAQ有了，Blog也有了，可是<a href="http://blog.opennms.org/">舊的Blog</a>也還存在，內容還不同呢 :p<br />
+另外，<a href="http://sourceforge.net/projects/opennms">Downloads</a>這個鏈結可以看到下列套件：<br />
+opennms-centos-3<br />
+opennms-debian-sid<br />
+opennms-debian-woody<br />
+opennms-fedora-core-1<br />
+opennms-fedora-core-2<br />
+opennms-mandrake-10<br />
+opennms-mandrake-8<br />
+opennms-mandrake-9.0<br />
+opennms-mandrake-9.2<br />
+opennms-redhat-7<br />
+opennms-redhat-8<br />
+opennms-redhat-9<br />
+opennms-rhel-3<br />
+opennms-source<br />
+也就是說，OpenNMS 1.1.3版應該可以在很多Linux distro上面順利安裝囉！<br />
+至於文件(article/document)好像還沒上線。其實原本的文件有蠻多內容都過期了，希望她們整理好之後能趕快上線，屆時我會繼續翻譯新版的文件，請大家多指教。</p>
+
+<p><b>印度PCQuest讀者票選網路管理軟體第五名</b><br />
+這個訊息是從HP台灣網站的<a href="http://h50007.www5.hp.com/enterprise/product/software/newsgram/200311.htm">軟體e訊 2003年11月號</a>看到的，<br />
+其中提到了："<u>HP OpenView 贏得絕對多數的用戶青睞，將其他競爭品牌如 IBM<br />
+Tivoli、CA Unicenter、Avaya 及 <b>OpenNMS</b> 遠遠拋在後頭。</u>"<br />
+哈哈，如果第一名提到妳的名字，表示妳已經成為夠份量的對手囉？<br />
+原始網站PCQuest(India)的<a href="http://www.pcquest.com/content/user_choice/2k3/103091516.asp">報導</a>提到，<u>OpenNMS......is something of a <b>surprise</b> entry.</u><br />
+的確，前四名都是業界大廠的產品，OpenNMS則以6%的佔有率(15/244)上榜，當然令人驚訝囉！<br />
+既然是使用者調查，她們也公布了<a href="http://www.pcquest.com/content/user_choice/2k3/103091604.asp">調查方法</a>供大家參考。</p>
+
+<p><b>對岸網誌</b><br />
+在<a href="http://other.mblogger.cn/dreamable/">可梦之</a>找到的：<br />
+<a href="http://other.mblogger.cn/dreamable/posts/20469.aspx">opennms流量检测功能</a><br />
+<a href="http://other.mblogger.cn/dreamable/posts/20693.aspx">opennms流量检测功能（二）</a><br />
+<a href="http://other.mblogger.cn/dreamable/posts/24951.aspx">opennms流量检测功能（三）</a><br />
+<a href="http://other.mblogger.cn/dreamable/posts/25509.aspx">castor中奇怪的问题。</a></p>
+
+
+
+<div class="posted">
+	Posted by ystuan at <a href="http://blog.linux.org.tw/~ystuan/archives/000642.html">10:35 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=642" onclick="OpenComments(this.href); return false">Comments (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">June 16, 2004</h2>
+
+
+<div class="blogbody">
+
+<a name="000594"></a>
+<h3 class="title">[繁體中譯]OpenNMS Administrator Reference Guide</h3>
+
+<b>[2005/12/19]請注意，這篇網誌已經過時了，請到<a href="http://sourceforge.net/docman/?group_id=4141">OpenNMS Project Documentation</a>，Language選Trad. Chinese，就會看到我提交給官方的繁體中文安裝手冊，或者直接點選<a href="http://sourceforge.net/docman/display_doc.php?docid=29926&group_id=4141">這裡</a>。對這個主題有興趣，歡迎到我的<a href="http://blog.yam.com/ystuan/">新基地</a>逛逛</b>
+<p>
+原始網址<a 
+href="http://www.opennms.org/users/docs/docs/html/adminref.html">http://www.opennms.org/users/docs/docs/html/adminref.html</a>
+<br>譯者: Austin Tuan (ystuan 老鼠 hotmail 點 com) 歡迎來信,請於主旨欄加上[Linux]字樣,萬一被hotmail當作spam,我好撿回來 :)
+<html><!--This file was generated automatically by man2html.xsl.-->
+<body VLINK="#006a6a" LINK="#000000" bgcolor="#ffffff">
+	
+
+<p>
+<table cellpadding="3" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099"><b><font FACE="Arial" SIZE="+4" color="#ffffff">OpenNMS管理者參考指南</font></b></td>
+</tr>
+<tr>
+<td bgcolor="#ffffff">
+<p>OpenNMS.org<br>
+						2001 年出版<br>版本: 1.0.0<br>
+
+			版權(c) 
+		1999, 
+		2000, 
+		2001, 
+		Oculan Corp.
+	<br>
+<a href="http://www.opennms.org/">www.opennms.org</a>
+<br>
+</p>
+</td>
+</tr>
+</table>
+</p>
+
+
+	
+<p>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2"> 序言</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">誌謝和版權</font></b></td>
+</tr>
+</table>
+</p>
+	
+	
+<p>
+<b><font size="+1"><b>Copyrights</b></font></b>
+</p>
+<p>
+			以下版權與OpenNMS 源碼或文獻是相關的:
+		</p>
+
+	
+<ul>
+		
+<li> 
+<p>Copyright (c) 1999-2001 Oculan Corp. All rights reserved.</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 1996-2001 PostgresSQL, Inc.</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 1994 Regents of California, Inc.</p> 
+</li>
+
+		
+<li> 
+<p>Copyright (c) 1994-2001 Sun Microsystems, Inc</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 1994-2001 IBM Corporation</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 2001 Microsoft Corporation</p> 
+</li>
+		
+<li> 
+
+<p>Copyright (c) 2001 Netscape</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 2001 Red Hat, Inc.</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 1999-2001 ExoLab Group</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 1999-2001 Apache Software Foundation</p> 
+
+</li>
+		
+<li> 
+<p>Copyright (c) 1998-2001 The Mozilla Organization</p> 
+</li>
+	
+</ul>
+	
+<p>
+<b><font size="+1"><b>有用的資訊鏈結</b></font></b>
+</p>
+<p>
+			以下URLs 與OpenNMS 源碼或文獻是相關的:
+		</p>
+
+	
+<ul>
+		
+<li> 
+<p>
+<a href="http://www.w3.org/TR/xsl/">XSLFO Spec, Oct 2000</a>
+</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.ibiblio.org/xml/books/bible/updates/15.html">XSLFO 聖經</a>
+</p> 
+</li>
+		
+
+<li> 
+<p>
+<a href="http://www.xslinfo.com/">XSL 資訊站台</a>
+</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.xml.org/">XML 組織</a>
+</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.docbook.org/">Docbook 組織</a>
+
+</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.oreilly.com/catalog/docbook/chapter/book/docbook.html">O'Reilly 的DocBook大全</a>
+</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.opennms.org/">OpenNMS.org</a> - OpenNMS 網站</p> 
+</li>
+
+		
+<li> 
+<p>
+<a href="http://xml.apache.org/">apache.org</a> - Xerces, XML4J 等的官方網站</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.sun.com/">Sun</a> - JAVA 的官方網站</p> 
+</li>
+		
+
+<li> 
+<p>
+<a href="http://www.w3.org/">W3C Organization</a> - XSLFO 和 XML 的官方網站</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.postgresql.org/">PostgreSQL</a> - PostgreSQL 的官方網站</p> 
+</li>
+	
+</ul>
+
+
+
+	
+<p>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2">1 第一章</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">管理者參考指南概觀</font></b></td>
+</tr>
+</table>
+</p>
+
+	
+<dl>
+<dd>
+<a name="chap1sect1"></a>
+		
+<p>
+<b><font face="Arial">1.1 關於本文件</font></b>
+</p>
+		
+<p>
+		本文件描述OpenNMS的設定. 下面的章節我們將談到每個設定檔和它的作用. 
+		其中一部份有提供範例, 不過其實大部分設定檔的內容都是不解自明的. 
+		</p>
+	
+</dd>
+</dl>
+
+
+
+
+<p>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2">2 第二章</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">各個設定檔</font></b></td>
+</tr>
+</table>
+</p>
+
+	
+<dl>
+<dd>
+<a name="chap2sect1"></a>
+		
+<p>
+<b><font face="Arial">2.1  actiond-configuration.xml</font></b>
+</p>
+		
+<p>
+		在事件(events)產生時所呼叫的外部程式稱為(actions). 這個設定檔控制最多可以同時
+		執行的action數量, 以及等待action執行完畢回傳結果的逾時值。
+		</p>
+	
+</dd>
+</dl>
+
+	
+<dl>
+<dd>
+<a name="chap2sect2"></a>
+		
+<p>
+<b><font face="Arial">2.2  AvailabilityReports.xsl SVGAvailReport.xsl PDFAvailReport.xsl</font></b>
+</p>
+		
+<p>
+		這三個檔案的資訊是關於如何將可用性報表轉換成PDF格式.
+		</p>
+	
+</dd>
+</dl>
+
+	
+<dl>
+<dd>
+<a name="chap2sect3"></a>
+		
+<p>
+<b><font face="Arial">2.3  viewsdisplay.xml</font></b>
+</p>
+		
+<p>
+		這個檔案定義在web UI中顯示時, 各個類別的呈現方式. 這些類別則是
+		定義在<strike>views.xml</strike>categories.xml.
+		</p>
+	
+</dd>
+</dl>
+
+	
+<dl>
+<dd>
+<a name="chap2sect4"></a>
+		
+<p>
+<b><font face="Arial">2.4  <strike>views.xml</strike>categories.xml</font></b>
+</p>
+		
+<p>
+		(譯註:views.xml這個設定檔拿掉了，categories.xml還在。省略這一段的翻譯)
+		</p>
+	
+</dd>
+</dl>
+
+	
+<dl>
+<dd>
+<a name="chap2sect5"></a>
+		
+<p>
+<b><font face="Arial">2.5  capsd-configuration.xml</font></b>
+</p>
+		
+<p>
+		這個檔案定義, 對於已經發現的節點(包含由discovery daemon或SNMP所發現的), 
+		我們能夠偵測出哪些服務. 它還可定義,若發掘了某些網路位址/網路位址區段,則應該受控或排除在外.  
+		對於沒有定義到的其他網路位址,它可用一個預設的狀態(管理政策)來規範.
+		</p>
+		
+<pre>
+		&lt;capsd-configuration rescan-frequency="86400000"
+			management-policy="unmanaged"&gt;
+
+		</pre>
+		
+<p>
+		最後,這個檔案可以讓你設定"rescan-frequency"(重新掃描網路的頻率).這個設定決定了時間間隔多久需重新掃描網路上的設備,
+		並且重新確認其上有哪些服務. 這個數字的單位是毫秒,預設值是86400000,也就是24小時.  
+		</p>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap2sect6"></a>
+		
+<p>
+<b><font face="Arial">2.6  <strike>controller-configuration.xml</strike></font></b>
+
+</p>
+		
+<p>
+		(譯註:這個設定檔拿掉了,省略這一段的翻譯)
+		</p>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap2sect7"></a>
+		
+<p>
+<b><font face="Arial">2.7  service-configuration.xml</font></b>
+
+</p>
+		
+<p>
+		這個檔案定義opennms本身要啟動的服務. 它和VM有關,並且控制哪個服務在哪個VM中開啟. 
+		</p>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap2sect8"></a>
+		
+<p>
+<b><font face="Arial">2.8  create.sql database-schema.xml</font></b>
+
+</p>
+		
+<p>
+		一般來說, 在安裝過程中, 指令稿install.pl會去呼叫create.sql, 來建立OpenNMS資料庫. create.sql中的註解很易懂. 
+		OpenNMS資料庫的schema定義在database-schema.xml; 執行篩選時, 系統會參照它來執行資料庫查詢. 
+		</p>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap2sect9"></a>
+		
+<p>
+<b><font face="Arial">2.9  datacollection-config.xml</font></b>
+
+</p>
+		
+<p>
+		這個檔案包含給RRDTool的資料收集資訊. 
+		</p>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap2sect10"></a>
+		
+<p>
+<b><font face="Arial">2.10  notifications.xml</font></b>
+
+</p>
+		
+<p>
+		這個檔案定義哪個事件或UEI發出告警, 以及發出告警的途徑. 
+		</p>
+		
+<pre>
+		&lt;notification name="nodeAdded"&gt;
+			&lt;uei&gt;&lt;![CDATA[http://uei.opennms.org/products/bluebird/nodes/nodeAdded]]&gt;&lt;/uei&gt;
+			&lt;rule&gt;&lt;![CDATA[IPADDR IPLIKE *.*.*.*]]&gt;&lt;/rule&gt;
+
+			&lt;destinationPath&gt;Email-Network/Systems&lt;/destinationPath&gt;
+			&lt;text-message&gt;OpenNMS has discovered a new node named %parm[nodelabel]%.    Please be advised.&lt;/text-message&gt;
+			&lt;subject&gt;%parm[nodelabel]% discovered.&lt;/subject&gt;
+		&lt;/notification&gt;
+
+		</pre>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap2sect11"></a>
+		
+<p>
+<b><font face="Arial">2.11  destinationPaths.xml</font></b>
+</p>
+		
+<p>
+		這個檔案用來定義告警的目標路徑(destination path), 例如告警應該送給誰, 傳送方式用傳呼, 電郵, 或者電郵-傳呼.
+		</p>
+
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap2sect12"></a>
+		
+<p>
+<b><font face="Arial">2.12  notificationCommands.xml</font></b>
+</p>
+		
+<p>
+		這個檔案定義如何達成在destinationPaths.xml中所使用的各種聯絡方式.  
+		這包括了可執行檔的所在位置, 各種聯絡方式的別名(aliases), 以及特定傳送方式尚需的其他資訊. 
+		</p>
+
+		
+<pre>
+		&lt;command type="email"&gt;
+			&lt;name&gt;/bin/mail&lt;/name&gt;
+			&lt;lookup&gt;email&lt;/lookup&gt;
+			&lt;lookup&gt;mail&lt;/lookup&gt;
+
+			&lt;comment&gt;for sending email notifications&lt;/comment&gt;
+			&lt;argument streamed="false"&gt;
+				&lt;substitution&gt;-s&lt;/substitution&gt;
+				&lt;switch&gt;-subject&lt;/switch&gt;
+
+			&lt;/argument&gt;
+			&lt;argument streamed="false"&gt;
+				&lt;switch&gt;-email&lt;/switch&gt;
+			&lt;/argument&gt;
+			&lt;argument streamed="true"&gt;
+
+				&lt;switch&gt;-tm&lt;/switch&gt;
+			&lt;/argument&gt;
+		&lt;/command&gt;
+		</pre>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect13"></a>
+		
+<p>
+<b><font face="Arial">2.13  discovery-configuration.xml</font></b>
+</p>
+		
+<p>
+		這個檔案定義要發掘的網路位址範圍，(ping sweep)以及逾時，重試次數，以及用來做發掘的執行緒(thread)數目。這個檔案也提供 
+		初次發掘間隔時間(initial-sleep-time)和重新發掘間隔時間(restart-sleep-time)。這些數值以毫秒(miliseconds)為單位，用來決定
+		OpenNMS執行後，間隔多久要開始針對網路位址清單作發掘；以及每次發掘之間的間隔時間。
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect14"></a>
+		
+<p>
+<b><font face="Arial">2.14  eventconf.xml</font></b>
+</p>
+		
+<p>
+		這個檔案定義通用事件識別碼(Universal Event Identifiers或UEIs)以及它們的事件遮罩(masks)，
+		描述，記錄檔訊息，和嚴重程度。
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect15"></a>
+		
+<p>
+<b><font face="Arial">2.15  eventd-configuration.xml</font></b>
+</p>
+		
+<p>
+		這個檔案定義eventd的運作參數，例如逾時值以及監聽器執行緒(listener threads)的數量。
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect16"></a>
+		
+<p>
+<b><font face="Arial">2.16  users.xml / groups.xml</font></b>
+</p>
+		
+<p>
+		這些檔案存放使用者的資訊，例如他們的聯絡方式，所屬群組和會員資格。這些檔案的資訊是用來做web UI的身份認證
+		及告警所需的聯絡方式。
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect17"></a>
+		
+<p>
+<b><font face="Arial">2.17  log4j.properties</font></b>
+</p>
+		
+<p>
+		這個檔案定義log4j的屬性。它包括記錄檔大小，更迭(rotation)，以及各類別記錄檔的記錄層級。
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect18"></a>
+		
+<p>
+<b><font face="Arial">2.18  magic-users.properties</font></b>
+</p>
+		
+<p>
+		這個檔案的優先權高於users.xml，它包含了一些特殊使用者的資訊。這是刻意用來控制和web UI互動的某些功能之權限。
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect19"></a>
+		
+<p>
+<b><font face="Arial">2.19  opennms-database.xml</font></b>
+</p>
+		
+<p>
+		這個檔案定義了供OpenNMS使用的資料庫型態，名稱，認證，以及套用的模板。
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect20"></a>
+		
+<p>
+<b><font face="Arial">2.20  opennms-mapping.xml</font></b>
+</p>
+		
+<p>
+		這個檔案是空的，但是因為opennms-database.xml的DTD需要而存在。
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect21"></a>
+		
+<p>
+<b><font face="Arial">2.21  <strike>opennms-jms.xml</strike></font></b>
+</p>
+		
+<p>
+		(譯註:這個設定檔拿掉了,省略這一段的翻譯)
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect22"></a>
+		
+<p>
+<b><font face="Arial">2.22  outage-configuration.xml</font></b>
+</p>
+		
+<p>
+		這個檔案只是用來定義(服務)中斷管理(outage manager)可以有多少個寫入執行緒(writer threads)。
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect23"></a>
+		
+<p>
+<b><font face="Arial">2.23  poller-configuration.xml</font></b>
+</p>
+		
+<p>
+		這個檔案用來定義輪詢組合(packages)以及設定各種服務的輪詢器(pollers)。一個輪詢組合內含數種項目，例如網路位址範圍，
+		，服務，排修時段(outage calendars)，和故障時段模式(down time models).
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect24"></a>
+		
+<p>
+<b><font face="Arial">2.24  <strike>rrdtool-graph.properties</strike></font></b>
+</p>
+		
+<p>
+		(譯註:這個設定檔拿掉了,省略這一段的翻譯)
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect25"></a>
+		
+<p>
+<b><font face="Arial">2.25  rtc-configuration.xml</font></b>
+</p>
+		
+<p>
+		這個檔案定義RTC (Real Time Console)的屬性，例如用來計算故障時段百分比的週期(rolling window)，web UI刷新週期，以及多久 
+		RTC將更新送至web介面。
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect26"></a>
+		
+<p>
+<b><font face="Arial">2.26  snmp-config.xml</font></b>
+</p>
+		
+<p>
+		這個檔案用來定義網路位址或位址範圍的community strings，一個community一筆設定。
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect27"></a>
+		
+<p>
+<b><font face="Arial">2.27  trapd-configuration.xml</font></b>
+</p>
+		
+<p>
+		這個檔案定義SNMP trap的埠口(port)。
+		</p>
+	
+</dd>
+</dl>
+
+
+</body>
+</html>
+
+
+
+<div class="posted">
+	Posted by ystuan at <a href="http://blog.linux.org.tw/~ystuan/archives/000594.html">12:55 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=594" onclick="OpenComments(this.href); return false">Comments (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">May 11, 2004</h2>
+
+
+<div class="blogbody">
+
+<a name="000623"></a>
+<h3 class="title">[安裝紀錄]OpenNMS 1.1.3 on White Box Enterprise Linux</h3>
+
+<p>在OpenNMS的郵件論壇找到底下這篇,<br />
+<a href="http://www.opennms.org/pipermail/install/2004-February/003183.html">Success! Install of 1.1.2 (and 1.1.3) on Red Hat Enterprise 3.0 ES</a></p>
+
+<p>我在我的<a href="http://blog.linux.org.tw/~ystuan/archives/000618.html">White Box Enterprise Linux(WBEL)</a>上面如法炮製,基本上都按照上面文章的順序來裝所有的rpm套件,<br />
+套件來源不外乎:<br />
+WBEL套件來源<br />
+ftp://mirror.physics.ncsu.edu/pub/whitebox/3.0/en/os/i386/RedHat/RPMS/<br />
+WBEL更新檔來源<br />
+ftp://ftp.opennms.org/pub/releases/OpenNMS/latest/linux-i386-redhat-9/RPMS/<br />
+OpenNMS相依套件來源<br />
+ftp://ftp.opennms.org/pub/releases/OpenNMS/latest/linux-i386-redhat-9/RPMS/<br />
+OpenNMS主要套件(1.1.3)來源<br />
+ftp://ftp.opennms.org/pub/releases/OpenNMS/preview/linux-i386-redhat-9/<br />
+如果有一樣的套件,例如postgresql,我選擇WBEL提供的,而不是OpenNMS提供的.</p>
+
+<p>原來的Script假設你先把所有要用到的rpm檔案都抓在同一個目錄下.因為我這邊的網路速度還不錯,所以我都直接用<br />
+rpm -Uvh ftp://depot.site.name/path/to/rpms/foobar.rpm 的方式安裝</p>
+
+<p>原作者提醒大家,如果要直接把他提供的指令稿拿來執行,要注意換行(line wrap)的部分.因為他用`sed -i`直接去替換<br />
+某些設定檔的設定,要放在同一行.我是自己一步步手動啦,執行`sed -i`的部分我都會再用文字編輯器檢視一下,確定有替換成功.</p>
+
+<p>###<br />
+### Install SNMP Agent<br />
+###<br />
+rpm -Uvh ./net-snmp-5.0.9-2.30E.1.i386.rpm<br />
+rpm -Uvh ./net-snmp-devel-5.0.9-2.30E.1.i386.rpm<br />
+rpm -Uvh ./net-snmp-utils-5.0.9-2.30E.1.i386.rpm</p>
+
+<p>###<br />
+### Install PostgreSQL (and dependencies)<br />
+###<br />
+rpm -Uvh ./rh-postgresql-libs-7.3.4-9.i386.rpm<br />
+rpm -Uvh ./rh-postgresql-7.3.4-9.i386.rpm<br />
+rpm -Uvh ./rh-postgresql-contrib-7.3.4-9.i386.rpm<br />
+rpm -Uvh ./rh-postgresql-devel-7.3.4-9.i386.rpm<br />
+rpm -Uvh ./rh-postgresql-docs-7.3.4-9.i386.rpm<br />
+rpm -Uvh ./rh-postgresql-jdbc-7.3.4-9.i386.rpm<br />
+rpm -Uvh ./rh-postgresql-server-7.3.4-9.i386.rpm<br />
+rpm -Uvh ./XFree86-Mesa-libGLU-4.3.0-44.EL.i386.rpm<br />
+rpm -Uvh ./libmng-1.0.4-3.i386.rpm<br />
+rpm -Uvh ./qt-3.1.2-13.i386.rpm<br />
+rpm -Uvh ./unixODBC-2.2.3-6.i386.rpm<br />
+rpm -Uvh ./postgresql-odbc-7.3-3.i386.rpm</p>
+
+<p>###<br />
+### Link startup script for backward compatibility<br />
+###<br />
+### 在RHEL/WBEL裡面,把postgresql套件叫做rhdb,所以建一個symbolic link來相容<br />
+ln -s /etc/init.d/rhdb /etc/init.d/postgresql</p>
+
+<p>###<br />
+### Stop and start postgres to generate first config file<br />
+###<br />
+service postgresql start<br />
+service postgresql stop</p>
+
+<p>###<br />
+### Edit /var/lib/pgsql/data/postgresql.conf<br />
+###<br />
+### 修改postgresql.conf裡面三行,執行完畢建議檢查一下<br />
+sed -i "s/#tcpip_socket = false/tcpip_socket=true/" /var/lib/pgsql/data/postgresql.conf<br />
+sed -i "s/#max_connections = 32/max_connections=256/" /var/lib/pgsql/data/postgresql.conf<br />
+sed -i "s/#shared_buffers = 64/shared_buffers=1024/" /var/lib/pgsql/data/postgresql.conf</p>
+
+<p>###<br />
+### Edit /var/lib/pgsql/data/pg_hba.conf<br />
+###<br />
+### 修改pg_hba.conf裡面兩行,執行完畢建議檢查一下<br />
+sed -i "s/#local   all/local   all/" /var/lib/pgsql/data/pg_hba.conf<br />
+sed -i "s/#host    all/host    all/" /var/lib/pgsql/data/pg_hba.conf</p>
+
+<p>###<br />
+### Set user back to postgres (it gets changed to root)?<br />
+###</p>
+
+<p>chown postgres:postgres /var/lib/pgsql/data/postgresql.conf<br />
+chown postgres:postgres /var/lib/pgsql/data/pg_hba.conf</p>
+
+<p>###<br />
+### Install Perl Modules (and dependencies)<br />
+###<br />
+rpm -Uvh ./perl-DBD-Pg-1.21-2.i386.rpm<br />
+rpm -Uvh ./perl-Crypt-DES-2.03-1.i386.rpm<br />
+rpm -Uvh ./perl-Getopt-Mixed-1.008-1.i386.rpm<br />
+rpm -Uvh ./perl-Digest-SHA1-2.01-15.1.i386.rpm<br />
+rpm -Uvh ./perl-Digest-HMAC-1.01-11.1.noarch.rpm<br />
+### 原作者沒有提到上面兩個套件,但是要先裝好,才能裝底下那個<br />
+rpm -Uvh ./perl-Net-SNMP-4.1.0-1.i386.rpm<br />
+rpm -Uvh ./xml-common-0.6.3-14.noarch.rpm<br />
+rpm -Uvh ./sgml-common-0.6.3-14.noarch.rpm<br />
+rpm -Uvh ./docbook-dtds-1.0-17.2.noarch.rpm<br />
+rpm -Uvh ./openjade-1.3.1-12.i386.rpm<br />
+rpm -Uvh ./perl-SGMLSpm-1.03ii-11.noarch.rpm</p>
+
+<p>###<br />
+### Install Mail utilities<br />
+###<br />
+rpm -Uvh ./mailx-8.1.1-31.i386.rpm<br />
+rpm -Uvh ./metamail-2.7-25.i386.rpm</p>
+
+<p>###<br />
+### Install RRD tools<br />
+###<br />
+rpm -Uvh ./rrdtool-1.0.42-fr1.i386.rpm<br />
+rpm -Uvh ./rrdtool-devel-1.0.42-fr1.i386.rpm</p>
+
+<p>###<br />
+### Install JAVA SDK and Tomcat<br />
+###<br />
+rpm -Uvh ./j2sdk-1_4_0_02-fcs-linux-i586.rpm<br />
+### 上面這個rpm檔的來源,<br />
+### 請參考<a href="http://faq.opennms.org/faq/fom-serve/cache/141.html">Which J2SDK to Use?</a>這篇FAQ<br />
+### 到Sun的網站抓舊版的j2sdk來安裝<br />
+### 目前強烈不建議用最新的j2sdk來跑OpenNMS<br />
+rpm -Uvh ./tomcat4-4.1.18-full.1jpp.noarch.rpm<br />
+rpm -Uvh ./tomcat4-webapps-4.1.18-full.1jpp.noarch.rpm</p>
+
+<p>###<br />
+### Edit /etc/tomcat4/tomcat4.conf<br />
+###<br />
+### 修改tomcat4.conf裡面的JAVA_HOME和TOMCAT_USER,執行完畢建議檢查一下.<br />
+### 尤其是JAVA_HOME,這個script的空格可能有錯,會替換失敗<br />
+### 如果有人照著我寫的安裝,請幫我再確認一次 :)<br />
+sed -i "s/#JAVA_HOME=\"\/opt\/IBMJava2-131\"/JAVA_HOME=\/usr\/java\/j2sdk1.4.0_02/" /etc/tomcat4/tomcat4.conf<br />
+sed -i "s/TOMCAT_USER=\"tomcat4\"/TOMCAT_USER=root/" /etc/tomcat4/tomcat4.conf</p>
+
+<p>### 因為OpenNMS還需要compat-libstdc++套件,所以到<br />
+### ftp://ftp.opennms.org/pub/releases/OpenNMS/latest/linux-i386-redhat-9/RPMS/<br />
+### 抓最新的compat-libstdc++-7.3-2.96.123.i386.rpm來裝<br />
+rpm -Uvh ./compat-libstdc++-7.3-2.96.123.i386.rpm</p>
+
+<p>###<br />
+### Install OpenNMS 1.1.2 or 1.1.3<br />
+###<br />
+### 我和原作者一樣,除了文件只有1.1.2可裝以外,都裝1.1.3.<br />
+### 郵件論壇有人回答,裝1.1.3不需要再加上--nodeps參數了<br />
+### 因此我就不加了</p>
+
+<p>rpm -Uvh ./opennms-docs-1.1.2-1.i386.rpm<br />
+#rpm -Uvh opennms-1.1.2-1.i386.rpm<br />
+#rpm -Uvh --nodeps opennms-webapp-1.1.2-1.i386.rpm<br />
+rpm -Uvh ./opennms-1.1.3-0.i386.rpm<br />
+rpm -Uvh ./opennms-webapp-1.1.3-0.i386.rpm</p>
+
+<p>###<br />
+### Edit /opt/OpenNMS/lib/scripts/platform_linux.sh to handle the new syntax<br />
+###<br />
+### 注意,修改platform_linux.sh是因為它會去參照/etc/redhat-release,抓出系統版本的數字.<br />
+### 在WBEL中,這個檔是symbolic link到/etc/whitebox-release,而其中第六個字才是版本數字3.0.<br />
+### 所以我把原作者的指令稿的"$5換成$7"改成"$5換成$6"<br />
+sed -i "s/print \$5/print \$6/" /opt/OpenNMS/lib/scripts/platform_linux.sh</p>
+
+<p>###<br />
+### Check to see if /etc/tomcat4/server.xml was changed<br />
+### during the OpenNMS install.  It probably didn't.  If it didn't,<br />
+### then run this command again.<br />
+###<br />
+### 我看了一下,server.xml好像真的沒有被修改到,底下這行執行後應該就可以了<br />
+/opt/OpenNMS/bin/install.pl -q /opt/OpenNMS/etc/create.sql</p>
+
+<p>###<br />
+### Start it up<br />
+###</p>
+
+<p>service tomcat4 start<br />
+service opennms start</p>
+
+<p>###<br />
+### 執行 "service opennms status" 直到每個程序都是 running.<br />
+service opennms status</p>
+
+<p>###[root@csg10 root]#<br />
+### 接著用瀏覽器連到 http://aaa.bbb.ccc.ddd:8080/opennms (請自行替換ip)<br />
+### 帳號:密碼是admin:admin</p>
+
+<p>### 因為tomcat4預設在開機時不會啟動,所以執行底下指令來修改<br />
+chkconfig tomcat4 on</p>
+
+<p>### 最後,在/opt/OpenNMS/etc/下的discovery-configuration.xml,<br />
+### poller-configuration.xml,capsd-configuration.xml檔案中<br />
+### 新增網路位址範圍.可參考<a href="http://blog.linux.org.tw/~ystuan/archives/000515.html">OpenNMS安裝指南</a>的4.1.1節<br />
+### 注意,如果Web Console的Outages一直顯現0 of 0,滑鼠移過去應該會看到上次更新日期.<br />
+### 很有可能是上次啟動/安裝的日期.只要執行service tomcat4 restart就會正常了</p>
+
+
+
+<div class="posted">
+	Posted by ystuan at <a href="http://blog.linux.org.tw/~ystuan/archives/000623.html">12:59 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=623" onclick="OpenComments(this.href); return false">Comments (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">March 25, 2004</h2>
+
+
+<div class="blogbody">
+
+<a name="000609"></a>
+<h3 class="title">OpenNMS的blog, RSS feed, 和體驗站台</h3>
+
+<p>翻譯還在龜速前進中,有幾個訊息先報給大家:</p>
+
+<p>還沒裝好OpenNMS,想要先體驗的人,可以玩玩這個demo站台<a href="http://www.opennms.org/onmsdemo/">http://www.opennms.org/onmsdemo/</a></p>
+
+<p>OpenNMS的blog在<a href="http://blog.opennms.org/">http://blog.opennms.org/</a><br />
+也有RSS feed在<a href="http://blog.opennms.org/index.rdf">http://blog.opennms.org/index.rdf</a><br />
+(不知道怎麼使用RSS feed的人請參考<a href="http://wiki.newzilla.org/RSSFeedReader">http://wiki.newzilla.org/RSSFeedReader</a></p>
+
+
+
+<div class="posted">
+	Posted by ystuan at <a href="http://blog.linux.org.tw/~ystuan/archives/000609.html">12:17 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=609" onclick="OpenComments(this.href); return false">Comments (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">March 04, 2004</h2>
+
+
+<div class="blogbody">
+
+<a name="000553"></a>
+<h3 class="title">[繁體中譯]OpenNMS User Guide</h3>
+
+<b>[2005/12/19]請注意，這篇網誌已經過時了，請到<a href="http://sourceforge.net/docman/?group_id=4141">OpenNMS Project Documentation</a>，Language選Trad. Chinese，就會看到我提交給官方的繁體中文安裝手冊，或者直接點選<a href="http://sourceforge.net/docman/display_doc.php?docid=29926&group_id=4141">這裡</a>。對這個主題有興趣，歡迎到我的<a href="http://blog.yam.com/ystuan/">新基地</a>逛逛</b>
+<p>
+原始網址<a 
+
+href="http://www.opennms.org/users/docs/docs/html/userguide.html">http://www.opennms.org/users/docs/docs/html/userguide.html</a>
+<br>譯者: Austin Tuan (ystuan 老鼠 hotmail 點 com) 歡迎來信,請於主旨欄加上[Linux]字樣,萬一被hotmail當作spam,我好撿回來 :)
+<html><!--This file was generated automatically by man2html.xsl.-->
+<body VLINK="#006a6a" LINK="#000000" bgcolor="#ffffff">
+	
+
+<p>
+<table cellpadding="3" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099"><b><font FACE="Arial" SIZE="+4" color="#ffffff">OpenNMS用戶指南</font></b></td>
+</tr>
+<tr>
+<td bgcolor="#ffffff">
+<p>OpenNMS.org<br>
+						2001 年出版<br>版本: 1.0.0<br>
+
+			版權(c) 
+		1999, 
+		2000, 
+		2001, 
+		Oculan Corp.
+	<br>
+<a href="http://www.opennms.org/">www.opennms.org</a>
+<br>
+</p>
+</td>
+</tr>
+</table>
+</p>
+
+
+	
+<p>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2"> 序言</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">誌謝和版權</font></b></td>
+</tr>
+</table>
+</p>
+	
+	
+<p>
+<b><font size="+1"><b>Copyrights</b></font></b>
+</p>
+<p>
+			以下版權與OpenNMS 源碼或文獻是相關的:
+		</p>
+
+	
+<ul>
+		
+<li> 
+<p>Copyright (c) 1999-2001 Oculan Corp. All rights reserved.</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 1996-2001 PostgresSQL, Inc.</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 1994 Regents of California, Inc.</p> 
+</li>
+
+		
+<li> 
+<p>Copyright (c) 1994-2001 Sun Microsystems, Inc</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 1994-2001 IBM Corporation</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 2001 Microsoft Corporation</p> 
+</li>
+		
+<li> 
+
+<p>Copyright (c) 2001 Netscape</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 2001 Red Hat, Inc.</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 1999-2001 ExoLab Group</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 1999-2001 Apache Software Foundation</p> 
+
+</li>
+		
+<li> 
+<p>Copyright (c) 1998-2001 The Mozilla Organization</p> 
+</li>
+	
+</ul>
+	
+<p>
+<b><font size="+1"><b>有用的資訊鏈結</b></font></b>
+</p>
+<p>
+			以下URLs 與OpenNMS 源碼或文獻是相關的:
+		</p>
+
+	
+<ul>
+		
+<li> 
+<p>
+<a href="http://www.w3.org/TR/xsl/">XSLFO Spec, Oct 2000</a>
+</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.ibiblio.org/xml/books/bible/updates/15.html">XSLFO 聖經</a>
+</p> 
+</li>
+		
+
+<li> 
+<p>
+<a href="http://www.xslinfo.com/">XSL 資訊站台</a>
+</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.xml.org/">XML 組織</a>
+</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.docbook.org/">Docbook 組織</a>
+
+</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.oreilly.com/catalog/docbook/chapter/book/docbook.html">O'Reilly 的DocBook大全</a>
+</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.opennms.org/">OpenNMS.org</a> - OpenNMS 網站</p> 
+</li>
+
+		
+<li> 
+<p>
+<a href="http://xml.apache.org/">apache.org</a> - Xerces, XML4J 等的官方網站</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.sun.com/">Sun</a> - JAVA 的官方網站</p> 
+</li>
+		
+
+<li> 
+<p>
+<a href="http://www.w3.org/">W3C Organization</a> - XSLFO 和 XML 的官方網站</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.postgresql.org/">PostgreSQL</a> - PostgreSQL 的官方網站</p> 
+</li>
+	
+</ul>
+
+
+
+	
+<p>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2">1 第一章</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">OpenNMS基礎概念</font></b></td>
+</tr>
+</table>
+</p>
+	
+	
+
+<p>
+		
+<i>OpenNMS是一個服務管理及網路管理的平台, 可用來自動發掘網路節點, 監控網路服務, 告知維運人員網路障礙, 事件彙整, 
+自動執行對應動作, 以及服務層級效能監控. 
+		</i>
+	
+</p>
+	
+<dl>
+<dd>
+<a name="chap1sect1"></a>
+		
+<p>
+<b><font face="Arial">1.1 關於本指南</font></b>
+</p>
+		
+<p>
+
+		本指南將介紹如何在一個已經設定好的網管機台上使用web介面. 
+		您將可以了解如何搜尋資訊, recognizing和acknowledging事件及告警, 以及
+		報表功能, 和資產管理. 本指南希望能讓一般使用者能夠了解這個被監控網路的目前狀態, 
+		以及研究歷史資料, 並且經由網頁介面充分掌握所有可用的資訊. 
+		</p>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap1sect2"></a>
+		
+<p>
+<b><font face="Arial">1.2 名詞解釋</font></b>
+</p>
+		
+<p>
+
+		下列是本文件用到的一些名詞. 某些名詞業界在使用的時候定義很鬆, 不過用在OpenNMS的時候
+		我們採用底下的定義. 
+		</p>
+		
+<p>
+<b><font size="+1"><b>介面(Interface)</b></font></b>
+</p>
+<p>任何被指定給網路設備, 能回應網路要求的IP位址, 或者, 任何透過SNMP協定回報自稱是介面者. 
+		</p>
+		
+<p>
+<b><font size="+1"><b>服務(Service)</b></font></b>
+</p>
+<p>任何單一, 預先定義指定給一個介面的網路服務. 
+		</p>
+
+		
+<p>
+<b><font size="+1"><b>節點(Node)</b></font></b>
+</p>
+<p>任何擁有一個以上介面的實體設備. 一個節點可能有數個介面, 每個介面可能有數個服務. (某一特定
+		的介面是否"屬於"某個節點可以用幾種不同的方式來決定, 例如SNMP或NetBIOS名稱. 然而, 
+		如果某個特定介面並沒有歸屬於任何節點的資訊, 就會被表示為一個獨立的節點. )		</p>
+		
+<p>
+<b><font size="+1"><b>事件(Event)</b></font></b>
+</p>
+<p>任何重大發生或發現. 
+		</p>
+		
+<p>
+<b><font size="+1"><b>故障(Outage)</b></font></b>
+
+</p>
+<p>一個暫時性的運作停擺, 其特徵為無法和一個監控的服務溝通.(無法輪詢)
+		</p>
+		
+<p>
+<b><font size="+1"><b>告警(Notice)</b></font></b>
+</p>
+<p>當特定事件產生的時候, 系統可以發出告警. 發出告警意味著用電郵或傳呼(pagers)或
+其他方式, 告知使用者或一群使用者, 所發生的事件; 某些情形下可能會觸發修正動作. 
+		</p>
+	
+</dd>
+</dl>
+
+
+
+	
+
+<p>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2">2 第二章</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">主頁</font></b></td>
+</tr>
+</table>
+</p>
+	
+	
+<p>
+	將瀏覽器指向伺服器8080埠下的opennms子目錄, 即可存取網頁介面
+	<pre>
+
+	http://127.0.0.1:8080/opennms/
+	</pre>
+	從這個集中的概觀(centralized view), 您可以迅速掌握目前網路健康狀態的概要. 告警在右上角是有關
+	網管機台日期時間的資訊, 以及目前所用來登入的帳號, 還有目前告警功能是否開啟. 
+	</p>
+	
+<dl>
+<dd>
+<a name="chap2sect1"></a>
+		
+<p>
+<b><font face="Arial">2.1 故障列表</font></b>
+</p>
+		
+<p>
+
+		螢幕左方是故障列表, 標題為"Nodes with Outages"(故障的節點). 這裡會列出目前有服務故障的節點. 
+		點選表列的節點, 可看到該節點更詳細的資訊, 例如其上運行的服務, 以及目前和以往發生的故障. 
+		在這個頁面, 可以找到某個故障發生的時間, 以及該服務恢復運行的時間. 
+		</p>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap2sect2"></a>
+		
+<p>
+<b><font face="Arial">2.2 可用性</font></b>
+</p>
+		
+<p>
+
+		螢幕正中央顯示的是服務類別. 每個類別都列出目前故障的數目以及最近24小時的可用性. 
+		</p>
+		
+<p>
+		這個列表中, 故障和可用性會根據系統安裝時管理者所設的臨界值, 用綠色, 黃色, 及紅色來表示. 
+		</p>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap2sect3"></a>
+		
+<p>
+
+<b><font face="Arial">2.3 效能和告警</font></b>
+</p>
+		
+<p>
+		螢幕右方顯示的是告警的鏈結, 以及效能圖表的入口. 這部分是用來將SNMP收集來的資料產生圖表. 
+		</p>
+	
+</dd>
+</dl>
+
+
+
+	
+<p>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+
+<tr>
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2">3 第三章</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">事件(Events)</font></b></td>
+</tr>
+</table>
+</p>
+	
+	
+<p>
+	當一個網管機台上面出現一個事件, 它會被存入資料庫. 您可以從主頁面較上方的選單進入事件的頁面,
+	再上點選"Events"(事件)來觀看這些項目. 
+	</p>
+	
+<dl>
+
+<dd>
+<a name="chap3sect1"></a>
+		
+<p>
+<b><font face="Arial">3.1 觀看事件</font></b>
+</p>
+		
+<p>
+		在這個頁面, 您可以從選擇要觀看的事件類別開始. 選項包括了"outstanding events"(還未認領的事件)
+		(還沒有被acknowledged的事件)和"acknowledged events."(被認領的事件) 在選擇了事件的類別之後, 
+		這個未篩選的事件清單會以表格的方式呈現. 每個事件都被指定了一個嚴重程度, 並且給予相對應的顏色. 
+		您可以按下"Severity Legend"(嚴重程度圖例)的按鈕來了解每個顏色代表的意義. 
+		</p>
+		
+<p>
+		更多有關該事件的資訊可以點選ID欄位的鏈結來得知. 
+		</p>
+
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap3sect2"></a>
+		
+<p>
+<b><font face="Arial">3.2 管理事件</font></b>
+</p>
+		
+<p>
+		在事件的主頁面提供一個鏈結來acknowledge或unacknowledge所有的事件. 除此之外, 您可以藉由點選
+		項目旁的"+"或"-"號來篩選事件清單. 
+		</p>
+
+		
+<p> 
+		點選"-"號會篩除所有該特定欄位的值符合的事件. 
+		</p>
+		
+<p>
+		點選"+"號會篩除所有該特定欄位的值不符合的事件. 
+		</p>
+	
+</dd>
+</dl>
+
+
+
+	
+<p>
+
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2">4 第四章</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">故障</font></b></td>
+</tr>
+</table>
+</p>
+	
+	
+<p>
+	您可在主頁面點選"Outages"的鏈結來連結到"故障"的頁面. 該頁會有一個列表, 包含所有受控設備目前有關故障的資訊. 
+	這裡還有關於故障類別, 受影響節點及介面, 故障時間等資訊. 點選列表中的鏈結可得知例如可用性, 事件, 歷史故障
+	等額外資訊. 
+	</p>
+
+
+	
+<p>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2">5 第五章</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">搜尋</font></b></td>
+</tr>
+</table>
+</p>
+	
+	
+<p>
+
+	點選主頁面上"Search"的鏈結會連結到搜尋的頁面. 在這裡我們可以用各種條件來搜尋節點. 
+	執行結果會得到一份清單, 列出符合搜尋條件的節點以及其上的介面. 每個項目都以鏈結的形式呈現, 
+	可以連結到主要的節點或介面的頁面. 這些頁面有非常完整的, 關於每個設備的資訊. 底下是數種不同
+	搜尋方式的細節. 
+	</p>
+	
+<dl>
+<dd>
+<a name="chap5sect1"></a>
+		
+<p>
+<b><font face="Arial">5.1 搜尋節點</font></b>
+</p>
+		
+<p>
+		根據各種條件--例如ip位址, 服務, 主機名稱--來產生一份節點的列表.
+		例如, 可以輸入ip位址範圍來產生該範圍內的節點列表.頁面上還有範例, 
+		以及一些語法規則來協助產生搜尋條件. 如果這些方法都不成功
+		, 還有一個"list all nodes"的鏈結可用.
+		</p>
+
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap5sect2"></a>
+		
+<p>
+<b><font face="Arial">5.2 搜尋有關資產的資訊</font></b>
+</p>
+		
+<p>
+		如果網路上的設備之前都已鍵入資產資訊, 可以依此資訊來做搜尋. 這個搜尋可以依照類別, 
+		或者任何欄位的資訊, 或者你也可以點選鏈結來列出所有含有資產資訊的節點.
+		</p>
+
+		
+<p>
+		如果設備都沒有鍵入資產資訊, 這些搜尋不會列出任何節點.
+		</p>
+	
+</dd>
+</dl>
+
+
+
+	
+<p>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2">6 第六章</font></b></td>
+
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">報表</font></b></td>
+</tr>
+</table>
+</p>
+	
+	
+<p>
+	在主選單點選"reporting"就可以進入報表的主頁. 這邊有三個選擇: 效能報表, 客製化效能報表, 以及可用性報表.
+	這一章我們來看各類型的報表, 以及如何產生和解讀其上的圖表和資訊.
+	</p>
+	
+<dl>
+<dd>
+<a name="chap6sect1"></a>
+		
+
+<p>
+<b><font face="Arial">6.1 效能報表</font></b>
+</p>
+		
+<p>
+		點選"Performance Reports"會顯示可產生標準效能報表的選項列表.
+		</p>
+		
+<p>
+		在最左邊的欄位, 選擇(網路)介面來產生報表. 可選擇任何一個支援SNMP的介面. 接著, 
+		選擇報表要包含哪些資訊. 在這第二個欄位可選擇任意數量的選項. 上述兩個欄位中至少
+		分別要選一個項目. 最後, 選擇報表涵蓋的時間區間.
+		</p>
+		
+<p>
+		選項都選好之後,按下"Submit"按鈕, 就可看到報表頁面. 需要的話, 這個網址你可以加入書籤.
+		</p>
+
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap6sect2"></a>
+		
+<p>
+<b><font face="Arial">6.2 客製化效能報表</font></b>
+</p>
+		
+<p>
+		在主選單點選"Reports"再點選"Custom Performance Report".  
+		這時候系統會問你一些問題,引導你產生想要的報表. 首先, 選擇針對哪個介面產生報表. 
+		接著你需要選擇一到四個資料源. 對於每個資料源, 你可以選擇標題, 顏色, 線條樣式以及數值的型態.
+		最後, 幫你的圖表選一個標題, 還有涵蓋的時間區間. 從現在起, 選擇下一個的時候應該會顯示這個圖表的完整路徑(URL). 
+		需要的話, 這個完整路徑可以用電郵或即時訊息傳送給別人. 
+		</p>
+
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap6sect3"></a>
+		
+<p>
+<b><font face="Arial">6.3 可用性報表</font></b>
+</p>
+		
+<p>
+		在主選單點選"Reports"再點選"Availability Report".  
+		接著只要選擇你想要產生的報表的型態, 以及其服務類別. 
+		按下"Get Report"按鈕就可以在一個新的瀏覽器視窗看到你要的報表. </p>
+
+	
+</dd>
+</dl>
+
+
+
+	
+<p>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2">7 第七章</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">告警</font></b></td>
+</tr>
+
+</table>
+</p>
+	
+	
+<p>
+	告警會告知你發生的事件.
+	</p>
+	
+<dl>
+<dd>
+<a name="chap7sect1"></a>
+		
+<p>
+<b><font face="Arial">7.1 打開告警</font></b>
+</p>
+		
+
+<p>
+		從admin頁面, 將告警的狀態設為ON, 然後點選"Update Status".  
+		這樣就可以切換整個系統的告警狀態.
+		</p>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap7sect2"></a>
+		
+<p>
+<b><font face="Arial">7.2 勾選及Acknowledge告警</font></b>
+</p>
+		
+
+<p>
+		在告警的頁面上選擇你有興趣的告警型態之服務類型. 接著你可以看到告警的清單, 供你瀏覽及acknowledge. Unacknowledged 
+		告警會繼續escalate, 直到被acknowledged.
+		</p>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap7sect3"></a>
+		
+<p>
+<b><font face="Arial">7.3 管理告警</font></b>
+</p>
+		
+
+<p>
+		從admin頁面點選"Turn On/Off Notices by Service". 依照頁面上的指示操作, 你可以一個一個服務去設定其告警狀態. 
+		</p>
+	
+</dd>
+</dl>
+
+
+
+	
+<p>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2">8 第八章</font></b></td>
+</tr>
+
+<tr>
+<td align="left"><b><font face="Arial" size="+1">資產</font></b></td>
+</tr>
+</table>
+</p>
+	
+	
+<p>
+	!!!重要!!!: 在你輸入任何資產資訊前, 請讀完這一整章. 
+	</p>
+	
+<p>
+	資產資訊幫助你保留有關你的受控設備的資訊.  
+	它可以用來當作搜尋條件, 當你在偵錯的時候需要廠商的電話號碼的話也很好用, 或者用在你想要註記特殊的行為
+	給下一個可能會存取這些資訊的人. 
+	</p>
+	
+
+<dl>
+<dd>
+<a name="chap8sect1"></a>
+		
+<p>
+<b><font face="Arial">8.1 新增資產資訊</font></b>
+</p>
+		
+<p>
+		使用search頁面找出你要新增資產資訊的節點, 點選它. 接著點選"Asset Info". 填寫任何一個你覺得需要的欄位. 
+		點選submit. 在輸入資產資訊時, 請小心, 如果你準備要匯入或匯出這些資訊, 不要在任何欄位裡面使用逗點. 目前的版本
+		沒有提供逸出字元來處理逗點.
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap8sect2"></a>
+		
+<p>
+<b><font face="Arial">8.2 依照資產資訊來搜尋節點</font></b>
+</p>
+		
+<p>
+		到search或asset頁面並且輸入搜尋條件, 然後執行搜尋.
+		</p>
+	
+</dd>
+</dl>
+        
+
+<dl>
+<dd>
+<a name="chap8sect3"></a>
+                
+<p>
+<b><font face="Arial">8.3 匯出資產資訊</font></b>
+</p>
+                
+<p>
+                當你匯出你的資產資訊時, 會得到csv(逗號分隔數值)格式的資料. 第一列是欄位名稱, 接下來每一列則是一項設備. 
+                </p>
+        
+</dd>
+</dl>
+        
+
+<dl>
+<dd>
+<a name="chap8sect4"></a>
+                
+<p>
+<b><font face="Arial">8.4 匯入資產資訊</font></b>
+</p>
+                
+<p>
+                這個功能, 本身來說, 基本上在目前的狀態是沒有用處的. 每一個設備的節點id必須要相符, 正因為這個原因, 
+		這項資訊不能從一個網管機台傳遞到另一台, 甚至也不能從這次安裝沿用到下次安裝, 除非你重新對應那些節點id. 
+		資訊可以從一個網管機台匯出, 匯入到試算表, 接著修改, 再匯出成逗號分隔清單, 然後重新匯入到本來匯出的那台網管機台. 
+		或者, 匯出的清單可以用一個外部指令稿來修改, 然後重新匯入. 例如在你要複製很多筆只有網路位址不同的資料給大量的設
+		備時, 就可以用上.
+                </p>
+		
+<p>
+		注意到在重新匯入資訊時, 欄位名稱(第一行)要拿掉. 也就是說, 如果你匯出並儲存.csv檔案, 直接貼回匯入欄位的話, 在第一
+		行就會產生錯誤. 第一行只是為了讓試算表或資料庫程式讀取清單時可以拿來當作欄位名稱. 
+		</p>
+
+        
+</dd>
+</dl>
+
+
+
+	
+<p>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2">9 第九章</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">結論</font></b></td>
+</tr>
+
+</table>
+</p>
+	
+	
+<p>
+	這個專案永遠都在持續開發. 特點和功能會一直被加入和改進. 這份文件提到的某些項目可能會隨著時間流逝而過期, 
+	或者提到目前版本不存在, 可能只存在於CVS倉庫(CVS reporitory)的發展分支(unstable branch)的特點. 你可以在一些
+	地方尋求關於OpenNMS的協助和資訊. 你可能想要參與這個專案的程式碼撰寫. 在下面的章節將會提到一些可能有用的資源. 
+	</p>
+	
+<dl>
+<dd>
+<a name="chap9sect1"></a>
+		
+<p>
+<b><font face="Arial">9.1 文件</font></b>
+</p>
+		
+
+<p>
+		除了這份文件之外, 還有一些指南談到OpenNMS的安裝和管理. 這些指南的最新版本通常可以在CVS找到. 
+		雖然要將這個專案的每一部份都以文件說明幾乎是不可能的, 這兒還是一個好的起點.
+		</p>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap9sect2"></a>
+		
+<p>
+<b><font face="Arial">9.2 網站</font></b>
+</p>
+		
+
+<p>
+		OpenNMS的網站在
+		<pre>
+		http://www.opennms.org/
+		</pre>
+		這兒你可以存取到軟體, 文件, 臭蟲資訊, 郵件論壇之庫存信件, CVS, 還有一些其他資源. 
+		</p>
+	
+</dd>
+</dl>
+        
+<dl>
+<dd>
+<a name="chap9sect3"></a>
+
+                
+<p>
+<b><font face="Arial">9.3 電郵</font></b>
+</p>
+                
+<p>
+                OpenNMS目前提供數個郵件論壇. 請到下面的網址, 取得更多有關特定論壇以及如何加入的訊息. 
+                <pre>
+                http://www.opennms.org/sections/get_involved/discussion
+                </pre>
+                
+</p>
+        
+</dd>
+
+</dl>
+        
+<dl>
+<dd>
+<a name="chap9sect4"></a>
+                
+<p>
+<b><font face="Arial">9.4 Usenet新聞群組</font></b>
+</p>
+                
+<p>
+                雖然寫這份文件的時候並沒有OpenNMS專屬的新聞群組, 你通常可在其他的新聞群組看到散佈的相關資訊. 
+                </p>
+        
+</dd>
+
+</dl>
+
+
+
+</body>
+</html>
+
+
+
+<div class="posted">
+	Posted by ystuan at <a href="http://blog.linux.org.tw/~ystuan/archives/000553.html">12:33 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=553" onclick="OpenComments(this.href); return false">Comments (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">December 28, 2003</h2>
+
+
+<div class="blogbody">
+
+<a name="000515"></a>
+<h3 class="title">[繁體中譯]OpenNMS Installation Guide</h3>
+
+<b>[2005/12/19]請注意，這篇網誌已經過時了，請到<a href="http://sourceforge.net/docman/?group_id=4141">OpenNMS Project Documentation</a>，Language選Trad. Chinese，就會看到我提交給官方的繁體中文安裝手冊，或者直接點選<a href="http://sourceforge.net/docman/display_doc.php?docid=29926&group_id=4141">這裡</a>。對這個主題有興趣，歡迎到我的<a href="http://blog.yam.com/ystuan/">新基地</a>逛逛</b>
+<p>
+原始網址<a href="http://www.opennms.org/users/docs/docs/html/install.html">http://www.opennms.org/users/docs/docs/html/install.html</a>
+<br>譯者: Austin Tuan (ystuan 老鼠 hotmail 點 com) 歡迎來信,請於主旨欄加上[Linux]字樣,萬一被hotmail當作spam,我好撿回來 :)
+<html><!--This file was generated automatically by man2html.xsl.-->
+<body VLINK="#006a6a" LINK="#000000" bgcolor="#ffffff">
+	
+
+<p>
+<table cellpadding="3" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099"><b><font FACE="Arial" SIZE="+4" color="#ffffff">OpenNMS 安裝指南</font></b></td>
+</tr>
+<tr>
+<td bgcolor="#ffffff">
+<p>OpenNMS.org<br>
+						2001 年出版<br>版本: 1.0.0<br>
+
+			版權 (c) 
+		1999, 
+		2000, 
+		2001, 
+		Oculan Corp.
+	<br>
+<a href="http://www.opennms.org/">www.opennms.org</a>
+<br>
+</p>
+</td>
+</tr>
+</table>
+</p>
+
+
+	
+<p>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2"> 序言</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">誌謝和版權</font></b></td>
+</tr>
+</table>
+</p>
+	
+	
+<p>
+<b><font size="+1"><b>版權</b></font></b>
+</p>
+<p>
+			 以下版權與OpenNMS 源碼或文獻是相關的:
+		</p>
+
+	
+<ul>
+		
+<li> 
+<p>Copyright (c) 1999-2001 Oculan Corp. All rights reserved.</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 1996-2001 PostgresSQL, Inc.</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 1994 Regents of California, Inc.</p> 
+</li>
+
+		
+<li> 
+<p>Copyright (c) 1994-2001 Sun Microsystems, Inc</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 1994-2001 IBM Corporation</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 2001 Microsoft Corporation</p> 
+</li>
+		
+<li> 
+
+<p>Copyright (c) 2001 Netscape</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 2001 Red Hat, Inc.</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 1999-2001 ExoLab Group</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 1999-2001 Apache Software Foundation</p> 
+
+</li>
+		
+<li> 
+<p>Copyright (c) 1998-2001 The Mozilla Organization</p> 
+</li>
+	
+</ul>
+	
+<p>
+<b><font size="+1"><b>有用的資訊鏈結</b></font></b>
+</p>
+<p>
+			 以下URLs 與OpenNMS 源碼或文獻是相關的:
+		</p>
+
+	
+<ul>
+		
+<li> 
+<p>
+<a href="http://www.w3.org/TR/xsl/">XSLFO Spec, Oct 2000</a>
+</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.ibiblio.org/xml/books/bible/updates/15.html">XSLFO 聖經</a>
+</p> 
+</li>
+		
+
+<li> 
+<p>
+<a href="http://www.xslinfo.com/">XSL 資訊站台</a>
+</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.xml.org/">XML 組織</a>
+</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.docbook.org/">Docbook 組織</a>
+
+</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.oreilly.com/catalog/docbook/chapter/book/docbook.html">O'Reilly 的DocBook大全</a>
+
+</p> 
+
+</li>
+		
+<li> 
+<p>
+<a href="http://www.opennms.org/">OpenNMS.org</a> - OpenNMS 網站</p> 
+</li>
+
+		
+<li> 
+<p>
+<a href="http://xml.apache.org/">apache.org</a> - Xerces, XML4J 等的官方網站</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.sun.com/">Sun</a> - JAVA 的官方網站</p> 
+</li>
+		
+
+<li> 
+<p>
+<a href="http://www.w3.org/">W3C 組織</a> - XSLFO 和 XML 的官方網站</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.postgresql.org/">PostgreSQL</a>  - PostgreSQL 的官方網站</p> 
+</li>
+	
+</ul>
+
+
+
+
+<p>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2">1 第一章</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">最低需求</font></b></td>
+</tr>
+</table>
+</p>
+
+	
+<dl>
+<dd>
+<a name="chap1sect1"></a>
+	
+<p>
+<b><font face="Arial">1.1  最低需求</font></b>
+</p>
+		
+<p>
+			在安裝之前, 請花一點時間熟悉下列需求。接下來的章節將會深入討論這些相依性套件的設定。		</p>
+		
+<table cellspacing="1" cellpadding="2">
+			
+
+<p>
+<b><font face="Arial">  
+				OpenNMS 基本要求
+			</font></b>
+</p>
+			
+					
+<tr>
+						
+<th bgcolor="#e0e0e0" align="left"><font color="#000000" face="Arial" size="-1">資源</font></th>
+						<th bgcolor="#e0e0e0" align="left"><font color="#000000" face="Arial" size="-1">最低需求</font></th>
+						<th bgcolor="#e0e0e0" align="left"><font color="#000000" face="Arial" size="-1">可利用的資源</font></th>
+					
+
+</tr>
+				
+					
+<tr>
+						
+<td bgcolor="#ffffff">OpenNMS 安裝套件</td>
+						<td bgcolor="#ffffff">版本0.9.0 或更高</td>
+						<td bgcolor="#ffffff"><a href="http://www.opennms.org/">www.OpenNMS.org</a></td>
+					
+</tr>
+					
+<tr>
+						
+
+<td bgcolor="#ffffff">Linux</td>
+						<td bgcolor="#ffffff">Redhat 6.2以上, Mandrake 7.2以上, 其他版本可能也可運行</td>
+						<td bgcolor="#ffffff"><a href="http://www.linux.org/">www.linux.org</a></td>
+					
+</tr>
+					
+<tr>
+						
+<td bgcolor="#ffffff">PostgreSQL</td>
+						<td bgcolor="#ffffff">版本7.1或更高</td>
+
+						<td bgcolor="#ffffff"><a href="http://www.postgresql.org/">www.postgresql.org</a></td>
+					
+</tr>
+					
+<tr>
+						
+<td bgcolor="#ffffff">TomCat</td>
+						<td bgcolor="#ffffff">版本4.0或更高</td>
+						<td bgcolor="#ffffff"><a href="http://jakarta.apache.org/">jakarta.apache.org</a></td>
+					
+
+</tr>
+					
+<tr>
+						
+<td bgcolor="#ffffff">RRDTool</td>
+						<td bgcolor="#ffffff">版本1.0.28或更高</td>
+						<td bgcolor="#ffffff"><a href="http://rrdtool.eu.org/">rrdtool.eu.org</a></td>
+					
+</tr>
+					
+<tr>
+						
+
+<td bgcolor="#ffffff">Perl 模組</td>
+						<td bgcolor="#ffffff">DBI, DBD::Pg</td>
+						<td bgcolor="#ffffff"><a href="http://www.cpan.org/">www.cpan.org</a></td>
+					
+</tr>
+					
+<tr>
+						
+<td bgcolor="#ffffff">JAVA Virtual Machine (JVM)</td>
+						<td bgcolor="#ffffff">版本1.4 或更高</td>
+
+						<td bgcolor="#ffffff"><a href="http://java.sun.com/j2se/1.4/">java.sun.com</a></td>
+					
+</tr>
+					
+<tr>
+						
+<td bgcolor="#ffffff">磁碟空間</td>
+						<td bgcolor="#ffffff">/opt下15MB, /var/log下最多100MB(若開啟預設偵錯模式則可能超過), /var/opennms下每個SNMP設施8MB</td>
+					
+</tr>
+					
+<tr>
+
+						
+<td bgcolor="#ffffff">記憶體</td>
+						<td bgcolor="#ffffff">192 MB (建議至少256MB)</td>
+					
+</tr>
+				
+		
+</table>
+	
+</dd>
+</dl>
+
+
+
+	
+
+<p>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2">2 第二章</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">套件相依性設定</font></b></td>
+</tr>
+</table>
+</p>
+	
+	
+<p>
+		如果您計劃使用網路安裝程式(web installer)安裝OpenNMS及其相依性套件的RPM檔案, 您可以跳到第三章。如果有任何相依性套件已經被您安裝運行, 請您務必閱讀這個章節。多數較新的系統內核均符合要求, 而其他一切在您系統上運行OpenNMS所需的套件, 安裝程式應該都能順利將它們升級。
+	</p>
+
+	
+<dl>
+<dd>
+<a name="chap2sect1"></a>
+		
+<p>
+<b><font face="Arial">2.1  Linux核心2.2或更早的版本</font></b>
+</p>
+		
+<p>
+			由於OpenNMS使用大量的JAVA執行緒, 您可能需要重新編譯Linux核心來因應。在源碼目錄下, 將標頭檔
+			include/linux/tasks.h內的 NR_Tasks 設為4000。多數商業發行套件所附的核心不需要修改, 就能因應。底下是在重新編譯核心時, 標頭檔task.h應做的修改。
+			<pre>
+	#define NR_TASKS        4000
+			</pre>
+
+			您可在<a href="http://www.linuxdoc.org/HOWTO/Kernel-HOWTO.html">Kernel-HOWTO</a>找到關於編譯新核心的更多資訊。
+		
+</p>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap2sect2"></a>
+		
+<p>
+<b><font face="Arial">2.2  PostgreSQL 設定</font></b>
+
+</p>
+		
+<p>
+			為了讓OpenNMS能夠連結到資料庫, PostgreSQL運行時必須將TCP/IP listener啟動(因為Java並不支援UNIX domain sockets)。
+			以PostgreSQL 7.1(此文件寫作時的版本)來說, 改一個簡單的設定檔就可達成此目的, 另外我們還建議修改一些有關效能的選項。
+		</p>
+		
+<p>
+			首先, 啟動PostgreSQL, 確定資料庫已經初始化了:
+			<pre>
+  /etc/init.d/postgresql start
+			</pre>
+			然後, 編輯/var/lib/pgsql/data/postgresql.conf, 增加以下數行:
+			<pre>
+
+  tcpip_socket = true
+  max_connections = 256
+  shared_buffers = 1024
+			</pre>
+			注意到 <i>max_connections</i> 和 <i>shared_buffers</i>
+			是推薦而非必須的。由於OpenNMS會大量運用執行緒(heavily threaded), 非常容易超出PostgreSQL預設的32個連入連線。
+			如果這個問題發生, OpenNMS的許多部分可能無法正常運行。		</p>
+		
+<p>
+			做了這些變動以後, 下次您啟動PostgreSQL時, 新設定就會生效。
+		</p>
+
+		
+<p>
+			請注意如果您是從源碼編譯OpenNMS 以及/或者 PostgreSQL , 除了執行一般的"make install"之外, 您還應該執行"<i>make install-all-headers</i>" 否則您無法編譯OpenNMS的postgresql extensions。
+</p>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap2sect3"></a>
+		
+<p>
+<b><font face="Arial">2.3  TomCat</font></b>
+
+</p>
+		
+<p>
+			OpenNMS的指令稿install.pl假設tomcat是安裝在/var/tomcat4。如果這不是您的Tomcat 4 所在目錄, 您需要編輯<i>$OPENNMS_HOME/bin/install.pl</i>指令稿, 靠近開頭的<i>$serverxml</i>那一行。
+		</p>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+
+<a name="chap2sect4"></a>
+		
+<p>
+<b><font face="Arial">2.4  RRDTool</font></b>
+</p>
+		
+<p>
+			如果您計劃從源碼編譯OpenNMS, 請確認安裝RRDTool時包括它的共享函式庫(shared libraries)。有關的資訊在rrdtool源碼目錄下的README。基本上包括以下步驟
+			<pre>
+	sh configure --enable-shared
+	make
+	make install
+			</pre>
+		
+</p>
+	
+
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap2sect5"></a>
+		
+<p>
+<b><font face="Arial">2.5  CPAN</font></b>
+</p>
+		
+<p>
+			為了從源碼編譯, 還需要安裝CPAN函式庫DBI和DBD:Pg。以下指令應該可以安裝這些函式庫
+			<pre>
+	perl -MCPAN -e shell
+	install DBI
+	install DBD::Pg
+			</pre>
+
+		
+</p>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap2sect6"></a>
+		
+<p>
+<b><font face="Arial">2.6  JAVA</font></b>
+</p>
+		
+<p>
+			由於tomcat在解析JSP網頁時, 需要使用JDK來動態地將Java源碼編譯成bytecode;
+因此就算只是要運行OpenNMS, 仍然需要JDK套件。為了讓OpenNMS能正常運行, 環境變數JAVA_HOME應該設定為/usr/java/j2sdk1.4.0或您機器上JDK的安裝目錄。
+		</p>
+
+	
+</dd>
+</dl>
+
+
+
+
+<p>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2">3 第三章</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">安裝</font></b></td>
+</tr>
+
+</table>
+</p>
+	
+	
+<dl>
+<dd>
+<a name="chap3sect1"></a>
+		
+<p>
+<b><font face="Arial">3.1  目錄結構</font></b>
+</p>
+		
+<p>
+			 安裝時, OpenNMS 預設為以下目錄:
+		</p>
+		
+
+<table cellspacing="1" cellpadding="2">
+			
+<p>
+<b><font face="Arial">  
+				 安裝目錄 (請注意這些目錄位置是在編譯時就設定好了的, 如果您自行從源碼編譯, 您可自行指定目錄位置。)
+			</font></b>
+</p>
+			
+					
+<tr>
+						
+<th bgcolor="#e0e0e0" align="left"><font color="#000000" face="Arial" size="-1">檔案</font></th>
+						<th bgcolor="#e0e0e0" align="left"><font color="#000000" face="Arial" size="-1">目錄</font></th>
+					
+</tr>
+
+				
+					
+<tr>
+						
+<td bgcolor="#ffffff">OpenNMS 可執行檔</td>
+						<td bgcolor="#ffffff">/opt/OpenNMS/bin</td>
+					
+</tr>
+					
+<tr>
+						
+<td bgcolor="#ffffff">OpenNMS 設定檔</td>
+						<td bgcolor="#ffffff">/opt/OpenNMS/etc/</td>
+
+					
+</tr>
+					
+<tr>
+						
+<td bgcolor="#ffffff">SQL 函式庫</td>
+						<td bgcolor="#ffffff">/opt/OpenNMS/lib</td>
+					
+</tr>
+					
+<tr>
+						
+<td bgcolor="#ffffff">開機指令稿</td>
+
+						<td bgcolor="#ffffff">/etc/init.d/opennms</td>
+					
+</tr>
+					
+<tr>
+						
+<td bgcolor="#ffffff">資料庫</td>
+						<td bgcolor="#ffffff">/var/lib/pgsql (SNMP效能資料則放在/var/opennms)</td>
+					
+</tr>
+				
+		
+</table>
+
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap3sect2"></a>
+		
+<p>
+<b><font face="Arial">3.2  從install.opennms.org透過網路安裝OpenNMS</font></b>
+</p>
+		
+<p>
+			在一個被支援的RPM平台上安裝或升級OpenNMS, 請以root的身分執行:
+			<pre>
+
+	lynx -source http://install.opennms.org | sh
+			</pre>
+			這個指令會安裝最新的版本。如果您想要指定安裝stable或unstable版本, 請在URL後面加上
+			<i>/stable</i> 或 <i>/unstable</i>
+			。
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap3sect3"></a>
+		
+<p>
+<b><font face="Arial">3.3  從RPM安裝OpenNMS</font></b>
+</p>
+		
+<p>
+			底下是由RPM安裝OpenNMS可執行檔的步驟。
+		</p>
+		
+<ol>
+			
+<li>
+
+				
+<p>
+					以"root"身分登入。
+				</p>
+			
+</li>
+			
+<li>
+				
+<p>
+					從安裝光碟或網際網路取得安裝所需的RPM檔案。網際網路可由<a href="http://www.opennms.org/">www.OpenNMS.org</a>  下載最新的RPM檔案。
+				</p>
+
+			
+</li>
+			
+<li>
+				
+<p>
+					用底下的指令安裝
+					<pre>
+	rpm -Uvh *.rpm
+					</pre>
+				
+</p>
+			
+</li>
+		
+
+</ol>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap3sect4"></a>
+		
+<p>
+<b><font face="Arial">3.4 從源碼安裝OpenNMS </font></b>
+</p>
+		
+<p>
+			在Linux系統安裝OpenNMS可以透過RPM或tar.gz。關於以RPM安裝的資訊請另外參閱快速起步指南。
+		</p>
+
+		
+<p>底下是從源碼tar bundle編譯的步驟</p>
+		
+<ol>
+			
+<li>
+				
+<p>
+					以"root"身分登入。
+				</p>
+			
+</li>
+			
+<li>
+				
+
+<p>
+					解開源碼的壓縮檔
+				</p>
+			
+</li>
+			
+<li>
+				
+<p>
+					確定以下環境變數的值被設定為正確的路徑
+					<pre>
+	export OPENNMS_HOME=/opt/OpenNMS
+	export JAVA_HOME=/opt/IBMJava2-13
+	export TOMCAT_HOME=/var/tomcat4
+					</pre>
+				
+
+</p>
+			
+</li>
+			
+<li>
+				
+<p>
+					您還需要新增~/.opennms-global.properties檔案, 讓OpenNMS知道函式庫和includes的位置。檔案內容應該看起來像底下所述。(請注意如果PostgreSQL和RRDTool被安裝在標準路徑, 像/usr 或/usr/local, 這些在編譯時將自動地設定。)
+					<pre>
+	compile.include=-I/usr/local/pgsql/include -I/usr/include -I. -I/usr/local/rrdtool-1.0.33/include
+	compile.lib=-L/usr/local/pgsql/lib -L/usr/local/rrdtool-1.0.33/lib
+					</pre>
+				
+</p>
+			
+</li>
+
+			
+<li>
+				
+<p>
+					如果您想要安裝在OpenNMS源碼樹下, dist/ 目錄之外的某處, 請從build.properties複製所有要改變的屬性到您的~/.opennms-global.properties檔案中來加以編輯。然後從源碼目錄, 執行以下命令:
+					<pre>
+	./build.sh install
+					</pre>
+				
+</p>
+			
+</li>
+			
+<li>
+				
+
+<p>
+					您還需要複製或symlink數個檔案到tomcat目錄下, 讓Web UI的某些部份能夠順利運行。
+					<pre>
+   ln -s $OPENNMS_HOME/lib/castor-*.jar \
+         $OPENNMS_HOME/lib/jdbc2_0-stdext.jar \
+         $OPENNMS_HOME/lib/log4j.jar \
+         $OPENNMS_HOME/lib/opennms_*.jar \
+         $TOMCAT_HOME/server/lib/
+   ln -s /opt/jbossmq/client/jboss-j2ee.jar \
+         /opt/jbossmq/client/jboss-client.jar \
+         $TOMCAT_HOME/webapps/opennms/WEB-INF/lib/
+					</pre>
+					(假設您把OpenNMS webapp安裝在
+					$TOMCAT_HOME/webapps/opennms/ directory).
+				</p>
+			
+</li>
+			
+<li>
+				
+<p>
+					執行安裝指令稿讓OpenNMS新增資料庫					<pre>
+
+	$OPENNMS_HOME/bin/install.pl $OPENNMS_HOME/etc/create.sql
+					</pre>
+				
+</p>
+			
+</li>
+		
+</ol>
+	
+</dd>
+</dl>
+
+
+
+	
+<p>
+
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2">4 第四章</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">設定OpenNMS</font></b></td>
+</tr>
+</table>
+</p>
+	
+	
+<p>
+		這一章描述一些設定文件, 以及它們與OpenNMS之系統功能、運行效能、介面外觀的關係。某些任務也許需要修改幾個文件來達到想要的效果。我們建議, 除了指定監測ip位址之外, 如果您還想要做任何設定, 您應該仔細閱讀這一章。這個章節所提到的設定文件除非另外註明, 應該都在$OPENNMS_HOME/etc下。本文提供了一些例子, 還有更多可在前述的設定文件內找到。	</p>
+	
+
+<dl>
+<dd>
+<a name="chap4sect1"></a>
+		
+<p>
+<b><font face="Arial">4.1 設定OpenNMS</font></b>
+</p>
+		
+<p>
+			在這一節我們定義接受輪詢的網路位址和被監控的網路服務。		</p>
+		
+<dl>
+<dd>
+<a name="chap4sect1sub1"></a>
+
+			
+<p>
+<b><font face="Arial">4.1.1 增加網路位址</font></b>
+</p>
+			
+<p>
+				首要之務是指定要發掘(discover)和輪詢(poll)的網路位址範圍。做法是在discovery-configuration.xml和poller-configuration.xml檔案中新增網路位址範圍。底下是這些檔案的一小段。我們用192.168.0.0/24網段為例。
+				<pre>
+	在discovery-configuration.xml中:
+	&lt;include-range retries="2" timeout="3000"&gt;
+	&lt;begin&gt;192.168.0.1&lt;/begin&gt;
+
+	&lt;end&gt;192.168.0.254&lt;/end&gt;
+	&lt;/include-range&gt;
+	---
+	在poller-configuration.xml中:
+	&lt;include-range begin="192.168.0.1" end="192.168.0.254"/&gt;
+				</pre>
+				除了使用&lt;include-range&gt;之外, 還可以用其他方式增加網路位址, 例如用&lt;include-url&gt來指定一個純文字檔(一行一個網路位址, 不可有註解或空白行)。或者用&lt;specific&gt指定排除某些網路位址。請看底下範例。				<pre>
+
+	在discovery-configuration.xml中:
+	&lt;include-url&gt;file:/opt/OpenNMS/etc/include&lt;/include-url&gt;
+	---
+	在poller-configuration.xml中:
+	&lt;specific&gt;0.0.0.0&lt;/specific&gt;
+	&lt;include-url&gt;file:/opt/OpenNMS/etc/include&lt;/include-url&gt;
+
+				</pre>
+				在網路設備開始或停止被監控時, OpenNMS會寫入例子中URL所指的檔案(/opt/OpenNMS/etc/include)。
+			</p>
+			
+<p>
+				注意:在輸入資料庫時, 您可以指定哪些設備要被預設成"managed"。如果您這麼做, 請確定在capsd-configuration.xml中, 您將受控節點(managed nodes)的網路管理政策設為"managed"。預設對所有non-local, 有效的網路位址均為"managed"。
+							</p>
+		
+</dd>
+</dl>
+		
+<dl>
+<dd>
+<a name="chap4sect1sub2"></a>
+
+			
+<p>
+<b><font face="Arial">4.1.2 指定服務</font></b>
+</p>
+			
+<p>
+				一旦決定了希望監測的網路位址, 接著您可能會關心您想要監測的服務類型。服務必須設定在poller-configuration.xml 和capsd-configuration.xml 。有許多服務已經預設好了。			</p>
+			
+<p>
+				在packages中設定參數時, 您可以覆蓋(override)一些預設值。底下的例子我們設定飛碟偵測協定(UFO Detection Protocol)於TCP port 4, 並且自行指定逾時、重試、輪詢間隔等等時間參數。				<pre>
+	capsd-configuration.xml:
+	&lt;protocol-plugin protocol="UFODP"
+		class-name="org.opennms.netmgt.capsd.TcpPlugin" scan="on" user-defined="false"&gt;
+
+		&lt;property key="banner" value="*"/&gt;
+		&lt;property key="port" value="4"/&gt;
+		&lt;property key="timeout" value="3000"/&gt;
+		&lt;property key="retry" value="3"/&gt;
+	&lt;/protocol-plugin&gt;
+	---
+	poller-configuration.xml:
+	&lt;service name="UFODP" interval="300000" user-defined="false" status="on"&gt;
+
+		&lt;parameter key="banner" value="*"/&gt;
+		&lt;parameter key="port" value="4"/&gt;
+		&lt;parameter key="timeout" value="3000"/&gt;
+	&lt;/service&gt;
+				</pre>
+			
+</p>
+		
+
+</dd>
+</dl>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap4sect2"></a>
+		
+<p>
+<b><font face="Arial">4.2 設定概觀(view)</font></b>
+</p>
+		
+<p>
+			您可以修改views.xml和viewsdisplay.xml來設定概觀(view)。在views.xml內您可以定義特定的服務該屬於哪個類別, 並且定義網頁上顯示的(服務)中斷資訊之臨界值。下面的例子中我們為飛碟探測器創造了一個類別, 也為我們的網際網路連線設了一個。			<pre>
+
+		&lt;category&gt;
+			&lt;label&gt;&lt;![CDATA[SETI Servers]]&gt;&lt;/label&gt;
+			&lt;normal&gt;99&lt;/normal&gt;
+			&lt;warning&gt;97&lt;/warning&gt;
+
+			&lt;service&gt;UFO Detectors&lt;/service&gt;
+			&lt;rule&gt;&lt;![CDATA[isUFODP]]&gt;&lt;/rule&gt;
+		&lt;/category&gt;
+		&lt;category&gt;
+			&lt;label&gt;&lt;![CDATA[Internet Connectivity]]&gt;&lt;/label&gt;
+
+			&lt;normal&gt;99&lt;/normal&gt;
+			&lt;warning&gt;97&lt;/warning&gt;
+			&lt;service&gt;ICMP&lt;/service&gt;
+			&lt;rule&gt;&lt;![CDATA[ipaddr IPLIKE 12.0.0.1]]&gt;&lt;/rule&gt;
+
+		&lt;/category&gt;
+			</pre>
+			至於在viewsdisplay.xml中, 您能更動網頁主控台概觀(main web console view)之呈現方式。在大多情況下, 您不需要改變預設的概觀。
+			<pre>
+	&lt;view&gt;
+		&lt;view-name&gt;WebConsoleView&lt;/view-name&gt;
+		&lt;section&gt;
+
+			&lt;section-name&gt;&lt;![CDATA[Category]]&gt;&lt;/section-name&gt;
+			&lt;category&gt;&lt;![CDATA[SETI Servers]]&gt;&lt;/category&gt;
+			&lt;category&gt;&lt;![CDATA[Internet Connectivity]]&gt;&lt;/category&gt;
+		&lt;/section&gt;
+
+	&lt;/view&gt;
+			</pre>
+		
+</p>
+	
+</dd>
+</dl>
+
+
+
+
+<p>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2">5 第五章</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">監看網路</font></b></td>
+</tr>
+</table>
+</p>
+	
+	
+<dl>
+<dd>
+<a name="chap5sect1"></a>
+		
+<p>
+<b><font face="Arial">5.1 啟動 OpenNMS</font></b>
+
+</p>
+		
+<p>
+			 確定您記得啟動需要的相依套件
+			<pre>
+	/etc/init.d/service postgresql start 
+			</pre>
+		
+</p>
+		
+<p>
+			 那些相依套件啟動後, 您可以啟動OpenNMS
+			<pre>
+	/etc/init.d/service opennms start
+		或
+	/opt/OpenNMS/bin/opennms.sh start
+			</pre>
+
+		
+</p>
+		
+<p>
+			 您也要確定tomcat伺服器正常運作
+			<pre>
+	/etc/init.d/service tomcat4 start
+			</pre>
+		
+</p>
+		
+<p>
+			 您可以用下列指令檢查OpenNMS的狀態
+			<pre>
+
+	# /opt/OpenNMS/bin/opennms.sh status
+	OpenNMS.Poller                          : running
+	OpenNMS.Eventd                          : running
+	OpenNMS.OutageManager                   : running
+	OpenNMS.Discovery                       : running
+	OpenNMS.Actiond                         : running
+	OpenNMS.Capsd                           : running
+	OpenNMS.Dhcpd                           : running
+	OpenNMS.Notifd                          : running
+	OpenNMS.RTCViewCategoryManager          : running
+	OpenNMS.Trapd                           : running
+			</pre>
+			 如果有任何問題或服務沒有正確地啟動, 您可以檢查紀錄檔來獲得更多資訊。若使用RPM安裝, 記錄檔在/var/log/opennms/
+		</p>
+		
+<p>
+			 注意: 如果您需要停止目前的OpenNMS 程序, 您可使用以下命令的其中一個。
+			<pre>
+	/opt/OpenNMS/bin/opennms.sh stop
+	/opt/OpenNMS/bin/opennms.sh kill
+			</pre>
+		
+</p>
+	
+
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap5sect2"></a>
+		
+<p>
+<b><font face="Arial">5.2 監看網路</font></b>
+</p>
+		
+<p>
+			 當一切開始運作, 您可在您的瀏覽器輸入以下網址。			<pre>
+	http://127.0.0.1:8080/opennms/
+			</pre>
+
+		
+</p>
+		
+<p>login: admin/admin</p>
+		
+<p>
+			 在登入以後您將被帶到OpenNMS監看您的網路的主畫面。多數瀏覽器均可正常執行, 但是只有下列是正式地受到支援...Netscape 6+, Mozilla 0.8+, and IE 5.5+
+		</p>
+	
+</dd>
+</dl>
+
+
+
+</body>
+
+</html>
+
+
+
+<div class="posted">
+	Posted by ystuan at <a href="http://blog.linux.org.tw/~ystuan/archives/000515.html">10:58 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=515" onclick="OpenComments(this.href); return false">Comments (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">November 24, 2003</h2>
+
+
+<div class="blogbody">
+
+<a name="000512"></a>
+<h3 class="title">[繁體中譯]OpenNMS Quick Start Guide</h3>
+
+<b>[2005/12/19]請注意，這篇網誌已經過時了，請到<a href="http://sourceforge.net/docman/?group_id=4141">OpenNMS Project Documentation</a>，Language選Trad. Chinese，就會看到我提交給官方的繁體中文安裝手冊，或者直接點選<a href="http://sourceforge.net/docman/display_doc.php?docid=29926&group_id=4141">這裡</a>。對這個主題有興趣，歡迎到我的<a href="http://blog.yam.com/ystuan/">新基地</a>逛逛</b>
+<p>
+原始網址<a href="http://www.opennms.org/users/docs/docs/html/quick.html">http://www.opennms.org/users/docs/docs/html/quick.html</a><br>
+譯者: Austin Tuan (ystuan 老鼠 hotmail 點 com) 歡迎來信,請於主旨欄加上[Linux]字樣,萬一被hotmail當作spam,我好撿回來 :)
+
+<html><!--This file was generated automatically by man2html.xsl.-->
+<body VLINK="#006a6a" LINK="#000000" bgcolor="#ffffff">
+	
+
+<p>
+<table cellpadding="3" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099"><b><font FACE="Arial" SIZE="+4" color="#ffffff">OpenNMS快速起步指南</font></b></td>
+</tr>
+<tr>
+<td bgcolor="#ffffff">
+<p>OpenNMS.org<br>
+						2001 年出版<br>版本: 1.0.0<br>
+
+			版權(c) 
+		1999, 
+		2000, 
+		2001, 
+		Oculan Corp.
+	<br>
+<a href="http://www.opennms.org/">www.opennms.org</a>
+<br>
+</p>
+</td>
+</tr>
+</table>
+</p>
+
+
+	
+<p>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2"> 序言</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">誌謝和版權</font></b></td>
+</tr>
+</table>
+</p>
+	
+	
+<p>
+<b><font size="+1"><b>版權</b></font></b>
+</p>
+<p>
+			以下版權與OpenNMS 源碼或文獻是相關的:
+		</p>
+
+	
+<ul>
+		
+<li> 
+<p>Copyright (c) 1999-2001 Oculan Corp. All rights reserved.</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 1996-2001 PostgresSQL, Inc.</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 1994 Regents of California, Inc.</p> 
+</li>
+
+		
+<li> 
+<p>Copyright (c) 1994-2001 Sun Microsystems, Inc</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 1994-2001 IBM Corporation</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 2001 Microsoft Corporation</p> 
+</li>
+		
+<li> 
+
+<p>Copyright (c) 2001 Netscape</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 2001 Red Hat, Inc.</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 1999-2001 ExoLab Group</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 1999-2001 Apache Software Foundation</p> 
+
+</li>
+		
+<li> 
+<p>Copyright (c) 1998-2001 The Mozilla Organization</p> 
+</li>
+	
+</ul>
+	
+<p>
+<b><font size="+1"><b>有用的資訊鏈結</b></font></b>
+</p>
+<p>
+			以下URLs 與OpenNMS 源碼或文獻是相關的:
+		</p>
+
+	
+<ul>
+		
+<li> 
+<p>
+<a href="http://www.w3.org/TR/xsl/">XSLFO Spec, Oct 2000</a>
+</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.ibiblio.org/xml/books/bible/updates/15.html">XSLFO 聖經</a>
+</p> 
+</li>
+		
+
+<li> 
+<p>
+<a href="http://www.xslinfo.com/">XSL 資訊站台</a>
+</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.xml.org/">XML 組織</a>
+</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.docbook.org/">Docbook 組織</a>
+
+</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.oreilly.com/catalog/docbook/chapter/book/docbook.html">O'Reilly 的DocBook大全</a>
+</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.opennms.org/">OpenNMS.org</a> - OpenNMS 網站</p> 
+</li>
+
+		
+<li> 
+<p>
+<a href="http://xml.apache.org/">apache.org</a> - Xerces, XML4J 等的官方網站</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.sun.com/">Sun</a> - JAVA 的官方網站</p> 
+</li>
+		
+
+<li> 
+<p>
+<a href="http://www.w3.org/">W3C 組織</a> - XSLFO 和 XML 的官方網站</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.postgresql.org/">PostgreSQL</a> - PostgreSQL 的官方網站</p> 
+</li>
+	
+</ul>
+
+
+
+
+<p>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2">1 第一章</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">最低需求</font></b></td>
+</tr>
+</table>
+</p>
+
+	
+<dl>
+<dd>
+<a name="chap1sect1"></a>
+	
+<p>
+<b><font face="Arial">1.1 最低需求</font></b>
+</p>
+		
+<p>
+			這個指南的目的在於引導用戶迅速安裝和設定。為達到此目的, 所列的需求非常明確。您的實際系統需求可能依情況變化 。
+		</p>
+		
+<table cellspacing="1" cellpadding="2">
+			
+
+<p>
+<b><font face="Arial">  
+				指南需求
+			</font></b>
+</p>
+			
+					
+<tr>
+						
+<th bgcolor="#e0e0e0" align="left"><font color="#000000" face="Arial" size="-1">資源</font></th>
+						<th bgcolor="#e0e0e0" align="left"><font color="#000000" face="Arial" size="-1">最低需求</font></th>
+						<th bgcolor="#e0e0e0" align="left"><font color="#000000" face="Arial" size="-1">可利用的資源</font></th>
+					
+
+</tr>
+				
+					
+<tr>
+						
+<td bgcolor="#ffffff">OpenNMS 安裝套件</td>
+						<td bgcolor="#ffffff">版本0.9.0 或更高</td>
+						<td bgcolor="#ffffff"><a href="http://www.opennms.org/">www.OpenNMS.org</a></td>
+					
+</tr>
+					
+<tr>
+						
+
+<td bgcolor="#ffffff">Linux 作業系統</td>
+						<td bgcolor="#ffffff">Redhat Linux</td>
+						<td bgcolor="#ffffff"><a href="http://www.redhat.com/">www.redhat.com</a></td>
+					
+</tr>
+					
+<tr>
+						
+<td bgcolor="#ffffff">JAVA Virtual Machine (JVM)</td>
+						<td bgcolor="#ffffff">版本1.4 或更高</td>
+
+						<td bgcolor="#ffffff"><a href="http://java.sun.com/j2se/1.4/">java.sun.com</a></td>
+					
+</tr>
+					
+<tr>
+						
+<td bgcolor="#ffffff">磁碟空間</td>
+						<td bgcolor="#ffffff">25Mb (+8Mb/SNMP 設備) 在/opt, 25Mb 在/tmp</td>
+					
+</tr>
+					
+<tr>
+
+						
+<td bgcolor="#ffffff">記憶體</td>
+						<td bgcolor="#ffffff">192 MB available (建議 256MB)</td>
+					
+</tr>
+				
+		
+</table>
+	
+</dd>
+</dl>
+
+
+
+	
+
+<p>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2">2 第二章</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">套件相依性設定</font></b></td>
+</tr>
+</table>
+</p>
+	
+	
+<p>
+		就這個快速起步指南而言, 它假設網路安裝程式(web installer)將會安裝和設定大多數的相依套件。因此, 在執行網路安裝前, 您應該確認這些相依套件並未安裝, 以確保網路安裝能正確執行。
+	</p>
+
+	
+<dl>
+<dd>
+<a name="chap2sect1"></a>
+		
+<p>
+<b><font face="Arial">2.1 移除被預先安裝的套件</font></b>
+</p>
+		
+<p>
+			如果下列軟體您想自行安裝和設定, 您應該參照<a href="http://www.opennms.org/users/docs/docs/html/install.html">OpenNMS 安裝指南</a>。如果您決定繼續參照這份指南,首先我們將由檢查這些套件是否預裝開始, 因為它們的預設值會導致無法執行OpenNMS。
+		</p>
+		
+<p>
+			下面列出我們需要確定沒有預裝的套件, 以及用來確認這些RPM檔沒有預裝的指令。
+		</p>
+
+		
+<pre>
+	PostgreSQL         # rpm -qa | grep -i postgres
+	Tomcat             # rpm -qa | grep -i tomcat
+	RRDTool            # rpm -qa | grep -i rrdtool
+	OpenNMS            # rpm -qa | grep -i opennms
+		</pre>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap2sect2"></a>
+		
+<p>
+<b><font face="Arial">2.2  JAVA</font></b>
+</p>
+
+		
+<p>
+			為了從源碼來編譯,<i>並</i>在Tomcat web介面下執行OpenNMS, JDK 套件是必須的; 因為JDK 的編譯器 components被用來在運行時把JSP 網頁變成Java。環境變數JAVA_HOME 應該被設定成/usr/java/j2sdk1.4.0 或JDK安裝的目錄。
+<br>[譯者註: 這一段我翻的很有問題,歡迎來信指教]
+		</p>
+	
+</dd>
+</dl>
+
+
+
+	
+<p>
+
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2">3 第三章</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">安裝</font></b></td>
+</tr>
+</table>
+</p>
+	
+	
+<dl>
+<dd>
+<a name="chap3sect1"></a>
+		
+<p>
+
+<b><font face="Arial">3.1 目錄結構</font></b>
+</p>
+		
+<p>
+			安裝時, OpenNMS 預設為以下目錄:
+		</p>
+		
+<table cellspacing="1" cellpadding="2">
+			
+<p>
+<b><font face="Arial">  安裝目錄</font></b>
+</p>
+			
+					
+
+<tr>
+						
+<th bgcolor="#e0e0e0" align="left"><font color="#000000" face="Arial" size="-1">檔案</font></th>
+						<th bgcolor="#e0e0e0" align="left"><font color="#000000" face="Arial" size="-1">目錄</font></th>
+					
+</tr>
+				
+					
+<tr>
+						
+<td bgcolor="#ffffff">OpenNMS 可執行檔</td>
+						<td bgcolor="#ffffff">/opt/OpenNMS/</td>
+
+					
+</tr>
+					
+<tr>
+						
+<td bgcolor="#ffffff">OpenNMS 設定檔</td>
+						<td bgcolor="#ffffff">/opt/OpenNMS/etc/</td>
+					
+</tr>
+					
+<tr>
+						
+<td bgcolor="#ffffff">SQL 函式庫</td>
+
+						<td bgcolor="#ffffff">/usr/lib/pgsql/opennms/</td>
+					
+</tr>
+					
+<tr>
+						
+<td bgcolor="#ffffff">開機自動啟動服務的指令稿</td>
+						<td bgcolor="#ffffff">/etc/rc.d/init.d/opennms</td>
+					
+</tr>
+					
+<tr>
+
+						
+<td bgcolor="#ffffff">資料庫</td>
+						<td bgcolor="#ffffff">/var/</td>
+					
+</tr>
+				
+		
+</table>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap3sect2"></a>
+
+		
+<p>
+<b><font face="Arial">3.2  使用網路安裝程式(web installer)安裝OpenNMS</font></b>
+</p>
+		
+<p>
+			在一個被支援的RPM平台上安裝或升級, 請以root身分執行: 
+		</p>
+		
+<pre>
+	lynx -source http://install.opennms.org | sh
+		</pre>
+		
+<p>
+
+			注意: 在某些情況下, 安裝程式裝完了OpenNMS RPM檔案後, 會"掛"在那裡。其實,唯一還沒做的, 是文件的安裝。如果您注意到這個狀況在您安裝期間發生了,您可以安全地用&lt;ctrl&gt;C終止。
+		</p>
+		
+<p>
+			此時您可以再執行一次安裝程式來安裝文件, 或者輸入底下的指令來簡單地確認OpenNMS已經安裝成功...
+			<pre>
+	rpm -qa | grep -i opennms
+			</pre>
+		
+</p>
+	
+</dd>
+
+</dl>
+	
+<dl>
+<dd>
+<a name="chap3sect3"></a>
+		
+<p>
+<b><font face="Arial">3.3  安裝後</font></b>
+</p>
+		
+<p>
+			在使用網路安裝程式裝好OpenNMS後, 您需要登出, 再次以root身分登入, 讓重要的環境變數能正確設定。其中, 最重要的環境變數可能是$OPENNMS_HOME,它的預設值應該是/opt/OpenNMS.
+		</p>
+	
+</dd>
+
+</dl>
+
+
+
+
+<p>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2">4 第四章</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">設定OpenNMS</font></b></td>
+</tr>
+</table>
+</p>
+
+	
+	
+<dl>
+<dd>
+<a name="chap4sect1"></a>
+		
+<p>
+<b><font face="Arial">4.1  增加網路位址</font></b>
+</p>
+		
+<p>
+			接下來我們必須定義接受輪詢(Polling)的網路位址以及被監控的網路服務。OpenNMS的設定檔在 $OPENNMS_HOME/etc 目錄下。這些文件可用vi或其他大多數*nix下的文字編輯程式來修改。它們大多數是XML 格式, 修改上應該相當直觀。(我想, 嚴格地說, 這是個見仁見智的問題。)
+		</p>
+		
+<p>
+			首要任務是指定網路位址。我們將由設定發掘(discovery)範圍開始。這個設定檔為 discovery-configuration.xml, 看起來應該像這樣...
+			<pre>
+
+	&lt;include-range retries="2" timeout="3000"&gt;
+	&lt;begin&gt;192.168.0.1&lt;/begin&gt;
+	&lt;end&gt;192.168.0.254&lt;/end&gt;
+	&lt;/include-range&gt;
+			</pre>
+
+			接下來我們要確定輪詢者(pollers)知道這個網路地址的範圍.  
+			這個設定檔為 poller-configuration.xml.
+			<pre>
+	&lt;include-range begin="192.168.0.1" end="192.168.0.254"/&gt;
+			</pre>
+			注意: 您可能還要確認, 在capsd-configuration.xml中, 您將您的網路管理政策設為"managed"。預設對所有non-local, 有效的網路位址均為"managed"。
+		</p>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+
+<a name="chap4sect2"></a>
+		
+<p>
+<b><font face="Arial">4.2  其他設定</font></b>
+</p>
+		
+<p>
+			在(OpenNMS的)etc目錄下還有很多其他的設定檔。您可能希望去修改它們以達到您的目的。底下是一些較常見的, 您可能想要修改的設定
+		</p>
+		
+<p>
+<b><font size="+1"><b>snmp-config.xml</b></font></b>
+</p>
+<p>設定 snmp community 字串</p>
+
+		
+<p>
+<b><font size="+1"><b>log4j.properties</b></font></b>
+</p>
+<p>改變預設的紀錄檔(logging)等級</p>
+		
+<p>
+<b><font size="+1"><b>views.xml + viewsdisplay.xml</b></font></b>
+</p>
+<p>改變預設分類(catagories)和顯示屬性</p>
+	
+</dd>
+</dl>
+
+
+
+
+<p>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2">5 第五章</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">監看網路</font></b></td>
+</tr>
+</table>
+</p>
+	
+	
+
+<dl>
+<dd>
+<a name="chap5sect1"></a>
+		
+<p>
+<b><font face="Arial">5.1  啟動 OpenNMS</font></b>
+</p>
+		
+<p>
+			確定您記得啟動需要的相依套件
+		</p>
+		
+<pre>
+	/sbin/service postgresql start 
+		</pre>
+
+		
+<p>
+			那些相依套件啟動後, 您可以啟動OpenNMS
+		</p>
+		
+<pre>
+	/sbin/service opennms start
+		或
+	/opt/OpenNMS/bin/opennms.sh start
+		</pre>
+		
+<p>
+			您也要確定tomcat伺服器正常運作
+		</p>
+		
+<pre>
+
+	/sbin/service tomcat4 start
+		</pre>
+		
+<p>
+			您可以用下列指令檢查OpenNMS的狀態
+			<pre>
+	# /opt/OpenNMS/bin/opennms.sh status
+	OpenNMS.Poller                          : running
+	OpenNMS.Eventd                          : running
+	OpenNMS.OutageManager                   : running
+	OpenNMS.Discovery                       : running
+	OpenNMS.Actiond                         : running
+	OpenNMS.Capsd                           : running
+	OpenNMS.Dhcpd                           : running
+	OpenNMS.Notifd                          : running
+	OpenNMS.RTCViewCategoryManager          : running
+	OpenNMS.Trapd                           : running
+			</pre>
+			如果有任何問題或服務沒有正確地啟動, 您可以檢查紀錄檔來獲得更多資訊。記錄檔在/var/log/opennms/
+		</p>
+		
+<p>
+			注意: 如果您需要停止目前的OpenNMS 程序, 您可使用以下命令的其中一個。
+			<pre>
+
+	/opt/OpenNMS/bin/opennms.sh stop
+	/opt/OpenNMS/bin/opennms.sh kill
+			</pre>
+		
+</p>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap5sect2"></a>
+		
+<p>
+<b><font face="Arial">5.2  監看網路</font></b>
+</p>
+
+		
+<p>
+			當一切開始運作, 您可在您的瀏覽器輸入以下網址。
+		</p>
+		
+<pre>
+	http://127.0.0.1:8080/opennms/
+		</pre>
+		
+<p>login: admin/admin</p>
+		
+<p>
+			在登入以後您將被帶到OpenNMS監看您的網路的主畫面。多數瀏覽器均可正常執行, 但是只有下列是正式地受到支援...			
+			for Linux: Netscape 4.7+, Netscape 6+, Mozilla 0.8+ and for Windows: Netscape 4.7+, 
+			Netscape 6+, IE 5.5+
+		</p>
+
+	
+</dd>
+</dl>
+
+
+
+</body>
+</html>
+
+
+
+<div class="posted">
+	Posted by ystuan at <a href="http://blog.linux.org.tw/~ystuan/archives/000512.html">05:15 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=512" onclick="OpenComments(this.href); return false">Comments (6)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+</body>
+</html>

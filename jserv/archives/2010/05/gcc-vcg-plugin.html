@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: gcc-vcg-plugin : 視覺化 GCC 內部結構</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2010/05/android_1.html" title="演講：Android 系統元件探討 (台中場)" />
+
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2010/06/_--_linux.html" title="演講：自己動手，豐衣足食 -- 淺談探索 Linux 系統設計之道" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2010/05/android_1.html">« 演講：Android 系統元件探討 (台中場)</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+| <a href="http://blog.linux.org.tw/~jserv/archives/2010/06/_--_linux.html">演講：自己動手，豐衣足食 -- 淺談探索 Linux 系統設計之道 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">May  9, 2010</h2>
+
+<div class="blogbody">
+
+<h3 class="title">gcc-vcg-plugin : 視覺化 GCC 內部結構</h3>
+
+對岸的 Eric Fisher 做了一個很棒的工具 [<a href="http://code.google.com/p/gcc-vcg-plugin/">gcc-vcg-plugin </a>]，本質上是個 GCC Plugin，可輸出 VCG 格式的圖例，作為分析 GCC 內部架構使用。筆者在 Ubuntu Maverick (10.10 開發中版本) 測試過，配合 gcc-4.5 作驗證，先寫一個測試小程式： (test.c)<pre class="code" style="margin: 6px;">
+void second() { }
+void top() { second(); }
+</pre>
+這的確沒什麼特別之處，只是想驗證 CFG (Call Flow Graph) 的樣貌。筆者安裝 [<a href="http://code.google.com/p/gcc-vcg-plugin/">gcc-vcg-plugin </a>] 時，指定 --prefix=/tmp/gcc-vcg-plugin 並預先安裝好 [<a href="http://code.google.com/p/vcgviewer/">vcgviewer</a>]，注意，依據 README 應安裝 Gtk+ 2.x 的版本。GCC 一開始是 GNU C Compiler，但後來陸續追加若干 Language front-end，發展為完整的 compiler driver，那我們就來看實際處理語意分析、生成組合語言的 'cc1' (在  'cc1' ˊ之前的 'cpp` 負責作 preprocessor，處理巨集替換)。<br />
+<br />
+原本 cc1 處理的方式為： (路徑依據 Ubuntu Maverick)<pre class="code" style="margin: 6px;">
+$ /usr/lib/gcc/i486-linux-gnu/4.5/cc1 test.c 
+ second top
+Analyzing compilation unit
+Performing interprocedural optimizations
+ &lt;visibility&gt; &lt;*free_lang_data&gt; &lt;early_local_cleanups&gt; &lt;whole-program&gt; &lt;inline&gt;Assembling functions:
+ second top
+Execution times (seconds)
+ TOTAL                 :   0.00             0.01             0.02                599 kB
+Extra diagnostic checks enabled; compiler may run slowly.
+Configure with --enable-checking=release to disable checks.
+</pre>
+GCC 4.4 以來引入 Plugin 的機制，就可在不修改編譯器的情況下，覆蓋編譯器的行為，而 [<a href="http://code.google.com/p/gcc-vcg-plugin/">gcc-vcg-plugin </a>] 就提供分析 GCC 內部結構的機制，於是我們配合 GDB 與 [<a href="http://code.google.com/p/gcc-vcg-plugin/">gcc-vcg-plugin </a>] 提供的 vcg.gdbinit 巨集指令：<pre class="code" style="margin: 6px;">
+$ gdb -x src/vcg.gdbinit -tty /dev/null -q \
+-args /usr/lib/gcc/i486-linux-gnu/4.5/cc1 test.c \
+-fplugin=/tmp/gcc-vcg-plugin/lib/gcc-vcg-plugin/vcg.so -O2
+</pre>
+注意到 "-fplugin=/tmp/gcc-vcg-plugin/lib/gcc-vcg-plugin/vcg.so" 這個選項，即告知 GCC 預先載入此特製的 Plugin，去改變原有編譯器行為。接著就會取得 "(gdb) " 的命令提示，比方說筆者想分析 GCC 的 "execute_one_pass"，只要設定中斷點，並稍候呼叫 [<a href="http://code.google.com/p/vcgviewer/">vcgviewer</a>] 顯示即可，流程如下：<pre class="code" style="margin: 6px;">
+(gdb) break execute_one_pass
+Breakpoint 1 at 0x8521c96
+(gdb) run
+Starting program: /usr/lib/gcc/i486-linux-gnu/4.5/cc1 test.c \
+-fplugin=/tmp/gcc-vcg-plugin/lib/gcc-vcg-plugin/vcg.so -O2
+
+Breakpoint 1, 0x08521c96 in execute_one_pass ()
+(gdb) view_cfg
+</pre>
+輸出的參考畫面：<br />
+<center><img src="http://jserv.sayya.org/gcc/gcc-vcg.png" width="778" height="420" /></center><br />
+即顯示 test.c 的 top-level function。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 May  9, 2010 12:29 PM
+
+<br /></span>
+
+</div>
+
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2147" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

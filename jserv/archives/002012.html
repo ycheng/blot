@@ -1,0 +1,296 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: WebKit/Clutter 快速入門</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002011.html" title="SynthOS : 合成專屬的 RTOS" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002013.html" title="OpenTech Summit Taiwan 2008" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002011.html">« SynthOS : 合成專屬的 RTOS</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002013.html">OpenTech Summit Taiwan 2008 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">April 17, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">WebKit/Clutter 快速入門</h3>
+
+發表 [<a href="http://blog.linux.org.tw/~jserv/archives/002009.html">透過 OpenGL 作 WebKit 網頁描繪</a>] 一文後，網友來信提及這感覺「不夠具體」，看不出 OpenGL 的效果，於是，我改成 3D 版本的 web browser，執行畫面如下：<br />
+<center><img src="http://jserv.sayya.org/khtml/screenshots/webkit-clutter.png" width="433" height="508" /></center><br />
+看起來就絢麗多了，當滑鼠點壓網頁時，會作 180 度的旋轉，上圖即是翻轉中的效果。這樣的程式，從零到有，需要多少行呢？其實就是把之前的程式碼，追加幾行程式罷了，程式碼列表如下：  [<a href="http://people.debian.org.tw/~jserv/webkit/test-webkit2.c">test-webkit2.c</a>]<br />
+<pre class="code" id="codemain" style="margin: 6px;"><span class="keyword">#include</span> &lt;stdlib.h><span class="keyword">
+#include</span> &lt;stdio.h><span class="keyword">
+#include</span> &lt;clutter/clutter.h><span class="keyword">
+#include</span> &lt;webkit/webkit.h>
+
+<span class="keyword">static</span> WebkitAdjustment *hadj, *vadj;
+&nbsp;
+<span class="keyword">static</span> gboolean
+on_button_release (ClutterActor *rect,
+                            ClutterEvent *event, gpointer data)
+{
+	ClutterTimeline  *timeline = (ClutterTimeline*) data;
+	gint x = 0, y = 0;
+
+	clutter_event_get_coords (event, &amp;x, &amp;y);
+	clutter_timeline_start (timeline);
+
+	<span class="keyword">return</span> TRUE;
+}
+
+<span class="keyword">int</span> main (<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])
+{
+	guint stageWidth, stageHeight, stage_depth;
+	guint buttonWidth, buttonHeight;
+	gfloat fovy, aspect, zNear, zFar;
+	ClutterActor *stage;
+	ClutterColor stage_color = { 0xcc, 0xcc, 0xcc, 0xff };
+	ClutterColor rect_color = { 0x33, 0x22, 0x22, 0xff };
+
+	WebKitWebView *hand;
+
+	<span class="keyword">if</span> (argc &lt; 2) <span class="keyword">return</span> -1;
+
+	clutter_init (&amp;argc, &amp;argv);
+
+	hadj = webkit_adjustment_new (0,0,0,0,0,0);
+	vadj = webkit_adjustment_new (0,0,0,0,0,0);
+	hand = webkit_web_view_new (640, 480);
+	webkit_web_view_set_scroll_adjustments (hand, hadj, vadj);
+
+	stage = clutter_stage_get_default();
+	clutter_stage_set_color (CLUTTER_STAGE (stage), &amp;stage_color);
+	clutter_stage_set_use_fog (CLUTTER_STAGE (stage), TRUE);
+	clutter_stage_set_fog (CLUTTER_STAGE (stage), 1.0, 10, -50);
+
+	clutter_stage_get_perspective (CLUTTER_STAGE (stage),
+			&amp;fovy, &amp;aspect, &amp;zNear, &amp;zFar);
+
+	clutter_actor_get_size (CLUTTER_ACTOR (stage),
+                        &amp;stageWidth, &amp;stageHeight);
+	stage_depth = zFar;
+	buttonWidth = stageWidth * 3 / 4;
+	buttonHeight = stageHeight * 3 / 4;
+
+	ClutterTimeline *timeline = clutter_timeline_new (60, 60);
+
+	ClutterBehaviour *rotY = clutter_behaviour_rotate_new (
+			clutter_alpha_new_full(timeline,
+				CLUTTER_ALPHA_RAMP_INC, NULL, NULL),
+			CLUTTER_Y_AXIS,
+			CLUTTER_ROTATE_CW,
+			0, 180);
+
+	clutter_actor_set_anchor_point (hand,
+                        buttonWidth/2, buttonHeight/2);
+	clutter_actor_set_size (hand, buttonWidth, buttonHeight);
+
+	clutter_container_add_actor (CLUTTER_CONTAINER (stage), hand);
+	webkit_web_view_open (hand, argv[1]);
+
+	clutter_actor_set_position (hand, stageWidth/2, stageHeight/2);
+
+	clutter_behaviour_apply (rotY, hand);
+
+	clutter_stage_set_key_focus (stage, hand);
+
+	clutter_actor_set_reactive (hand, TRUE);
+	g_signal_connect (hand, <span class="literal">"button-release-event"</span>,
+			G_CALLBACK (on_button_release), timeline);
+
+	clutter_actor_show (stage);
+
+	clutter_main ();
+	<span class="keyword">return</span> EXIT_SUCCESS;
+}</pre>
+由上可見，除了作必要的初始化、加上 WebKit 這個 Clutter Actor 物件外，就是加上對應於「按鈕」的 callback，這裡指的「按鈕」，就是 WebKit 網頁輸出的畫面，拜 Clutter 簡潔的設計所賜，就這樣完成了 :-)<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 April 17, 2008 09:58 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>jserv兄, 您好<br />
+从if (argc &lt; 2) return -1; 可以看出需要2个或2个以上参数, 请问执行test-webkit2要带哪些参数, 意义是什么呢?<br />
+我执行test-webkit2 0 0之后能看到一张能翻转的空白页, 什么内容都没有, 能指点一下哪里出问题了吗?</p>
+<span class="comments-post">由 <a href="mailto&#58;shuianle&#64;gmail&#46;com">Drip-shui</a> 發表於</MTIfNonEmpty> September 24, 2008 05:16 PM</span>
+</div>
+<div class="comments-body">
+<p>@Drip-shui,</p>
+
+<p>argv[1] 很顯然就是 url，執行時期帶入即可</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> September 24, 2008 05:20 PM</span>
+</div>
+<div class="comments-body">
+<p>可秀中文嗎？...試過會有亂碼</p>
+<span class="comments-post">由 <a href="mailto&#58;legislu&#64;gmail&#46;com">legis</a> 發表於</MTIfNonEmpty> November  6, 2008 07:32 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2012" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

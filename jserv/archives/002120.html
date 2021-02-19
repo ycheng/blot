@@ -1,0 +1,464 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 親手打造 Dynamic Library Loader</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002119.html" title="打造 Brainfuck 的 JIT compiler" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002121.html" title="演講：下一站，Android (漫談 Android 平台移植與調校)" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002119.html">« 打造 Brainfuck 的 JIT compiler</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002121.html">演講：下一站，Android (漫談 Android 平台移植與調校) »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">November 13, 2009</h2>
+
+<div class="blogbody">
+
+<h3 class="title">親手打造 Dynamic Library Loader</h3>
+
+這幾個月又繼續設計 / 實做新的 Kernel (與相關的系統程式)，貫徹「<a href="http://blog.linux.org.tw/~jserv/archives/002082.html">每年練習寫一個作業系統</a>」的小目標，其中對 dynamic linker 的支援，是重要的特徵，本文則探討如何在 GNU/Linux 實做出 Dynamic Linker / Dynamic Library Loader (即 ld.so 與 libdl.so) 的功能，並以 ELF 執行檔格式作為探討對象，如此的概念可應用於 RTOS 與廣泛的嵌入式系統。<br />
+<br />
+許多程式設計師都知道 dynamic linker，也知曉像是 <a href="http://blog.linux.org.tw/~jserv/archives/000782.html">LD_PRELOAD</a> 的機制，但鮮少人真正瞭解其背後的內部工作原理，因為難題不僅是 linker 與 loader 的行為，而是在執行時期 (Runtime)，要有種機制得以確保 dynamic linked 的程序中的函式 / 符號位址，已正確地指向了動態函式庫 (以下簡稱 "DLL" 或 DSO [Dynamic Shared object，UNIX 術語]，本文不特別強調其分野) 裡頭的對應位址，基於如此考量，系統至少該具備以下的特徵：<ul>
+  <li>PIC (Position Independent Code) : 簡單來說，DLL/DSO 本質上要能夠被載入到記憶體的任何有效的位址，也就是字面上 "Position Independent" 的意涵。而早期 UNIX 的 a.out 執行檔格式其實不是不能作 dynamic linker/loader，是被約束於 Position Dependent，也就是一定要被載入到特定的記憶體位址，才能運作，很沒有彈性，USL (UNIX SYSTEM Laboratories) 後來發展的 ELF 格式 (Executable and Linking Format) 就破除如此的限制。編譯器支援 PIC 的特徵 (gcc 的編譯選項是 "-fpic" / "-fPIC" )，會使輸出的 object code 與記憶體位址無關，並減少對絕對位址的使用。</li>
+  <li>在執行時期才去處理符號 (變數與函式等)：透過 ELF 裡頭的 symtab (symbol table) 與 relocation 機制去達成，也就是說，載入 DLL 的那一刻，其實無法執行程式本體，需要在解析 symtab 與對所有的位址都 relocation 後，才會真正去執行，而配合前述的 PIC，可大幅降低執行時期的開銷。當然，沒有 PIC，還是能做出 DLL/DSO，不過 relocation 的開銷就會相當可觀。</li>
+  <li>GOT (Global Offset Table) 的引入：要達到可用的 PIC，需要一份全域的 GOT，讓編譯器輸出的機械碼中，保留一個暫存器 (register) 去參照 GOT 這個排列好指向 symbol 位址的表格，如此一來，DLL/DSO 載入後，只需要一次的 relocation 即可得到全域的位址 (以 UNIX Process 的觀點)</li>
+</ul>
+實際上 PIC 與 GOT 的搭配，還有一些學問要探討，不過本文的方向則在「親手打造」，暫且先行忽略。接下來的篇幅，將在 i386 (IA32) 的 GNU/Linux 平台上，實做出 libdl.so 的關鍵功能，不依賴原本的 ld.so，理論上應該能快速移植到非 GNU/Linux 的系統。就 API 的角度來說，我們要實做出以下函式：<ul>
+  <li>dlopen()</li>
+  <li>dlsym()</li>
+  <li>dlclose()</li>
+</ul>
+驗證我們親手打造的 Dynamic Library Loader 的方式：<ul>
+  <li>透過 dlopen() 將一個 ELF object code 載入並映射到記憶體，注意：為了簡化設計的難度，我們的實做將忽略 PIC/GOT</li>
+  <li>透過 dlsym() 將稍早載入的 object code 中提取特定 symbol 的進入點 (UNIX Process 的函式位址)，當然，這是做了 relocation 之後的位址</li>
+  <li>傳遞必要的參數給指向前述位址的 function pointer，嘗試去執行，驗證其功能是否符合預期</li>
+  <li>將 symbol 進入點作記憶體 dump，觀察其機械碼的排列方式</li>
+  <li>以 dlclose() 將必要的資源釋放</li>
+</ul>
+在筆者的實做，這個特製的 Dynamic Library Loader 稱為 "ndl"，自然前述的三個重要函式就被命名為 ndlopen(), ndlsym(), ndlclose()，以利辨識。先來看看測試的程式 (test-ndl.c)：<pre class="code" id="codemain" style="margin: 6px;">
+<span class="keyword">#include</span> &lt;stdio.h>
+<span class="keyword">#include</span> <span class="literal">"ndl.h"</span>
+
+<span class="comment">/* dump machine code of loaded DSO */</span>
+<span class="keyword">static</span> <span class="keyword">void</span> dump(<span class="keyword">char</span> *p);
+
+<span class="keyword">int</span> main()
+{
+    <span class="keyword">void</span> *handle;
+
+    <span class="comment">/* add */</span>
+    handle = ndlopen(<span class="literal">"add.o"</span>);
+    <span class="keyword">int</span> (*fp_add) (<span class="keyword">int</span>, <span class="keyword">int</span>) = ndlsym(handle, <span class="literal">"add"</span>);
+
+    printf(<span class="literal">"add (%p):\n"</span>, fp_add);
+    dump((<span class="keyword">char</span>*) fp_add);
+
+    printf(<span class="literal">"[add] 1 + 1 = %d\n"</span>, fp_add(1, 1));
+    ndlclose(handle);
+
+    printf(<span class="literal">"\n"</span>);
+
+    <span class="comment">/* hello */</span>
+    handle = ndlopen(<span class="literal">"hello.o"</span>);
+    <span class="keyword">void</span> (*fp_hello) (<span class="keyword">char</span> *) = ndlsym(handle, <span class="literal">"hello"</span>);
+    <span class="keyword">char</span> *msg = ndlsym(handle, <span class="literal">"dyn_str"</span>);
+
+    printf(<span class="literal">"hello (%p):\n"</span>, fp_hello);
+    dump((<span class="keyword">char</span> *) fp_hello);
+
+    fp_hello(<span class="literal">"Hello World"</span>);
+    fp_hello(msg);
+    ndlclose(handle);
+
+    <span class="keyword">return</span> 0;
+}
+
+<span class="keyword">static</span> <span class="keyword">void</span> dump(<span class="keyword">char</span> *p)
+{
+    <span class="keyword">int</span> c = 0;
+    <span class="keyword">while</span> (*p != (<span class="keyword">char</span>) 0xc3) { <span class="comment">/* 'c3' = asm("ret") */</span>
+        printf(<span class="literal">"%02x "</span>, (*p++) &amp; 0xff);
+        <span class="keyword">if</span> (++c % 16 == 0)
+            printf(<span class="literal">"\n"</span>);
+    }
+    printf(<span class="literal">"c3\n"</span>);
+}
+</pre>
+上述程式包含兩輪的測試，一個是載入 'add.o'，另一個是 'hello.o'，前者是簡單的算術操作，而後者涉及函式呼叫。對應的 DLL/DSO 程式碼列表：<pre class="code" id="codemain" style="margin: 6px;">
+jserv@venux:/tmp/ndl$ cat add.c 
+<span class="keyword">int</span> add(<span class="keyword">int</span> x, <span class="keyword">int</span> y)
+{
+	<span class="keyword">return</span> x + y;
+}
+jserv@venux:/tmp/ndl$ cat hello.c<span class="keyword">
+#include</span> &lt;stdio.h>
+
+<span class="keyword">char</span> dyn_str[] = <span class="literal">"__DSO__"</span>;
+
+<span class="keyword">void</span> hello(<span class="keyword">char</span> *s)
+{
+	printf(<span class="literal">"[hello] %s\n"</span>, s);
+}</pre>
+以下是參考的編譯與執行輸出：<pre class="code" id="codemain" style="margin: 6px;">
+jserv@venux:/tmp/ndl$ make
+gcc -c hello.c -Os -Wall -fomit-frame-pointer -I./external
+gcc -c add.c -Os -Wall -fomit-frame-pointer -I./external
+gcc -o test_ndl test_ndl.c ndl.c dummy.c \
+		/usr/lib/libbfd.a /usr/lib/libiberty.a -static \
+		-Os -Wall -fomit-frame-pointer -I./external -Wl,-O1
+jserv@venux:/tmp/ndl$ ./test_ndl 
+	:: handle = 0x8e026a8
+add (0x8e02854):
+8b 44 24 08 03 44 24 04 c3
+[add] 1 + 1 = 2
+
+	:: reloc_name = __printf_chk
+	:: handle = 0x8e02770
+hello (0x8e029bc):
+83 ec 10 ff 74 24 14 68 dc 29 e0 08 6a 01 e8 51 
+a1 2f ff 83 c4 1c c3
+[hello] Hello World
+[hello] __DSO__
+</pre>
+那麼上述的實驗中，有哪些該注意的細節呢？在深入探討筆者提出的 ndl 前，可以留意到：<ul>
+  <li>首先，'test_ndl' 這個程式本身是 statically linked，連結到 libbfd 與 libiberty 這兩個專門處理 ELF 的函式庫 (在 Debian/Ubuntu 裡頭，由套件 binutils-dev 所提供)，並無連結到 libdl，而是採用我們親手打造的函式</li>
+  <li>一般 statically linked 的程式無法使用 dlopen()，但我們的程式沒有如此限制，仍可在動態時期載入 DSO 並處理 symbol 與 relocation</li>
+  <li>迴避 PIC/GOT 的細節，編譯參數沒有 -fpic 或 -fPIC</li>
+  <li>'add.o' 與 'hello.o' 的差別在於，'hello.c' 有呼叫到 printf() 的動作，這致使執行時期仍需要多作一個 relocation，此動作需要在實際呼叫被載入的 hello() 前準備好，否則無法運作</li>
+</ul>
+讓我們觀察看看 'add.o' 與 'hello.o' 在 ELF 檔案中的資訊，可透過 binutils 的 readelf 工具程式分析：<pre class="code" id="codemain" style="margin: 6px;">
+jserv@venux:/tmp/ndl$ readelf -r add.o
+
+There are no relocations in this file.
+jserv@venux:/tmp/ndl$ readelf -r hello.o
+
+Relocation section '.rel.text' at offset 0x368 contains 2 entries:
+ Offset     Info    Type            Sym.Value  Sym. Name
+00000008  00000501 R_386_32          00000000   .rodata.str1.1
+0000000f  00000902 R_386_PC32        00000000   __printf_chk
+</pre>
+由此可見，'hello.o' 所呼叫的 printf() 函式主體其實位於 statically-linked 的 'test-ndl' 執行檔中，而 printf() 的符號在編譯時期被替換為 '__printf_chk'。readelf 工具程式告訴我們，'hello.o' 在 Relocation section '.rel.text' 有兩個符號，對照於 'hello.c'：<ul>
+  <li>'.rodata.str1.1' 即 "[hello] %s\n" (傳遞給 printf() 的參數)，型態為 R_386_32 (absolute 32-bit)</li>
+  <li>'__printf_chk' 即 printf()，其型態為 R_386_PC32 (PC relative 32 bit signed)</li>
+</ul>
+而在 'add.o' 中，自然是沒有額外的 relocations 操作。倘若我們再比對 ndl 所載入的 'hello.o' 與 ELF 的 .text section，就可獲得驗證，使用 objdump 工具：<pre class="code" id="codemain" style="margin: 6px;">
+jserv@venux:/tmp/ndl$ objdump -xd hello.o 
+
+hello.o:     file format elf32-i386
+hello.o
+architecture: i386, flags 0x00000011:
+HAS_RELOC, HAS_SYMS
+start address 0x00000000
+...
+Disassembly of section .text:
+
+00000000 &lt;hello>:
+   0:	83 ec 10             	sub    $0x10,%esp
+   3:	ff 74 24 14          	pushl  0x14(%esp)
+   7:	68 00 00 00 00       	push   $0x0
+			8: R_386_32	.rodata.str1.1
+   c:	6a 01                	push   $0x1
+   e:	e8 fc ff ff ff       	call   f &lt;hello+0xf>
+			f: R_386_PC32	__printf_chk
+  13:	83 c4 1c             	add    $0x1c,%esp
+  16:	c3                   	ret
+</pre>
+對照於 test_ndl 的輸出：<pre class="code" id="codemain" style="margin: 6px;">
+hello (0x8e029bc):
+83 ec 10 ff 74 24 14 68 dc 29 e0 08 6a 01 e8 51
+a1 2f ff 83 c4 1c c3
+</pre>
+就再清楚不過了，'hello' symbol 的反組譯自 '83' 'ec' 10' (sub $0x10,%esp) 開始到 c3 (ret) 為止，都被載入到記憶體，並做了必要的 relocation。以下是簡要探討 ndlopen(), ndlsym(), ndlclose() 的實做，詳情可參閱原始程式碼 [<a href="http://jserv.sayya.org/helloworld/ndl.tar.bz2">ndl.tar.bz2</a>]。<br />
+<br />
+在原始程式 ndl.c 中，我們引入 libelf 所提供的 bfd.h 檔頭 (BFD, the Binary File Descriptor library)，並宣告兩個結構體，供後續使用：<pre class="code" id="codemain" style="margin: 6px;">
+<span class="keyword">typedef</span> <span class="keyword">struct</span> {
+    <span class="keyword">const</span> <span class="keyword">char</span> *name;
+    <span class="keyword">void</span> *fp;
+} ndl_sym_t;
+
+<span class="keyword">typedef</span> <span class="keyword">struct</span> {
+    htab_t syms;
+    <span class="keyword">char</span> *map;
+    size_t length;
+} ndl_t;
+</pre>
+在 API 的實做則是：
+<pre class="code" id="codemain" style="margin: 6px;">
+<span class="keyword">void</span> *ndlsym(<span class="keyword">void</span> *h, <span class="keyword">const</span> <span class="keyword">char</span> *symbol)
+{
+    ndl_t *handle = (ndl_t *) h;
+    ndl_sym_t **sym;
+    <span class="keyword">void</span> *addr;
+    sym = (ndl_sym_t **) htab_find_slot(handle->syms, symbol, NO_INSERT);
+    <span class="keyword">if</span> (! sym)
+        <span class="keyword">return</span> NULL;
+    addr = (*sym)->fp;
+    mprotect((<span class="keyword">void</span> *)((((<span class="keyword">int</span>) addr + 4095) &amp; ~4095) - 4096),
+             4096, PROT_READ | PROT_WRITE | PROT_EXEC);
+    <span class="keyword">return</span> addr;
+}
+
+<span class="keyword">void</span> ndlclose(<span class="keyword">void</span> *h)
+{
+    ndl_t *handle = (ndl_t *) h;
+    free(handle->map);
+}</pre>
+ndlsym() 與 ndlclose() 的實做就相當顯然了，只要 dlopen() 能將 ELF 必要的欄位與資訊填入前述的資料結構，那麼就是作必要的查表動作即可，需要留意的是 mprotect() 的呼叫，因為我們要將對照後的記憶體位址區段標示為「可讀、可寫、可執行」(x86 的特性)。dlopen() 的實做稍微複雜一點，不過重點是實做 load_relocs() 函式，其接受指向 ndl_t 結構的 handle，以及指向已開啟 ELF object code 的 bfd 結構的 abfd 兩個參數。程式碼列表如下：<pre class="code" id="codemain" style="margin: 6px;">
+<span class="keyword">static</span> <span class="keyword">int</span> load_relocs(ndl_t *handle, bfd *abfd)
+{
+    <span class="keyword">int</span> size, i;
+    asection *sect = bfd_get_section_by_name(abfd, <span class="literal">".text"</span>);
+    arelent **loc;
+
+    size = bfd_get_reloc_upper_bound(abfd, sect);
+    <span class="keyword">if</span> (size &lt; 0) {
+        bfd_perror(<span class="literal">"bfd_get_reloc_upper_bound"</span>);
+        <span class="keyword">return</span> 1;
+    }
+
+    loc = (arelent **) malloc(size);
+
+    size = bfd_canonicalize_reloc(abfd, sect, loc, g_syms);
+    <span class="keyword">if</span> (size &lt; 0) {
+        bfd_perror(<span class="literal">"bfd_canonicalize_reloc"</span>);
+        <span class="keyword">return</span> 1;
+    }
+
+    <span class="keyword">for</span> (i = 0; i &lt; size; i++) {
+        arelent* rel = loc[i];
+        <span class="keyword">void</span> **p = (<span class="keyword">void</span> **) (handle->map + sect->filepos + rel->address);
+        <span class="keyword">const</span> <span class="keyword">char</span> *name;
+        <span class="keyword">if</span> (!rel->sym_ptr_ptr || !*(rel->sym_ptr_ptr))
+            <span class="keyword">continue</span>;
+        name = (*(rel->sym_ptr_ptr))->name;
+        <span class="keyword">if</span> (!name || !name[0])
+            <span class="keyword">continue</span>;
+
+        <span class="comment">/* section */</span>
+        <span class="keyword">if</span> (name[0] == <span class="literal">'.'</span>) {
+            asection* s = bfd_get_section_by_name(abfd, name);
+            *p = handle->map + (<span class="keyword">int</span>)*p + s->filepos + rel->addend;
+        }
+        <span class="comment">/* function */</span>
+        <span class="keyword">else</span> {
+            *p = lookup_func_table(name, p);
+            printf(<span class="literal">"\t:: reloc_name = %s\n"</span>, name);
+        }
+    }
+    free(loc);
+
+    <span class="keyword">return</span> 0;
+}
+</pre>
+回顧筆者提到 Relocation section '.rel.text' 有兩個符號：'.rodata.str1.1' 與 '__printf_chk'，前者以 '.' (句點) 開頭者，為 section，否則為 function，再回顧 objdump 的輸出：<pre class="code" id="codemain" style="margin: 6px;">
+jserv@venux:/tmp/ndl$ objdump -xd hello.o
+...
+SYMBOL TABLE:
+00000000 l    df *ABS*	00000000 hello.c
+00000000 l    d  .text	00000000 .text
+00000000 l    d  .data	00000000 .data
+00000000 l    d  .bss	00000000 .bss
+00000000 l    d  .rodata.str1.1	00000000 .rodata.str1.1
+00000000 l    d  .note.GNU-stack	00000000 .note.GNU-stack
+00000000 l    d  .comment	00000000 .comment
+00000000 g     F .text	00000017 hello
+00000000         *UND*	00000000 __printf_chk
+00000000 g     O .data	00000008 dyn_str
+...
+</pre>
+而作為一個 dynamic library loader，ndl 的工作就是基於這兩項，做出正確的查詢動作，以 BFD 提供的函式，將正確的位址找出。有趣的是，既然 printf() 在編譯時期被轉換為 '__printf_chk' 這個 symbol，而 'hello.o' 本身卻只有 undefined symbol (即上列 objdump 輸出的 '*UND*')，其實做在哪呢？就在 test_ndl.c 中，在編譯為 statically-linked 程式時，gcc 默默的將一份 '__printf_chk' 實做碼 (來自 GNU glibc) 連結到 test_ndl 這個應用程式。我們的 load_relocs() 中，針對函式的查詢則用輕便的方式：窮舉法，以下是原始程式碼：<pre class="code" id="codemain" style="margin: 6px;">
+<span class="keyword">static</span> inline <span class="keyword">void</span> *lookup_func_table(<span class="keyword">const</span> <span class="keyword">char</span> *func_name, <span class="keyword">void</span> **ptr)
+{
+    <span class="keyword">if</span> (0 == strcmp(func_name, <span class="literal">"printf"</span>))
+        *ptr = (<span class="keyword">void</span> *)((<span class="keyword">unsigned</span> <span class="keyword">int</span>) &amp;printf -
+                        (<span class="keyword">unsigned</span> <span class="keyword">int</span>) ptr - 4);
+    <span class="keyword">else</span> <span class="keyword">if</span> (0 == strcmp(func_name, <span class="literal">"puts"</span>))
+        *ptr = (<span class="keyword">void</span> *)((<span class="keyword">unsigned</span> <span class="keyword">int</span>) &amp;puts -
+                        (<span class="keyword">unsigned</span> <span class="keyword">int</span>) ptr - 4);
+    <span class="keyword">else</span> <span class="keyword">if</span> (0 == strcmp(func_name, <span class="literal">"__printf_chk"</span>))
+        *ptr = (<span class="keyword">void</span> *)((<span class="keyword">unsigned</span> <span class="keyword">int</span>) &amp;__printf_chk -
+                        (<span class="keyword">unsigned</span> <span class="keyword">int</span>) ptr - 4);
+    <span class="keyword">else</span> {
+        <span class="comment">/* FIXME: handle uncaught function entries */</span>
+    }
+    <span class="keyword">return</span> *ptr;
+}
+</pre>
+當然，筆者這麼作，實在是相當偷懶，但對一個 self-contained 的環境來說，應已足夠，需要留意的是 frame pointer 的操作，所以適度要調整進入點的位置："ptr - 4"。正如前述所及，完整的 dynamic linker/loader 需要考慮相當多細節，但本文用最簡便的方式，提供可行且易於分析的途徑，未來筆者會再探討涉及作業系統與函式庫的議題。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 November 13, 2009 10:14 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>Good, 最近也在研究dynamic linker/loader 心有戚戚焉</p>
+<span class="comments-post">由 <a href="http://luse.blogspot.com/">luse</a> 發表於</MTIfNonEmpty> November 13, 2009 10:18 AM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2120" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

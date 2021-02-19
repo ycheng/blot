@@ -1,0 +1,404 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Asho's Blog: October 2006 Archives</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~asho/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~asho/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~asho/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~asho/archives/2006_09.html" title="September 2006" />
+
+<link rel="next" href="http://blog.linux.org.tw/~asho/archives/2006_12.html" title="December 2006" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~asho/" accesskey="1">Asho's Blog</a></h1>
+<span class="description">一個喜歡研究的傻小子 :-)</span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~asho/archives/2006_09.html">&laquo; September 2006</a> |
+
+<a href="http://blog.linux.org.tw/~asho/">Main</a>
+| <a href="http://blog.linux.org.tw/~asho/archives/2006_12.html">December 2006 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">October 27, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001824"></a>
+<h3 class="title">rtorrent UTF-8 顯示寬字</h3>
+
+<p>rtorrent 目前滿新的 bt client。比起 bitornado 有更好的 ncurse ui 和 UTF-8 support。但在 ncurse UI 方面卻不能顯示正確的寬字元。</p>
+
+<p>檢查一下 source code ，發現作者已經有wide character support，只是註解掉。所以說，我只是把他顯示的地方做點小修改，就正常了。</p>
+
+<p>diff 檔如下：<br />
+diff -Nur rtorrent-0.6.2/debian/control rtorrent-0.6.2-mod/debian/control<br />
+--- rtorrent-0.6.2/debian/control	2006-10-27 11:08:40.000000000 +0800<br />
++++ rtorrent-0.6.2-mod/debian/control	2006-10-27 11:01:44.686785750 +0800<br />
+@@ -3,7 +3,7 @@<br />
+ Priority: extra<br />
+ Maintainer: Jose Luis Rivas <ghostbar38@gmail.com><br />
+ Uploaders: Arnaud Fontaine <arnaud@andesi.org><br />
+-Build-Depends: debhelper (>= 5.0.37.2), libtorrent9-dev(>= 0.10.1), libsigc++-2.0-dev, libcurl3-openssl-dev, libncurses5-dev, bc<br />
++Build-Depends: debhelper (>= 5.0.37.2), libtorrent9-dev(>= 0.10.1), libsigc++-2.0-dev, libcurl3-openssl-dev, libncursesw5-dev, bc<br />
+ Standards-Version: 3.7.2<br />
+ <br />
+ Package: rtorrent<br />
+diff -Nur rtorrent-0.6.2/src/display/window_file_list.cc rtorrent-0.6.2-mod/src/display/window_file_list.cc<br />
+--- rtorrent-0.6.2/src/display/window_file_list.cc	2006-10-27 11:08:40.000000000 +0800<br />
++++ rtorrent-0.6.2-mod/src/display/window_file_list.cc	2006-10-27 11:00:45.171066250 +0800<br />
+@@ -55,6 +55,7 @@<br />
+ }<br />
+ <br />
+ <br />
++<br />
+ std::wstring<br />
+ hack_wstring(const std::string& src) {<br />
+   size_t length = ::mbstowcs(NULL, src.c_str(), src.size());<br />
+@@ -70,7 +71,6 @@<br />
+   return dest;<br />
+ }<br />
+ <br />
+-<br />
+ void<br />
+ WindowFileList::redraw() {<br />
+   m_slotSchedule(this, (cachedTime + rak::timer::from_seconds(10)).round_seconds());<br />
+@@ -100,10 +100,10 @@<br />
+   while (range.first != range.second) {<br />
+     torrent::File e = fl.get(range.first);<br />
+ <br />
+-    std::wstring path = e.path_str();<br />
++    std::wstring path = hack_wstring(e.path_str());<br />
+ <br />
+     if (path.length() <= 50)<br />
+-      path = path + std::string(50 - path.length(), ' ');<br />
++      path = path + std::wstring(50 - path.length(), ' ');<br />
+     else<br />
+       path = path.substr(0, 50);<br />
+ <br />
+@@ -127,7 +127,7 @@<br />
+       break;<br />
+     };<br />
+ <br />
+-    m_canvas->print(0, pos, "%c %s  %6.1f   %s   %3d  %9s",<br />
++    m_canvas->print(0, pos, "%c %ls  %6.1f   %s   %3d  %9s",<br />
+                     range.first == *m_focus ? '*' : ' ',<br />
+                     path.c_str(),<br />
+                     (double)e.size_bytes() / (double)(1 << 20),</p>
+
+<p>請新建立 deb 檔案後，就能正常使用了。該檔案已送<a href="http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=395455"> wishlist</a>，希望 maintainer 能加入該功能</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/001824.html">11:36 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1824" onclick="OpenComments(this.href); return false">Comments (96)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">October 20, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001816"></a>
+<h3 class="title">總算有點了解 sysfs 了</h3>
+
+<p>昨天寫了一整天的 sysfs 的 code，因為我一直想要把這個東西搞清楚。但過程真的滿辛苦的，因為文件並不是很多，所以我一氣之下，決定直接看 sysfs.h, kobject.h, device.h, sysdev.h 來找 sysfs 提供的 API。</p>
+
+<p>我 trace 的程式是 cpufreq，推薦一下這個程式，裡面有完整的 kobject initial、如何套到一個 sys_device 上、ktype的宣告等。裡面也有一些不錯的寫程式技巧，減低了重覆宣告 kyte 的 attribute 和 ops(這些技巧在kernel code中常出現，想必是不錯的撰寫風格)，想了解 sysfs 的話，我想 cpufreq 算是不錯的範例格式。</p>
+
+<p>果然皇天不負苦心人，更清楚了解 kobject, ktype, kset, sub-system, attribute 的用處。<br />
+<ul><br />
+kobject: 最小的 device model unit。單純地宣告一個 kobject 並沒什麼用處，他最神奇的地方是內嵌在 Kernel 的 device 資料結構中，例如 character device(cdev), block device(blkdev)。這些資料結構中都會內嵌一個 kobject，所以，您知道知道做了吧 :-)<br />
+</ul><br />
+<ul><br />
+ktype: kobject 的集合。但它比較偏向收集相同 operation 的 kobject 的一個集合，也就是說它是負責管理這一群 kobjects 的 operation. (show,store)。kobject 會利用它了辨識自已是屬於那一個類型，然後在 /sys 下建立正確的目錄位置。<br />
+</ul><br />
+<ul><br />
+kset: kobject 的集合。這也是一個集合，不同於ktype，它不管理 kobject 的 ops，最重要的是建立上層(sub-system)和下層的(kobject)的關聯性。kobject 也會利用它了辨識自已是屬於那一個類型，然後在 /sys 下建立正確的目錄位置。而 kset 的優先權比較高，kobject 會利用自已的 *kset 找到自已所屬的kset，並把 *ktype 指定成該kset下的ktype，當然，你也是可以搞鬼，設定了kset，但用不同的ktype的operation(...有些code是這樣)。除非沒有定義kset，才會用 ktype 來建立關聯。<br />
+</ul><br />
+<ul><br />
+subsystem:如果說 kset 是管理 kobject 的集合，同理、sussystem 就是管理 kset 的集合。<br />
+</ul><br />
+<ul><br />
+attribute: 建立了 kobject 並成功註冊之後，你會發現出現該 kobj 對應的目錄竟然是空的(這是當然的啦 XD)，要如何產生資訊檔案，就是利用 attribute 這個資料結構。<br />
+    struct attribute {<br />
+	char			*name;       // 以該變數為檔名出現在 kobj 的目錄下<br />
+	struct module 		*owner; // THIS_MODULE<br />
+	mode_t			mode;  //permission, "S_IRUGO" or  "S_IWUSR" or "0660"<br />
+    };<br />
+應該是的出來 attribute 的功用，建立好attribute之後，讀取/寫入該檔案會呼叫 ktype 對應的 operation.<br />
+</ul></p>
+
+<p>至於動態建立 node 並非 sysfs 的工作(still depends on him), 是由 hotplug 接收 kset 中的hotplug ops 來傳送信號並傳送給 udev 來建立 device node的(這又是一篇懸疑小說了)，以後有空再寫。</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/001816.html">10:07 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1816" onclick="OpenComments(this.href); return false">Comments (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">October 18, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001814"></a>
+<h3 class="title">Mozilla 快速鍵</h3>
+
+<p><a href="http://www.moztw.org/firefox/support/keyboard/">Mozilla 快速鍵</a><br />
+應該會常常用到，記錄一下好了。</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/001814.html">10:57 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1814" onclick="OpenComments(this.href); return false">Comments (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">October 16, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001813"></a>
+<h3 class="title">proc file read, write</h3>
+
+<p>昨天晚上把 proc 的檔案加入 proc_write 的處理，可以傳值進去並回應給我正確的資料。</p>
+
+<p>今天把它改寫成 seqfile 的格式，seqfile 還滿有趣的，現在可也以seqfile的read, write 都可以用了，明天來改寫成 sysfs 的格式，順便當作 presentation 時的範例好了。</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/001813.html">01:56 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1813" onclick="OpenComments(this.href); return false">Comments (6)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001812"></a>
+<h3 class="title">debian-install 翻譯</h3>
+
+<p>昨天假日快點把進度追上，好不容易把 dpkg.po 翻完了，<a href="http://d-i.alioth.debian.org/l10n-stats/level5/zh_TW.txt">剩下的進度</a>，夭壽，aptitude還這麼多，今天會送出 dpkg 的，回家之後再把 debconf 和 apt 快點搞定。</p>
+
+<p>應該趕得上 22 號才是，加油。</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/001812.html">11:38 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1812" onclick="OpenComments(this.href); return false">Comments (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">October 13, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001811"></a>
+<h3 class="title">sylpheed!!!</h3>
+
+<p>sylpheed是我以前最常用的 E-Mail Client，好處就是快又功能完整，雖然無法直譯 HTML，但可以另外fork x-browser 來流灠，gnupu的搭配也很齊全。<br />
+<a href="http://sylpheed.sraoss.jp/images/sylpheed2-mainwindow.png">main window</a><br />
+<a href="http://sylpheed.sraoss.jp/images/sylpheed2-compose.png">composing</a><br />
+現在新版本已經改成了 gtk2 的toolkit，字型上的設定更方便了，現在多語系就更完整了。</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/001811.html">09:40 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1811" onclick="OpenComments(this.href); return false">Comments (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">October 12, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001810"></a>
+<h3 class="title">新買的無線滑鼠</h3>
+
+<p>最近我買了一個無線滑鼠，<a href="http://www.logitech.com.tw/product/product-detail.asp?PID=00000160">無線天貂</a></p>
+
+<p>會用到無線滑鼠是因為我的KVM只支援ps2，而現在用的滑鼠不能用轉接頭接PS2，索性就買了一隻新滑鼠吧。<br />
+這是我第一次使用無線的，該款要用二顆3號電池，使得整體變得有點重，只不過沒關係，第一隻就算是嘗鮮吧，畢竟450而已，就不用挑惕太多了。</p>
+
+<p>目前正快樂的使用中。</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/001810.html">02:30 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1810" onclick="OpenComments(this.href); return false">Comments (25)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001807"></a>
+<h3 class="title">drivel + openvpn 測試</h3>
+
+<p>由於公司的firewall只允許通過 isa server 連線，所以我很多軟體就不能用了，像 drivel, gnome-post...以及我最愛用的 IRC...</p>
+
+<p>現在總算裝好了 openvpn，在公司透過 openvpn 連線到家中的 nat 再連線出去上 irc 和 blog，所以我現在就能用 drivel 寫 blog 了，真是棒阿！</p>
+
+<p>特別寫一篇來慶祝一下。 :-)</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/001807.html">10:57 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1807" onclick="OpenComments(this.href); return false">Comments (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">October 09, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001804"></a>
+<h3 class="title">Etch 的 nvidia driver</h3>
+
+<p>Etch 裡面的 Nvidia 的driver 似乎很久沒有修正了，不能像之前直接 aptitude install nvidia-kernel-xxx。</p>
+
+<p>在急著想用 nvidia driver 的關係，我只好到 nvidia.com 下戴，我安裝的方式如下：<br />
+./xxx --x-module-path=/usr/lib/xorg/modules</p>
+
+<p>但這樣以後就得不斷地自已maintain 這個 pkg 的更新...</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/001804.html">09:47 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1804" onclick="OpenComments(this.href); return false">Comments (108)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">October 05, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001801"></a>
+<h3 class="title">終於學會 Kernel Thread 了</h3>
+
+<p>因為讀書會的關係，大部份都是閱讀Understanding Linux Kernel 3.e，只是閱讀歸閱讀，其實還滿無聊的，所以就來學習一下 kernel Thread 的相關機制。</p>
+
+<p>User space的thread果然不能和Kernel thread 混為一談，寫著寫著，thread就停不下來，死佔著CPU。感謝Kernel developer，利用 wait queue 和 wait_event*, wake_up*的機制，解決了在寫 thread 的麻煩。(kernel 2.6)</p>
+
+<p>最近會持續折解 LVM 和 device mapper 的東西，目前 LVM 的主要 .c 已經 trace 完了，明天要來了解 lvm 如何包成 dm 的 structure 然後送給 dm 做處理的。</p>
+
+<p>另外，要來準備一下 sysfs 的 present，老闆希望下次 meeting 能報告這個新機制，我也會提一下 hotplug, udev, hal, d-bus 等架構，說不定 team 裡面的人會做出不可思議的產品喔 :D</p>
+
+<p>嘿嘿，最近研究的東西真是過癮，列一下 TODO</p>
+
+<p>1. 折解 LVM: functions(追完了), data structure(目前正在看的)<br />
+2. 折解 device mapper kernel driver, 這個東西真的很有趣，未來的目標是能垮過這一層，直接access 到實體層的 hd，這就要好好折解 dm, md 如何包裝 bio 了<br />
+3. Understanding Linux kernel 3.e ch16, accessing file<br />
+4. sysfs 的 present</p>
+
+<p>額外想做的：<br />
+1. 介紹 user-mode Linux, xen，讓team的同事方便測試driver的functionality<br />
+2. systemtap：好物，昨天聽完意猶未竟，下星期要在自已的debian裝看看，拿來trace kernel space 的資料最好用了。</p>
+
+<p>最後，祝大家中秋節快樂！</p>
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/001801.html">12:24 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1801" onclick="OpenComments(this.href); return false">Comments (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

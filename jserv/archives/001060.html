@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: C++ sucks!</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001059.html" title="GNOME 2.10 介紹文章" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001061.html" title="我們需要 Open Source Java Implementation" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001059.html">« GNOME 2.10 介紹文章</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001061.html">我們需要 Open Source Java Implementation »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 16, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">C++ sucks!</h3>
+
+話說 clkao 長輩最近試著使用 ports 上的 SCIM-chewing，可是發現酷音叫不出來，在 #bsdchat 上追了很久，終於發現問題的癥結，引述 irc log 如下：<ul>
+01:46 <@clkao> _but_ chewing wants the symbol, though grepping the source odnes't show that up<br />
+01:48 <@clkao> ab# nm /usr/X11R6/lib/scim-1.0/IMEngine/chewing.so |grep inver<br />
+01:48 <@clkao>          U 
+_ZN4scim19IMEngineFactoryBase13inverse_queryERKSbIjSt11char_traitsIjESaIjEE<br />
+01:48 <@clkao> WTF<br />
+01:49 < koster> 好奇怪 *_*<br />
+01:50 <@clkao> probably WideString doesn't have the same signature during the two compilation<br />
+01:53 <@jserv> c++filt 
+_ZN4scim19IMEngineFactoryBase13inverse_queryERKSbIjSt11char_traitsIjESaIjEE<br />
+01:53 <@jserv> scim::IMEngineFactoryBase::inverse_query(std::basic_string<unsigned
+ int, std::char_traits<unsigned int>, std::allocator<unsigned int> > const&)<br />
+01:53 <@jserv> C++ sucks.<br />
+01:53 <@clkao> HATE<br />
+01:55 < leafy> system compiler bah<br />
+01:55 <@clkao> so it's wchar_t vs unsigned int<br />
+01:56 < leafy> in chewing it becomes unsigned<br />
+01:57 <@clkao> ok<br />
+01:57 <@clkao> must include src/scim_types.h<br />
+01:58 <@jserv> 看來要加上 -Wall<br />
+01:58 <@jserv> 不然會有這種鳥事發生 :(<br />
+01:59 <@clkao> :(<br />
+01:59 < koster> add #define Uses_SCIM_TYPES<br />
+01:59 <@jserv> 白爛事交給白蘭氏 XD<br />
+02:00 <@clkao> doesn't work<br />
+02:01 <@clkao> #define __STDC_ISO_10646__<br />
+02:02 <@clkao> now it _works_<br />
+02:02 <@clkao> hate<br />
+02:17 <@jserv> How can such a workaround drive people being crazy for days?!<br />
+02:17 <@jserv> My God!<br />
+02:17 <@clkao> http://nopaste.snit.ch:8002/2044<br />
+02:18 <@clkao> because 1. scim doesn't complain about unresolvable symbols<br />
+02:18 <@clkao> 2. c++ sucks<br />
+02:18 <@clkao> 3. people are lazy<br />
+02:18 <@clkao> leafy: (!) HATE!
+</ul>
+這個 workaround 雖然看起來只修正一點點，但是可讓 clkao 長輩抓狂很久，C++ 實在是複雜到不行，讓人實在忍不住大聲喊：<ul>
+<b>C++ sucks!</b>
+</ul>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March 16, 2005 02:56 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>scim_types.h should be included automatically, if scim.h is included. So there should be no such problem if you compile scim and scim-chewing by the same compiler.</p>
+<span class="comments-post">由 <a href="mailto&#58;suzhe&#64;tsinghua&#46;org&#46;cn">James Su</a> 發表於</MTIfNonEmpty> March 16, 2005 12:31 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

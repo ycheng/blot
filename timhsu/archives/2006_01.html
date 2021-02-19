@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>timhsu: January 2006 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~timhsu/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~timhsu/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~timhsu/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~timhsu/archives/2005_12.html" title="December 2005" />
+
+<link rel="next" href="http://blog.linux.org.tw/~timhsu/archives/2006_02.html" title="February 2006" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~timhsu/" accesskey="1">timhsu</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~timhsu/archives/2005_12.html">&laquo; December 2005</a> |
+
+<a href="http://blog.linux.org.tw/~timhsu/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~timhsu/archives/2006_02.html">February 2006 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">January 13, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001429"></a>
+<h3 class="title">十三號星期五</h3>
+
+<p>今天的日子，總會令我不禁想起年少時狂熱追求電腦病毒技術的時代。<br />
+從 (c) Brian 到 Jerusalem 的泛濫，恰是我從 GW-BASIC 往 Assembly 學習的時間。<a href="http://www.flag.com.tw">旗標</a>早期出版的 DOS 技術手冊、組合語言、組合語言程式設計實例、電腦病毒徹底研究等，都是我國中和高中時不可或缺的精神食糧。<br />
+印象中，黃瑞強先生有段時間在第三波雜誌開了個專欄，剖析各種電腦病毒，以及最新的病毒技術。諸如，病毒產生器、多形病毒、變體引擎、伴隨型病毒等。當然，這也是當時我最愛的雜誌專欄。<br />
+回憶就此打住！就來看看當年十三號星期五發作的 Jerusalem，倒底是長得什麼模樣?<br />
+從<a href="http://totallygeek.com/vscdb/j/jerusalm_asm.php">Jerusalem 病毒原始碼</a>可以看到一開頭就有個熟悉的字串 "sUMsDos"！<br />
+底下程式片段是利用 int 21h 取得日期，判斷是否為十三號星期五，若是，就把 b000E 設為 1，代表病毒發作日。<br />
+<code><br />
+	mov     ah,2Ah	<br />
+	int     21h		;  get date, cx=year, dx=mon/day<br />
+	mov     cs:[b000E],0<br />
+	cmp     cx,7C3h<br />
+	je      loc_6		   <br />
+	cmp     al,5<br />
+	jne     loc_5		   <br />
+	cmp     dl,0Dh<br />
+	jne     loc_5		   <br />
+	inc     cs:[b000E]<br />
+</code><br />
+接著，病毒常駐到記憶體後，當使用者欲執行檔案時，遇到發作日，就把該執行檔刪除，若非發作日就感染該執行檔。底下的 loc_12 程式片段就是為了刪除檔案。<br />
+<code><br />
+loc_12:	<br />
+        xor     cx,cx	<br />
+	mov     ax,4301h<br />
+	int     21h	;  get/set file attrb, nam@ds:dx<br />
+	mov     ah,41h	<br />
+	int     21h	;  delete file, name @ ds:dx<br />
+	mov     ax,4B00h<br />
+	popf		<br />
+	jmp     dword ptr cs:[pv21]<br />
+loc_13:	<br />
+        cmp     cs:[b000E],1<br />
+        je      loc_12<br />
+</code></p>
+
+<p>程式寫的真美，是不？</p>
+
+<p>對了，如果看不懂 Jerusalem 程式請勿來信問我，因為我早就忘光 DOS 呼叫和 MZ EXE 了啊。</p>
+
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~timhsu/archives/001429.html">04:48 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1429" onclick="OpenComments(this.href); return false">迴響 (5)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

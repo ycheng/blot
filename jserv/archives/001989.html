@@ -1,0 +1,255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: WebKit + Clutter：以 3D 技術給予網頁瀏覽的新體驗</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001988.html" title="桌面程式質感改造：Qt4 應用程式部份" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001990.html" title="GNU/Linux 癡情證" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001988.html">« 桌面程式質感改造：Qt4 應用程式部份</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001990.html">GNU/Linux 癡情證 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 15, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">WebKit + Clutter：以 3D 技術給予網頁瀏覽的新體驗</h3>
+
+3D 桌面系統技術變化相當快，現今的硬體運算能力也相當夠，連一隻小小的手機，都有 133 MHz 的處理速度，更遑論進步神速的 GPU，但除了展現華麗精湛的特效外，到底還能作什麼呢？兩年前的 OSDC.tw 曾提及 [<a href="http://blog.linux.org.tw/~jserv/archives/001547.html">從 Web Browser 與 3D 技術發展看未來桌面系統的挑戰</a>]，做了一些整理，這幾年觀察了若干提案，自己也試著做了 prototype 3D desktop，在驚訝於技術變化一日千里的同時，也在思考此等對人機介面的助益。<br />
+<br />
+發展十餘年的網頁瀏覽器，儼然成為嶄新的平台，就如開啟潘朵拉的盒子一般，為這個世界帶來無數的變化，自此，無論是工作環境、居家、3G 手機等等，都不乏有網頁瀏覽器的蹤跡。不同領域的交會更是給我們無限的想像空間，網頁也不再是死板板的模樣，不過，畢竟網頁往往受限於圖形桌面環境的設計思維，即便進入所謂 "Web 2.0" 的紀元，網頁瀏覽仍是線性的操作，這對於強調人機互動的手持式裝置或移動運算環境，顯得格格不入。我對於「網頁」一詞，抱持著很大的想像，感覺就該如紀錄若干資訊的紙張一般，而 WWW 就扮演串連這些頁面的角色，如此一來，我們可在辦公室看這些頁面，通勤的過程中，也能取出觀看並作些像是分類、疊合、對比的處理。頁面的表面積不應該是限制，重點是紀錄於此的資訊，以及我們如何去看待。若能妥善整合 3D 技術，應可帶來更直覺的互動效果，也同時提昇思考的維度：<ul>
+  <li>網頁何嘗不能就如我們熟悉不過的紙張一般呢？</li>
+  <li>網頁何嘗不能如紙張一般收藏剪裁呢？</li>
+  <li>動態網頁何嘗不能想像為顯微鏡載玻片底下的生氣蓬勃微生物呢？ </li>
+</ul>
+這幾年經歷過不同環境的瀏覽器發展，從 UNIX 工作站、Kiosk，到 PDA 與手機，螢幕尺寸不但是種限制，也扼殺許多應用的可能性，我想，或許是因為我們過度拘泥於表現的形式，卻沒有掌握其本質。活躍發展、跨越許多軟硬體環境的 [<a href="http://www.webkit.org/">WebKit</a>] 提供了質量俱佳的瀏覽器發展平台，並實做了 [<a href="http://en.wikipedia.org/wiki/HTML_5">HTML5</a>] 中絕大部分嶄新的規格，RIA (Rich Internet Application) 的應用更是藉此得到強而有力的基礎。優雅的 [<a href="http://www.clutter-project.org/">Clutter</a>] toolkit 建構於 OpenGL 之上，提供兼顧效能與彈性的豐富視覺呈現，而今年一月份開始，WebKit 與 Clutter 彼此擦出了令人炫目的火花，前述的 3D 網頁呈現與互動，也是指日可待。<br />
+<br />
+與 Firefox 3 (以 Gecko 1.9+ 為基礎) 一樣，WebKit 開始借重 [<a href="http://cairographics.org/">Cairo</a>] 向量繪圖處理，透過其實驗性的 [<a href="http://www.khronos.org/openvg/">OpenVG</a>] backend，得以有效發揮硬體加速能力，但本身仍保持架構的簡潔，Clutter 有個 Cairo binding，所以可以很巧妙的透過 OpenVG + Cairo + Clutter，實現高效能的精湛視覺呈現。對手持裝置來說，中高階的產品紛紛整合 3D/OpenGL GPU，若能充分使用硬體加速，不僅能給予更好的使用體驗，還能讓能源管理作出更好的優化處理，裝置的可用性也可望提昇。在圖形處理的基礎建設趨於完備後，整合 WebKit 就更有趣了。<br />
+<center><img src="http://jserv.sayya.org/misc/webkit-on-opengl.png" width="525" height="314" /></center><br />
+上圖是 WebKit + Clutter 運作的情況，展示了不同視角下，「網頁」的視覺變化，Zoom In/Out (或稱 pinch and expand) 操作對 OpenGL 來說，再也自然不過，如此一來，網頁的「收納」型態可有更多的方式，我錄製了影片以闡述這個想法：<ul>
+<li>[<a href="http://jserv.sayya.org/tmp/webkit-on-opengl.avi">webkit-on-opengl.avi</a>] (MPEG-4, 2.7Mb)</li>
+<li>[<a href="http://jserv.sayya.org/tmp/webkit-on-opengl.ogg">webkit-on-opengl.ogg</a>] (Theora video, 12Mb)</li>
+</ul>
+整合好的 WebKit + Clutter 展示程式可自 [<a href="http://jserv.sayya.org/misc/webkit-opengl-bin.tar.bz2">webkit-opengl-bin.tar.bz2</a>] (i686-linux) 取得，在 Debian/Ubuntu 執行需要 [<a href="http://www.icu-project.org/">ICU</a>] (International Components for Unicode) 與 [<a href="http://curl.haxx.se/">libcurl</a>] (處理 network protocol)，取得如下：<pre 
+class="code" style="margin: 6px;">
+# apt-get install libicu36 libcurl4-openssl
+</pre>
+事實上，libcurl 也有 GnuTLS 的支援 (libcurl4-gnutls)，不過我已經寫死在程式中。解開後直接執行目錄中的 RUN.sh 即可。當然，這只是開端，顯然有許多可改進的空間，唯一的限制，應該是我們的想像力罷了。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March 15, 2008 09:43 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>贊，跑了前輩的 webkit-opengl</p>
+
+<p>不過 ubuntu 裏沒有 libcurl4-openssl</p>
+<span class="comments-post">由 <a href="mailto&#58;jhuangjiahua&#64;gmail&#46;com">華華</a> 發表於</MTIfNonEmpty> March 15, 2008 11:56 PM</span>
+</div>
+<div class="comments-body">
+<p>補充：</p>
+
+<p>看畫面應該是 http://svn.o-hand.com/repos/clutter/trunk/clutter-webkit/ ?</p>
+<span class="comments-post">由 <a href="mailto&#58;koster&#64;debian&#46;org&#46;tw">kanru</a> 發表於</MTIfNonEmpty> March 16, 2008 12:09 AM</span>
+</div>
+<div class="comments-body">
+<p>@kanru</p>
+
+<p>是的，從 clutter-webkit 去改的，看看能改到多小，現在執行檔大約 2.5Mb，但是大部分的功能都有作用，包含 SVG。</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> March 16, 2008 12:13 AM</span>
+</div>
+<div class="comments-body">
+<p>我的apt源里没有libcurl4-openssl怎么办啊</p>
+<span class="comments-post">由 <a href="http://wenhsuanhack.spaces.live.com">wenhsuan</a> 發表於</MTIfNonEmpty> April 13, 2008 11:15 PM</span>
+</div>
+<div class="comments-body">
+<p>@wenhsuan,</p>
+
+<p>在我的 Ubuntu hardy 中，"libcurl4-openssl" 是存在的。</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> April 14, 2008 08:22 AM</span>
+</div>
+<div class="comments-body">
+<p>ubuntu 8.04, please try follow<br />
+sudo apt-get install libicu38 libcurl4-openssl-dev</p>
+<span class="comments-post">由 <a href="mailto&#58;shuianle&#64;gmail&#46;com">Drip-shui</a> 發表於</MTIfNonEmpty> September 22, 2008 10:11 AM</span>
+</div>
+<div class="comments-body">
+<p>我弄错了, 请教jserv兄, webkit-opengl-bin 有没有64位的版本? 还有, 我的ubuntu 8.04 上面确实没有libicu36 libcurl4-openssl, 只有libicu38 libcurl4-openssl-dev. 很感谢您的文章.<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;shuianle&#64;gmail&#46;com">Drip-shui</a> 發表於</MTIfNonEmpty> September 22, 2008 10:31 AM</span>
+</div>
+<div class="comments-body">
+<p>前辈， 能否放出这个演示的源代码？</p>
+
+<p>我对此比较有兴趣！ 想研究研究， 谢谢！</p>
+<span class="comments-post">由 <a href="mailto&#58;htom78&#64;gmail&#46;com">htom</a> 發表於</MTIfNonEmpty> January 15, 2009 10:52 AM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1989" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

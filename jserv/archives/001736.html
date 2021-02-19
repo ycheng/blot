@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 強化 Linux 網路安全性設計：引入 OpenBSD Cryptographic Framework</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001735.html" title="Character encoding auto-detection in Python" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001737.html" title="Ubuntu Edgy 的 libc6 + locale 終於回來了" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001735.html">« Character encoding auto-detection in Python</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001737.html">Ubuntu Edgy 的 libc6 + locale 終於回來了 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">June 23, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">強化 Linux 網路安全性設計：引入 OpenBSD Cryptographic Framework</h3>
+
+[<a href="http://www.6wind.com/">6Wind</a>] 這家嵌入式網路軟體公司日前宣佈，其新版的 embedded Linux networking stack 支援 OpenBSD Cryptographic Framework 與 MIPS64 硬體架構，詳情可參考新聞稿 [<a href="http://www.linuxdevices.com/news/NS3560551762.html">Linux net stack supports OCF crypto, multi-core MIPS64</a>]。OCF (OpenBSD Cryptographic Framework) 是強調安全性見長的 OpenBSD 相當重要的設計，正如《Applied Cryptography》作者 Bruce Schneier 所說：<ul class="code" style="margin: 6px;">
+The mantra of any good security engineer is: "Security is not a product, but a process." It's more than designing strong cryptography into a system; it's designing the entire system such that all security measures, including cryptography, work together.
+</ul>
+安全性並非單一產品，而是，一種重要的程序，OpenBSD 的開發者在過去的 IPSec 經驗中，學習到必須將加密建設落實於應用程式與作業系統互動的等集中，是此，建立了 /dev/crypto 這個特別的 device driver，而應用程式 (如 OpenSSL) 可透過這個機制，直接存取到核心開放的安全性服務，從而構成 OCF 設計，詳細可參考 OCF 經典文獻 [<a href="http://www.thought.net/jason/ocfpaper/">The Design of the OpenBSD Cryptographic Framework</a>]。而今，[<a href="http://www.6wind.com/">6Wind</a>] 宣佈將 OpenBSD Cryptographic Framework 實做於 Linux  network stack 中，雖然尚未公佈 source code，不過可先來看系統架構圖： (click to enlarge)<br>
+<center><a href="http://www.linuxdevices.com/files/misc/6wind_6windgate_2-8.gif"><img src="http://www.linuxdevices.com/files/misc/6wind_6windgate_2-8-sm.gif"></a></center><br>
+就新聞稿的說法是，該公司目前實做 OCF 相容的 API，也就是圖片中橘色的部份，允許銜接其他硬體廠商的 IPsec hardware crypto-accelerators，這使得追求更高的安全性與充分發揮硬體加速，成為可行，並作為 OpenBSD 的高效能開放系統的替代選擇。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 June 23, 2006 09:05 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>"Security is not a product, but a process." </p>
+
+<p>我的理解是：<br />
+安全不是一個最終産品，而是一個過程。</p>
+
+<p>即，强調沒有絕對安全，不存在“某個狀態是安全的”這種說法，而是確保在某個過程里的相對安全性。</p>
+<span class="comments-post">由 <a href="mailto&#58;boyualex&#64;gmail&#46;com">boyu</a> 發表於</MTIfNonEmpty> June 24, 2006 08:59 AM</span>
+</div>
+<div class="comments-body">
+<p>To boyu,</p>
+
+<p>我的確沒有將概念說清楚，感謝您的指教與分享。</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> June 24, 2006 10:06 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

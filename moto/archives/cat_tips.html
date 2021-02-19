@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>∴Moto's BLOG∴: tips 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~moto/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~moto/index.rdf" />
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>
+
+
+
+
+
+
+
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~moto/" accesskey="1">∴Moto's BLOG∴</a></h1>
+<span class="description">你今天 MOTO 了嗎 ?  </span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+
+<h2 class="date">August 07, 2003</h2>
+
+
+<div class="blogbody">
+
+<a name="000050"></a>
+<h3 class="title">輕鬆轉換 ext2 成 ext3 日誌型檔案系統</h3>
+
+<p>ext2 一直是 Linux 傳統的檔案系統，當然本身 ext2 有它的優點存在例如快速、不需要特別 defrag ，不過有一點比較麻煩的是當不正常關機之後在下次重開系統的時候必須先行檢查與修復，過去的硬碟大小了不起都是以百 MB 為單位，而現今的硬碟隨隨便便都上好幾十 GB，因此檢查起來便十分耗時....</p>
+
+<p>現在我們有一個另外的選擇 -- 日誌型檔案系統，跟 ext2 檔案系統最直覺的差異就是，當系統因不正常關機之後，使用日誌型檔案系統將不再需要做檢查，嚴格的說是不需要每次都做檢查。</p>
+
+<p><br />
+對於 Server 來說當然是最好不過了，因為 Server 的硬碟空間比起一般使用者可多更多了，一個商業性質的網站來說時間就是金錢，晚一秒修復可能造成的損失就很大，對於我們這種常在 linux 底下開發的人來說日誌型檔案系統也十分方便，目前當紅的日誌型檔案系統有 xfs 、 ext3 、 jfs 、 reiserfs 各個日誌型檔案系統都有擅長之處，例如 xfs 對大檔案處理很有一套，reiserfs 對小檔案處理號稱最快，ext3 則是對於 ext2 相容性最好。</p>
+
+<p><br />
+如果您的 Linux 系統目前是 ext2 檔案系統，那您就可以透過底下介紹的兩個步驟輕鬆的轉換成 ext3 日誌型檔案系統：</p>
+
+<p>1. # tune2fs -j /dev/hda1 <br />
+2. 修改 /etc/fstab 將舊有的設定：</p>
+
+<p>    " /dev/hda1       /        ext2        errors=remount-ro     0     1"</p>
+
+<p>    改成：</p>
+
+<p>    " /dev/hda1       /        ext3        errors=remount-ro     0     1"</p>
+
+<p>重新開機就大功告成囉.<img alt="bighappy.gif" src="http://blog.linux.org.tw/~moto/archives/images/bighappy.gif" width="29" height="27" border="0" />
+</p>
+
+<p><font color="yellow">注意! 上述的例子純屬個案請依照您實際的系統調整，ext2 轉成 ext3 並不會破壞原來系統中的資料！</font></p>
+
+
+<p>現在我們有一個另外的選擇 -- 日誌型檔案系統，跟 ext2 檔案系統最直覺的差異就是，當系統因不正常關機之後，使用日誌型檔案系統將不再需要做檢查，嚴格的說是不需要每次都做檢查。</p>
+
+<p><br />
+對於 Server 來說當然是最好不過了，因為 Server 的硬碟空間比起一般使用者可多更多了，一個商業性質的網站來說時間就是金錢，晚一秒修復可能造成的損失就很大，對於我們這種常在 linux 底下開發的人來說日誌型檔案系統也十分方便，目前當紅的日誌型檔案系統有 xfs 、 ext3 、 jfs 、 reiserfs 各個日誌型檔案系統都有擅長之處，例如 xfs 對大檔案處理很有一套，reiserfs 對小檔案處理號稱最快，ext3 則是對於 ext2 相容性最好。</p>
+
+<p><br />
+如果您的 Linux 系統目前是 ext2 檔案系統，那您就可以透過底下介紹的兩個步驟輕鬆的轉換成 ext3 日誌型檔案系統：</p>
+
+<p>1. # tune2fs -j /dev/hda1 <br />
+2. 修改 /etc/fstab 將舊有的設定：</p>
+
+<p>    " /dev/hda1       /        ext2        errors=remount-ro     0     1"</p>
+
+<p>    改成：</p>
+
+<p>    " /dev/hda1       /        ext3        errors=remount-ro     0     1"</p>
+
+<p>重新開機就大功告成囉. ^_^ </p>
+
+<p><font color="yellow">注意! 上述的例子純屬個案請依照您實際的系統調整，ext2 轉成 ext3 並不會破壞原來系統中的資料！</font></p>
+</MTEntryIfExtended>
+
+<div class="posted">
+	由 moto 發表於 <a href="http://blog.linux.org.tw/~moto/archives/000050.html">02:06 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=50" onclick="OpenComments(this.href); return false">迴響 (1516)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+</body>
+</html>

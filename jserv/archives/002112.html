@@ -1,0 +1,255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 隱藏式取得動態函式庫的 C 函式實做</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002111.html" title="演講：探索嵌入式 ARM 平台與 SoC " />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002113.html" title="「探索嵌入式 ARM 平台與 SoC 」Part I 簡報上線" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002111.html">« 演講：探索嵌入式 ARM 平台與 SoC </a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002113.html">「探索嵌入式 ARM 平台與 SoC 」Part I 簡報上線 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">July 06, 2009</h2>
+
+<div class="blogbody">
+
+<h3 class="title">隱藏式取得動態函式庫的 C 函式實做</h3>
+
+前文 [<a href="http://blog.linux.org.tw/~jserv/archives/001561.html">dlopen 的 _init 與 _fini</a>] 與 [<a href="http://blog.linux.org.tw/~jserv/archives/000782.html">LD_PRELOAD 的應用</a>] 提過 GNU/Linux 下，動態函式庫操作的技巧，可看到 dlopen(3), dlsym 搭配 _init/_fini 或自訂函式，達到攔截函式進入點的功能。那麼，是否能提供「隱藏式」的機制，讓原始程式碼不甚明顯，但執行時期也有同等功效呢？本文就要探討這樣的技巧。<br />
+<br />
+實驗的目標是動態載入 libm.so 裡頭的 exp() 函式，並計算 e 的值，也就是呼叫 exp(1.0)，這部份實做於 lookup()，有趣的是以下程式碼列表的 do_magic() 函式： (findsym.c)
+<pre class="code" style="margin: 6px;">#include &lt;stdio.h&gt;
+#include &lt;dlfcn.h&gt;
+
+extern void payload();
+typedef double (*proto)(double);
+proto _exp = (proto) (void *) &amp;payload;
+
+/* once no exp found, use this */
+static double failback(double x) { return 0.0; }
+
+static void lookup()
+{
+	void *handle = dlopen(&quot;libm.so&quot;, RTLD_LAZY);
+	if (!handle) {
+		fprintf(stderr, &quot;E: unable to load libm\n&quot; );
+		_exp = (proto) (void *) &amp;failback;
+		return;
+	}
+	_exp = (proto) dlsym(handle, &quot;exp&quot;);
+	if (!_exp) {
+		dlclose(handle);
+		_exp = (proto) (void *) &amp;failback;
+		fprintf(stderr, &quot;E: unable to find exp\n&quot;);
+	}
+}
+
+static void do_magic() {
+	__asm__ __volatile__ (
+		&quot;	.section .bss\n&quot;
+		&quot;	.align  4\n&quot;
+	&quot;external_ebp:	.type   external_ebp, @object\n&quot;
+		&quot;	.size   external_ebp, 4\n&quot;
+		&quot;	.text\n&quot;
+	&quot;payload:\n&quot;
+		&quot;	mov     %ebp, external_ebp\n&quot;
+		&quot;	mov     %esp, %ebp\n&quot;
+		&quot;	call    lookup\n&quot;
+		&quot;	mov     external_ebp, %ebp\n&quot;
+		&quot;	jmp     *_exp\n&quot;
+); }
+
+int main()
+{
+	printf(&quot;e = %f\n&quot;, _exp(1.0));
+	return 0;
+}</pre>
+透過調整 IA32 stack 的 %ebp，將變數 _exp 指向由 dlopen + dlsym 找出的 libm::exp() 位址，進一步跳躍到函式進入點，達到所設立的目標。參考的編譯與執行輸出：<pre class="code" style="margin: 6px;">
+$ gcc -o findsym{,.c} -O0 -ldl && ./findsym
+e = 2.718282
+</pre>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 July  6, 2009 05:43 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>人黑真好</p>
+<span class="comments-post">由 <a href="http://voicephrse.blogspot.com">aguai</a> 發表於</MTIfNonEmpty> July 31, 2009 04:46 AM</span>
+</div>
+<div class="comments-body">
+<p>其實可以不用維護 ebp 的值呀~</p>
+
+<p>若為了方便 call stack 重建而保存 ebp, 應該要 push 進 stack 唷~<br />
+</p>
+<span class="comments-post">由 <a href="http://nono-liang.blogspot.com/">Nono</a> 發表於</MTIfNonEmpty> August 25, 2009 01:33 AM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2112" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

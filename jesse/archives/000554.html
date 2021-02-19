@@ -1,0 +1,292 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jesse's Holodeck: udev</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jesse/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jesse/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jesse/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jesse/archives/000531.html" title="RSS Reader Panel for Mozilla Firebird" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jesse/archives/000568.html" title="光碟機掛了" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+<!--
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/">
+<rdf:Description
+    rdf:about="http://blog.linux.org.tw/~jesse/archives/000554.html"
+    trackback:ping="http://mt.debian.org.tw/mt-tb.cgi/355"
+    dc:title="udev"
+    dc:identifier="http://blog.linux.org.tw/~jesse/archives/000554.html"
+    dc:subject="kernel"
+    dc:description="在 kernel 2.6 中, devfs 被標示為 OBSELETE, 著實嚇了我一大跳... 今天花了點時間看了些 udev 的東西, 還沒實際使用過, 不過怕自己以後要用時又要花時間找, 還是記錄一下好了......"
+    dc:creator="jesse"
+    dc:date="2003-12-30T16:31:52+08:00" />
+</rdf:RDF>
+-->
+
+
+<!--
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="http://blog.linux.org.tw/~jesse/archives/000554.html">
+<dc:title>udev</dc:title>
+<dc:description>在 kernel 2.6 中, devfs 被標示為 OBSELETE, 著實嚇了我一大跳... 今天花了點時間看了些 udev 的東西, 還沒實際使用過, 不過怕自己以後要用時又要花時間找, 還是記錄一下好了......</dc:description>
+<dc:creator>jesse</dc:creator>
+<dc:date>2003-12-30T16:31:52+08:00</dc:date>
+<license rdf:resource="http://creativecommons.org/licenses/by-nc-sa/1.0/" />
+</Work>
+<License rdf:about="http://creativecommons.org/licenses/by-nc-sa/1.0/">
+<requires rdf:resource="http://web.resource.org/cc/Attribution" />
+<requires rdf:resource="http://web.resource.org/cc/Notice" />
+<requires rdf:resource="http://web.resource.org/cc/ShareAlike" />
+<permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+<permits rdf:resource="http://web.resource.org/cc/Distribution" />
+<permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+<prohibits rdf:resource="http://web.resource.org/cc/CommercialUse" />
+</License>
+</rdf:RDF>
+-->
+
+
+
+</head>
+
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jesse/" accesskey="1">Jesse's Holodeck</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jesse/archives/000531.html">&laquo; RSS Reader Panel for Mozilla Firebird</a> |
+
+<a href="http://blog.linux.org.tw/~jesse/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jesse/archives/000568.html">光碟機掛了 &raquo;</a>
+
+</div>
+
+</div>
+
+<a name="more"></a>
+<div class="blog">
+
+<h2 class="date">December 30, 2003</h2>
+
+<div class="blogbody">
+<h3 class="title">udev</h3>
+
+<p>在 kernel 2.6 中, devfs 被標示為 OBSELETE, 著實嚇了我一大跳... 今天花了點時間看了些 udev 的東西, 還沒實際使用過, 不過怕自己以後要用時又要花時間找, 還是記錄一下好了...</p>
+
+<!--
+<a name="more"></a>
+-->
+<p><a href="http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev-FAQ">這裡</a>是 udev 的 FAQ, 它結合 sysfs 和 hotplug, 提供和 devfs 相似的功能, 當系統中新增或移除裝置時, 會產生 hotplug event, 再由 udev 依 sysfs 的內容生成或是移除對應的 device file。和 devfs 不同的是, devfs 是在 kernel 中完成的, 而 udev 則是完完全全的 userspace 程式。</p>
+
+<p>udev 共分為三個部份:<br />
+<ol><br />
+<li>namedev: 處理 device file naming 及 permission。</li><br />
+<li>libsysfs: 提供統一的 access sysfs 介面。</li><br />
+<li>udev: 處理 /dev 下檔案的生成及移除。</li><br />
+</ol></p>
+
+<p>在 <a href="http://www.kroah.com/linux/talks/ols_2003_udev_talk/ ">http://www.kroah.com/linux/talks/ols_2003_udev_talk/</a> 有 Greg KH 在 OLS 2003 的投影片可以參考。</p>
+
+<p>至於 devfs 被標為 OBSELETE 的原因, 在 udev-FAQ 中也有提到:<br />
+<div class="code"><br />
+Q: Why was devfs marked OBSOLETE if udev is not finished yet?<br />
+A: To quote Al Viro (Linux VFS kernel maintainer):<br />
+	- it was determined that the same thing could be done in userspace<br />
+	- devfs had been shoved into the tree in hope that its quality will<br />
+	  catch up<br />
+	- devfs was found to have fixable and unfixable bugs<br />
+	- the former had stayed around for many months with maintainer<br />
+	  claiming that everything works fine<br />
+	- the latter had stayed, period.<br />
+	- the devfs maintainer/author disappeared and stoped maintaining<br />
+	  the code.<br />
+</div></p>
+
+<p>如果只是要使用的話, 在<a href="http://www.kernel.org/pub/linux/utils/kernel/hotplug/">這裡</a>可以取得 udev, 或是直接在<a href="http://www.bofh.it/~md/debian/">這裡</a>取得 deb 套件包。</p>
+
+
+<span class="posted">由 jesse 發表於 December 30, 2003 04:31 PM
+| <a href="http://mt.debian.org.tw/mt-tb.cgi?__mode=view&amp;entry_id=554" onclick="OpenTrackback(this.href); return false">引用</a>
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>Jesse 大，那個上面那段引用是用什麼語法阿？我一直找不到好用的 tag ,  似乎效果不好...</p>
+<span class="comments-post">Posted by: <a href="http://blog.linux.org.tw/~moto/">moto</a> 發表於 January  8, 2004 02:40 PM</span>
+</div>
+<div class="comments-body">
+<p>moto 大.. 搞定了吧.. :)</p>
+<span class="comments-post">Posted by: <a href="http://blog.linux.org.tw/~jesse/">jesse</a> 發表於 January  9, 2004 06:52 PM</span>
+</div>
+<div class="comments-body">
+<p>搞定！謝拉....我家網路昨天弄好了，以後應該有更多時間上網..還有 IRC ... :)</p>
+<span class="comments-post">Posted by: <a href="http://blog.linux.org.tw/~moto/">moto</a> 發表於 January 12, 2004 05:04 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-comments.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="554" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響數量:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 操作 X 的 Cut and Paste Buffer</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002031.html" title="開機見 Hello World" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002033.html" title="探訪 stack frame：談不定數量參數" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002031.html">« 開機見 Hello World</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002033.html">探訪 stack frame：談不定數量參數 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">June 21, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">操作 X 的 Cut and Paste Buffer</h3>
+
+在 X Window System 要處理 X client 之間的資料分享，因為設計本質上與傳統 GUI 有極大差異，所以，不可等閒視之，也就是說，在 Win32 下很普通的 Clipboard 處理，搬到 X 下，其實得考慮相當多。Win32 Clipboard 無法「直接」對應到 X Clipboard，我們必須分很多層級去思考，一般的 X client 中，以滑鼠(mouse) / 指標(pointer) 作區域的文字 / 物件選擇動作，在真正貼上或複製到標的視窗前，其實涉及到跨越實體環境的資料分享 (考慮到 X Protocol 分散式處理本質) 的議題，所以，光是如何保存這些中間資訊，就是很大的學問。<br />
+<br />
+簡單的文字，可透過名為 X cut buffer 的空間，暫時保存 X cut-paste 過程的內容，但這僅是最基本的操作，一般設計較為複雜的 X Toolkit 如 Gtk+ 或 Qt，其實都援引不同的機制，不過，這不妨礙我們對系統的理解。作為最基本的資料分享機制，X cut and paste buffer 僅是很單純的存取緩衝區的資料，我們可這樣實做簡單的寫入操作，程式如下： (xcutbuf-set.c)
+<pre class="code" id="codemain" style="margin: 6px;"><span class="keyword">#define</span> _GNU_SOURCE<span class="keyword">
+#include</span> &lt;X11/Xlib.h><span class="keyword">
+#include</span> &lt;X11/Xatom.h>
+<span class="keyword">
+#include</span> &lt;stdio.h><span class="keyword">
+#include</span> &lt;string.h>
+<span class="keyword">
+#define</span> BUF_LENGTH 8080
+<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])
+{
+	<span class="keyword">char</span> buf[BUF_LENGTH];
+	Display *disp = XOpenDisplay(0);
+
+	fgets(buf, BUF_LENGTH, stdin);
+	XStoreBytes(disp, buf, strnlen(buf, BUF_LENGTH));
+
+	<span class="keyword">while</span> (XGetSelectionOwner(disp, XA_PRIMARY) != None) {
+		XSetSelectionOwner(disp, XA_PRIMARY, None, CurrentTime);
+	}
+	<span class="keyword">return</span> 0;
+}</pre>
+這裡用到 XStoreBytes(3) 來對緩衝區作寫入動作，編譯並執行如下：<pre class="code" id="codemain" style="margin: 6px;">
+$ gcc -o xcutbuf-set xcutbuf-set.c -lX11
+$ echo -n "Let's Do It" | ./xcutbuf-set
+</pre>
+自標準輸入取得資料後，就透過 XStoreBytes(3) 寫入 x cut buffer，需要留意的是，我們必須透過 XSetSelectionOwner(3) 來讓現在的 window selection (X 術語，表示指定的「選擇」動作，像是 cut-n-paste 的動作) 生效。在 rxvt 或 rxvt-unicode 下，我們可按下 "Shift" + "Insert" 按鍵組合，會自 X cut buffer 取出已寫入的資料，也就是剛剛那字串："Let's Do It"。透過函式呼叫，可取出裡頭的字串，程式碼如下： (xcutbuf-get.c)
+<pre class="code" id="codemain" style="margin: 6px;"><span class="keyword">#include</span> &lt;X11/Xlib.h><span class="keyword">
+#include</span> &lt;stdio.h>
+
+<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])
+{
+	<span class="keyword">int</span> count;
+	Display *disp = XOpenDisplay(0);
+	printf(<span class="literal">"==> %s\n"</span>, XFetchBytes(disp, &amp;count));
+	<span class="keyword">return</span> 0;
+}</pre>
+編譯並執行：
+<pre class="code" id="codemain" style="margin: 6px;">
+$ gcc -o xcutbuf-get xcutbuf-get.c -lX11
+$  ./xcutbuf-get
+==&gt; Let's Do It
+</pre>
+以上，咱們邁出認識 X client 間資料交換最簡單的機制：X cut buffer 的操作，未來將會探討 X clipboard 運作的機制。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 June 21, 2008 12:11 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2032" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

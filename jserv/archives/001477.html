@@ -1,0 +1,275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: ToyWM 的建構紀錄</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001476.html" title="Regex Programming 資源" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001478.html" title="Realtime Linux 在 Ad Hoc Networking 的應用" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001476.html">« Regex Programming 資源</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001478.html">Realtime Linux 在 Ad Hoc Networking 的應用 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February 02, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">ToyWM 的建構紀錄</h3>
+
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001467.html">ToyWM : 體驗 ICCCM 與 EWMH 規格的練習</a>]，提到我正在開發的 ToyWM，這過程的確讓我又對 X11 有了更深入的認知。如果不看一般 window manager 的功能性，ToyWM 在顯示處理做了些變化。首先，使用了 Keith Packard 設計的 [<a href="http://keithp.com/~keithp/talks/usenix2001/">XRender extension</a>]，目前 ToyWM 的 icon / window border 以及 anti-aliasing font 都透過 XRender 來作顯示，至於原本規劃的 Cairo-based rendering，可能會放棄，我沒有打算作太複雜的繪圖處理。目前的執行畫面如下：<br>
+<center><img src="http://people.debian.org.tw/~jserv/pcmanfm-on-toywm.png"></center><br>
+前面提到的 XRender extension 還做了陰影的處理，這是一個簡單內建 composite manager 的展示，並且因為與 WM 整合，所以效能還是可以接受的範圍。圖中執行的應用程式就是 PCMan 最近開發的 [<a href="http://pcmanfm.sourceforge.net/">PCMan File Manager</a>]，比較有趣的地方在左上角，小小的 "ToyWM" 字樣，這是透過 SHAPE extension 與 SERVER_OVERLAY_VISUALS 來實現 transparent visual，這部份的實做程式片段如下：<ul>
+<pre class="code" style="margin: 6px;"><span class="keyword">struct</span> overlay_data
+{
+  CARD32 visual_id;
+  CARD32 transparency;  <span class="comment">/**&lt; 
+      0: none;
+      1: pixel; 
+      2: mask (?) */</span>
+  CARD32 value;         <span class="comment">/**&lt; the transparent pixel */</span>
+  CARD32 layer;         <span class="comment">/**&lt; 
+      -1: underlay; 
+      0: normal; 
+      1: popup; 
+      2: overlay */</span>
+};
+
+<span class="keyword">static</span> <span class="keyword">int</span>
+get_overlay_prop (
+    Screen *screen, 
+    <span class="keyword">struct</span> overlay_data **data_ret)
+{
+  <span class="keyword">int</span> result;
+  Atom actual_type;
+  <span class="keyword">int</span> actual_format;
+  <span class="keyword">unsigned</span> <span class="keyword">long</span> nitems, bytes_after;
+  <span class="keyword">struct</span> overlay_data *data = 0;
+  Display *dpy = DisplayOfScreen(screen);
+  Window window = RootWindowOfScreen(screen);
+  Atom XA_SERVER_OVERLAY_VISUALS =
+      XInternAtom (dpy, 
+          <span class="literal">"SERVER_OVERLAY_VISUALS"</span>, False);
+
+  *data_ret = 0;
+  result = XGetWindowProperty (dpy, 
+      window, 
+      XA_SERVER_OVERLAY_VISUALS,
+      0, (65536 / <span class="keyword">sizeof</span> (<span class="keyword">long</span>)), False,
+      XA_SERVER_OVERLAY_VISUALS,
+      &amp;actual_type, &amp;actual_format,
+      &amp;nitems, &amp;bytes_after,
+      (<span class="keyword">unsigned</span> <span class="keyword">char</span> **) &amp;data);
+  <span class="keyword">if</span> (result != Success ||
+      actual_type != XA_SERVER_OVERLAY_VISUALS ||
+      actual_format != 32 ||
+      nitems &lt; 1) {
+      <span class="keyword">if</span> (data) {
+        XFree(data);
+       }
+      <span class="keyword">return</span> 0;
+  }
+  <span class="keyword">else</span> {
+      *data_ret = data;
+      <span class="keyword">return</span> nitems / (<span class="keyword">sizeof</span>(*data) / <span class="keyword">sizeof</span>(CARD32));
+    }
+}
+
+Visual *
+get_overlay_visual (
+    Screen *screen, 
+    <span class="keyword">unsigned</span> <span class="keyword">long</span> *transparent_pixel_ret)
+{
+  <span class="keyword">struct</span> overlay_data *data = 0;
+  <span class="keyword">int</span> n_visuals = get_overlay_prop (screen, &amp;data);
+  Visual *visual = 0;
+  <span class="keyword">int</span> depth = 0;
+  <span class="keyword">unsigned</span> <span class="keyword">long</span> pixel = 0;
+  <span class="keyword">unsigned</span> <span class="keyword">int</span> layer = 0;
+  <span class="keyword">int</span> i;
+
+  <span class="keyword">if</span> (data)
+    <span class="keyword">for</span> (i = 0; i &lt; n_visuals; i++)
+&nbsp;
+      <span class="comment">/* Only accept the ones that 
+          have a transparent pixel. */</span>
+      <span class="keyword">if</span> (data[i].transparency == 1) {
+          XVisualInfo vi_in, *vi_out;
+          <span class="keyword">int</span> out_count;
+          vi_in.visualid = data[i].visual_id;
+          vi_out = XGetVisualInfo(
+              DisplayOfScreen(screen), 
+              VisualIDMask,
+              &amp;vi_in, &amp;out_count);
+          <span class="keyword">if</span> (vi_out) {
+              <span class="comment">/* Prefer the one at the topmost layer; 
+                 after that, prefer the one with the 
+                 greatest depth (most colors.) */</span>
+
+              <span class="keyword">if</span> (layer &lt; data[i].layer ||
+                  (layer == data[i].layer &amp;&amp;
+                   depth &lt; vi_out[0].depth)) {
+                  visual = vi_out[0].visual;
+                  depth  = vi_out[0].depth;
+                  layer  = data[i].layer;
+                  pixel  = data[i].value;
+              }
+              XFree(vi_out);
+          }
+      }
+
+  <span class="keyword">if</span> (data) {
+    XFree(data);
+  }
+  <span class="keyword">if</span> (visual &amp;&amp; transparent_pixel_ret)
+    *transparent_pixel_ret = pixel;
+  <span class="keyword">return</span> visual;
+}</pre>
+</ul>
+還有，XShapeCombineMask 這個 API 的使用也要小心。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 February  2, 2006 05:32 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>想請教一下，您寫 blog 時，通常都用甚麼工具來將你的<br />
+ source code 轉成 html 的？<br />
+</p>
+<span class="comments-post">由 <a href="http://yukuan.blogspot.com">Yukuan</a> 發表於</MTIfNonEmpty> February  4, 2006 05:39 PM</span>
+</div>
+<div class="comments-body">
+<p>To Yukuan,<br />
+  程式碼排版可使用 http://rafb.net/<br />
+  張貼後，會產生 HTML 輸出，可以選擇是否要行號。</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> February  4, 2006 05:51 PM</span>
+</div>
+<div class="comments-body">
+<p>謝謝！<br />
+我最後決定使用 Dev-C++ 的 Export to html 功能。</p>
+<span class="comments-post">由 <a href="http://yukuan.blogspot.com">Yukuan</a> 發表於</MTIfNonEmpty> March  5, 2006 01:37 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: 在 GDB 透視 C 語言的字串表示法</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2010/06/post_280.html" title="意義是三小，我只知道義氣" />
+
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2010/06/_libtcc_c.html" title="透過 libtcc 來擴充 C 語言" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2010/06/post_280.html">« 意義是三小，我只知道義氣</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+| <a href="http://blog.linux.org.tw/~jserv/archives/2010/06/_libtcc_c.html">透過 libtcc 來擴充 C 語言 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">June 17, 2010</h2>
+
+<div class="blogbody">
+
+<h3 class="title">在 GDB 透視 C 語言的字串表示法</h3>
+
+最近從「<a href="http://jserv.sayya.org/debugger/">快快樂樂學 GDB</a>」到一系列與 C 程式語言相關的 [<a href="http://jserv.sayya.org/c-prog/">演講議程</a>]，探討了在執行時期，透過 GDB 一窺系統全貌的途徑。筆者的觀點是，C 程式語言就是設計來開發作業系統的用途，務必確認每個環節。UNIX 之父 Ken Thompson，不僅開創了 UNIX 若干經典的設計，也持續維護 C compiler，甚至在 Plan9 研發時，還重新翻修過整個編譯系統的設計，可參考 [<a href="http://doc.cat-v.org/bell_labs/new_c_compilers/">A New C Compiler by Ken Thompson</a>]，顯然就是不放過任何一個技術細節。身處於 21 世紀的我們，幸福多了，有強大的 GDB 搭配開放的 GNU/Linux，而本文就在這些基礎上，談談在 GDB 透視 C 語言的字串表示法。<br />
+<br />
+前文 [<a href="http://blog.linux.org.tw/~jserv/archives/001397.html">C-style 字串的最佳化</a>] 提過 C 語言字串的形式，其實不過是一段保存於連續記憶體的資料，那面對稍微複雜一些的形式，我們不免會亂了方寸，這時候當然要祭出 GNU gdb 來協助。首先，我們先讓 gdb 變身為 C interpreter：<pre class="code" style="margin: 6px;">
+$ <b>gdb `which gdb`</b>
+GNU gdb (GDB) 7.1-ubuntu
+[...略...]
+Reading symbols from /usr/bin/gdb...(no debugging symbols found)...done.
+(gdb) <b>start</b>
+Temporary breakpoint 1 at 0x808ae03
+Starting program: /usr/bin/gdb 
+[Thread debugging using libthread_db enabled]
+
+Temporary breakpoint 1, 0x0808ae03 in main ()
+(gdb)
+</pre>
+取得 gdb 的命令提示列後，就可動態作許多 C 語言版本的 eval (可對比 JavaScript 的 eval)，我們接著作個實驗：<pre class="code" style="margin: 6px;">
+(gdb) <b>p (char (*) [10]) &"0123456789abcdefghi"</b>
+$1 = (char (*)[10]) 0x83ca008
+</pre>
+注意到字串 "0123456789abcdefghi" 的動態宣告方式與提取記憶體位址 (operator &) 的寫法，在 gdb 必須清楚的標示 C 語言的 type casting。我們知曉這 10 個單位的 C-style 字串陣列，被配置到自位址 0x83ca008 開始的連續記憶體，那就分別來窺探記憶體的內容：<pre class="code" style="margin: 6px;">
+(gdb) <b>p ((char (*) [10]) &"0123456789abcdefghi")[0]</b>
+$2 = "0123456789"
+(gdb) <b>p ((char (*) [10]) &"0123456789abcdefghi")[1]</b>
+$3 = "abcdefghi"
+</pre>
+當然，你也可以這麼作：(想想輸出的結果為何如此)<pre class="code" style="margin: 6px;">
+(gdb) <b>p (char[]) {"abcdefghi"}</b>
+$4 = "P"
+</pre>
+或者：<pre class="code" style="margin: 6px;">
+(gdb) <b>p (const char[]) "abcdefghi"</b>
+$5 = "abcdefghi
+</pre>
+前後比對 "char *" 與 "char[]" 對應的記憶體關聯，也可發現兩者的微妙差異，一切都經由 gdb 攤在陽光底下。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 June 17, 2010 12:34 AM
+
+<br /></span>
+
+</div>
+
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2150" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Trac 整合性開發環境</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001386.html" title="diffstat : diff 輸出的歷史統計" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001388.html" title="IIIMF 與 SCIM 的開發經驗" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001386.html">« diffstat : diff 輸出的歷史統計</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001388.html">IIIMF 與 SCIM 的開發經驗 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">December 12, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Trac 整合性開發環境</h3>
+
+現在開發軟體專案，已經不是一個人可以徹底掌握的，隨時都會遇到 "XD Programming" 的經驗，什麼是 "XD Programming" 呢？這是我在 #dot IRC channel 閒聊時發明的稱法，主要是描述建構一個軟體，就算有相當充足的資源，還是不免到處碰壁的挫折經驗，這時候就需要惡搞，然後就不免會補個 "XD" *笑*。例如 PCMan 兄當初打算重寫過去的 [<a href="http://pcman.ptt.cc/">pcman</a>]，成為現在我們所見的 [<a href="http://pcmanx.csie.net/">PCManX pure GTK+ 2</a>]，這過程有頗多艱辛，不過本週二 PCManX 本尊就會在 [<a href="http://wiki.tossug.org/">TOSSUG - 台北開放源碼軟體使用社群 (Taipei Open Source Software User Group)</a>] 給場 talk，這裡就不贅述了。但是，使用好的工具，對開發的過程絕對有相當程度的幫助，特別在多人協同開發中。<br />
+<br />
+[<a href="http://hlb.yichi.org/blog/">布長輩</a>] 提過 [<a href="http://hlb.yichi.org/blog/2005/11/15/28">Trac 介紹 & 0.8.4 中文版</a>]，可以得知 [<a href="http://www.edgewall.com/trac/">Trac</a>] 實在是操作簡單，功能卻強大的整合 SCM 與專案管理的系統，而 [<a href="http://blog.hcchien.org/">hcchien’s space</a>] 也提到 [<a href="http://blog.hcchien.org/?p=403">科技還是要來自人性</a>] 一文，看來博大精深的 [<a href="http://www.bestpractical.com/">RT</a>] 也有了 trac theme：<br />
+<center><img src="http://static.flickr.com/26/66057683_deb466583c.jpg"></center><br />
+引用 [<a href="http://hlb.yichi.org/blog/">布長輩</a>] 的介紹敘述：<blockquote class="code" style="margin: 6px;">
+Trac 提供一套網站作業環境：有撰寫文件用的Wiki子系統、事務追蹤(issue tracking)子系統等等。而且不論是 [<a href="http://projects.edgewall.com/trac/wiki/TracAccessibility">操作介面</a>] 跟 [<a href="http://projects.edgewall.com/trac/wiki/TracLinks">系統整合</a>] 方面，都表現得可圈可點。也難怪 [<a href="http://projects.edgewall.com/trac/wiki/TracUsers">許多知名軟體專案</a>] 都已經採用目前才0.9版的Trac了。雖然說Trac是專門設計給軟體專案用的，可是我覺得裝在自己筆記型電腦上，管理svk也挺不錯。
+</blockquote>
+十一月初，我這個 server 白痴，也終於在某種特定的需求下，自己動手安裝 [<a href="http://www.edgewall.com/trac/">Trac</a>]，雖然一般來說文件都寫得很詳細，可是搞這種東西，都會讓我想起以前是如何把 [<a href="http://kde.linux.org.tw/">KDE@Taiwan</a>] 搞爛的往事。[<a href="http://www.edgewall.com/trac/">Trac</a>] 全部以 Python 撰寫，不是我懼怕的駱駝文，看來有點信心，而且還有 standalone web daemon 可用，大大的提高我的興趣，然後設定檔改一下，將變數指向 Subversion repository，apache-ctl restart 後，竟然... 就可以動了，讓我這個 server 白痴真是高興了好一段時間。<br />
+<br />
+Trac 0.9 改用 BSD-like License，有更大的彈性，而且我也開始練習寫 Python module，在內部的專案管理開始作實務應用，用起來還不錯，Trac 開發團隊也相當活躍，大概除了 localization 外，沒什麼特別要挑剔的 :)<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 December 12, 2005 12:30 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>可惜CVSTrac使用C写的，真糟糕。</p>
+<span class="comments-post">由 <a href="http://xyb.8800.org">xyb</a> 發表於</MTIfNonEmpty> December 13, 2005 01:52 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1387" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

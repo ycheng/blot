@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 「綜觀 X Window System 新發展」簡報上線</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001272.html" title="語言的感動" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001274.html" title="協助 kernel bug-report 的小工具" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001272.html">« 語言的感動</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001274.html">協助 kernel bug-report 的小工具 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">August 28, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">「綜觀 X Window System 新發展」簡報上線</h3>
+
+昨天的 [<a href="http://blog.linux.org.tw/~jserv/archives/001230.html">演講：綜觀 X Window System 與新發展</a>] 終於落幕了，而且 [<a href="http://jserv.sayya.org/freedesktop/x-dev-2005.pdf">簡報已上線</a>] (PDF格式)，歡迎指教，謝謝。<br>
+<br>
+這次演講最有趣的插曲就是，我把 [<a href="http://www.ntust.edu.tw/">台科大</a>] 跟 [<a href="http://www.ntut.edu.tw/">北科大</a>] 混為一談，errr.... 我活到現在，才知道這是兩間不同的學校，而且距離還不近呢，所以遲到半小時，到演講廳的時候，還一直喘氣，這裡要再度感謝各位朋友包涵。<br>
+<br>
+傍晚跟一位前輩有約，所以有些議題草草帶過，比較可惜些，不過這次終於把 X Extensions 與 3D Acceleration 做了粗略的介紹，因為每次看國外的文件，總是鮮少有系統性的介紹，這是試著連貫的介紹，應該對觀念的釐清會有幫助。<br>
+<br>
+最可惜的是，竟然忘記展示 Xorz/Embedded，這是一個打破 X11 相容性的特殊實做，用很小的 footprint 實做與 GTK+/Cairo 相似 API 的小型實做，出發點有點類似 [<a href="http://www.microwindows.org/">Nano-X</a>]，不過相容性應該會好很多 (至少可以跑 GTK+ 與 Cairo)，這是 [<a href="http://blog.linux.org.tw/~jserv/archives/001245.html">2005 下半年計畫</a>] 的子項目，現在先擱著。<br>
+<br>
+很顯然表達能力還要再加強 :(<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 August 28, 2005 12:18 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>　　你好，「http://jserv.sayya.org/freedesktop/x-dev-2005.pdf」這個連結有錯誤的樣子，連不到說。</p>
+<span class="comments-post">由 <a href="http://www.riti.com.tw">Shoichi.Chou</a> 發表於</MTIfNonEmpty> September  1, 2005 02:32 PM</span>
+</div>
+<div class="comments-body">
+<p>To Shoichi,</p>
+
+<p>  sayya.org 的 domain name 與 hosting 目前停擺中，所以本 blog 的圖片與簡報文件等資訊，暫時無法取得。</p>
+<span class="comments-post">由 <a href="http://jserv.sayya.org/">jserv</a> 發表於</MTIfNonEmpty> September  1, 2005 02:50 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>timhsu: 某金控網站被入侵</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~timhsu/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~timhsu/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~timhsu/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~timhsu/archives/001429.html" title="十三號星期五" />
+
+<link rel="next" href="http://blog.linux.org.tw/~timhsu/archives/001515.html" title="SSH TCP FORWARDING" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+<!--
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="http://blog.linux.org.tw/~timhsu/archives/001512.html">
+<dc:title>某金控網站被入侵</dc:title>
+<dc:description>今天下午某位朋友告訴我，當他連上某國內知名金控網站時，防毒軟體發出了警告。該網站的首頁疑似被加入了一行不顯示的 iframe 連結。順著該連結到另一個公司的網站，就會啟動一個惡意的 Javascript，而此 script 的動作則是執行一個植入後門的程序。 想看此惡意 javascript 原貌? 看看 ICST上的相關討論吧。 顯然，至少有兩家公司被入侵，網頁內容遭駭客篡改。但被植入惡意 Javascript 的網站，也許已經讓許多的使用者電腦中了後門。 害怕了嗎？還不快把 MS-IE 換掉！ 至於被植入的後門，經過 Birdman 大師的 Archon 惡意軟體掃瞄，其結果如下圖：...</dc:description>
+<dc:creator></dc:creator>
+<dc:date>2006-02-14T17:31:50+08:00</dc:date>
+<license rdf:resource="http://creativecommons.org/licenses/by-nc-sa/1.0/" />
+</Work>
+<License rdf:about="http://creativecommons.org/licenses/by-nc-sa/1.0/">
+<requires rdf:resource="http://web.resource.org/cc/Attribution" />
+<requires rdf:resource="http://web.resource.org/cc/Notice" />
+<requires rdf:resource="http://web.resource.org/cc/ShareAlike" />
+<permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+<permits rdf:resource="http://web.resource.org/cc/Distribution" />
+<permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+<prohibits rdf:resource="http://web.resource.org/cc/CommercialUse" />
+</License>
+</rdf:RDF>
+-->
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~timhsu/" accesskey="1">timhsu</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~timhsu/archives/001429.html">&laquo; 十三號星期五</a> |
+
+<a href="http://blog.linux.org.tw/~timhsu/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~timhsu/archives/001515.html">SSH TCP FORWARDING &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February 14, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">某金控網站被入侵</h3>
+
+<p>今天下午某位朋友告訴我，當他連上某國內知名金控網站時，防毒軟體發出了警告。該網站的首頁疑似被加入了一行不顯示的 iframe 連結。順著該連結到另一個公司的網站，就會啟動一個惡意的 Javascript，而此 script 的動作則是執行一個植入後門的程序。<br />
+想看此惡意 javascript 原貌? 看看 <a href="http://forum.icst.org.tw/phpBB2/viewtopic.php?p=18031&">ICST</a>上的相關討論吧。<br />
+顯然，至少有兩家公司被入侵，網頁內容遭駭客篡改。但被植入惡意 Javascript 的網站，也許已經讓許多的使用者電腦中了後門。</p>
+
+<p>害怕了嗎？還不快把 MS-IE 換掉！</p>
+
+<p>至於被植入的後門，經過 Birdman 大師的 Archon 惡意軟體掃瞄，其結果如下圖：</p>
+
+<p><img alt="fubon_rootkit.JPG" src="http://blog.linux.org.tw/~timhsu/archives/images/fubon_rootkit.JPG" width="1032" height="951" border="0" /></p>
+
+<a name="more"></a>
+
+
+<span class="posted">由  發表於 February 14, 2006 05:31 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>用Archon 才掃得到嘛?</p>
+<span class="comments-post">Posted by: <a href="http://acommoner.com">acommoner</a> 發表於 June 29, 2006 11:33 PM</span>
+</div>
+<div class="comments-body">
+<p>看到螢幕快照上面有一個搜尋.....鳥人好強阿<br />
+找的了摔角的資訊<br />
+鳥人那時去打摔角了.....囧/</p>
+<span class="comments-post">Posted by: <a href="http://kalug.linux.org.tw">lightwind</a> 發表於 June 30, 2006 09:40 AM</span>
+</div>
+<div class="comments-body">
+<p>csHi. This is my links. free teen lesbian sex|http://orgyforwomen.pornoszones.com/free-teen-lesbian-sex.html<br />
+lesbian porn video|http://orgyforwomen.pornoszones.com/1esbian-p0Rn-video.html<br />
+wet lesbos|http://orgyforwomen.pornoszones.com/wet-lesbos.html<br />
+free lesbian action|http://orgyforwomen.pornoszones.com/free-lesbian-action.html<br />
+free black lesbian porn|http://orgyforwomen.pornoszones.com/free-black-lesbian-porn.html<br />
+lesbians fuck|http://orgyforwomen.pornoszones.com/lesbians-fuck.html<br />
+pussy eating lesbians|http://orgyforwomen.pornoszones.com/pussy-eating-lesbians.html<br />
+mature lesbian porn|http://orgyforwomen.pornoszones.com/mature-1esbian-p0Rn.html<br />
+amateur lesbian sex|http://orgyforwomen.pornoszones.com/amateur-1esbian-s3x.html<br />
+lesbians undressing|http://orgyforwomen.pornoszones.com/1esbians-undressing.html</p>
+<span class="comments-post">Posted by: <a href="http://orgyforwomen.pornoszones.com/shaved-1esbians.html">george</a> 發表於 September  4, 2006 05:21 PM</span>
+</div>
+<div class="comments-body">
+<p>csHi. Cool theme, but this is interesting too:  http://newonlaine.uplyn.net/free-live-webcam-girls.html<br />
+dildo camera<br />
+live lightning crashes<br />
+http://newonlaine.uplyn.net/webcam-masturbation.html<br />
+http://newonlaine.uplyn.net/hidden-cameras-catch-sex.html<br />
+http://newonlaine.uplyn.net/teen-web-cams.html<br />
+http://newonlaine.uplyn.net/webcam-boys.html<br />
+http://newonlaine.uplyn.net/teen-chat-center.html<br />
+teen cams<br />
+adult action cams</p>
+<span class="comments-post">Posted by: <a href="http://newonlaine.uplyn.net/">nelly</a> 發表於 September  5, 2006 08:55 AM</span>
+</div>
+<div class="comments-body">
+<p>csIf you have a free time test this urls:  dog sex women<br />
+http://zooacces.hotsitessearch.com/woman-having-sex-with-horse.html<br />
+http://zooacces.hotsitessearch.com/zoophilia-zoophiles.html<br />
+http://zooacces.hotsitessearch.com/woman-sex-with-dog.html<br />
+zoophilia free zoo sex stories<br />
+http://zooacces.hotsitessearch.com/how-to-have-sex-with-a-horse.html<br />
+http://zooacces.hotsitessearch.com/snake-bestiality.html<br />
+http://zooacces.hotsitessearch.com/horse-mounting-girl-beastiality.html<br />
+http://zooacces.hotsitessearch.com/beastiality-horses.html<br />
+http://zooacces.hotsitessearch.com/zoophilia-fiction.html</p>
+<span class="comments-post">Posted by: <a href="http://zooacces.hotsitessearch.com/">nickol</a> 發表於 September 30, 2006 12:19 PM</span>
+</div>
+<div class="comments-body">
+<p>csHello. I am new here. It is very interesting. webcam nx pro error<br />
+webcams teen girls<br />
+15 year old web cam girls<br />
+http://livewebcam.hotsitessearch.com/hot-dorm-cam.html<br />
+http://livewebcam.hotsitessearch.com/homemade-webcam-movies.html<br />
+http://livewebcam.hotsitessearch.com/free-naked-webcams.html<br />
+http://livewebcam.hotsitessearch.com/live-sex-show.html<br />
+we live together sex<br />
+livesex<br />
+http://livewebcam.hotsitessearch.com/singles-teen-flirt-chat.html</p>
+<span class="comments-post">Posted by: <a href="http://livewebcam.hotsitessearch.com/">mary</a> 發表於 October 14, 2006 02:27 AM</span>
+</div>
+<div class="comments-body">
+<p>csHello. I am new here. It is very interesting. earring.synns.net<br />
+http://emerald.synnweb.com<br />
+http://amethyst.synnt.com<br />
+http://chain.synnland.com<br />
+amethyst.synnt.com<br />
+bracelet.synnu.com<br />
+body-jewelry.synnnet.net<br />
+http://bracelet.synnu.com<br />
+chain.synnland.com<br />
+http://body-jewelry.synnnet.net</p>
+<span class="comments-post">Posted by: <a href="http://chain.synnland.com">irgy</a> 發表於 October 17, 2006 05:33 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1512" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響數量:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+</div>
+</div>
+</body>
+</html>

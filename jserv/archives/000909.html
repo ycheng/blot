@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 透過 VNC 達成 Citrix 提供的服務</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/000908.html" title="Kaffe 新的 AWT backend -- Nano-X" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/000911.html" title="GTK+ 2.6.2 釋出" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/000908.html">« Kaffe 新的 AWT backend -- Nano-X</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/000911.html">GTK+ 2.6.2 釋出 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February 06, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">透過 VNC 達成 Citrix 提供的服務</h3>
+
+<p>「透過 VNC 達成 Citrix 提供的服務」這個標題聽起來有點怪，在說明之前，先提及 <a href="http://www.citrix.com/">Citrix</a> 的 MetaFrame 技術，這是非常傑出的設計，無縫的 (seamless) 整合許多 connection session，並且也針對企業的需求，提供兼具穩定性與彈性的組合... (後面消音，聽起來像是廣告台詞)。Citrix MetaFrame 有個很棒的設計，就是能夠把 Thin Client 與 Desktop 整合在一起，透過其 Citrix 制訂的通信協定，指定使用伺服器上某個應用程式，然後呈現在 Desktop 上，但是使用者不需要顧慮這箇中的實現方式，感覺就好像這些應用程式就跑在本機端。</p>
+
+<p>我過去在 <a href="http://www.channel.com.tw/">W-Channel Inc.</a> 服務時，曾經花了些時間開發一個實驗性的設計，我稱為 XD (neXt Desktop)，這是一個 Thin Client 與 Desktop 整合的新途徑，當時修改 <a href="http://zero-install.sourceforge.net/">Zero-Install</a> 與 Citrix client，但是還沒整合 VNC 進去，這個計畫因為某種原因中斷。</p>
+
+<p>過了幾個月，在 SourceForge.net 看到 [<a href="http://metavnc.sourceforge.net/">MetaVNC</a>] 的計畫，真讓我耳目一新，把 VNC Client 與 Desktop 作了某種程度的整合，可以同時取用不同 VNC server 上的應用程式資源 (透過加強的 TightVNC extension)，做到協同運算，而且已經有足夠的穩定性，剛剛也稍微 hack 一下 Unix 版本，看來其 client 還有很多發揮的空間，我覺得比較可行的方式為改進其 built-in window manager 的設計。</p>
+
+<p>看來新年有許多可以著墨之處 :-)</p>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 February  6, 2005 07:59 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 「我所知道的 C 語言」簡報上線</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002095.html" title="淺談 Google Skia 圖形處理引擎" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002097.html" title="編譯器技術的革新：談移動平台的機會" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002095.html">« 淺談 Google Skia 圖形處理引擎</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002097.html">編譯器技術的革新：談移動平台的機會 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 29, 2009</h2>
+
+<div class="blogbody">
+
+<h3 class="title">「我所知道的 C 語言」簡報上線</h3>
+
+週六到台南社區大學分享主題為 [<a href="http://blog.linux.org.tw/~jserv/archives/002093.html">我所知道的 C 語言</a>] 的演講，相關的資料已上線，可參考：<ul>
+  <li>簡報： [<a href="http://jserv.sayya.org/c-prog/c-lang-review.pdf">c-lang-review.pdf</a>]</li>
+  <li>範例程式碼： [<a href="http://jserv.sayya.org/c-prog/samples-2009-03-28.tar.bz2">samples-2009-03-28.tar.bz2</a>]</li>
+</ul>
+作為設計 UNIX 作業系統而發展出來的程式語言，C 語言肩負了眾多歷史的包袱與極為罕見、對應於硬體的設計，所以今天試著花些篇幅探討歷史緣由，特別是 UNIX 設計哲學的議題，再回來觀察 C 語言的若干特色。貫串議程的核心概念，就是以 C 語言為基礎的物件導向程式設計，選用若干嶄新的軟體系統作為說明，最後則以 Linux Kernel 一些 pointer/macro 的應用作結。整體來說，我期望這能從「鑑賞」的角度出發，好似修辭學之於經典文學作品一般，不過，看來還是得斟酌內容的呈現與詮釋。<br />
+<br />
+因為這個議題其實有點冷門，意外發現會場竟然爆滿，感謝前來指教的朋友捧場，至於議程提到若干進階議題，如 JavaScriptCore 與 C/C++ 程式整合、混用物件模型，希望能在日後陸續整理於 blog 上，謝謝！<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March 29, 2009 01:00 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>感謝 Jserv 這麼精彩的演說，讓我們獲益良多。<br />
+偷偷躲在一旁聽，大大今天還一身西裝筆挺阿。</p>
+<span class="comments-post">由 <a href="mailto&#58;Q3896105&#64;mail&#46;ncku&#46;edu&#46;tw">infboy</a> 發表於</MTIfNonEmpty> March 29, 2009 04:02 AM</span>
+</div>
+<div class="comments-body">
+<p>十分充實的演講，感覺自己腦袋終於長了肉XD</p>
+<span class="comments-post">由 <a href="mailto&#58;Rifurdoma&#64;gmail&#46;com">Rifur</a> 發表於</MTIfNonEmpty> March 29, 2009 07:25 AM</span>
+</div>
+<div class="comments-body">
+<p>我對你的演講都好感興趣...<br />
+但我身在香港...不能到場參與...<br />
+Jserv能不能找義工將演說拍下來呢..?</p>
+<span class="comments-post">由 <a href="mailto&#58;kelvin60429&#64;yahoo&#46;com&#46;hk">Kelvin</a> 發表於</MTIfNonEmpty> March 29, 2009 01:56 PM</span>
+</div>
+<div class="comments-body">
+<p>初次參與Jserv大的演說，雖然J大演說後面的內容偏向<br />
+於大大本身所定位的"賞析"，不過整體來說倒是頗有拋<br />
+磚引玉的用意在喔！</p>
+
+<p>另外想請問J大下面的事：<br />
+1. 演說中你提到目前參與的CPU設計專案名稱是什麼？<br />
+  （抱歉我太不認真了沒作筆記啦！）<br />
+2. 演說串場show的Doom遊戲那個C語言轉swf的東東是<br />
+   什麼呢？我滿感興趣的！</p>
+
+<p>以上兩個問題就麻煩J大回答囉！謝謝！</p>
+<span class="comments-post">由 <a href="mailto&#58;chien_lung1130&#64;yahoo&#46;com&#46;tw">Tom</a> 發表於</MTIfNonEmpty> March 30, 2009 09:48 PM</span>
+</div>
+<div class="comments-body">
+<p>@Tom,<br />
+感謝撥空前來，回覆如下：<br />
+(1) 「台灣心計畫」，執行廠商之一為 Andes Tech ( http://www.andestech.com/ )<br />
+(2) 那是 LLVM 技術的應用，詳情會在四月 OSDC.tw 2009 講解，屆時也會發表相關的新技術<br />
+</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> March 30, 2009 10:38 PM</span>
+</div>
+<div class="comments-body">
+<p>無法參加講座,跟很多人一樣的心情,留下許多遺憾,請問有錄音或錄影嗎?是否可以開放下載或線上瀏覽?感恩!</p>
+<span class="comments-post">由 <a href="mailto&#58;johnny_pda&#64;hotmail&#46;com">Johnny</a> 發表於</MTIfNonEmpty> April  3, 2009 01:18 AM</span>
+</div>
+<div class="comments-body">
+<p>你那個「1是一個物件，另一個1也是一個物件，物件1跑去和另一個物件1說我們要來相加」真是太爆笑了啦! XDDDD</p>
+
+<p>我是最後面有人跑去問 shadow 的時候，站在他旁邊那個穿 Y! 紫色 T-shirt 的... </p>
+<span class="comments-post">由 <a href="mailto&#58;lin&#46;zhemin&#64;gmail&#46;com">ljmid</a> 發表於</MTIfNonEmpty> April 19, 2009 12:40 PM</span>
+</div>
+<div class="comments-body">
+<p>很讚的簡報，很可惜小弟不能參加，光看簡報檔p.46有點跳。</p>
+<span class="comments-post">由 <a href="mailto&#58;yuanchao&#64;gmail&#46;dot&#46;com">YChao</a> 發表於</MTIfNonEmpty> April 29, 2009 05:57 AM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2096" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

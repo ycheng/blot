@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Opera Widgets 與桌面系統的整合</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001690.html" title="Apache Harmony 的相容性測試" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001692.html" title="Orz Microkernel" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001690.html">« Apache Harmony 的相容性測試</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001692.html">Orz Microkernel »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">June 01, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Opera Widgets 與桌面系統的整合</h3>
+
+在 KDE 1.x 邁入 KDE 2.0 時，KHTML view/widget 幾乎是徹底改寫，就是因應 HTML 4.0 種種高挑戰性的設計，也引入 DOM，那段時光，令人難忘，每天、每時都有大量的 cvs commit... 而寫過 widget sets 或 window system 的開發者回頭看 W3C 提出一系列的 Recommendation，可以發現 DOM + CSS + client scripting，理論上幾乎可完成絕大多數 2D Graphics 的要求，著墨於 web browser engine 多年的 [<a href="http://www.opera.com/">Opera Software</a>] 當然熟知這點，日前新聞稿 [<a href="http://www.desktoplinux.com/news/NS4602220629.html">Opera 9 beta: widgets, BitTorrent, and more</a>] 除了提到 Opera 9 在功能上的突破，還提到最新的 [<a href="http://my.opera.com/community/dev/widgets/">Opera Widgets</a>]。<br>
+<br>
+簡單來說，[<a href="http://my.opera.com/community/dev/widgets/">Opera Widgets</a>] 是一個嶄新的機制，允許開發者將過去在網頁設計的經驗，緊密地與桌面系統整合，彼此間還可做到良好的互動。先看看以下的畫面：<br>
+<center><img src="http://my.opera.com/community/graphics/dev/widgets/hello-world-5.png"></center><br>
+這個 Hello World 很有意思，是用 xHTML + CSS 繪製的，就如右側 Opera 瀏覽器畫面一般，用的是同一套引擎，但是，[<a href="http://my.opera.com/community/dev/widgets/">Opera Widgets</a>] 得以與桌面系統整合一起，成為視覺性的元件，然後，我們可將 event handling / dispatching 也透過 dynamic HTML 的機制處理，完整的使用範例可參考 [<a href="http://my.opera.com/community/dev/widgets/first/">Opera Widgets::Your first widget</a>]。<br>
+<br>
+這個想法，在 Mozilla 計畫草創時，Netscape 的內部開發團隊就有類似的計畫，不過一直沒有良好的應用，如今，硬體運算速度與記憶裝置已經提昇，而軟體應用也趨於多元 MRE (Mozilla Runtime Environment) 除了作為 embedded web browser component，這類與桌面系統的整合，看來也是另一個可深入著墨之處。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 June  1, 2006 10:15 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>呵呵，MacOS上的Dashboard是不是和这个很相似，它就是用safari(基础也是KHTML)了。</p>
+<span class="comments-post">由 <a href="mailto&#58;findsun&#64;gmail&#46;com">findsun</a> 發表於</MTIfNonEmpty> June  1, 2006 10:59 PM</span>
+</div>
+<div class="comments-body">
+<p>這種東西看起來在 windows 上似乎沒辦法實做？</p>
+<span class="comments-post">由 <a href="mailto&#58;s5289062&#64;yahoo&#46;com&#46;tw">timeriver</a> 發表於</MTIfNonEmpty> June  2, 2006 08:38 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

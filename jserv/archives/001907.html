@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Java SE/ME GPL 釋出</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001906.html" title="qsort 與 shellcode" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001908.html" title="演講：通訊自由與通訊設備的自由化 - 淺談自由軟體與行動運算" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001906.html">« qsort 與 shellcode</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001908.html">演講：通訊自由與通訊設備的自由化 - 淺談自由軟體與行動運算 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">May 10, 2007</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Java SE/ME GPL 釋出</h3>
+
+正如許多人知曉的，Sun Java SE/ME 現在以 GNU GPL 授權釋出，並交付 [<a href="http://openjdk.java.net/">OpenJDK</a>] 開發社群來維護。在今年的 JavaOne，Sun 邀請了許多知名的 Free Java hacker，以下列舉一些紀錄：<ul>
+<li>Andrew Hughes - [<a href="http://blog.fuseyism.com/?p=27">Java Freedom Day 2: Now The Hard Work Begins…</a>]</li>
+<li>Tom Tromey - [<a href="http://tromey.com/blog/?p=350">JavaOne</a>]</li>
+<li>Mark J. Wielaard - [<a href="http://gnu.wildebeest.org/diary/2007/05/09/javaone-openjdk-source-drop/">JavaOne & OpenJDK source drop</a>]</li>
+</ul>
+那麼，這是否意味著原本的計畫，如 [<a href="http://www.classpath.org/">GNU Classpath</a>]，邁入終結？！不，不但會存活，而且因此可以更活躍。我們可以看到，當 [<a href="http://openjdk.java.net/">OpenJDK</a>] 接手 HotSpot 與 JavaSE 的 GPL 版本維護時，在不到二十四小時內，就收到幾十個修正或錯誤回報，也可以見到 [<a href="http://www.classpath.org/">GNU Classpath</a>] 的開發者做了許多眉批，如：<ul>
+<li>Dave Gilbert - [<a href="http://jroller.com/page/dgilbert?entry=my_first_openjdk_bug_fix">My First OpenJDK Bug Fix</a>]</li>
+<li>Roman Kennke - [<a href="http://mail.openjdk.java.net/pipermail/2d-dev/2007-May/000000.html">DataBuffer, ColorModels and SampleModels</a>]</li>
+</ul>
+從中可見，礙於某些技術考量，與非技術的限制 (如專利、第三方程式碼)，所以 [<a href="http://openjdk.java.net/">OpenJDK</a>] 的 Java SE 實做事實上並非相當完整，但這些空缺即可由 [<a href="http://www.classpath.org/">GNU Classpath</a>] 來補齊，而且現在已經有具體成果，是的，在新聞發佈後短短幾個小時就展開了。另外就是平台的移植，Java SE 礙於架構限制，現在僅有 x86/x86_64/SPARC 的移植實做，但其他平台的移植，也可以透過其他 Free Java VM 的合作，更換其 Runtime layer，達成多元的執行環境。<br />
+<br />
+2000 年開始，Sun 就有意將 JDK 程式碼釋出，並以 free software / open source 的形式永續發展，如今終於達成了，而 [<a href="http://www.classpath.org/">GNU Classpath</a>] 可說是直接或間接促成 Sun 確立此決策的重要計畫，未來也可望有更創新的突破。<br />
+<br />
+Java is Free'd!<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 May 10, 2007 10:13 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>這真是好事一樁！</p>
+<span class="comments-post">由 <a href="http://magicdesig.blogspot.com/">魔法設計師</a> 發表於</MTIfNonEmpty> May 10, 2007 10:23 AM</span>
+</div>
+<div class="comments-body">
+<p>昨天看到消息時，委實興奮了一下。這真是漫長啊！</p>
+<span class="comments-post">由 <a href="http://blog.godfat.idv.tw/">godfat 真常</a> 發表於</MTIfNonEmpty> May 10, 2007 05:48 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1907" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,519 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: March 2012 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2012_02.html" title="February 2012" />
+
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2012_04.html" title="April 2012" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2012_02.html">« February 2012</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+| <a href="http://blog.linux.org.tw/~jserv/archives/2012_04.html">April 2012 »</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+
+
+<h2 class="date">March 22, 2012</h2>
+
+
+<div class="blogbody">
+<a name="002205"></a>
+<h3 class="title">「Android 內部通訊機制」簡報上線</h3>
+
+本週一下午，再次在南台科技大學演講，這次選定 [<a href="http://blog.linux.org.tw/~jserv/archives/2012/03/android_5.html">Android 內部通訊機制</a>] 這個題目，記得大陸網友曾說過，若能理解 Android Binder 的原理，整個 Android framework 大概已理解 50%，這句話一點也不為過。筆者嘗試在演講中，揭露 Android 裡貫徹概念整體性 (conceptual integrity) 的 Binder 機制，簡報檔案已上線，請見 [<a href="http://0xlab.org/~jserv/android-binder-ipc.pdf">android-binder-ipc.pdf</a>]<br />
+<center>
+<div style="width:425px" id="__ss_12100088"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/jserv/android-ipc-mechanism" title="Android IPC Mechanism" target="_blank">Android IPC Mechanism</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/12100088" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/jserv" target="_blank">Jim Huang</a> </div> </div>
+</center>
+演講提綱如下：<ul>
+  <li>IPC: The heart of Android</li>
+  <li>Design Patterns</li>
+  <li>Binder IPC Internals</li>
+  <li>Use case: Graphics</li>
+</ul>
+除了闡述觀念外，筆者也用實際的手機操作，驗證 Binder IPC 運作原理，不過這次演講僅草草帶過其他系統元件的互動，未來則規劃從 Binder 出發，一路向上分析 Android framework 的議程。感謝您的指教，歡迎討論。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2012/03/android_6.html"> 5:43 PM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2205" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<h2 class="date">March 11, 2012</h2>
+
+
+<div class="blogbody">
+<a name="002203"></a>
+<h3 class="title">另一個運作於 Android 之上的 X server</h3>
+
+去年年底，筆者介紹過由 Tom Marshall 開發的 [<a href="http://blog.linux.org.tw/~jserv/archives/2011/12/_android_x_serv.html">Android X server</a>]，現在一位澳洲的博士生 Matt Kwan 則提供另一個版本，以 MIT X License 釋出並放在 [<a href="http://code.google.com/p/android-xserver/">Google Code</a>] 維護。這個 X server 同樣以 Java 重新實做，約有一萬四千行。目前仍缺乏 X extension 的實做，所以依賴 X RENDER 或 RandR 一類 extension 的 X 應用程式，無法順利運作。<br />
+<center><img width="800" height="480" src="http://my20percent.files.wordpress.com/2012/02/screenshot3.png"></center><br />
+上圖是個實際運作起來的畫面，而 Matt Kwan 與 Tom Marshall 這兩個版本之間的關聯又是如何？筆者寫信詢問的結果是，Matt Kwan 最早在研讀 [<a href="http://www.jcraft.com/weirdx/">WeirdX</a>] 這個以 GNU GPL 釋出的 pure Java (使用 Swing) X server 實做，而在 2011 年底，決定重新開發一套針對 Android 環境的另一個 Java 版本，但他並未留意到 Tom Marshall 在當時已開發好一個早期的 X server 實做。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2012/03/_android_x_serv_1.html"> 2:47 PM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2203" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+
+<div class="blogbody">
+<a name="002204"></a>
+<h3 class="title">演講：Android 內部通訊機制</h3>
+
+四年前，應南台科技大學的邀請，分享題目為 [<a href="http://blog.linux.org.tw/~jserv/archives/002028.html">尋幽訪勝話系統--以 Linux 探索軟硬體整合設計</a>] 的演講，今年又有機會造訪該校。這次的演講題目為「Android 內部通訊機制」，Android 作為智慧型手機作業系統，需要充分考量繁複的軟體元件規劃與設計，而跨越元件間的通訊，自然是其中重要因素，本議程以 Android 的設計觀點，探討其內部通訊機制是如何讓眾多軟體元件得以相互通訊，並且搭建 Android 應用程式框架所需之基礎系統服務。演講時間在三月 19 號，13:50 開始，地點在南台科技大學資訊工程系 c304 教室。<br />
+<br />
+去年在 StudyArea 高雄探討過「<a href="http://blog.linux.org.tw/~jserv/archives/2011/11/android_--_1.html">Android 圖形系統 -- 設計與實做分析</a>]，議程前半部幾乎都在探討 Android Binder IPC 的設計，其實很多資訊技術背後都有一致的設計概念。《人月神話》作者 Frederick Brooks 指出，系統設計時，保有概念整體性 (conceptual integrity) 是最重要的原則，概念上師法 Be Inc. 與 Palm Inc. [<a href="http://en.wikipedia.org/wiki/OpenBinder">OpenBinder</a>] 的 Android Binder 就是這樣的機制，筆者將在這次演講中，從概念到實做，作一連貫性的探討。日前很榮幸，能在 [<a href="https://events.linuxfoundation.org/events/android-builders-summit">Android Builders Summit </a>] 2012 與 [<a href="https://events.linuxfoundation.org/events/embedded-linux-conference">Embedded Linux Conference</a>] 2012 等兩個大型研討會上，遇見服務於 Kyoto Microcomputer (KMC) 的 Tetsuyuki Kobayashi 先生，我們談論了很多 Android 內部設計的概念與實做細節，都感嘆鮮少有專文探討，這也是促使筆者選定此題材的動機之一。<br />
+<br />
+一如往常，期待您的指教與交流，謝謝！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2012/03/android_5.html">12:04 AM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2204" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<h2 class="date">March  7, 2012</h2>
+
+
+<div class="blogbody">
+<a name="002202"></a>
+<h3 class="title">透過 L4Ka 快速打造作業系統雛型</h3>
+
+下標題時，其實頗為掙扎，開發作業系統如此重要之事，怎能講求速成呢？不過，考量到
+目前無論是雲端或者移動裝置，都有比例可觀的技術是建構在已有成熟的作業系統之上，
+探討實做一個作業系統的 Prototyping (雛型方法)，何嘗不是引入創新的機會。Prototyping
+是在 1980 年代初期興起的一種軟體發展模式，動機在於欲求在限定期限內，以最經濟而
+快速的方法開發出系統的原型，以便即早澄清或驗證不明確的系統需求。本文嘗試在 [<a href="http://www.l4ka.org/">L4Ka</a>] microkernel 的基礎上，建構一個適用於 IA32 架構的小型作業系統。<br />
+<br />
+在稍早的演講議程 [<a
+href="http://blog.linux.org.tw/~jserv/archives/2012/01/l4_microkernel.html">L4 microkernel 的背景知識與最新的研究發展</a>] 中，筆者提及 L4 家族中 L4Ka 專案企圖以 C++ 高階語言及物件導向描述方式，重作 Jochen Liedtke 博士提出的 L4 microkernel 原型，這部份的成果也就是 [<a href="http://www.l4ka.org/pistachio">L4Ka::Pistachio</a>]，目前一系列的專案原始碼均已在 [<a href="https://github.com/l4ka">github</a>] 上維護。L4Ka 不僅實做 L4 ABI，還提供了眾多核心開發的機制，如 in-kernel debugger，以及眾多的 user-level 執行時期支援，這使得我們很容易在上方作擴充。過去猶他大學曾有個 [<a href="http://www.cs.utah.edu/flux/oskit/">OSKit</a>] 專案，企圖以抽象化軟體元件的形式，提供作業系統所需的功能，達到 Prototyping 的目的，可惜自 2002 年後，OSKit 即不再維護，但 L4Ka 仍活躍地支持多樣的硬體架構，這是本文作選擇的考量。<br />
+<br />
+以下將示範如何在 x86/PC 實做 "Hello World" 等級的作業系統，這與前文 [<a
+href="http://blog.linux.org.tw/~jserv/archives/002031.html">開機見 Hello World</a>]
+所不同之處是，我們不需要接觸到任何一行組合語言，而且也不需要充分理解 IA32 架構。筆者的環境是 Ubuntu Linux 12.04 x86 32-bit，相關的系統套件如下：<ul>
+  <li>gcc 4.6.3</li>
+  <li>qemu-system-i386 1.0</li>
+</ul>
+首先，在 /tmp 建立我們的工作目錄，並取得 L4Ka 的原始程式碼：<pre class="code" style="margin: 6px;">
+cd /tmp
+mkdir -p myos
+cd myos
+git clone git://github.com/l4ka/pistachio.git l4ka-pistachio
+</pre>
+然後我們可在 l4ka-pistachio/user/apps/ 目錄下見到若干個 user-level 程式，而我
+們的 "myos" 即將建立於此，所以先在檔案 l4ka-pistachio/user/apps/Makefile.in 追
+加編譯項目，如下：<pre class="code" style="margin: 6px;">
+SUBDIRS=	bench grabmem l4test <b>myos</b>
+</pre>
+因為 L4Ka 使用 Automake，所以也得一併修改檔案 l4ka-pistachio/user/configure.in
+<pre class="code" style="margin: 6px;">
+...
+dnl Modified files.
+AC_CONFIG_FILES([
+config.mk
+Makefile
+...
+apps/bench/pingpong/Makefile
+apps/grabmem/Makefile
+apps/l4test/Makefile
+<b>apps/myos/Makefile</b>
+...
+</pre>
+隨後就可以開始打造這個 "Hello World" 等級的玩具作業系統，先參照 grabmem 的程式碼：<pre class="code" style="margin: 6px;">
+mkdir -p l4ka-pistachio/user/apps/myos
+cd l4ka-pistachio/user/apps/myos
+sed -e 's/grabmem/myos/g' ../grabmem/Makefile.in &gt; Makefile.in
+</pre>
+這個 Makefile.in 透漏一點線索：<pre class="code" style="margin: 6px;">
+PROGRAM=	myos
+PROGRAM_DEPS=	$(top_builddir)/lib/l4/libl4.a \
+		$(top_builddir)/lib/io/libio.a
+
+SRCS=		crt0-$(ARCH).S myos.cc
+
+LIBS+=		-ll4 -lio
+LDFLAGS+=	-Ttext=$(ROOTTASK_LINKBASE)
+</pre>
+我們需要針對平台的 crt0 (表示 C Run-Time，而 "0" 則是一開始之意)，作為 C 語言 main() 進入點的必要準備工作，這裡我們直接從 grabmem 複製：<pre class="code" style="margin: 6px;">
+cp ../grabmem/crt0-ia32.S .
+</pre>
+不過這份 x86 startup code 倒也不難懂，快速瀏覽一下：<pre class="code" style="margin: 6px;">
+	.text
+	.global _start
+	.global _stext
+_stext:	
+_start:
+0:	leal	stack, %esp
+	pushl	$___return_from_main
+	jmp	main
+&nbsp;
+___return_from_main:
+	<span class="keyword">int</span> $3
+	jmp 1f
+	.ascii <span class="literal">"System stopped."</span>
+1:	jmp ___return_from_main
+&nbsp;
+	.bss
+&nbsp;
+	.align	16
+	.space	4096 * 2
+stack:
+</pre>
+究竟我們這個 "MyOS" 與 L4Ka 的關聯何在？下方的圖例說明互動關係：<br />
+<center><img width="671" height="169" src="http://jserv.sayya.org/l4/pix/l4-myos.png"></center><br />
+除了 L4Ka::Pistachio 外，我們可見到 Sigma0 RPC 通訊協定，這是 L4 microkernel 除了 FastIPC 外，另一個主要的設計，用以處理記憶體管理。舉例來說，倘若系統存在兩個不同 address space 的執行單元 (如 UNIX Process)，而其中一者 (userA) 想要存取另一者 (userB) 的記體體，只要將 userA 設置為 userB 的 pager (記憶體管理單元) 並提供 userB 的 page fault handler 即可。其中，系統初始的 pager 就是 sigma0 (在某些 L4 的實做已移除)，而 MyOS 在 L4 的術語叫做 root task / server，但若是 Linux 想達到相似功能，就得透過 shared memory，但便利性與效能均不若 L4 來得好。<br />
+<br />
+我們不打算在第一個版本作太多動作，MyOS 的程式碼就只有以下這幾行：(檔案
+/tmp/l4ka-pistachio/user/apps/myos/myos.cc )
+<pre class="code" style="margin: 6px;">
+<span class="keyword">#include</span> &lt;l4io.h><span class="keyword">
+#include</span> &lt;l4/sigma0.h>
+
+<span class="keyword">static</span> <span class="keyword">int</span> test_kip() {
+    printf(<span class="literal">"Testing L4 kernel interface page...\n"</span>);
+    L4_KernelInterfacePage_t *kip =
+        (L4_KernelInterfacePage_t *) L4_KernelInterface();
+    printf(<span class="literal">"L4 version: %X.%X\n"</span>,
+        kip->ApiVersion.x.version,
+        kip->ApiVersion.x.subversion);
+    <span class="keyword">return</span> 0;
+}
+
+<span class="keyword">int</span> main() {
+    printf(<span class="literal">"MyOS is now launched!\n\n"</span>);
+    test_kip();
+
+    <span class="keyword">while</span> (1)
+        L4_Sleep(L4_TimePeriod(1000 * 1000));
+    <span class="keyword">return</span> 0;
+}</pre>
+開始自原始程式碼建構 L4Ka：(以 bash 為例)<pre class="code" style="margin: 6px;">
+cd /tmp/myos
+rm -rf build
+mkdir -p build/out build/user
+export ROOT=`pwd`
+cd l4ka-pistachio/kernel
+make BUILDDIR=${ROOT}/build/kernel
+cd ${ROOT}/build/kernel
+make batchconfig
+make
+</pre>
+因為稍早我們修改過 Automake 的編譯項目，所以要重新生成：<pre class="code" style="margin: 6px;">
+$ cd ${ROOT}/l4ka-pistachio/user
+$ autoheader
+$ autoconf
+</pre>
+最後，終於可以編譯 MyOS 程式碼：(user-level)<pre class="code" style="margin: 6px;">
+cd ${ROOT}/build/user
+${ROOT}/l4ka-pistachio/user/configure \
+    --with-comport=0 --with-comspeed=115200 \
+    --prefix=${ROOT}/build/out \
+    --with-kerneldir=${ROOT}/build/kernel \
+    --host=x86
+make install
+cd ${ROOT}
+</pre>
+我們可以注意到 build 目錄底下的兩個檔案：<ul>
+  <li>build/kernel/x86-kernel : L4Ka microkernel 的 ELF image</li>
+  <li>build/user/apps/myos/myos : MyOS 的 ELF image (root task/server)</li>
+</ul>
+我們可以建立 floppy image，並將 L4 與 MyOS 置放其中。不過我們還需要一個符合
+multiboot specification 的 boot loader，比方說 grub，本文採用 grub 0.97 版本
+(注意：grub 0.97 與所謂 grub2 的 1.9x 版本，在系統中彼此是互斥的)。一旦自 grub
+接到系統控制權後，L4Ka 的啟動程序 'kickstart' 會將 sigma0, sigma1, root server
+都載入到記憶體中，並將這些的起始位址、結束位址，以及自 grub 啟動而得到的實體記
+憶體位址等資訊，都寫入到 KernelInterfacePage (kip)。值得注意的是，依據 L4 規範，
+KernelInterfacePage 的定義中並未包含 sigma0, sigma1, root server 等資訊的定義
+，僅指定若干位定義的空間，而 L4Ka::Pistachio 的 IA32 版本就使用這些空間，作為
+sigma0 等模組的儲存。詳細的記憶體配置資訊，可參考 [<a
+href="http://www.geocities.ws/munkee_chuff/l4/boot_process.html">The boot
+process on IA-32</a>]。<br />
+<br />
+我們需要先編輯 /tmp/grub.conf 檔案，作為 grub 設定之用：<pre class="code" style="margin: 6px;">
+root (fd0)
+default 0
+timeout 3
+
+serial --port=0x3f8 --speed=115200
+terminal --timeout=0 serial
+
+title MyOS
+kernel /kickstart
+module /x86-kernel
+module /sigma0
+module /myos                                                                                             
+
+</pre>
+假設 grub 安裝於 /boot/grub 目錄，可以如下操作：<pre class="code" style="margin: 6px;">
+mkdir -p fdsource
+mkdir -p fdsource/boot/grub
+cp build/out/libexec/l4/{kickstart,sigma0,myos} fdsource/
+cp build/kernel/x86-kernel fdsource/
+cp grub.conf fdsource/boot/grub/menu.lst
+cp /boot/grub/stage? fdsource/boot/grub
+dd if=/dev/zero of=fdimage.img bs=512 count=2880
+echo 'drive a: file="fdimage.img"' > mtoolsrc
+MTOOLSRC=./mtoolsrc mformat -f 1440 a:
+MTOOLSRC=./mtoolsrc mmd a:/boot
+MTOOLSRC=./mtoolsrc mmd a:/boot/grub
+MTOOLSRC=./mtoolsrc mcopy fdsource/boot/grub/stage1 a:/boot/grub
+MTOOLSRC=./mtoolsrc mcopy fdsource/boot/grub/stage2 a:/boot/grub
+MTOOLSRC=./mtoolsrc mcopy fdsource/boot/grub/menu.lst a:/boot/grub/
+MTOOLSRC=./mtoolsrc mcopy fdsource/x86-kernel a:/
+MTOOLSRC=./mtoolsrc mcopy fdsource/kickstart a:/
+MTOOLSRC=./mtoolsrc mcopy fdsource/sigma0 a:/
+MTOOLSRC=./mtoolsrc mcopy fdsource/myos a:/
+</pre>
+接下來就是安裝 grub 到這個 floppy image：<pre class="code" style="margin: 6px;">
+echo "(fd0) fdimage.img" > bmap
+echo -e "root (fd0)\nsetup (fd0)\nquit\n" | \
+    /boot/grub/grub --batch --device-map=bmap
+</pre>
+沒意外的話，檔案 fdimage.img 就是我們最終的 MyOS 開機軟碟檔案，用 QEMU 來驗證：<pre class="code" style="margin: 6px;">
+qemu-system-i386 -fda fdimage.img
+</pre>
+稍微等待，會得到以下畫面：<br />
+<center><img width="720" height="431" src="http://jserv.sayya.org/l4/pix/qemu-myos-1.png"></center><br
+/>
+上圖就是 grub 將控制權交給 KickStart 之後，陸續載入 L4Ka, sigma0, root server
+等模組。一旦我們按下 Ctrl-3 組合鍵，將 QEMU 顯示切到 serial 輸出時，會得到以下
+輸出：<pre class="code" style="margin: 6px;">
+Detected multiboot compliant loader
+ kernel    (0x00819000-0x0085ae72)   =&gt; 0x0015b050
+  (0x00819000-0x00829255) -&gt; 0x00100000-0x00110255
+  (0x0082a000-0x0083013e) -&gt; 0x00112000-0x0011813e
+  (0x00831000-0x0084f428) -&gt; 0x00119000-0x00137428
+  (0x00850000-0x00853ab8) -&gt; 0x00158000-0x0015bab8
+ sigma0    (0x0085b000-0x00875f15)   =&gt; 0x00020000
+  (0x0085c000-0x00865524) -&gt; 0x00020000-0x00029524
+ roottask  (0x00876000-0x00881597)   =&gt; 0x0040009c
+  (0x00877000-0x0087c044) -&gt; 0x00400000-0x00405044
+Launching kernel ...
+
+L4Ka::Pistachio - built on Mar  7 2012 14:57:35
+MyOS is now launched!
+
+Testing L4 kernel interface page...
+L4 version: 84.5
+</pre>
+終於看到 MyOS 跑起來，雖然乍看只做到「睡美人」的作用，但背後反映了 L4 基礎的操作，而且我們也可在此基礎作 Prototyping。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2012/03/_l4ka.html">12:33 AM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2202" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<h2 class="date">March  3, 2012</h2>
+
+
+<div class="blogbody">
+<a name="002201"></a>
+<h3 class="title">演講：Android Dalvik VM 探險</h3>
+
+應 [<a href="www.taipei-gtug.org">Taipei GTUG</a>] 之邀，三月 14 日晚間，我將分享主題為「Android Dalvik VM 探險」的演講。以下摘錄 [<a href="http://registrano.com/events/05fecf">活動資訊</a>]：<ul>
+    <li>時間：2012/03/14 19:30-21:30</li>
+    <li>地點：果子咖啡 / 台北市松山區民生東路三段140巷11號</li>
+    <li>報名網頁：<a href="http://registrano.com/events/05fecf">http://registrano.com/events/05fecf</a></li>
+</ul>
+自從 Google 在 2008 年 Google 工程師 Dan Bornstein 揭露 Android 系統的重要元件 Dalvk VM 的 [<a href="http://sites.google.com/site/io/dalvik-vm-internals">設計概念</a>] 後，Dalvik 就是人們相當有興趣的議題之一，而這幾年 Google 工程師陸續在 Dalvik
+引入頗多經典的設計，本議程將以一個系統整合開發者的角度，去對 Dalvik VM 作一定程度的探索，並分享許多顯為人知的面向，期望對於Android 核心設計與實做有高度興趣者，能給予較深入的切入。<br />
+<br />
+以下是暫定提綱：<ul>
+    <li>從 JVM 到 Dalvik VM：概念與實務落差</li>
+    <li>Dalvik 與 Android Zygote 的互動</li>
+    <li>透過工具來分析 Dalvik 與 Android 應用程式行為</li>
+    <li>進階議題：JNI, JIT, ARM 平台效能</li>
+</ul>
+在此同時，筆者也在整理關於 Dalvik 的文件，希望可作為去年演講 [<a href="http://blog.linux.org.tw/~jserv/archives/2011/07/practice_of_and.html">Practice of Android Reverse Engineering</a>] 的補充資訊。除了主辦單位長期的投入外，本次活動由 Samsung 贊助了部份點心，在此一並致謝。歡迎前來指教與交流！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2012/03/android_dalvik.html">12:14 AM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2201" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<h2 class="date">March  2, 2012</h2>
+
+
+<div class="blogbody">
+<a name="002200"></a>
+<h3 class="title">DragonFly BSD 3.x 現身</h3>
+
+這其實已非新聞，不過既然中文介紹不多，這裡不妨簡要探討 [<a
+href="http://www.dragonflybsd.org/">DragonFly BSD</a>] 3.0 的推出。<br />
+<br />
+DragonFly 專案創始人 Matthew Dillon 曾是 FreeBSD SMPng 項目的核心開發者，
+同時也大幅改善包含虛擬記憶體管理與 VFS 等項目。由於 FreeBSD 5.x 的多執行緒系
+統初期有很多問題，而 FreeBSD 4.11 後僅提供安全性修正，卻不再推出 4.x 系列版本
+，致使 Matthew Dillon 在 2003 年七月宣佈將在 FreeBSD 4.8-STABLE 的基礎推出一個
+嶄新的 BSD 系統，專注於 x86/x86_64 平台的 SMP 與伺服器系統效能，這就是
+DragonFly BSD 專案，其開發者來自 FreeBSD 團隊，雙方不定期也交換分享開發成果。
+<br />
+<br />
+DragonFly BSD 在設計上引入 "hybrid kernel" 的概念，也就是融合傳統 BSD 或 Linux
+一類追求效能的 monolithic kernel，以及 CMU Mach 一類將系統服務搬出到核心之外以
+求高度模組化的 microkernel 這兩者的優點。由於 DragonFly BSD 開發者曾長期浸淫於
+VFS 的開發，在借鏡了 microkernel 的 message passing 設計後，決定建立 device I/O
+與 VFS 之間的 messaging capability 系統，這使得核心很多部份得以搬到 user-space，
+某種角度來看，DragonFly BSD 的子系統看起來很像 CMU Mach microkernel，優點在於，
+可用獨立 userspace 實現，來取代混雜在一起的大量核心程式碼，使得核心更精簡、更
+容易追蹤除錯，而被允許在 user-space 執行的系統程式碼帶來的額外的好處就是，系統將
+更加穩定，也就是說，即使 user-space driver 崩潰或者面臨重大的問題時，核心也不會
+因此會崩潰。不只如此，連同系統呼叫也逐漸切割到 user-space，透過 message 的封裝來
+實現。DragonFly BSD 走的是務實路線，除了概念引入創新研究外 (microkernel 雖然不是
+新概念，但是勇敢的在BSD 引入，卻還能兼顧高效能與彈性，就非 [<a href="http://www.mklinux.org/">mklinux</a>] 一類專案可比擬)，目前 DragonFly 最值得關注的項目是 Matthew Dillon 新設計的 HAMMERFS
+檔案系統，預期要提供 ZFS (Solaris/FreeBSD) 或 Btrfs (Linux) 相仿的特徵，目前的實做
+有以下：<ul>
+    <li>configurable file system history</li>
+    <li>snapshots</li>
+    <li>checksumming</li>
+    <li>data deduplication</li>
+</ul>
+而從 2010 年開始，HAMMER 2 被提出作為高效能的實做，詳情可見 [<a
+href="http://leaf.dragonflybsd.org/mailarchive/users/2012-02/msg00020.html">DESIGN document for HAMMER2</a>]，可預見的是，DragonFly BSD 3.x 將會相當值得期待。<br />
+<br />
+DragonFly BSD 3.0 主要的幾項重大修改，依據 [<a
+href="http://www.dragonflybsd.org/release30/">Release Note</a>] 提到：<ul>
+    <li><a
+href="http://www.osnews.com/story/25334/DragonFly_BSD_MP_Performance_Significantly_Improved">效能大幅改善的 SMP 系統</a>，並成為預設的組態</li>
+    <li>HAMMER 檔案系統的效能提昇</li>
+    <li>藉由提供 tcplay 工具，來支援 TrueCrypt 相容的磁碟加密</li>
+    <li>一系列的 POSIX.1-2008 相容性支援</li>
+</ul>
+另外，也值得關注的訊息是 [<a href="http://www.minix3.org/">MINIX</a>] 3.2.0 的
+ [<a href="http://wiki.minix3.org/en/MinixReleases">正式推出</a>]，這是一個大
+幅功能改善的版本，在 MINIX microkernel 的基礎上，引入了許多 NetBSD 的程式碼，
+諸如 NetBSD C Library 與一系列的系統工具，連同 NetBSD bootloader 也納入了，這
+使得眾多的 UNIX-like 程式得以更容易移植到 MINIX 上。此外，MINIX 3.2.0 正式支援
+ELF 執行檔案格式並成為預設，同時提供了支援非同步、多工的 VFS server，FUSE 也被
+實現出來。這意味著，MINIX 3.x 已走出老派 UNIX 的限制，要迎向嶄新作業系統與銜接
+廣大開放原始碼世界。<br />
+<br />
+在一週內，DragonFly BSD 與 MINIX 都推出革命性的 3.x 新版，兩者也在身上流著 BSD 與
+microkernel 的血液，而這兩個專案也都採用 GIT 作為版本控制系統，同樣都以開放的
+姿態，勇敢提出創新的設計，並在實務上持續耕耘。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2012/03/dragonfly_bsd_3.html">11:44 PM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2200" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+
+</body>
+</html>

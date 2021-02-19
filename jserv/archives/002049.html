@@ -1,0 +1,312 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 「Gtk+ 程式設計初體驗」參考範例上線</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002048.html" title="GNU Bison 與 GPL 授權的適用範疇" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002050.html" title="透過 FreeType 繪製 Unicode ASCII Art" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002048.html">« GNU Bison 與 GPL 授權的適用範疇</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002050.html">透過 FreeType 繪製 Unicode ASCII Art »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">July 21, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">「Gtk+ 程式設計初體驗」參考範例上線</h3>
+
+即將於本月 26 日 (週六) 舉辦的 [<a href="http://blog.linux.org.tw/~jserv/archives/002034.html">教育訓練：Gtk+ 程式設計初體驗</a>]，以專案目標導向的形式，探討 [<a href="http://www.gtk.org/">Gtk+</a>] 與相關技術，其參考範例已預先上線，可參考 [<a href="http://people.debian.org.tw/~jserv/gtk-training/gtk-examples0.tar.bz2">gtk-examples0.tar.bz2</a>] (授權：public domain)。這幾個範例都是貨真價實的完整應用程式，不單跑個 "Hello World" 而已，主要是希望帶著與會者去熟悉 Gtk+ 方式的編寫程式慣例，期許能充分利用這些開放發展、可累積的技術。<br />
+<br />
+在這個「Google 時代的 Programming」模式 (詳情可參閱 [<a href="http://www.javaworld.com.tw/roller/qing/">qing</a>] 老大的文章) 之下，其實我們最該思考的關鍵點，就是如何「借力使力」，尋求透過成熟的自由軟體技術，達成我們所期望的應用或系統設計。以 Gtk+/GNOME 來說，隨便一個技術細節都可以談上好幾天，遑論徹底知曉整個 framework 設計或個別應用程式的特性，但隱約中，系統卻保持若干一貫的設計準則與發展模式，這就是我們該去探究與揣摩的，這也是本教育訓練一開始就丟出具體而微的範例的緣故。廢話不多說，咱們看看在「初體驗」課程中，裡頭的三個範例檔：<ul>
+  <li>[<a href="http://people.debian.org.tw/~jserv/gtk-training/examples-0/webapp/webapp.c">webapp.c</a>] (使用 Gtk+/WebKit 的應用程式)<br />
+<center><img src="http://people.debian.org.tw/~jserv/gtk-training/pix/gtk-webapp.png" width="640" height="337" /></center><br />
+由圖可見，這是個左邊一個按鈕，右邊一個馬力歐遊戲的小程式，當然，遊戲本身是可以玩的，這需要幾行程式呢？</li>
+  <li>[<a href="http://people.debian.org.tw/~jserv/gtk-training/examples-0/editor/editor.c">editor.c</a>] (Gtk+ widget 展示)<br />
+<center><img src="http://people.debian.org.tw/~jserv/gtk-training/pix/gtk-editor.png" width="608" height="292" /></center><br />
+如上圖，這就是一個文字編輯器，完全支援 Unicode 與多行編輯，觀察看看，用幾行程式碼達成？<li>
+  <li>[<a href="http://people.debian.org.tw/~jserv/gtk-training/examples-0/media/player.c">player.c</a>] (使用 GStreamer 技術的範例)<br />
+這是個可播放多媒體聲音 / 影像的小程式，雖然沒有華麗的介面，但就跟 MPlayer 一樣，忠實地處理指定網址 (包含 file:// ) 的多媒體檔案，這又需要多少程式碼呢？
+</li>
+</ul>
+議程中，還會給定另一個範例，將上述項目一併整合起來，預期可透過 Gtk+/WebKit 繪製程式碼介面、Gtk+ widget 來作整體外觀布局，再用 [<a href="http://www.gstreamer.net/">GStreamer</a>] 嵌入華麗的多媒體內容。過去，我們聽到這樣的需求，不免就會聯想到商業軟體豐富視覺呈現，但透過 Gtk+ 一系列的技術，只要掌握若干關鍵點，我們也得以做出相仿甚至更好的效果，這也是強調「作中學」的精神所在。<br />
+<br />
+透過以上範例，Gtk+ 若干設計的核心想法也將被伴隨揭露於與會者之前，試看：<ul>
+  <li>物件導向的思維與實做：表面上都是 C 語言的 Gtk+，其實蘊含豐富的 OOP 機制，而物件導向更是深植於設計本體</li>
+  <li>視窗系統中的事件與其對應的操作處理：藉由範例程式的修改與調整，我們可即時窺見這些抽象概念的視覺具體呈現</li>
+  <li>圖形元件的設計概念與組合、互動形式：無疑地，這是 Gtk+/GNOME 技術引人入勝之處，只要施點魔力，就會浮現於我們面前</li>
+  <li>MVC (Model-View-Control) 設計模式的引入：Gtk+ 到處可見到 Design Patterns，並以優雅的形式去將若干技術融會其中</li>
+</ul>
+另外，感謝各位朋友的捧場，開放報名的後兩天，竟然就立刻額滿，實在是始料未及，所以，現在的補救方式有兩個，一是請您耐心等待議程錄影的上線，另一是充分利用當天會場的空間，造成困擾，請多見諒。<br />
+<br />
+編譯與執行上述範例程式的基本需求，以 Debian/Ubuntu 為例：<ul>
+  <li>apt-get install build-essential<br />
+        很顯然，我們需要編譯 C/C++ 應用程式</li>
+  <li>apt-get install libgtk2.0-dev<br />
+         主題是 Gtk+，當然要安裝其對應的開發套件</li>
+  <li>apt-get install libwebkit-dev<br />
+         依據 debian 描述，該套件為 "Web content engine library for Gtk+"，注意，Qt 4.4 之後，也切割了 libqt4-webkit，表示 WebKit module for Qt，不要弄混淆了</li>
+  <li>apt-get install gstreamer0.10-x gstreamer0.10-tools gstreamer0.10-ffmpeg gstreamer0.10-plugins-base gstreamer0.10-plugins-good gnome-media<br />
+         這是運作與開發 GStreamer 應用程式所需的套件，預先被妥善地切割，所以稍微多了些，不礙事，反正當天會講解</li>
+</ul>
+即便是歐美，其實以 Gtk+ 為主軸的教育訓練也相當少，不若 Qt 背後有 Trolltech/Nokia 商業力量撐腰，這也讓小弟在構思這系列的教育訓練時，著實推敲頗久。希望能先試著在「初體驗」課程中，分享過去開發 Gtk+ 為基礎應用程式或系統設計的經驗，並收集與會者的意見，再將後續更完整的內容推出。當然，仍是保持免費、開放參加的形式來進行，期待您的指教，謝謝！<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 July 21, 2008 04:26 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>非常、非常希望會後有提供完整的錄影，看到消息時想報名就以經額滿了...Orz</p>
+<span class="comments-post">由 <a href="mailto&#58;guest&#64;guest&#46;com">路人</a> 發表於</MTIfNonEmpty> July 21, 2008 06:38 PM</span>
+</div>
+<div class="comments-body">
+<p>以后大大的讲座最好有人录像把，放到youtube上，搞个jserv tech talk.....让我们这些外地的也能一睹风采！<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;oasis&#46;szli&#64;gmail&#46;com">oase</a> 發表於</MTIfNonEmpty> July 22, 2008 09:17 AM</span>
+</div>
+<div class="comments-body">
+<p>Ubuntu 8.04 上面的套件名稱是<br />
+libwebkitgtk-dev - Web content engine library for Gtk+ - Development files<br />
+另外就是 examples-0/editor/Makefile 中的 pkg-config<br />
+要改成 pkg-config --cflags --libs gtk+-2.0 才能編譯<br />
+另外 examples-0/media 的 player 編譯前要先裝上 libgstreamer0.10-dev<br />
+編譯完後的使用方法<br />
+./player file:///home/user/test.mp3<br />
+最後是 example-0/webapp/Makefile 裡面要改成 pkg-config --cflags --libs WebKitGtk gtk+-2.0<br />
+還有 webapp.c 裡面要改成 #include &lt;WebKit/webkit.h&gt; 才能夠編譯<br />
+以上資訊提供給在 Ubuntu 8.04 的使用者參考... :)</p>
+<span class="comments-post">由 <a href="http://fd.idv.tw">$4</a> 發表於</MTIfNonEmpty> July 22, 2008 11:13 AM</span>
+</div>
+<div class="comments-body">
+<p>感謝 $4 !</p>
+
+<p>我的環境是 intrepid (Ubuntu 8.10)，結果套件命名與打包方式竟然不一致，實在沒注意到，實在納悶，Gtk+/WebKit 推出也頗有時日了。</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> July 22, 2008 11:19 AM</span>
+</div>
+<div class="comments-body">
+<p>GTK 一直都是我很喜歡的一個環境. 可惜已經有好多年沒機會接觸了.</p>
+
+<p>它以單純的 C 語法表現出 C++ 的特性, 真的是十分吸引人. 突顯出了 "設計" 的重要. 網上常見許多朋友的文章在 "物件導向" 和 C++/Java 劃上等號, 反而落得下乘了. 尤其是在當時 gcc 中 C compiler 遠比 C++ compiler 來得優秀與穩定, 且懂得 C 的人也遠比 C++ 與 Java 多. 可惜 GTK+ 本身依然是一個 project, 不像 Qt 很早開始就商業化有經濟支柱在背後推動.</p>
+
+<p>文中提供的三個範例都十分精簡, 相信對初學者而言相當容易上手. 不過 Mario 例子中遊戲畫面實在太吸引人, 恐怕造成像我這般誤認為重點是遊戲設計, 而有點希望落空.</p>
+
+<p>n 年前有做一個簡單的採地雷, 有興趣的朋友可以看看. 希望在目前的 GTK+ 還能 compile. 裡面都是 Big-5.<br />
+http://debian.linux.org.tw/~kevpeng/</p>
+<span class="comments-post">由 <a href="mailto&#58;kevin&#64;zycomtech&#46;com">Kevin Peng</a> 發表於</MTIfNonEmpty> July 23, 2008 08:24 AM</span>
+</div>
+<div class="comments-body">
+<p>我按照方法編譯完成後，想要測試media player這隻程式<br />
+我在console輸入<br />
+./player file:///home/user/Sealedwithakiss.mp3</p>
+
+<p>結果卻跑出<br />
+** Message: don't know how to handle audio/mpeg, mpegversion=(int)1, layer=(int)3</p>
+
+<p>** Message: Error</p>
+
+<p>請問要如何才能播放成功呢？<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;wildjcrt&#64;sina&#46;com&#46;tw">小蟹</a> 發表於</MTIfNonEmpty> July 25, 2008 12:06 PM</span>
+</div>
+<div class="comments-body">
+<p>To 小蟹,</p>
+
+<p>應該是欠缺 gstreamer 所需的 plugins，請嘗試安裝前文提及的套件，再行播放</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> July 25, 2008 01:20 PM</span>
+</div>
+<div class="comments-body">
+<p>jserv您好：</p>
+
+<p>我用的是epc 701<br />
+系統是debian + LXDE (pcman釋出的那個版本)</p>
+
+<p>apt-get install gstreamer0.10-x gstreamer0.10-tools gstreamer0.10-ffmpeg gstreamer0.10-plugins-base gstreamer0.10-plugins-good gnome-media<br />
+以及$4所說得libgstreamer0.10-dev<br />
+我已確認過都是最新版了<br />
+但還是一樣的錯誤<br />
+需要加入甚麼參數嗎？</p>
+<span class="comments-post">由 <a href="mailto&#58;wildjcrt&#64;sina&#46;com&#46;tw">小蟹</a> 發表於</MTIfNonEmpty> July 25, 2008 02:11 PM</span>
+</div>
+<div class="comments-body">
+<p>想請問jserv大大:<br />
+當天上課看到您的vim,<br />
+可將GTK函式以不同顏色標示,<br />
+且可以追蹤function,<br />
+請問是怎麼設定的呢?<br />
+</p>
+<span class="comments-post">由 <a href="http://NA">aloha</a> 發表於</MTIfNonEmpty> July 28, 2008 02:31 PM</span>
+</div>
+<div class="comments-body">
+<p>@aloha,</p>
+
+<p>感謝提醒，已於新的文章補充： http://blog.linux.org.tw/~jserv/archives/002053.html</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> July 28, 2008 11:52 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2049" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

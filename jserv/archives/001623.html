@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: OpenWengo：以 GPL 發行的 VoIP 客戶端</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001622.html" title="真是有效率" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001624.html" title="快速堆積式程式設計？" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001622.html">« 真是有效率</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001624.html">快速堆積式程式設計？ »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">April 17, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">OpenWengo：以 GPL 發行的 VoIP 客戶端</h3>
+
+下午找 speech codec 的資料時，發現了 [<a href="https://www.openwengo.com/">OpenWengo</a>] 這家法國公司，他們有個以 SIP (RFC 3261) 為基礎的 VoIP 解決方案，相當有趣的是，[<a href="https://www.openwengo.com/">OpenWengo</a>] 的 client 端是以 GNU GPL 發行的，有 Win32、Linux，以及 MacOS X 的版本，另外還提供 Firefox 的 extension，可參考 [<a href="http://mozlinks-zh.blogspot.com/2006/03/firefox-openwengo.html">
+Firefox 的 OpenWengo 擴充套件</a>]。依據法文版 Wikipedia [<a href="http://fr.wikipedia.org/wiki/OpenWengo">OpenWengo</a>] 詞條的說明，[<a href="https://www.openwengo.com/">OpenWengo</a>] 的後台是 [<a href="http://www.neuf.fr/">Neuf Télécom</a>]，而詳細的說明可參考 DQ Blue 的介紹 [<a href="http://zhouxiaohu.blogbus.com/logs/2005/09/1426851.html">OpenWengo</a>]，引用其中的比較圖：<br>
+<center><img src="http://www.openwengo.com/static/eng_eng/images/what/mod_comparatif.gif"></center><br>
+至少可粗略知道同類型 VoIP 解決方案的差異。[<a href="https://www.openwengo.com/">OpenWengo</a>] 的 client 以 Qt 撰寫，目前已經有 Debian / Ubuntu 的 package，直接安裝即可，以下是我的執行畫面：<br>
+<center><img src="http://jserv.sayya.org/misc/wengophone.png"></center><br>
+就預設的組態來說，audio codec 有 AMR-WB、ILBC、PCM a-Law/u-Law、AMR，以及 GSM，後兩者應該只是 payload 不同，video codec (是的，[<a href="https://www.openwengo.com/">OpenWengo</a>] 支援視訊交談) 有 H.263 與 MPEG-4，同時，[<a href="https://www.openwengo.com/">OpenWengo</a>] 也有個開放性的設計，允許作有限度的擴充，比方說 [<a href="http://www.mbdsys.com/">MBDSYS</a>] 日前實做了 Verona。<br>
+<br>
+原本有使用 Skype 服務的我，現在試著改用 Wengo phone 看看，我的帳號是 "<b>jserv.tw</b>"，這上面主要還是以歐洲語系為主，尤其是法國與德國的朋友最多，又是練習外語的好機會了 :P<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 April 17, 2006 01:46 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>有支援H.263喔，不太清楚這個license。之前原本gnomemeeting(ekiga)在某一版有個patch可以使用ffmpeg lib來支援H.263。可是後來卻說是因為GPL的關係拿掉了。有人清楚是怎麼回事嗎？</p>
+<span class="comments-post">由 <a href="mailto&#58;john&#64;ntu&#46;edu&#46;tw">JC</a> 發表於</MTIfNonEmpty> April 17, 2006 08:17 PM</span>
+</div>
+<div class="comments-body">
+<p>現在打台灣的市話/大哥大不用錢唷!!<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;yshsu168&#64;gmail&#46;com">yshsu168</a> 發表於</MTIfNonEmpty> May 18, 2006 10:03 AM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1623" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

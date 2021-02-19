@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 演講：我是軟體 -- 那些處理器教我的事 (COSCUP)</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002046.html" title="《Qtopia 编程之道》即將出版" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002048.html" title="GNU Bison 與 GPL 授權的適用範疇" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002046.html">« 《Qtopia 编程之道》即將出版</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002048.html">GNU Bison 與 GPL 授權的適用範疇 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">July 19, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">演講：我是軟體 -- 那些處理器教我的事 (COSCUP)</h3>
+
+<center><img src="http://people.debian.org.tw/~jserv/imsoft.jpg" width="264" height="432" /></center><br />
+下個月將受邀到 [<a href="http://coscup.org/2008/">COSCUP 2008</a>] 研討會，發表自由軟體在嵌入式應用的題材，時間是在八月 23 與 24 其中一日，題目命名為「我是軟體 -- 那些處理器教我的事」，副標題則是「以 ARM/Linux 為例，探討嵌入式系統開發所面臨軟體移植的考量點」。<br />
+<br />
+過去，嵌入式系統一直給人高深難以捉摸的神秘感，儘管與我們的生活習習關關。近年來相關產品有如雨後春筍問世，其範疇更是五花八門，光是硬體處理器的種類就好幾打，遑論其中的軟體設計。引入自由軟體，有助於提昇產品開發時程與系統完整度，但涉及跨平台開發，其潛藏的問題卻總是令工程人員難以安寢的未爆彈，本議程以
+ARM/Linux 為例，嘗試整理在跨平台整合開發時，軟體移植的若干考量點，期望有助於自由軟體的廣泛應用與深入琢磨。<br />
+<br />
+進行的方式預期直接丟出問題，讓與會者思考真相，透過上圖女子的自白道出真心話：<ul class="code" style="margin: 6px;">
+「我好天真，現在才看清，其實這一切並非只是 cross compilation 這麼單純」
+</ul>
+具體來說，我們會面臨到 ARM 的 alignment, ABI, packed data, char signed, soft/hard fp, data abort exception 等議題。而自由軟體雖然如 jjhou 所言：「源碼之前了無秘密」，但往往僅在主流平台如 x86 與 PowerPC 上開發測試，要運用於 ARM 或 MIPS 一類的嵌入式系統大宗的微處理器時，需要考量硬體的差異、軟體規劃的歧異性，再者就是整體設計的考量。是此，小弟就希望，本議題並不著墨個別細節，而是點出跨平台開發的盲點，ARM/Linux 在許多層面都存有我們難以察覺的特徵，咱們就來看看五花八門的「處理器」到底教了「軟體」哪些事情？<br />
+<br />
+最後，廣告一下。COSCUP 今年是第三年舉辦，望能讓更多開放原始碼的同好參與，進而相互激盪出更多的創作或應用，期待您的共襄盛舉！另外，小弟也預計在 COSCUP 2008 上，發表新的迷你 RTOS，未來將藉由這個具體而微的系統，作為探討 ARM 系統設計之範例，也會有對應的教育訓練課程。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 July 19, 2008 06:10 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>哈哈哈哈，好生動的一句話  (笑很久)</p>
+<span class="comments-post">由 <a href="mailto&#58;walkingice0204&#64;gmail&#46;com">walkingice</a> 發表於</MTIfNonEmpty> July 19, 2008 06:29 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2047" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

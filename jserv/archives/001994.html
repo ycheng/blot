@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Xenomai/SOLO：提供 Linux 使用者層級的 RTOS 模擬</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001993.html" title="「從『看不見的電腦』到『看不見的自由軟體』」簡報上線" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001995.html" title="解放你的桌面：LxDE 重裝上陣" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001993.html">« 「從『看不見的電腦』到『看不見的自由軟體』」簡報上線</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001995.html">解放你的桌面：LxDE 重裝上陣 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 23, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Xenomai/SOLO：提供 Linux 使用者層級的 RTOS 模擬</h3>
+
+<center><img src="http://jserv.sayya.org/embedded/xenomai_logo.jpg" /></center><br />
+Linux realtime framework 專案 [<a href="http://www.xenomai.org/">Xenomai</a>] 維護者 Philippe Gerum (rpm) 日前展開了名為 "Xenomai/SOLO" 的新實做，目標是在 Linux kernel 2.6 新的 NPTL 與 glibc POSIX realtime support 機制下，對既有的 RTOS 進行模擬，新聞稿可參考 [<a href="http://linuxdevices.com/news/NS8393438079.html">Linux gains native RTOS emulation layer</a>]，可透過 Denx 的 GIT repository 存取。<br />
+<br />
+對於 Linux realtime 處理來說，Xenomai/SOLO 的出現象徵了新的里程碑。以往 [<a href="http://www.xenomai.org/">Xenomai</a>] 或 [<a href="https://www.rtai.org/">RTAI</a>] 在 Linux kernel 尚缺乏有效的 realtime 機制時，引入類似 RTLinux 的 dual-kernel 途徑，架空 Linux，並在底層實做一個 RTOS (具體來說，是透過虛擬的執行單元來實現，以避開 FSMlabs / WindRiver 的專利)，[<a href="http://www.xenomai.org/">Xenomai</a>] 很成功地在這個機制上提供若干 RTOS skins 以相容於 WxWorks / pSOS 一類商業 RTOS，不過，畢竟這個途徑維護相當複雜，也很難追趕 Linux kernel 的發展，而 Linux kernel 2.6 以來，引入相當多 NPTL 與 PREEMPT_RT 相關的技術突破，kernel 2.6.23 (搭配 preempt-rt) 可算是具備商業等級的 soft realtime 環境，所以，Xenomai/SOLO 就直接建構於此，不對 kernel 作修改，完全於 user-space 上實現 RTOS emulation，現有的實做支援 VxWorks/WIND，在某種層面來說，概念類似 Philippe Gerum 在七年前進行的專案 [<a href="https://gna.org/projects/carbonkernel/">CarbonKernel</a>]，但是 Xenomai/SOLO 則是大幅支援 POSIX 與 NPTL。<br />
+<br />
+Xenomai/SOLO 對於日後的 Xenomai 3 有相當大的影響，至少在系統架構與介面設計來說，很可能會延續發展。就目前的實做來說，Xenomai/SOLO 需要新的 Linux kernel + glibc/NPTL，包含對 mutex 的 priority inheritance 支援，也就是 PTHREAD_PRIO_INHERIT，新版的 glibc 已包含此項 Robust Futex 實做，至於 PREEMPT_RT 雖不是必要，但要發揮完整的功能，需在 kernel 中支援此一系列的修改。Linus Torvalds  在 LKML 中對 realtime 作以下表示：<ul class="code" style="margin: 6px;">
+"Controlling a laser with Linux is crazy, but everyone in this room is crazy in his own way. So if you want to use Linux to control an industrial welding laser, I have no problem with your using PREEMPT_RT."
+</ul>
+經過許多年的艱苦奮鬥，現在 PREEMPT_RT 為 Linux realtime 鋪上充分的基礎建設，而 Xenomai/SOLO 則帶來商業等級 RTOS 模擬的機制，透過 Linux 作雷射控制一類的應用，其實已可實現，現在引領的就是更全面的整合，而 RedHat 與 Novell 等大廠也紛紛提出商業化 Linux Realtime 的發行版本與技術支援，最近的技術突破真令人振奮。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March 23, 2008 10:16 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1994" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

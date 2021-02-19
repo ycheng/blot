@@ -1,0 +1,214 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 演講：身騎 LLVM，過三關：淺談編譯器技術的嶄新應用</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002103.html" title="「實做輕量級 RTOS 網路堆疊」簡報上線" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002105.html" title="演講：Qi - Lightweight Boot Loader Applied in Mobile and Embedded Devices" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002103.html">« 「實做輕量級 RTOS 網路堆疊」簡報上線</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002105.html">演講：Qi - Lightweight Boot Loader Applied in Mobile and Embedded Devices »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">May 02, 2009</h2>
+
+<div class="blogbody">
+
+<h3 class="title">演講：身騎 LLVM，過三關：淺談編譯器技術的嶄新應用</h3>
+
+<center><img src="http://www.0xlab.org/logo_imgs/llvm.png" width="140" height="140" /></center><br />
+日前在 OSDC.tw 2009 分享「<a href="http://blog.linux.org.tw/~jserv/archives/002101.html">窮得只剩下 Compiler -- 淺談編譯技術的革命</a>」，獲得不少回應，意外認識許多耕耘於 compiler 領域的朋友。本月在 [<a href="http://wiki.tossug.org/">TOSSUG</a>] 的心得分享時間 (五月 5 日)，小弟打算進一步探討編譯器技術的嶄新應用，題目定為「身騎 LLVM，過三關」，圍繞於 [<a href="http://www.llvm.org/">LLVM</a>] 這個關鍵的技術，談立足於開放原始碼編譯器技術獲得重大突破的同時，我們可著眼於哪些應用。以下是暫定的議程提綱：<ul>
+  <li>Compiler 大不同 -- 走向 Binary translation, virtualization, JIT/VM 等嶄新的應用模式</li>
+  <li>LLVM 核心元素<ul>
+    <li>虛擬指令集/IR</li>
+    <li>高度整合的編譯器技術元件 (analyzer, code emitter/generator, JIT compiler, GC)</li>
+    <li>完整的工具集合 (assembler, debugger, linker)</li>
+  </ul></li>
+  <li>技術展示 (from <a href="http://www.0xlab.org/">0xlab</a>)</li>
+  <li>淺談開發趨勢</li>
+</ul>
+由於著眼於「應用」，聽眾不需要具備足夠的 compiler 背景知識，只要對資訊技術有強烈的好奇心與熱情即可，與 OSDC.tw 議程不同的地方，這次會多探討「應用」與「實務」的部份。期待您的指教，謝謝！<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 May  2, 2009 10:20 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>可惜自己不在台湾，否则黄老师的每场演讲，我都要去学习。<br />
+</p>
+<span class="comments-post">由 <a href="http://www.limodev.cn/blog">lixianjing</a> 發表於</MTIfNonEmpty> May  8, 2009 04:21 PM</span>
+</div>
+<div class="comments-body">
+<p>Jserv 前輩您好！</p>
+
+<p>　謝謝 Jserv 前輩的分享。我是那一天問 LLVM 有沒有 backend-to-backend 的人。我聽完您的演講之後，就忽然想到有沒有可能透過 LLVM 來 recompile 一個 x86 binary，把一個 x86 binary recompile 成 sparc 或 powerpc 平台的程式(假定外圍的 library 不是問題)。如果可以這樣子做得話，我想我們就可以在不同的硬體執行 x86 binary (例如一些 close source 的程式)。請問一下前輩有沒有相關的資料？最後，再一次謝謝前輩的分享。</p>
+<span class="comments-post">由 <a href="mailto&#58;hobbyscripter&#64;gmail&#46;com">hobbyscripter</a> 發表於</MTIfNonEmpty> May 20, 2009 10:29 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2104" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

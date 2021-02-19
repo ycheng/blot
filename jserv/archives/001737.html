@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Ubuntu Edgy 的 libc6 + locale 終於回來了</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001736.html" title="強化 Linux 網路安全性設計：引入 OpenBSD Cryptographic Framework" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001738.html" title="ARM 收購挪威 Falanx" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001736.html">« 強化 Linux 網路安全性設計：引入 OpenBSD Cryptographic Framework</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001738.html">ARM 收購挪威 Falanx »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">June 24, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Ubuntu Edgy 的 libc6 + locale 終於回來了</h3>
+
+「爺爺，您回來了！」<br>
+<br>
+早上 apt-get dist-upgrade 後，不禁脫口而出。之前 [<a href="http://blog.linux.org.tw/~jserv/archives/001712.html">白老鼠小記</a>] 提過 Ubuntu Development branch - Edgy 採用 gcc-4.1 + glibc-2.4，造成 locale 無法正確運作的問題，詳情可參考 [<a href="https://launchpad.net/distros/ubuntu/+source/glibc/+bug/49113">Bug #49113: locales problems with edgy libc6</a>]，今天終於解決了，引用 changelog.Debian 部份內容：<ul><pre class="code" style="margin: 6px;">
+glibc (2.4-1ubuntu6) edgy; urgency=low
+
+  * debian/patches/series: Filter out belocs-locales-bin merge.
+
+  * debian/patches/ubuntu/local-altlocaledir.diff: Update to working
+    version.
+
+  * debian/sysdeps/depflags.pl: Add tzdata as Recommends.
+</pre></ul>
+我終於可以正常工作了，賀！當個白老鼠真不容易阿，不過呢，這幾天陸續發現 gcc-4.1 與 glibc-2.4 的潛在問題，跟下個月的演講有很大的關聯性，還得繼續投入時間修正。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 June 24, 2006 09:44 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>我也不禁興奮起來了</p>
+<span class="comments-post">由 <a href="mailto&#58;gongyi&#46;liao&#64;msa&#46;hinet&#46;net">gongyi</a> 發表於</MTIfNonEmpty> June 24, 2006 01:48 PM</span>
+</div>
+<div class="comments-body">
+<p>爷爷，您回来了，您终于回来了……（伸手）</p>
+<span class="comments-post">由 <a href="mailto&#58;fermizhang&#64;SPAMgmail&#46;com">fermi</a> 發表於</MTIfNonEmpty> June 25, 2006 03:47 PM</span>
+</div>
+<div class="comments-body">
+<p>喔喔喔喔喔喔喔...終於可以放心升級edgy了...<br />
+多謝jserv的衝刺~</p>
+<span class="comments-post">由 <a href="http://gixtw.no-ip.org">wind</a> 發表於</MTIfNonEmpty> June 27, 2006 09:58 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

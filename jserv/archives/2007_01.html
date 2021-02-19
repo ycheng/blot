@@ -1,0 +1,1007 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: January 2007 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2006_12.html" title="December 2006" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2007_02.html" title="February 2007" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/2006_12.html">« December 2006</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/2007_02.html">February 2007 »</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">January 25, 2007</h2>
+
+
+<div class="blogbody">
+<a name="001874"></a>
+<h3 class="title">LGPL 與 C++ Template Library</h3>
+
+在我小時候用 Zortech C++ 與 Turbo C++ 的那個年代，那些商業 C++ compiler 就有 Template 的支援，GNU g++ 也在 Cygnus Solution 的大力支持下納入許多 C++ 規格的實做。而，GNU [<a href="http://www.gnu.org/licenses/lgpl.html">LGPL</a>] (Lesser General Public License) 則是 GNU GPL 的「變形」，允許動態連結函式庫的行為，謝東翰前輩曾做了一份繁體中文翻譯 [<a href="http://www.linux.org.tw/CLDP/OLD/doc/LGPL.html">GNU 較寬鬆公共許可證 (中譯版)</a>]，在 [<a href="http://directory.fsf.org/libs/cpp/">FSF/UNESCO Free Software Directory</a>] 有部份採用 BSD License / GPL / LGPL / QPL 授權發行的 C++ Library 列表，當然這些專案多少也用了 C++ Template，至於以 GNU LGPL 發行的套件，我們也很清楚，在其上發展動態連結的應用程式，可不受 LGPL 約束，也就是可成為 closed-source software，不過，倘若修改到 library 本身，就必須依循 GPL/LGPL 發佈。<br />
+<br />
+在 Realtime 與自動控制領域頗有名氣的 [<a href="http://www.orocos.org/rtt">Orocos Real-Time Toolkit</a>] (RTT) 最近在 1.0.2 版發佈時，更改了授權方式，詳情見 [<a href="http://www.orocos.org/node/78">Orocos Real-Time Toolkit 1.0.2 released</a>]，以下節錄與授權方式相關的部份：<ul class="code" style="margin: 6px;">
+A license change from LGPL to the GPL + linking exception was done. The LGPL did not cover C++ templates correctly, while the new license does and is legally more sound for use in commercial applications.
+</ul>
+引發我的注意是因為 "LGPL did not cover C++ templates correctly" 的陳述，看來這與程式語言特性有關。之前在 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001227.html">熱血之餘談軟體授權</a>] 與 [<a href="http://blog.linux.org.tw/~jserv/archives/001441.html">檢視 GPL 3.0 草案</a>] 提到 GPL/LGPL 在程式語言的角度來說，有語意模糊的弊端，不僅動態語言如 Java 者會有爭議，現在我們也看到 C++ 這樣的 "meta-language" 若以 LGPL 發行，將會衍生一些「非預期」的模稜兩可行為。FSF Europe 的 mailing-list 有一篇由 Benoît Jacob 張貼的討論 [<a href="http://mailman.fsfeurope.org/pipermail/discussion/2006-October/006420.html">Writing an exception to LGPL for a C++ template library</a>]，關鍵處就是以下陳述：<ul class="code" style="margin: 6px;">
+As a special exception, you may consider instantiation of templates or use of 
+macros or inline functions from this file en pair with using a normal linked 
+library. Thus you can use it this way without causing the using part to be 
+converted into the LGPL. This file itself is however always covered by the LGPL.
+</ul>
+C++ 的 template 有著類似 C 語言 macro 或 inline function 的特性，都會依據特定規則「展開」為原始表示型態，再經由編譯系統進一步合成對應的目的碼，只是說實做的層面有差異，C 語言的 macro 專注於 pre-processor 層面，而 inline function 與 C++ template 則是 semantic analysis 層面，其相似處就在於「程式碼展開的行為」，並且我們也見這是「衍生性」的操作，於是，這下子就有趣了，GPL/LGPL 的「病毒」是否就「感染」使用該 C++ Template Library 的應用程式呢？<br />
+<br />
+Federico Montesino Pouzols 隨後 [<a href="http://mailman.fsfeurope.org/pipermail/discussion/2006-October/006421.html">回應</a>]，指出 [<a href="http://gcc.gnu.org/onlinedocs/libstdc++/documentation.html">GCC C++ Standard library</a>](libstdc++) 與 [<a href="http://www.gnu.org/software/commoncpp/">Common C++</a>] 在此議題的澄清表述，前者 (libstdc++)：<ul class="code" style="margin: 6px;">
+As a special exception, you may use this file as part of a free software library 
+without restriction.  Specifically, if other files instantiate templates or 
+use macros or inline functions from this file, or you compile this file and 
+link it with other files to produce an executable, this file does not by itself 
+cause the resulting executable to be covered by the GNU General Public License. 
+This exception does not however invalidate any other reasons why the executable 
+file might be covered by the GNU General Public License.
+</ul>
+後者 (Common C++) 則是：<ul class="code" style="margin: 6px;">
+As a special exception, you may use this file as part of a free software 
+library without restriction.  Specifically, if other files instantiate 
+templates or use macros or inline functions from this file, or you compile 
+this file and link it with other files to produce an executable, this 
+file does not by itself cause the resulting executable to be covered by 
+the GNU General Public License.  This exception does not however invalidate 
+any other reasons why the executable file might be covered by the GNU 
+General Public License.<br />
+<br />
+This exception applies only to the code released under the name GNU Common 
+C++.  If you copy code from other releases into a copy of GNU Common C++, 
+as the General Public License permits, the exception does not apply to the 
+code that you add in this way.  To avoid misleading anyone as to the status 
+of such modified files, you must delete this exception notice from them.<br />
+<br />
+If you write modifications of your own for GNU Common C++, it is your 
+choice whether to permit this exception to apply to your modifications. If 
+you do not wish that, delete this exception notice.
+</ul>
+隨後 Federico Montesino Pouzols 又 [<a href="http://mailman.fsfeurope.org/pipermail/discussion/2006-October/006464.html">補充</a>] 說：<ul class="code" style="margin: 6px;">
+Both issues can be sorted out with a GPL + exception license. In general, 
+using LGPL for C++ libraries is a bad idea -I would say. Besides the 
+"lesser" aspect of the LGPL, it is obsolete in its language (when you have 
+templates and methods implemented in headers, the division between the 
+library and the application using it is not a matter of just linking 
+anymore). In the obsolete language of the LGPL, when you use a template, 
+you would be basically copying code.
+</ul>
+Java Core Library 的自由實做計畫 [<a href="http://www.gnu.org/software/classpath/">GNU Classpath</a>] 就是採用 GPL + exception license，其著眼點就是避開語言層次的限制與模糊不清，正如前述提到：<ul class="code" style="margin: 6px;">
+"when you have templates and methods implemented in headers, the division 
+between the library and the application using it is not a matter of just 
+linking anymore."
+</ul>
+若在 GPL/LGPL 的語意來說，當 C++ compiler 編譯 C++ 應用程式時，會從 C++ Template Library 的標頭檔「複製」特定的程式碼片段到應用程式去，這也使得應用程式被「內嵌」原本以 GNU LGPL 發行的程式碼，進而被「感染」，也就失去 LGPL 的立意。所以，具體的克服方式就如 Federico Montesino Pouzols 指出：<ul class="code" style="margin: 6px;">
+Some FAQs about the libstdc++ "runtime exception" are answered here: 
+<a href="http://gcc.gnu.org/onlinedocs/libstdc++/17_intro/license.html">http://gcc.gnu.org/onlinedocs/libstdc++/17_intro/license.html</a>.<br />
+<br />
+To the best of my knowledge, GPL + linking exception is the best way of 
+extending the LGPL conditions for C++ libraries. Using an exception 
+similar to that of libstdc++ you will of course allow using your 
+library in proprietary applications. If you prefer to avoid that 
+abuse, you could reformulate the exception so that it only allows the 
+library to be used in GPL and LGPL (or a list of free licenses 
+acceptable from your point of view) apps and libs.<br />
+<br />
+It seems the eCos license 2.0 (<a href="http://www.gnu.org/licenses/ecos-license.html">http://www.gnu.org/licenses/ecos-license.html</a>) is also a case of GPL + exception. 
+This license however adds the restriction that source code of the app. 
+using the library must be available as specified in section (3) of the GPL.
+</ul>
+看了以上陳述後，可以得知 [<a href="http://www.orocos.org/rtt">Orocos Real-Time Toolkit</a>] 從 GNU LGPL 授權移轉到 GPL + linking exception，就是基於以上考量，這種「行為導向」的描述也更符合現況。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001874.html">04:39 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1874" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 19, 2007</h2>
+
+
+<div class="blogbody">
+<a name="001873"></a>
+<h3 class="title">浪濤的單戀</h3>
+
+上月參與 [<a href="http://wiki.debian.org.tw/TWDebCamp2006">Debian Taiwan Camp 2006</a>] 活動，遊覽花東順便推廣自由軟體。有位學長問及為何我喜愛東部，事實上，對於人潮擁擠的景點一直沒有太大興趣，反倒對於山水交會之景，常凝望出神，特別是北上工作後，只要一年可到花東走訪一兩次，就覺得很滿足。或許因為在空軍服役期間，長達十八個月在花蓮雷達站與戰備中心盯著指揮儀，監控台灣東部空防狀態，許多宜蘭、花蓮、台東，與屏東的地名都耳熟能詳，但休假期間卻往往忙著回西部，未能長久駐足於這世外桃源，實在是一憾事。<br />
+<br />
+留在腦海的回憶，逐漸被塵封。置身於繁華的台北市，此時的我正如唐代杜光廷所說「氣耗于內，神疲於外，氣竭而形衰，形凋而神逝，以至於死矣」，然，早已售出魂靈的我，又有何「道性」可言？只得在幻境中，握緊掌中的鑰匙，試試圖開啟回憶之門...<br />
+<center><a href="http://jserv.sayya.org/gallery/fugang.jpg"><img src="http://jserv.sayya.org/gallery/fugang-small.jpg" /></a><br />
+click to enlarge</center><br />
+位於東海岸的台東富岡漁港，舊名「加路蘭港」或「伽蘭港」，乃因鄰近阿美族部落「加路蘭社」而名，現為台東縣三大漁港之一。游走於岩岸，一邊享受海風吹拂，聽著浪濤拍岩聲，一邊暢飲美酒，鬆弛原本過度緊繃的神經感官，無形中湧現一種獨特、難以言喻的感覺，特別是對大自然的親密感。在我二十五載的人生中，有十年是在苗栗通霄度過，綿延不絕的沙岸與獨特的海水氣味，至今仍有強烈的觸感，而東部岩岸更加深我的依戀，這讓我聯想起 Elain Morgan 的經典著作《The Aquatic Ape Hypothesis》，Elain Morgan 自 1972 年開始宣傳水猿假說 (AAH)，由眾多提問反思，認定人類始祖在獨立演化的早期階段，在水裡度過了幾百萬年，逐漸脫去全身毛髮、養成直立習慣，進而發現製造工具的利益，依據該假說，我們可列舉的人類特徵，幾乎是在「水猿」階段演化出來的，甚至說話的能力也依賴水棲奠定的生理基礎，在三十年後的今日，此假說仍具爭議，但這似乎說明了我對於河川大海的依戀。<br />
+<br />
+適逢冬季，在岸邊，佇立觀看海浪。來自遠方的浪濤，受自然引力的牽引推送，時而猛擊礁石，有如排山倒海之勢，他是個悲壯的巨漢。但，有時也如風情萬種的女郎，柔情似水，婆娑在岸石間，粼粼波光閃爍著呵護與愛撫，她，是個慈愛的母親。至於我的姿態，遠遠不是那麼重要，或坐，或躺，或站立，時而高亢宏偉、時而低沉寧靜的濤聲，譜出人生百態與萬物的跫音，在富岡海邊反覆聽著浪濤聲，每每都有不同的感動，不自覺想起歐陽修的〈秋聲賦〉，彷彿體會了詞中各種比喻，原本無形的秋聲卻在意境著遞移下，是如此生動可聞，而秋聲起興和自然萬物之交替凋零如浪濤者，何嘗不是人生無常卻隱含不變真義的表徵？<br />
+<br />
+立於岸邊，瞻仰這既是巨漢又是慈母的浪濤，耳畔滿是大海與陸地的合唱聲，我就好比是岩岸的滾石，隨波逐流、過著看似了無新意的生活，但，每個滾石都有不同的面貌、不同的際遇，尤其在我們靜下心，才能感受到這之間的「道性」。在浪濤捲襲之後，觸發雋永且理智的回歸，追尋著夢想、編織情愛的洶湧浪濤，是壯觀的，但何嘗也不也是極其易碎，如今徒存浪花，那是我們最後的眷戀，驀然回首，僅存蒼涼的惆悵，浪濤依舊拍岸。而，大自然的律動逐漸壓抑個人的意識，心靈處於清空與充實的微妙變化，好似近代物理中量子力學種種深奧不可測的微觀現象，這就是真正的寧靜，也因為這種寧靜給予我們感受大自然力量的契機，那一瞬間，隻手托舉群山、跨足於群巔峻嶺，以偉大的心靈追逐浪濤，好似蘇軾在〈念奴嬌〉的瀟灑：「大江東去，浪淘盡，千古風流人物」，是此，這一切靈魂的高度，皆在指尖可及之處... 夜棲於漁港附近的民宿，頓時詩意如泉湧，隨手記下：<br />
+<pre class="code" style="margin: 6px;">
+〈浪濤的單戀〉
+
+寒江灘頭浪濤聲，堤防孤立伸入海，
+風雨駕馭賦航程，史事隨煙飄霧散；
+波濤洶湧震狂瀾，雨水凝露終歸化，
+滿天星宿無情睹，紅塵悵然增年輪。
+
+顏容翩翩散天際，季風卷卷愁煞人，
+孤舟獨行引迷濛，滄浪何處避風所；
+離情盤據成單戀，意亂心煩淚雙垂，
+塵迷傷懷瀉萬江，千里目送昇涅盤。
+
+群 於台東富岡漁港
+Dec 23, 2006
+</pre>
+汩汩而動的羊水，是在母體姙脤期間的濡慕，作為「水猿」，面對孕育所有生物的海洋，領略其單純且神秘的呼喚聲。但，自臍帶割斷後，母子成為獨立的個體，依據自然法則立足，但那種被拋擲且斷裂的感覺，卻深刻烙印在心，是此，人在呱呱落地後即有種與生俱來的孤獨感，企盼游回母體、徜徉於羊水中過著「水式生活」，但已枉然。無論如何，我們內心總有股追溯生命起源處的念頭，在台東富岡漁港，隱密的欲動被浪濤、這個最美妙的振盪器所強化，不久後，我將歸化於大地與洋流，成為寰宇更緊密的一分子，屆時，將會獻生於這永恆的濤聲，這是有循環性質的單戀。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001873.html">06:14 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1873" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 12, 2007</h2>
+
+
+<div class="blogbody">
+<a name="001872"></a>
+<h3 class="title">透過 User-Mode-Linux 來學習核心設計 (2)</h3>
+
+延續上一個單元，我們用實例看如何體驗核心設計，但個人認為逐行去追蹤 Linux Kernel 原始程式碼實在沒有必要，事實上，只需要知道關鍵的細節即可。現在開始，我們會做出對 UML 產生影響的行為，當然，宿主 Linux 環境是不會有大問題的。雖然我們隨時可重建 rootfs，但有一份副本會是很方便的，所以我準備了一份 Ubuntu Dapper i386 image [<a href="http://jserv.sayya.org/kernel/uml/image/ubuntu-dapper-i386-rootfs.tar.bz2">ubuntu-dapper-i386-rootfs.tar.bz2</a>]，保有大部分 base package，但移除 XFS、ReiserFS、JFS 等工具程式。另外補充的是，雖可在宿主 Linux 2.4 kernel 上運作 UML 2.6，但為了最佳的效能表現，建議宿主 Linux 環境還是用較新的版本，稍後會解釋為何會影響到 UML 的效能表現。筆者的宿主 Linux 環境為：<br />
+<pre class="code" style="margin: 6px;">
+$ uname -a
+Linux venux 2.6.17-6-686 #2 SMP Fri Aug 11 22:09:15 UTC 2006 i686 GNU/Linux
+</pre>
+已知在 Ubuntu feisty (development branch) 的 linux 2.6.20-lowlatency 會有非預期的行為，筆者還在排除中，故不建議使用高於 2.6.19 的宿主 Linux 環境。另一個需要補充之處，因為我們會在宿主 Linux 環境與 UML 中頻繁切換，為避免指令操作的誤解，以下規範命令提示之原則：<ul>
+<li>$   錢字號開頭為宿主 (Host) Linux 環境之命令</li>
+<li>root@uml:~#   為 UML 環境，主機名稱 "uml"</li>
+</ul>
+有了 UML 與 rootfs，我們當然可試著修改 kernel，享受 hacking 的快感。在 LKML (Linux Kernel Mailing-List) 上不時有許多令人驚艷的 patch 或發展分支，但我們常猶豫不敢嘗試，因為輕則會讓系統當機，嚴重的話可能會讓硬碟造成無法挽救的損毀，但有了 UML 就輕鬆多了，請愛用這個 sandbox。舉例來說，Ron Yorston 對 Linux 做了一個小改進 [<a href="http://intgat.tigress.co.uk/rmy/uml/sparsify.html">Keeping filesystem images sparse</a>]，這是很有趣的想法，可徹底釋放刪除檔案的磁碟空間，咱們就先在 UML 上測試，先取得 patch [<a href="http://jserv.sayya.org/kernel/uml/patch/uml-2_6_19_1-zerofree-ext2.patch">uml-2_6_19_1-zerofree-ext2.patch</a>] (re-diff)，可透過 [<a href="http://packages.debian.org/unstable/devel/diffstat">diffstat</a>] 觀察 patch 的更動項目：<br />
+<pre class="code" style="margin: 6px;">
+$ diffstat uml-2_6_19_1-zerofree-ext2.patch
+ Documentation/filesystems/ext2.txt |    2 ++
+ fs/ext2/balloc.c                   |   24 +++++++++++++++++++++++-
+ fs/ext2/ext2.h                     |    2 +-
+ fs/ext2/inode.c                    |   12 ++++++------
+ fs/ext2/super.c                    |    6 +++++-
+ fs/ext2/xattr.c                    |   16 ++++++++--------
+ include/linux/ext2_fs.h            |    1 +
+ 7 files changed, 46 insertions(+), 17 deletions(-)
+</pre>
+雖然這個 patch 不大，但更動的檔案也頗多的，到底會對系統產生什麼影響呢？只有實地體驗才知道。大致的測試方式如下： (假設 rootfs 檔名為 "ubuntu-root"，而且放於 kernel source 上一層目錄)<br />
+<pre class="code" style="margin: 6px;">
+$ cd linux-2.6.19.1
+$ 
+$ patch -p1 < ../uml-2_6_19_1-zerofree-ext2.patch
+$ make linux ARCH=um
+$ ./linux ubd0=`pwd`/../ubuntu-root
+</pre>
+最後一個指令是要求啟動 UML，稍為等待後，我們登入系統並啟動 zerofree 功能。原本的 /etc/fstab 內容為：<br />
+<pre class="code" style="margin: 6px;">
+/dev/udb/0	/	ext2	defaults	0	1
+proc		/proc	proc	defaults	0 	0
+</pre>
+上述的 "defaults" 就是指定以檔案系統的預設參數去掛載，而我們可透過 vim 修改設定內容 (base 裡面唯一的 editor，若用不順手，也可比照前一系列先以 loop device 掛載此 rootfs 進而修改)，比方說可以改為：<br />
+<pre class="code" style="margin: 6px;">
+dev/udb/0	/	ext2	zerofree,bsddf,debug,orlov	0	1
+proc		/proc	proc	defaults	0 	0
+</pre>
+參考 kernel source 的 Documentation/filesystems/ext2.txt 可得知上述選項的描述：<br />
+<pre class="code" style="margin: 6px;">
+Options
+=======
+
+Most defaults are determined by the filesystem superblock, and can be
+set using tune2fs(8). Kernel-determined defaults are indicated by (*).
+
+bsddf                   (*)     Makes `df' act like BSD.
+... (省略) ...
+debug                           Extra debugging information is sent to the
+                                kernel syslog.  Useful for developers.
+... (省略) ...
+orlov                   (*)     Use the Orlov block allocator.
+                                (See http://lwn.net/Articles/14633/ and
+                                http://lwn.net/Articles/14446/.)
+... (省略) ...
+zerofree                        Zero data blocks when they are freed.
+</pre>
+既然提到 /etc/fstab，順便複習一下設定方式。"zerofree,bsddf,debug,orlov" 就是檔案系統參數的組合，後面有兩個數字，第一個數字表示是否讓 [<a href="http://dump.sourceforge.net/">dump</a>] 進行備份，值為 0 時則忽略，詳情可見 dump 的 man page：<br />
+<ul class="code" style="margin: 6px;">
+<b>-W</b><br />
+Dump tells the operator what file systems need to be dumped.  This information is 
+gleaned from the files /var/lib/dumpdates and /etc/fstab.  The -W option causes 
+dump to print out, for all file systems in /var/lib/dumpdates, and regognized file 
+systems in /etc/mtab and /etc/fstab. the most recent dump date and level, and 
+highlights those that should be dumped. If the -W option is set, all other options 
+are ignored, and dump exits immediately.
+</ul>
+第二個數字，是設定不正常關機或系統損毀時，該如何檢查檔案系統。一般而言，我們會 rootfs 
+那項設為 1 (優先被 fsck 處理)，其他分割區就設定為 0 (不檢查、不處理)，特別是像 iso9660 或 
+proc 這類特別的檔案系統。<br />
+<br />
+編輯後，以 "halt" 命令結束 UML 執行，再以 "./linux ubd0=..." 啟動 UML 一次，login 後我們可發現：<br />
+<pre class="code" style="margin: 6px;">
+root@uml:~# <b>dmesg</b>
+... (省略) ...
+[42949379.480000] [EXT II FS 0.5b, 95/08/09, bs=1024, fs=1024, gc=50, bpg=8192, ipg=2048, mo=0418]
+root@uml:~# <b>mount</b>    
+/dev/udb/0 on / type ext2 (rw,zerofree,bsddf,debug,orlov)
+proc on /proc type proc (rw)
+/sys on /sys type sysfs (rw)
+varrun on /var/run type tmpfs (rw)
+varlock on /var/lock type tmpfs (rw)
+udev on /dev type tmpfs (rw)
+devpts on /dev/pts type devpts (rw,gid=5,mode=620)
+devshm on /dev/shm type tmpfs (rw)
+</pre>
+所以更動已經生效，然後我們就可進行檔案讀寫的測試，因為已經達到 hacking 的要求，我們就不再探討這方面的細節。<br />
+<br />
+學習核心設計最簡便的方式就是 LKM (Linux Kernel Module) 的撰寫，這相對 user-space 的程式設計來說，也是充滿挑戰，不過，有了 UML 後，我們可更有自信些。我們必須先解決一個問題：如何將宿主 Linux 環境的檔案與 UML 環境分享？當然，透過虛擬網路是很好的解法，不過我們先來使用檔案系統層面的解法。<br />
+<br />
+上一篇文章提到的組態設定值 [<a href="http://jserv.sayya.org/kernel/uml/uml-dot-config">uml-dot-config</a>] 支援的檔案系統列表如下：<br />
+<pre class="code" style="margin: 6px;">
+$ grep 'FS=[ym]' uml-dot-config 
+CONFIG_HOSTFS=m
+CONFIG_HPPFS=m
+CONFIG_EXT2_FS=y
+CONFIG_PROC_FS=y
+CONFIG_SYSFS=y
+CONFIG_TMPFS=y
+CONFIG_RAMFS=y
+CONFIG_DEBUG_FS=y
+</pre>
+其中，CONFIG_HOSTFS 就對應到 UML [<a href="http://user-mode-linux.sourceforge.net/hostfs.html">Host file access</a>]，Linux Kernel Configuration (make menuconfig ARCH=um) 的設定方式為：<br />
+<pre class="code" style="margin: 6px;">
+UML-specific options  ---&gt;
+    Host filesystem
+</pre>
+"Help" 提供簡要的說明：<br />
+<ul class="code" style="margin: 6px;">
+While the User-Mode Linux port uses its own root file system for 
+booting and normal file access, this module lets the UML user 
+access files stored on the host.  It does not require any 
+network connection between the Host and UML.  An example use of 
+this might be:<ul>
+    mount none /tmp/fromhost -t hostfs -o /tmp/umlshare
+</ul>
+where /tmp/fromhost is an empty directory inside UML and 
+/tmp/umlshare is a directory on the host with files the UML user 
+wishes to access.
+</ul>
+所以，透過 hostfs 就可在 UML 中存取到宿主 Linux 環境中的檔案系統，當然，這使用上必須小心，儘管 UML 是個 sandbox，不過 hostfs 的機制就好比主人把貓沙盒 (UML) 擺放到沙發 (host 上的 filesystem) 上一般，萬一貓咪調皮搗蛋，沙發上仍可能造成傷害。筆者的習慣是編譯為 LKM，只在需要時掛載，所以也來看看如何將 hostfs.ko 放入 rootfs 中。假設我們的 rootfs "ubuntu-root" 放在 /home/jserv/uml 目錄下，而 kernel source 在 /home/jserv/linux-2.6.19.1 同時已執行過 "make linux ARCH=um"，那麼我們可進行以下操作：<br />
+<pre class="code" style="margin: 6px;">
+$ cd /home/jserv/uml
+$ mkdir -p ext2fs
+$ sudo mount -o loop ubuntu-root ext2fs
+$ cd linux-2.6.19.1
+$ make modules ARCH=um
+  SYMLINK arch/um/include/sysdep
+make[1]: `arch/um/sys-i386/user-offsets.s' is up to date.
+  CHK     include/linux/version.h
+  CHK     include/linux/utsrelease.h
+... (省略) ...
+  Building modules, stage 2.
+  MODPOST 5 modules
+  CC      fs/hostfs/hostfs.mod.o
+  LD [M]  fs/hostfs/hostfs.ko
+... (省略) ...
+$ make _modinst_ MODLIB=`pwd`/../ext2fs/lib/modules/2.6.19.1 ARCH=um
+  INSTALL fs/hostfs/hostfs.ko
+  INSTALL fs/hppfs/hppfs.ko
+  INSTALL lib/crc-ccitt.ko
+  INSTALL lib/crc32.ko
+  INSTALL lib/libcrc32c.ko
+</pre>
+光只是把 hotsfs.ko 放到 rootfs 還不夠，最好還能把 kernel module dependency 也一併建立，所以再透過 chroot 去以在 rootfs 執行 depmod，流程如下：<br />
+<pre class="code" style="margin: 6px;">
+$ cd /home/jserv/uml
+$ sudo chroot ext2fs
+# /sbin/depmod -ae 2.6.19.1
+# exit
+$ sudo umount ext2fs
+</pre>
+注意到上面以 '#' 開頭的兩行，表示處於 chroot 環境中。萬事具備，再來啟動 UML 一次，咱們來掛載 hostfs，操作方式如下：<br />
+<pre class="code" style="margin: 6px;">
+root@uml:~# modprobe hostfs
+root@uml:~# mkdir -p /mnt/host
+root@uml:~# mount none /mnt/host -t hostfs -o /home/jserv/uml
+</pre>
+這時候在 UML 中切換到 /mnt/host 目錄，就可以看到宿主 Linux 環境的 /home/jserv/uml 底下的檔案，工作空間瞬間大幅提昇，以筆者的環境來說：<br />
+<pre class="code" style="margin: 6px;">
+root@uml:~# df -h
+Filesystem            Size  Used Avail Use% Mounted on
+/dev/udb/0            388M  141M  227M  39% /
+varrun                 15M   20K   15M   1% /var/run
+varlock                15M     0   15M   0% /var/lock
+udev                   15M  4.0K   15M   1% /dev
+devshm                 15M     0   15M   0% /dev/shm
+none                  9.4G  8.7G  707M  93% /mnt/host
+</pre>
+當然，hostfs 也可直接編譯到 UML kernel 中，這樣甚至可在啟動 UML 時，直接掛載宿主 Linux 的檔案系統，方式為更動 kernel configuration，將 "Host filesystem" 從 m (module) 改為 y (builtin) 並重新編譯後，執行以下命令：<br />
+<pre class="code" style="margin: 6px;">
+linux root=/dev/root rootflags=/ rootfstype=hostfs ro con0=fd:0,fd:1 init="/bin/sh -l"
+</pre>
+若將 "ro" 參數改為 "rw" (Read & Write enabled)，就可完全掌握宿主 Linux 的檔案系統，儘管可行，但強烈建議讀者不要輕易嘗試。張羅許久，終於有舒適的環境，我們還是從 "Hello World" 等級的 LKM 開始吧。<br />
+<br />
+建議再開一個終端機 (建立新的 rxvt 視窗或者透過 [<a href="http://www.gnu.org/software/screen/">GNU screen</a>])，這樣就可確保一個顯示宿主 Linux 環境 (以下簡稱「Linux 工作區」)，而另一個專門顯示 UML，如沒有特別強調，「Linux 工作區」都在 /home/jserv/uml 之下的目錄或子目錄。在 Linux 工作區撰寫迷你 LKM (檔名："hello.c")，其內容如下：<br />
+<pre class="code" style="margin: 6px;">
+<span class="keyword">#include</span> &lt;linux/init.h><span class="keyword">                                                                             
+#include</span> &lt;linux/module.h>
+MODULE_LICENSE(<span class="literal">"GPL"</span>);
+
+<span class="keyword">static</span> <span class="keyword">int</span> hello_init(<span class="keyword">void</span>)
+{
+        printk(KERN_ALERT <span class="literal">"Hello World! - init\n"</span>);
+        <span class="keyword">return</span> 0;
+}
+
+<span class="keyword">static</span> <span class="keyword">void</span> hello_exit(<span class="keyword">void</span>)
+{
+        printk(KERN_ALERT <span class="literal">"Hello World! - exit\n"</span>);
+}
+
+module_init(hello_init);
+module_exit(hello_exit);
+</pre>
+這其中沒什麼大學問，只是在 LKM 的開始與結束時期印出 "Hello World!" 訊息。筆者的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001794.html">"Kernel Modules and Device Drivers" 免費文件下載</a>] 提到 Doug Abbott 大作《<a href="http://www.elsevier.com/wps/find/bookdescription.cws_home/707446/description">Linux for Embedded and Real-Time Applications 2/e</a>》書中第七章〈Kernel Modules and Device Drivers〉有相當好的入門資訊，並提供開放下載。就系統的角度，LKM 與核心的互動可用下圖表示：<br />
+<center><img src="http://jserv.sayya.org/kernel/kernel_module_linking.png" /></center><br />
+LKM 被「注入」系統核心有相當繁瑣的動作，但我們只需認為 Linux Kernel 有個 ELF loader 可識別 LKM 內部資訊，以 insmod「插入」LKM 時，會觸發 module_init，反之，當以 rmmod「移除」LKM 時，會觸發 module_exit。上面檔案列表的 "module_init" 與 "module_exit" 是個 macro，定義於 include/linux/init.h 標頭檔中。<br />
+<br />
+編譯提供給 UML 的 LKM 方式稍微不一樣，我們寫個 Makefile 如下：<br />
+<pre class="code" style="margin: 6px;">
+obj-m += hello.o
+
+KDIR    :=/lib/modules/$(shell uname -r)/build
+PWD     :=$(shell pwd)
+KDIR    :=$(PWD)/linux-2.6.19.1
+
+default:
+        $(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules ARCH=um
+
+clean:
+        $(MAKE) -C $(KDIR) SUBDIRS=$(PWD) clean ARCH=um
+</pre>
+以往 Linux kernel 2.4 下要撰寫 LKM，總是得做出一堆又臭又長的編譯參數，不過 Kernel 2.6 後簡化許多，但要注意上面的 "ARCH=um"。取得打包好的 [<a href="http://jserv.sayya.org/kernel/uml/hello-lkm.tar.bz2">hello-lkm.tar.bz2</a>] 後，觀察建構過程：<br />
+<pre class="code" style="margin: 6px;">
+$ <b>make</b>
+make -C /home/jserv/uml/linux-2.6.19.1 SUBDIRS=/home/jserv/uml modules ARCH=um
+make[1]: Entering directory `/home/jserv/uml/linux-2.6.19.1'
+  CC [M]  /home/jserv/uml/hello.o
+  Building modules, stage 2.
+  MODPOST 1 modules
+  CC      /home/jserv/uml/hello.mod.o
+  LD [M]  /home/jserv/uml/hello.ko
+make[1]: Leaving directory `/home/jserv/uml/linux-2.6.19.1'
+$ <b>nm hello.ko</b>
+00000000 r __mod_license4
+0000000c r __mod_vermagic5
+0000002a r __module_depends
+00000000 D __this_module
+00000013 T cleanup_module
+00000013 t hello_exit
+00000000 t hello_init
+00000000 T init_module
+         U printk
+</pre>
+以上的 "init_module" 與 "cleanup_module" 兩個 symbol 是一定會出現在 LKM 中，不過這並非本文討論的範疇，我們將專注於 UML 的開發與測試。得益於 hostfs，建構完畢的 hello.ko 很容易佈署 (deploy) 到 UML 環境中，測試方式如下：<br />
+<pre class="code" style="margin: 6px;">
+root@uml:~# <b>cd /mnt/host</b>
+root@uml:/mnt/host# <b>insmod hello.ko</b>
+[42951224.080000] Hello World! - init
+root@uml:/mnt/host# <b>rmmod hello</b>
+[42951227.890000] Hello World! - exit
+root@uml:/mnt/host#
+</pre>
+上述粗體字為我們輸入的命令，看來正確無誤的運作，當然，我們不會因此滿足，畢竟之所以要使用 UML，就是我們想體驗實體 Linux 環境下難以操作或實現的開發方式，後面的章節將會以 [<a href="http://sources.redhat.com/insight/">GDB/Insight</a>] 配合 UML 作分析與細部調整測試動作。<br />
+(待續)<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001872.html">10:17 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1872" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 11, 2007</h2>
+
+
+<div class="blogbody">
+<a name="001871"></a>
+<h3 class="title">透過 User-Mode-Linux 來學習核心設計 (1)</h3>
+
+因為收到不少網友來信指教，小弟決定整理過去的心得與筆記，分享如何透過 [<a href="http://user-mode-linux.sourceforge.net/">User-Mode Linux</a>] (以下簡寫 UML，注意該術語與軟體工程的 Unified Modeling Language 無任何關係) 來學習核心設計、體驗修改並驗證的新途徑。<br />
+<br />
+UML 顧名思義是將 Linux Kernel 移植到 user-space，如此一來，就可將這個修改的 "Kernel" 當作一般的 Linux process 來執行，這有什麼好處呢？簡單來說，至少有以下應用：<ul>
+<li>對與硬體架構無關的一般性 Linux Kernel 程式作偵錯與快速測試</li>
+<li>檢驗 file system 的完整性與正確性，特別是 init script 相關的部份</li>
+<li>在單機建構虛擬網路環境，以多個網路單元進行模擬操作</li>
+<li>追蹤 Linux Kernel 大體流程，允許快速測試新的演算法或改進途徑</li>
+<li>完整的 Linux 教學環境</li>
+</ul>
+在 UML 官方網頁 [<a href="http://user-mode-linux.sourceforge.net/uses.html">What are people using it for?</a>] 與 [<a href="http://user-mode-linux.sourceforge.net/case-studies.html">Case Studies</a>] 有更詳細的描述。類似的技術有 Win32 平台的 [<a href="http://www.colinux.org/">coLinux</a>] (Cooperative Linux) 與 FreeBSD jail (指 sandbox 的行為) 等。如果不能從以上描述體會 UML 的重要性，不妨想想這個案例：做 Embedded Linux 最痛苦的不是在設計階段，而是測試與調整的步驟，以前我們很直覺會利用硬體環境直接測試，不是放到 Floppy，就是弄到 Flash 之類的實體環境，光是 download 就耗費相當多時間了，更別說發現 Bug，然後 rebuild 再重來，曠日費時。所以呢，比較妥當的方式是利用模擬的環境，像是 chroot 指令的使用，不過，那也要 target 環境跟 building 系統接近才行，那，不同的 kernel 組態怎麼辦呢？或是，很容易毀損實體 filesystem 的測試呢？透過 UML，我們可以建構出一個極佳的測試環境。<br />
+<br />
+知名的 [<a href="http://leaf.sourceforge.net/">LEAF</a>] (Linux Embedded Appliance Firewall) 計劃的文件中，有份 [<a href="http://leaf.sourceforge.net/bering/index.php?module=pagemaster&PAGE_user_op=view_page&PAGE_id=3&MMN_position=3:3">Developing and using LEAF in a virtual environment</a>] 開發文獻很值得一看，不僅克服不必要的微調動作，還能兼具設計與測試雙軌運作的趨勢，透過建構 UML 作為基礎的開發環境，並讓 [<a href="http://leaf.sourceforge.net/">LEAF</a>] 能在其上開發。<br />
+<br />
+[<a href="http://unit.aist.go.jp/itri/knoppix/uml/index-en.html">UserModeLinux for KNOPPIX</a>] 很有創意也相當實用的途徑，透過 UML 來測試不同的 [<a href="http://www.knoppix.org/">Knoppix</a> Linux LiveCD 配置組態，可以避免無謂的燒錄測試，而且可以透過 UML 搭配特定 debugger 與 benchmark profiling 來進行微調。<br />
+<br />
+無獨有偶，[<a href="http://gpe.handhelds.org/">GPE</a>] (GPE Palmtop Environment) 官方網站文件中也提及這類 cross-development 的方式，請見 [<a href="http://gpe.handhelds.org/documentation/uml_gtk2_xcompile.shtml">GPE: UML GTK 2 cross compiling environment</a>]，如此一來，ARM target 的 layout 就可以在設計的初期界定了，相當方便的途徑，當然，隨著 [<a href="http://fabrice.bellard.free.fr/qemu/">qemu</a>] 具備 ARM system emulation 後，使用 UML 的途徑就稍微彆扭些，但核心的想法是雷同的。<br />
+<br />
+也因此，Linux Kernel 2.6 source tree 正式收錄 UML，我們也不再需要跟一堆 patch 搏鬥，不過 UML 經歷過許多重大修改，這使得不同時期的 HOW-TO 文件幾乎都有重大出入 (早於 2004 年的文件就不需要太拘泥細節了，畢竟設定方式更動過大)，對一般使用者來說，徒增困擾而難以入門，這也是為何小弟試圖撰寫這系列筆記的原因，需要留意的是，因為 Linux Kernel 總是捨棄相容性包袱，所以難確保有一致的文件，也因此，本系列文件基本上以新版修正舊版缺失的方式撰寫，對系統造成的損失或不便處，請多見諒，但歡迎 [<a href="http://jserv.sayya.org/">來信指教</a>]。以下是本系列文件著墨之處 (不依據時間順序)：<ul>
+<li>親手打造 UML 開發環境</li>
+<li>建構 UML 所需之 root file system 並微調</li>
+<li>以 GDB 追蹤 UML</li>
+<li>修改 UML 並快速驗證，體驗 Kernel Hacking 的快感</li>
+<li>以 UML 建構虛擬網路環境，進而實驗小型 PC Cluster</li>
+</ul>
+UML 是種虛擬機器機制，可建立在既有 Linux 作業系統上多個 Linux 系統的「假象」，而虛擬機器所使用的 rootfs (root filesystem) 則建立於宿主系統上的單一檔案系統。一般而言，程序執行於 Linux 的架構如下圖：<br />
+<center><img src="http://jserv.sayya.org/kernel/uml/pix/uml_part_1.png" /></center><br />
+而 UML 則是在宿主系統上另執行一核心，如下圖：<br />
+<center><img src="http://jserv.sayya.org/kernel/uml/pix/uml_part_2.png" /></center><br />
+由此可見，UML 提供的虛擬機器，允許模擬出比實體裝置更豐富的配置方式，而且 UML 所使用的檔案系統對宿主 Linux 來說也不過只是單純的檔案，一切都好比置身於保護的 sandbox (原文的意思就是「貓沙盒」，給調皮的貓咪一個自得其樂卻不傷害家具的器具，引申為保護的自我封裝機制)，經由適當配置，我們大可放心對虛擬機器作任何更動，而不必擔憂損害到真實的硬體與系統。<br />
+<br />
+相當重要的觀念是：UML 本身就是全功能的 kernel，具備專屬的虛擬環境，對硬體的支援僅仰賴於宿主 Linux 系統，從 UML 內部的觀點來看，基本上支援基本的硬體裝置，如：<ul>
+<li>block device<ul>
+UML 的 block device 其實是透過檔案以映射到宿主環境中的檔案系統，仍秉持 UNIX 一貫的 "Everything is file" 的概念，UML 可如掛載實體硬碟裝置一般，將檔案系統掛入，當然也可建立 swap，更可如 Raw disk 一般被處理，透過 dd 一般的工具進行讀寫。UML 的 block device 可分層處理，並透過 CoW (Copy-on-Write) 的方式，作有效率且安全的操作，同時這允許我們執行多個 UML 實體，卻可避免頻繁的系統崩潰造成檔案系統的損毀。
+</ul></li>
+<li>console & serial<ul>
+幾乎沒改變，與 Linux kernel 共享絕大部份的程式碼，差異在於由 kernel 提供不同的介面。就 UML 目前的設計來說，提供 file descriptor、ptys、ttys、pts 和 xterm。預設的 console file descriptor 為 0 (stdin) 與 1 (stdout)，其他則是 xterm 彩色終端機來啟動。
+</ul></li>
+<li>network device<ul>
+UML 內建類似 Hub 的軟體實做，以轉發封包，可從一個虛擬機器遞送到另一個，或設定為多點傳輸，UML 可在主機使用 ethertap 或 slip 介面。
+</ul></li>
+<li>SCSI<ul>
+UML 可模擬小型 SCSI 裝置。
+</ul></li>
+<li>USB / Sound / PCI / Wifi<ul>
+皆有實驗性的模擬途徑被提出，目前進度算是堪用，但並未完整整合到 UML 官方開發，需要再行確認。
+</ul></li>
+</ul>
+Debian GNU/Linux 很早就收錄 UML 與其相關的工具，不過為了能深入體驗 UML，我們試著 build from scratch，這裡採用的 Linux Kernel 版本為 2.6.19.1 (Date: 2006-12-11)，可在 [<a href="http://www.kernel.org/">Kernel.org</a>] 下載，建議用 "linux-2.6.19.1.tar.bz2" 來搜尋 mirror，畢竟現在的 kernel 已經增長到 41 Mb 的龐大空間。儘管 UML 已經整合到 2.6 source tree，但每個發佈版本總不免會有小疏失，所以請一併取得小弟的修正 [<a href="http://jserv.sayya.org/kernel/uml/patch/uml-2_6_19_1-compilation.patch">uml-2_6_19_1-compilation.patch</a>]，以及預先做好的組態設定值 [<a href="http://jserv.sayya.org/kernel/uml/uml-dot-config">uml-dot-config</a>] (使用 ext2 檔案系統)。大致的建構方式如下：<br />
+<pre class="code" style="margin: 6px;">
+$ tar jxvf linux-2.6.19.1.tar.bz2
+$ cd linux-2.6.19.1
+$ patch -p1 < ../uml-2_6_19_1-compilation.patch
+$ cp ../uml-dot-config .config
+$ make menuconfig ARCH=um
+$ make linux ARCH=um
+</pre>
+注意到包含 "make" 的那兩行都有 "ARCH=um" 的 build variable，這是建構 UML 一定要加上的，無論是 kernel source 或 external kernel module，都需在 make 時加上，至於原因，看官花點時間看 Linux Kernel 的 Makefile 就可見其端倪。不過，就算不小心忘了加上，請立即執行以下操作：<br />
+<pre class="code" style="margin: 6px;">
+$ make mrproper
+</pre>
+經過冗長的編譯過程後，會發現有個新檔案被建立，即 "linux"，但別急著執行，因為我們需要合用的 rootfs，原本這是苦差事，但 Debian/Ubuntu 有個強大的工具 [<a href="http://packages.debian.org/stable/admin/debootstrap">debootstrap</a>] 可輕易生成具備 Debian/Ubuntu base 的 rootfs，以下是套件簡介：<br />
+<ul class="code" style="margin: 6px;">
+debootstrap is used to create a Debian base system from scratch, without requiring the availability of dpkg or apt. It does this by downloading .deb files from a mirror site, and carefully unpacking them into a directory which can eventually be chrooted into.
+</ul>
+為了避免浪費時間在細節上，我準備了一個 script [<a href="http://jserv.sayya.org/kernel/uml/create-uml-rootfs">create-uml-rootfs</a>] 與部份設定檔範例 [<a href="http://jserv.sayya.org/kernel/uml/etc_sample.tar.bz2">etc_sample.tar.bz2</a>]，以下是 script 內容：<br />
+<pre class="code" style="margin: 6px;">
+#!/bin/sh
+
+BASE_DIR=`pwd`
+
+# --- Modified as you need ---
+TARGET_DIR=$BASE_DIR/ext2fs
+ETC_SAMPLE=etc_sample.tar.bz2
+ROOTFS_FILE=ubuntu-root
+
+# Create rootfs (400Mb)
+echo "Creating root file system..."
+rm -f $ROOTFS_FILE
+dd if=/dev/zero of=$ROOTFS_FILE bs=1024K count=400
+if [ ! -f $ROOTFS_FILE ]; then
+    echo "Error: creation of image file fails."
+    exit
+fi
+yes y | mkfs.ext2 $ROOTFS_FILE
+mkdir -p $TARGET_DIR
+mount -o loop $ROOTFS_FILE $TARGET_DIR
+
+# Make use of Debian's debootstrap tool to construct Ubuntu Dapper (6.10) base
+echo "Invoking debootstrap..."
+debootstrap --arch i386 dapper \
+    $TARGET_DIR \
+    http://archive.ubuntulinux.org/ubuntu
+
+# Extract sample configure files
+if [ -f $ETC_SAMPLE ]; then
+    cd $TARGET_DIR
+    tar jcvf $ETC_SAMPLE
+    cd $BASE_DIR
+fi
+
+# mknod for ubd0 (specific to UML)
+if [ -d $TARGET_DIR/dev ]; then
+    cd $TARGET_DIR/dev
+    mknod --mode=660 ubd0 b 98 0
+    chown root:disk ubd0
+    cd $BASE_DIR
+else
+    echo "Error: debootstrap fails."
+    exit
+fi
+
+# Finish
+sync
+umount ext2fs
+echo "Done"
+echo "Please assign the rootfs: " $ROOTFS_FILE
+</pre>
+沒有意外的話，以 root 權限執行以上 script 後，[<a href="http://packages.debian.org/stable/admin/debootstrap">debootstrap</a>] 會幫我們建構具備 Ubuntu Dapper (6.10) base 的 rootfs，其容量為 400 Mb。注意 [<a href="http://packages.debian.org/stable/admin/debootstrap">debootstrap</a>] 下載 Debian package 是透過 wget，如果在防火牆的環境中，請將相關設定準備好。輸出的 "ubuntu-root" 檔案即是 UML 所需的 rootfs，是的，就是一個檔案，損毀的話就再重跑以上流程，無論 UML 內部發生什麼事情，宿主 Linux 仍沒有大影響。<br />
+<br />
+由於後續操作都會大量使用終端機，請確認安裝合用的終端機，如 [<a href="http://software.schmorp.de/pkg/rxvt-unicode">rxvt-unicode</a>] 就是一個不錯的選擇。我們將剛剛產生的 "ubuntu-root" 檔案放在 linux-2.6.19.1 目錄下，於是可進行啟動程序：<br />
+<pre class="code" style="margin: 6px;">
+./linux ubd0=`pwd`/ubuntu-root
+</pre>
+ubd 也就是 UML Block Device 之意，對 UML 相當重要，將透過該 device 存取到 rootfs，我們應該會見到類似以下輸出：<br />
+<pre class="code" style="margin: 6px;">
+Checking that ptrace can change system call numbers...OK
+Checking syscall emulation patch for ptrace...OK
+Checking advanced syscall emulation patch for ptrace...OK
+Checking for tmpfs mount on /dev/shm...OK
+Checking PROT_EXEC mmap in /dev/shm/...OK
+Checking for the skas3 patch in the host:
+  - /proc/mm...not found
+  - PTRACE_FAULTINFO...not found
+  - PTRACE_LDT...not found
+UML running in SKAS0 mode
+Checking that ptrace can change system call numbers...OK
+Checking syscall emulation patch for ptrace...OK
+Checking advanced syscall emulation patch for ptrace...OK
+[42949372.960000] Linux version 2.6.19.1 (jserv@venux) (gcc version 4.1.2 20070106 (prerelease) (Ubuntu 4.1.1-21ubuntu7)) #4 Wed Jan 10 20:53:03 CST 2007
+[42949372.960000] Built 1 zonelists.  Total pages: 8128
+[42949372.960000] Kernel command line: ubd0=/opt/src/ubuntu-root root=98:0
+[42949372.960000] PID hash table entries: 128 (order: 7, 512 bytes)
+[42949372.960000] Dentry cache hash table entries: 4096 (order: 2, 16384 bytes)
+[42949372.960000] Inode-cache hash table entries: 2048 (order: 1, 8192 bytes)
+[42949372.960000] Memory: 30100k available
+[42949373.230000] Mount-cache hash table entries: 512
+... 省略 ...
+</pre>
+預設 root 是不需要密碼，我們試著登入並結束系統：<br />
+<pre class="code" style="margin: 6px;">
+Ubuntu 6.06 LTS uml tty0
+
+uml login: <b>root</b>
+[42949456.230000] line_ioctl: tty0: unknown ioctl: 0x5603
+Last login: Wed Jan 10 16:47:59 2007 on tty0
+Linux uml 2.6.19.1 #4 Wed Jan 10 20:53:03 CST 2007 i686 GNU/Linux
+root@uml:~# <b>halt</b>
+
+Broadcast message from root@uml (tty0) (Wed Jan 10 16:48:40 2007):
+
+The system is going down for system halt NOW!
+ * INIT: Switching to runlevel: 0
+ * INIT: Sending processes the TERM signal
+hwclock is unable to get I/O port access:  the iopl(3) call failed.
+ * Stopping kernel log... [ ok ] 
+ * Stopping system log... [ ok ] 
+ * Terminating any remaining processes... [ ok ] 
+ * Unmounting remote filesystems... [ ok ] 
+ * Deconfiguring network interfaces... [ ok ] 
+ * Unmounting local filesystems... [ ok ] 
+ * Deactivating swap... [ ok ] 
+ * Will now halt
+[42949503.180000] System halted.
+</pre>
+粗體字是我們鍵入的部份，當有 ioctl 抱怨錯誤訊息，請忽略，因為 UML 並未完全實做該功能，這不影響我們的進行。這短暫的過程我們見到 UML 虛擬機器的啟動與終結，佛語常說，一切萬物，自有緣起緣滅之時，且讓我們來探究 UML 的因果與深入設計，進而體驗 Linux Kernel 的美妙。<br />
+(待續)<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001871.html">12:59 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1871" onclick="OpenComments(this.href); return false">迴響 (10)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 09, 2007</h2>
+
+
+<div class="blogbody">
+<a name="001870"></a>
+<h3 class="title">GCC 函式追蹤功能</h3>
+
+昨天有一位同事問及 ARM call frame 相關的問題，我給的建議是透過 GCC Function instrumentation 的機制。該機制出現於 GCC 2.x，由 Cygnus (現為 RedHat) 所提出，在 GCC 中對應的選項為："finstrument-functions"，查看 man page 可得以下資訊：<ul class="code" style="margin: 6px;">
+<b>-finstrument-functions</b><br />
+<br />
+Generate instrumentation calls for entry and exit to functions.  Just after function entry and just before function exit, the following profiling functions will be called with the address of the current function and its call site.  (On some platforms, "__builtin_return_address" does not work beyond the current function, so the call site information may not be available to the profiling functions otherwise.)<br />
+<pre>
+    void __cyg_profile_func_enter (void *this_fn,
+                                   void *call_site);
+    void __cyg_profile_func_exit  (void *this_fn,
+                                   void *call_site);
+</pre>
+The first argument is the address of the start of the current function, which may be looked up exactly in the symbol table.<br />
+<br />
+This instrumentation is also done for functions expanded inline in other functions. The profiling calls will indicate where, conceptually, the inline function is entered and exited.  This means that addressable versions of such functions must be available. If all your uses of a function are expanded inline, this may mean an additional 
+expansion of code size.  If you use extern inline in your C code, an addressable version of such functions must be provided.  (This is normally the case anyways, but if you get lucky and the optimizer always expands the functions inline, you might have gotten away without providing static copies.)<br />
+<br />
+A function may be given the attribute "no_instrument_function", in which case this instrumentation will not be done.  This can be used, for example, for the profiling functions listed above, high-priority interrupt routines, and any functions from which the profiling functions cannot safely be called (perhaps signal handlers, if the 
+profiling routines generate output or allocate memory).
+</ul>
+不過儘管有如此詳細的資訊，我們還是依循杜威博士的「作中學」方式來學習吧。首先，來寫個 "Hello World" 小程式： (hello.c)<br />
+<pre class="code" style="margin: 6px;"><span class="keyword">#include</span> &lt;stdio.h><span class="keyword">
+#define</span> DUMP(func, call) \
+        printf(<span class="literal">"%s: func = %p, called by = %p\n"</span>, __FUNCTION__, func, call)
+
+<span class="keyword">void</span> __attribute__((__no_instrument_function__))
+__cyg_profile_func_enter(<span class="keyword">void</span> *this_func, <span class="keyword">void</span> *call_site)
+{
+        DUMP(this_func, call_site);
+}
+<span class="keyword">void</span> __attribute__((__no_instrument_function__))
+__cyg_profile_func_exit(<span class="keyword">void</span> *this_func, <span class="keyword">void</span> *call_site)
+{
+        DUMP(this_func, call_site);
+}
+
+main()
+{
+        puts(<span class="literal">"Hello World!"</span>);
+        <span class="keyword">return</span> 0;
+}</pre>
+編譯與執行：<br />
+<pre class="code" style="margin: 6px;">
+$ gcc -finstrument-functions hello.c -o hello
+$ ./hello
+__cyg_profile_func_enter: func = 0x8048468, called by = 0xb7e36ebc
+Hello World!
+__cyg_profile_func_exit: func = 0x8048468, called by = 0xb7e36ebc
+</pre>
+看到 "__attribute__" 就知道一定是 GNU extension，而前述的 man page 也提到 -finstrument-functions 會在每次進入與退出函式前呼叫 "__cyg_profile_func_enter" 與 "__cyg_profile_func_exit" 這兩個 hook function。等等，「進入」與「退出」是又何解？C Programming Language 最經典之處在於，雖然沒有定義語言實做的方式，但實際上 function call 皆以 stack frame 的形式存在，去年在「深入淺出 Hello World」Part II 有提過。所以上述那一大段英文就是說，如果我們不透過 GCC 內建函式 "__builtin_return_address" 取得 caller 與 callee 相關的動態位址，那麼仍可透過 -finstrument-functions，讓 GCC 合成相關的處理指令，讓我們得以追蹤。而看到 __cyg 開頭的函式，就知道是來自 Cygnus 的貢獻，在 gcc 2.x 內部設計可瞥見不少。<br />
+<br />
+當我們試著移除 "__attribute__((__no_instrument_function__))" 那兩行來看看： (wrong.c)<br />
+編譯與執行：<br />
+<pre class="code" style="margin: 6px;">
+$ gcc -g -finstrument-functions wrong.c -o wrong
+$ ./wrong
+程式記憶體區段錯誤
+</pre>
+發生什麼事情呢？請出 gdb 協助：<br />
+<pre class="code" style="margin: 6px;">
+$ gdb ./wrong
+GNU gdb 6.6-debian
+Copyright (C) 2006 Free Software Foundation, Inc.
+GDB is free software, covered by the GNU General Public License, and you are
+welcome to change it and/or distribute copies of it under certain conditions.
+Type "show copying" to see the conditions.
+There is absolutely no warranty for GDB.  Type "show warranty" for details.
+This GDB was configured as "i486-linux-gnu"...
+Using host libthread_db library "/lib/tls/i686/cmov/libthread_db.so.1".
+(gdb) run
+Starting program: /home/jserv/HelloWorld/helloworld/instrument/wrong 
+
+Program received signal SIGSEGV, Segmentation fault.
+0x0804841d in __cyg_profile_func_enter (this_func=0x8048414, call_site=0x804842d) at wrong.c:7
+7	{
+(gdb) bt
+#0  0x0804841d in __cyg_profile_func_enter (this_func=0x8048414, call_site=0x804842d) at wrong.c:7
+#1  0x0804842d in __cyg_profile_func_enter (this_func=0x8048414, call_site=0x804842d) at wrong.c:7
+#2  0x0804842d in __cyg_profile_func_enter (this_func=0x8048414, call_site=0x804842d) at wrong.c:7
+...
+#30 0x0804842d in __cyg_profile_func_enter (this_func=0x8048414, call_site=0x804842d) at wrong.c:7
+#31 0x0804842d in __cyg_profile_func_enter (this_func=0x8048414, call_site=0x804842d) at wrong.c:7
+#32 0x0804842d in __cyg_profile_func_enter (this_func=0x8048414, call_site=0x804842d) at wrong.c:7
+---Type <return> to continue, or q <return> to quit---
+</pre>
+既然 "__cyg_profile_func_enter" 是 function hook，則本身不得也被施以 "function instrument"，否則就無止盡遞迴了，不過我們也可以發現一件有趣的事情：<br />
+<pre class="code" style="margin: 6px;">
+$ nm wrong | grep 8048414
+08048414 T __cyg_profile_func_enter
+</pre>
+如我們所見，"__cyg_profile_func_enter" 的位址被不斷代入 __cyg_profile_func_enter function arg 中。GNU binutils 裡面有個小工具 addr2line，我們可以該工具取得虛擬位址對應的行號或符號：<br />
+<pre class="code" style="margin: 6px;">
+$ addr2line -e wrong 0x8048414
+/home/jserv/HelloWorld/helloworld/instrument/wrong.c:7
+</pre>
+就 Linux 應用程式開發來說，我們可透過這個機制作以下應用：<ul>
+<li>撰寫特製的 profiler</li>
+<li>取得執行時期的 Call Graph</li>
+<li>置入自製的 signal handler，實做 backtrace 功能</li>
+<li>模擬 Reflection 機制</li>
+</ul>
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001723.html">透過 GCC 作 Call Graph 視覺化輸出</a>] 提過一個透過 compiler code analysis 的方式，輸出 call graph 圖形的途徑，事實上，我們可透過 GCC "-finstrument-functions" 來作動態的分析處理，詳情可見 M. Tim Jones 的文章 [<a href="http://www-128.ibm.com/developerworks/cn/linux/l-graphvis/">用 Graphviz 可視化函數調用</a>]，展示了如何整合這一系列的工具，達到構建一個動態的圖形函式呼叫調用生成。<br />
+<br />
+撰寫特製的 profiler 的應用可見 [<a href="http://www.logix.cz/michal/devel/CygProfiler/">CygProfiler suite</a>] 與 [<a href="http://www710.univ-lyon1.fr/~yperret/fnccheck/technical.html">FunctionCheck</a>]，那為何不用 binutils 中的 gprof 呢？因為很多時候系統會有缺陷，而 gprof 又依賴 kernel 與 glibc 的機制，當我們在移植新的系統時，就得用 "PoorMan's solution" (按：當然沒有 "PoorMan" 這家公司，這裡是強調「親手打造」之意) 來打穩底子。同樣的，「取得執行時期的 Call Graph」與「置入自製的 signal handler，實做 backtrace 功能」可參考知名的 [<a href="http://www.directfb.org/">DirectFB</a>] 計畫，當我們在編譯時期加入 "--enable-trace" (enable call tracing) 與 "--enable-debug" (enable debugging) 兩個選項時，編譯過程就會加入 GCC "-finstrument-functions" 選項，並且也提供特製的 signal handler 模擬 gdb backtrace 輸出功能。<br />
+<br />
+又因為 "-finstrument-functions" 對系統偵錯是如此重要，我們來看看內部實做。我們好奇的是，main 函式中 puts("Hello World!") 呼叫的前後，到底被 GCC 施以什麼魔法呢？還是透過實驗的途徑：<br />
+<pre class="code" style="margin: 6px;">
+$ objdump -d hello | grep -B2 puts
+... (省略) ...
+--
+ 8048488:	e8 87 ff ff ff       	call   8048414 <__cyg_profile_func_enter>
+ 804848d:	c7 04 24 df 85 04 08 	movl   $0x80485df,(%esp)
+ 8048494:	e8 c3 fe ff ff       	call   804835c <puts@plt>
+</pre>
+看來 GCC 自動生成 __cyg_profile_func_enter 的 function call 動作，並置於 puts 呼叫之前，我們繼續觀察：<br />
+<pre class="code" style="margin: 6px;">
+$ objdump -d hello | grep -A5 puts
+... (省略) ...
+--
+ 8048494:	e8 c3 fe ff ff       	call   804835c <puts@plt>
+ 8048499:	bb 00 00 00 00       	mov    $0x0,%ebx
+ 804849e:	8b 45 04             	mov    0x4(%ebp),%eax
+ 80484a1:	89 44 24 04          	mov    %eax,0x4(%esp)
+ 80484a5:	c7 04 24 68 84 04 08 	movl   $0x8048468,(%esp)
+ 80484ac:	e8 8d ff ff ff       	call   804843e <__cyg_profile_func_exit>
+</pre>
+puts 呼叫之後，GCC 也自動生成 __cyg_profile_func_exit 的 function call 動作，這樣的技巧也被用於 KFT (<a href="http://www.celinuxforum.org/CelfPubWiki/KernelFunctionTrace">Kernel Function Trace</a>，前身為 <a href="http://www.celinuxforum.org/CelfPubWiki/KernelFunctionInstrumentation">KFI [Kernel function Instrumentation]</a>)，同樣以 GCC "-finstrument-functions" 來達到對每個 Linux Kernel function enter/exit 的追蹤功能，但得考慮大量的 static inline function。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001870.html">04:59 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1870" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 05, 2007</h2>
+
+
+<div class="blogbody">
+<a name="001869"></a>
+<h3 class="title">書目 - 2006 年第四季</h3>
+
+去年第四季的身體狀況較不理想，耗費許多時間在家休養，倒也不是什麼旦夕且死的大病，但慢性病就是很討厭。生命就該燃燒，否則虛度光陰則比廢物還不如，後者至少不會製造多餘的二氧化碳，每次想到這，總覺得心痛。不過盲目燃燒是沒有意義的，至少需補充些精神食糧，居家賦閒拾起書卷，想到 Purple 說的一段話：<ul class="code" style="margin: 6px;">
+... 因為大半的生活裡，我除了唸書工作之外，最大的興趣就是閱讀，什麼都讀，所以很快就忘記那種衝突，就像桑德志一樣，震懾於更深遠，更廣大的東西，而忘記了許多煩惱。<br />
+<br />
+不過這並不是我逃避一些該思考的問題，而是好像接觸的東西多了，許多問題就不成問題 ... 剩下的就是不斷的求知求新吧。
+</ul>
+所以，這一季仍是儘量利用時間閱讀，不辜負 2006 年年初定下的目標，以下是書目列表：<ul>
+<li><img src="http://addons.books.com.tw/G/001/9/0010342439.jpg" /> 《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010342439">希特勒草莓：屠殺、謊言與良知的歷史戰場</a>》 - hrsg. von Carola Stern und Ingke Brodersen</li>
+<li><img src="http://addons.books.com.tw/G/0/0010145280.jpg" /> 《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010145280">	
+永恆涅槃 — 古印度文明朝聖</a>》 - 趙伯樂</li>
+<li><img src="http://addons.books.com.tw/G/0/0010069460.jpg" /> 《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010069460">百年思索</a>》 - 龍應台</li>
+<li><img src="http://addons.books.com.tw/G/001/2/0010291792.jpg" /> 《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010291792">恐懼之邦</a>》 - Michael Crichton</li>
+<li><img src="http://addons.books.com.tw/G/001/8/0010291728.jpg" /> 《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010291728">100個創造歷史的故事</a>》 - Rich Beyer</li>
+<li><img src="http://addons.books.com.tw/G/5/0010131875.jpg" /> 《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010131875">毛起來說e</a>》 - Eli Maor</li>
+<li><img src="http://addons.books.com.tw/G/3/0010234373.jpg" /> 《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010234373">沒有數字的數學</a>》 - 徐力行</li>
+<li><img src="http://addons.books.com.tw/G/001/1/0010292311.jpg" /> 《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010292311">	
+海耶克：二十世紀古典自由主義大師</a>》 - Alan Ebenstein</li>
+<li><img src="http://addons.books.com.tw/G/001/7/0010322207.jpg" /> 《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010322207">	
+時空之海、散步、看雲聽雨</a>》 - 陳之藩</li>
+<li><img src="http://addons.books.com.tw/G/001/5/0010328245.jpg" /> 《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010328245">生活在瓶中</a>》 - 馬森</li>
+<li><img src="http://addons.books.com.tw/G/001/4/0010326784.jpg" /> 《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010326784">會思考的機器-A.I.人工智慧的發展與趨勢</a>》 - Pamela McCorduck</li>
+<li><img src="http://addons.books.com.tw/G/001/5/0010324395.jpg" /> 《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010324395">駭客與畫家</a>》 - Paul Graham</li>
+<li><img src="http://addons.books.com.tw/G/9/0010107329.jpg" /> 《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010107329">寂靜的春天</a>》 - Racehl Louise Carson</li>
+<li><img src="http://addons.books.com.tw/G/001/5/0010349765.jpg" /> 《<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010349765">消失中的江城：一位西方作家在長江古城探索中國</a>》 - Peter Hessler</li>
+</ul>
+2006 年的閱讀告一段落，今年當然也要繼續充實。重心會放在戰爭史、後設社會科學、巴黎公社研究、環境保護等議題。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001869.html">11:31 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1869" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 03, 2007</h2>
+
+
+<div class="blogbody">
+<a name="001868"></a>
+<h3 class="title">也談工作</h3>
+
+似乎每過一段時間，都會有 [<a href="http://blog.linux.org.tw/~jserv/archives/001309.html">擇你所愛又怨芭蕉</a>] 的感嘆，中午瞥見 absurd 張貼的廣告 [<a href="http://blog.csdn.net/absurd/archive/2007/01/02/1472541.aspx">誠邀應屆畢業生朋友加入我們團隊</a>] (聲明：個人與該團隊無商業往來)，首段就提及：<ul class="code" style="margin: 6px;">
+你想進入嵌入式行業嗎？你想從事linux手機開發嗎？你想暢遊開源世界嗎？你想開發一流的產品嗎？來吧，加入我們的團隊，讓我們一起來實現我們的夢想！什麼？你不懂ARM，不懂ASM，不懂RTOS，不懂MMI，不會做工具鏈(toolchain)，不會交叉編譯，不會linux，甚至連C/C++都不會？沒關係，只要你熱愛學習，只要你有編程的天賦，只要你有對技術的狂熱，那就足夠了。Come on!
+</ul>
+基於對 Embedded System design 的投入，看到以上文字時，有一種莫名的感動，彷彿血液中都充斥著熱情。記得小時候接觸一點 Linux Kernel 的皮毛後，曾找某 SoC 設計中心的主管，要求無薪的工讀見習機會，沒想到被一口回絕，是的，當時我不懂 ARM、也不熟悉 Assembly、不會 cross-compilation、不知道如何寫圖形介面、已開始撰寫 BASIC/C compiler 但不懂 C++、...，總之，對方見我當時經歷不夠，以「年紀太小」的理由回絕。這種刺激是很可觀的，往後的幾年，我常常徹夜未眠地 coding & hacking，同時廣泛涉獵，逐漸將前述的項目探索過，不過我一直只當作基本技能，正如那位主管說的話：「這些都是基本技能，等你懂了再說吧」。然，有天，我收到某 SoC 設計單位的邀請，信中寫了一些恭維的話語，重點就是要我考慮那邊的職缺，也開出頗為豐厚的待遇，面對這種誘惑當然會心動，但我最後回覆：<ul>
+「感謝貴單位的敬重，不過我覺得應該先從無薪見習工作開始」
+</ul>
+讓我覺得可惜的是，小時候的熱情被澆熄，取而代之的是基於「立足」而深入研究技術的動機，但我們真正需要的，還是那股熱情，非耶？工作的首要條件，就是對工作的認同感與熱情的投入，至於是否容易上手還是其次，特別對技術性工作來說，這些處理挑戰的能力與歷程就是工作的本質，而非僅是迷失在那些技術工具或特定領域的理論基礎上。<br />
+<br />
+因為工作需要，常有面試新人的機會，而每次結束後我就會反省或寫筆記，這些應試者中不乏有甫自學校畢業的社會新鮮人，通常我會問些「基本概念」，套句某人說的話：「給他們反省的機會」，這不是刻意刁難，相反地，我們的盲點往往需要一些機會才得以彰顯，但技術與背景知識不應該是首要考量，重點應該是態度與熱情，這是我一貫的信念。讓我欣慰的是，有不少應試者來信指教，提到他們有了新的啟發，而我也發現他們似乎做得比從前更好，就算沒機會共事，至少教學相長，分享一些技術或生活經驗，也相當好。<br />
+<br />
+究竟什麼才是我心目中的工作呢？若將「工作」與「公司」牽上緊密關聯，常會失之偏頗，畢竟「不賺錢的公司是罪惡的」，但「工作」本身沒有獲利的義務，如果說自認在社會上有何優勢？我想其中有個重點是我的低物質慾望：外套、長袖、毛衣、... 可一路從國中、高中、大學，穿到服兵役乃至退伍就業，仰望星空徹夜被認為是高級的休閒、嘗試將所得九成以上捐出慈善機構仍過可怡然自得的生活、... 這些「試驗」或許是因為我的病態與陋習，才得以持續進行，我一直認為金錢不是很重要的因素，雖然常有高獲利的機會。也因此，選擇工作對我來說，就無法只看工作待遇，而得再三確認工作本身給予我的成就感與肯定，但這種感覺我一直無法具體描述。<br />
+<br />
+運氣還不錯，在職場上大多能順利完成交付任務，也不時收到一些特別的邀請，比方說開出年薪百萬的待遇要我去中國大陸某單位作技術總監，或者拿出幾百萬的報酬幫軍火商開發資訊系統一類的，乍看非常吸引人，但我就是看不出投入的動機。有時候在私人聚會，與一些業界或 hacker 界的朋友聊天，不免會提到工作待遇，有朋友抱怨我在破壞行情 (某些案子我結案時僅收低價甚至免費)，甚至勸說不要「作賤自己」。現階段我的工作方式是，找到一家主要的公司，至於工作待遇我沒有特別要求，總之能幫我繳交勞健保費用、協助處理工作雜務，讓我專心研究技術與完成專案即可，再利用空檔擔任顧問職務 (包含 [jserv's lab])，有給薪也有免費處理的，不過後者的待遇總和往往較前者高。<br />
+<br />
+我喜歡接受挑戰，也願意學習新技術，不過似乎很難完全投身於單一公司或工作中，因為那總會讓我聯想到歌德筆下的浮士德：與魔鬼約定，出賣靈魂後歸魔鬼所有，並獲得返老還童、增加享樂和情欲的補償，這種想法不完全與現實相符，但數著白花花的鈔票同時，難道我們不也在販賣靈魂？特別是當 [<a href="http://blog.linux.org.tw/~jserv/archives/001774.html">員工只是一種工具</a>] 的想法湧上心頭時，更有此感覺。這種描述是很偏頗且不健康的，但有時候就會這麼想，同樣的，這是因為我的病態。<br />
+<br />
+最近工作上起伏頗多，也有外界的變因，前幾周甚至收到某知名公司的關注，讓我再度省思這個議題。愛因斯坦曾說：「很多人的視野都是一個半徑為零的圓，而他們稱之為他們的觀點」，換言之，「主觀與客觀的差異，在於半徑的長短」，相當有意思的是，我花了很多時間觀望，去確認自己的舉動與抉擇是否客觀，但這動作往往淪為無意義行為，重點還是自己如何去看待。<br />
+<br />
+目前正籌備一個新的實驗室、處理箇中的營運與技術細節，在這多雨的午後，總會勾起複雜的思緒，想到 Purple 曾來信說到：<ul class="code" style="margin: 6px;">
+希臘最著名的三大悲劇* 所探討的，大多都是人是否能與命運抗爭。人類由游牧進入蓄牧，生活無虞之後，才有藝術的誕生。而人與命運的關係，是所有不朽藝術，不論是繪畫、雕塑、文學、音樂所探討的雛形。因為我想不論任何人，再怎麼不會思考生命的人，必然都會有一個時刻，感到命運的無常與巨大。那是一種你好像不可能抗爭，但你又覺得不想就此放棄的一種力量，會壓迫你。例如為什麼人會死？許多不可思議的事情的發生。我想不論任何人，生命中一定都曾感覺那種時刻。藝術家試圖以各種形式探討那巨大的力量，而那樣的作品就會感動我們。
+因為從古自今，人類面對命運都有相同的問題。<br />
+<br />
+* 伊思奇勒斯的《阿卡曼儂》(Aeschylus, Agamemnon)、
+沙弗克力斯的《伊底帕斯王》(Sophocles, Oedipus the King)，尤里庇狄斯的《米蒂亞》(Euripides, Medea)
+</ul>
+在不是哲學家的一面，我的工作不再是「改變世界」，而是積極地與命運抗爭，並與周遭的人們共同創造歷史。我不是藝術家，不懂登峰造極的曠世佳作，但我正以藝術的觀點看待工作；我不是音樂家，不懂天籟跫音，但我的確感受到工作完成時可聞的美妙掌聲；我不是雕塑家，不懂雕塑張力感和藝術感染力，但我正雕塑工作中系統的每一個面向。工作，是深刻面對命運的途徑，我們需要更多熱情，更積極的參與，與以實際行動取代觀望。<br />
+<br />
+加油！在 2007 年繼續努力！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001868.html">05:10 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1868" onclick="OpenComments(this.href); return false">迴響 (7)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 01, 2007</h2>
+
+
+<div class="blogbody">
+<a name="001866"></a>
+<h3 class="title">sshfs 在 Embedded Linux 開發的應用</h3>
+
+上週 [<a href="http://www.jollen.org/blog/">Jollen</a>] 聊到 Embedded Linux 開發上使用 [<a href="http://fuse.sourceforge.net/sshfs.html">SSH Filesystem</a>] 取代過去 NFS mount 的方式，這有許多好處，就我的經驗來說有：<ul>
+<li>檔案分享與存取全程透過 SSH 加密傳輸，安全且有效率</li>
+<li>享受 ssh port forwarding 的便利，輕易突破防火牆的約束</li>
+<li>較 NFS 更少的配置，而且更方便</li>
+<li>預留 software debug 的可能性</li>
+</ul>
+NFS 在權限控管上有很多安全性疑慮，更麻煩的是其識別主機的設計常常會造成困擾，特別是 subnet 配置相當複雜的中小型企業來說，往往會引來很瑣碎的處理過程。<br />
+<br />
+ssh 不僅考慮到傳輸過程的加解密，其 public-key system 設計對 Embedded Linux 有很大的幫助，因為我們會希望最終 production 或者 pre-release 的產品能提供有限度的偵錯能力，但又希望避免昔日「一千零一的系統密碼」(還記得某公司出廠的 BIOS 裡面的工程密碼嗎？) 造成不當的使用，所以，在開發與 deployment 時，就給定一組 key (使用 ssh-keygen)，透過 public/private key 的數學驗證基礎，取代直接存取 PAM 或系統的 telnet 或 login session。<br />
+<br />
+就系統的配置來說，在 DevKit 或 target 上需要安裝 ssh server，一般我們會使用 [<a href="http://matt.ucc.asn.au/dropbear/dropbear.html">Dropbear SSH server</a>] 這個輕量級的實做，在 OpenEmbedded 或 Ipkg 檔案庫都可找到預先編譯的套件，但是，需要留意的是，[<a href="http://fuse.sourceforge.net/sshfs.html">SSH Filesystem</a>] 要透過 SFTP (FTP over SSH) 進行檔案存取，而在 [<a href="http://matt.ucc.asn.au/dropbear/dropbear.html">Dropbear SSH server</a>] 會呼叫外部的 sftp-server 配合運作，而該程式由 openssh-sftp-server 套件提供 ( ipkg update && ipkg install openssh-sftp-server )。當 target 端 server 相關的設定都完成後，在 host 端執行：<pre class="code" style="margin: 6px;">
+$ mkdir target
+$ sshfs root@target:/ target
+</pre>
+在 public key 認證完畢後，target 的檔案系統就掛進來，我們可以檢驗一下：<pre class="code" style="margin: 6px;">
+$ mount | grep sshfs
+sshfs#root@target:/ on /tmp/target type fuse (rw,nosuid,nodev,max_read=65536)
+</pre>
+然後我們就可一邊修改 target 的檔案系統，一邊透過 ssh 執行指令，可節省許多不必要的檔案複製或同步化時間。需要注意的是，[<a href="http://fuse.sourceforge.net/sshfs.html">SSH Filesystem</a>] 的多人讀寫機制仍可能有問題，使用上須留意。<br />
+<br />
+延伸閱讀：<ul>
+<li>[<a href="http://wiki.openwrt.org/SFTPWithDropbearHowTo">SFTP with Dropbear HowTo</a>] - OpenWrt wiki</li>
+<li>[<a href="https://maemo.org/maemowiki/InstallSsh">Install SSH</a>] - Maemo wiki</li>
+</ul>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001866.html">11:48 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1866" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="001865"></a>
+<h3 class="title">Orz Microkernel v.0rz 釋出</h3>
+
+隨著 2007 年的到來，小弟決定釋出之前提過的 [<a href="http://blog.linux.org.tw/~jserv/archives/001692.html">Orz Microkernel</a>]，以 BSD-like license 釋出，作為新年的見面禮。感謝 [<a href="http://palatis.blogspot.com/">Palatis</a>] 貢獻 Orz Microkernel 的 logo：<br />
+<center><img src="http://jserv.sayya.org/kernel/orzmicro-logo.png"></center><br />
+目前的版本號為 v.0rz，以下是簡介：<ul class="code" style="margin: 6px;">
+Orz Microkernel is a tiny microkernel written in 80386 Protected Mode Assembly with message-based design. Orz Microkernel is
+inspired by Minix[1].<br />
+<br />
+Orz Microkernel is licensed under BSD-like license. See the file "LICENSE.txt" for details.<br />
+<br />
+Additionally, Orz Microkernel includes a complete operating system environment, which provides a small bootloader, disk utility, shell, and sample programs ("Hello World" and floppy dumper). All of them require NASM[2] to get built, and it is recommended to use qemu[3] for testing. Refer to the script file "run.sh" to know how to launch
+the distribution.<br />
+<br />
+[1] http://www.minix.org/<br />
+[2] http://sourceforge.net/projects/nasm<br />
+[3] http://fabrice.bellard.free.fr/qemu/
+</ul>
+另外也可參考 checko 做的介紹 [<a href="http://checko.blogspot.com/2006/10/jserv-orz-microkernel-part-i.html">Jserv 的 orz microkernel . part I</a>]。那到底 Orz Microkernel 有什麼用呢？以下簡單舉例：<ul>
+<li>學習一個作業系統與相關的系統程式該如何設計</li>
+<li>建立自信：原來一個作業系統只需幾 kb 的空間就實做出來</li>
+<li>學習 80386 保護模式的使用，以及作為 IDT/GDT 處理的參考</li>
+<li>如何在 x86 上驅動 VGA console、keyboard、system clock、... 等週邊</li>
+<li>Everything can be Orz</li>
+<li>... (作業的範本？)</li>
+</ul>
+取得 [<a href="http://jserv.sayya.org/kernel/OrzMicrokernel-v0rz.tar.bz2">OrzMicrokernel-v0rz.tar.bz2</a>] (28 kb)，也祝各位朋友在 2007 年鴻圖大展！<br />
+<br />
+PS: 如想以 [<a href="http://bochs.sourceforge.net/">Bochs</a>] 模擬環境執行，請參考 [<a href="http://mylonglongvacation.spaces.live.com/blog/cns!A6D9965FCF25CF70!468.entry">在 bochs 上運行 Orz Microkernel</a>]。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001865.html">09:16 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1865" onclick="OpenComments(this.href); return false">迴響 (4)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+
+</body>
+</html>

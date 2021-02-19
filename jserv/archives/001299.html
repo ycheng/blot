@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Priority inversion 簡介</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001298.html" title="從 OpenSSL 談 SSL Programming 的抽象化" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001300.html" title="Awesome C++" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001298.html">« 從 OpenSSL 談 SSL Programming 的抽象化</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001300.html">Awesome C++ »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">September 19, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Priority inversion 簡介</h3>
+
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001297.html">簡報：Approaches to Realtime Linux</a>] 分享我在內部報告所作的 slides，沒想到早上醒來，就收到幾封來信，而且還有來自國外的朋友，也讓我對於本 blog 的讀者群相當好奇，本 blog 的議題大多頗冷門...<br />
+<br /> 
+顯然這些來信都有提及火星探測計畫裡頭 Priority inversion 發生的情況，不過 slides 只有粗略的描述，主要是因為預定於 70 分鐘內介紹完畢，所以這個有趣的主題就只能使用簡單的幾個字帶過。處於這個「找資料遠比閱讀資料快的時代」，我想還是直接參照以下資訊：<ul>
+<li>[<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=9900566">Introduction to Priority Inversion</a>] by Michael Barr<ul>
+[<a href="http://www.netrino.com/mbarr/">Michael Barr</a>] 不需要我多介紹了，沈浸於 Embedded Systems 領域的朋友，應該閱讀過其大作，而其編輯的 [<a href="http://www.netrino.com/Publications/Glossary/index.html">Michael Barr's Embedded Systems Glossary</a>] 更是經典。這篇文章簡要的提到 Realtime 最重要的特性之一，就是 multi-tasking 的支援，而這牽涉到 resource sharing / locking 的議題，對於 priority-based scheduler 來說，是個挑戰。而 Michael Barr 用以下圖示說明：<br />
+<center><img src="http://img.cmpnet.com/embedded/gifs/2002/0204/0204bcfig1.gif" /></center><br />
+考慮這個狀況：當具備中度優先權的 task (簡稱 M) 搶先 (preempt) 一個原本享有 resource 的低優先權的 task (簡稱 L)，而該 resouce 又是一個高優先權的 task (簡稱 H) 所等待。問題就在於，H 與 L 共享 resource，當 L 被 preempt 時，就該放下 resource，這是合理的行為，而原本 H 就在等待 resource 的釋放，因為隨後就會使用到。但問題是，這段 latency 中，M 把這個規則打破，先行 preempt 了 L，也就把 L 的 resource 給「搶走」，這下有趣的事情就發生了。原本 L 與 H 具備相對高低的優先權差異，但因為 M 的介入，造成延遲，如果 M 一類的 task 相當多，或者 M 本身是 non-RT task，這樣的過程可能就讓 H 發生超出 deadline 的情況，更可能逆轉 L 與 H 的執行順序。更甚者，當 H 發生崩潰的情況，因為 watchdog 的效應，很可能 H 因此甚失其原本的高優先權。<br />
+<br />
+很明顯的，NASA 的火星探測計畫中，登陸的軟體並沒有問題，而是出在在火星表面的任務。<br />
+<br />
+探測太空船中，多個裝置之間透過一組 MIL-STD-1553 data bus 彼此傳遞資料，而具體的配置情況，可參考 [<a href="http://research.microsoft.com/~mbj/Mars_Pathfinder/Authoritative_Account.html">What really happened on Mars ? -- Authoritative Account</a>] (by Glenn Reeves, Mars Pathfinder Flight Software Cognizant Engineer)。<br />
+<br />
+問題的描述就如文章所提及：<ul>
+Activity on this bus was managed by a pair of high-priority tasks. One of the bus manager tasks communicated through a pipe with a low-priority meteorological science task.<br />
+<br />
+On Earth, the software mostly ran without incident. On Mars, however, a problem developed that was serious enough to trigger a series of software resets during the mission. The sequence of events leading to each reset began when the low-priority science task was preempted by a couple of medium-priority tasks while it held a mutex related to the pipe. While the low-priority task was preempted, the high-priority bus distribution manager tried to send more data to it over the same pipe. Because the mutex was still held by the science task, the bus distribution manager was made to wait. Shortly thereafter, the other bus scheduler became active. It noticed that the distribution manager hadn't completed its work for that bus cycle and forced a system reset.
+</ul>
+當進行 transaction 時，處理 distribution 的 task (bc_dist) 變成上述的 M，而相當重要的 task，也就是控制 1553 data bus 上的 transaction (bc_sched)，當然具備最高的優先權，而 bc_dist 則具備第三高的優先權。問題發生於 bc_dist 在 bc_sched 開始之前，就完成執行，這會導致系統 reset，這在設計初期就確保不會有 data lost 的情況。但是，bc_dist 一旦被優先權頗低的 ASI/MET task (也就是上述的 L) 給 block 時，就導致 priority inversion 現象。這樣的現象事實上有 workaround，不過因為內部廣泛使用 IPC 機制，於是這一切發生了：<ul>
+When the bc_sched task was activated, to setup the transactions for the next 1553 bus cycle, it detected that the bc_dist task had not completed its execution. The resource that caused this problem was a mutual exclusion semaphore used within the select() mechanism to control access to the list of file descriptors that the select() mechanism was to wait on.<br />
+<br />
+The select mechanism creates a mutual exclusion semaphore to protect the "wait list" of file descriptors for those devices which support select. The vxWorks pipe() mechanism is such a device and the IPC mechanism we used is based on using pipes. The ASI/MET task had called select, which had called pipeIoctl(), which had called selNodeAdd(), which was in the process of giving the mutex semaphore. The ASI/ MET task was preempted and semGive() was not completed. Several medium priority tasks ran until the bc_dist task was activated. The bc_dist task attempted to send the newest ASI/MET data via the IPC mechanism which called pipeWrite(). pipeWrite() blocked, taking the mutex semaphore. More of the medium priority tasks ran, still not allowing the ASI/MET task to run, until the bc_sched task was awakened. At that point, the bc_sched task determined that the bc_dist task had not completed its cycle (a hard deadline in the system) and declared the error that initiated the reset.</ul>
+問題就是這樣環環相扣。</ul></li>
+<li>[<a href="http://research.microsoft.com/~mbj/Mars_Pathfinder/">What really happened on Mars?</a>]<ul>
+由 Microsoft Research 的 Michael B. Jones 所整理的分析，後續的 Related Links 也很值得參考。</ul></li>
+<li>[<a href="http://en.wikipedia.org/wiki/Priority_inversion">Priority inversion</a>]<ul>
+Wikipedia 的說明，自然也會有此火星探測的經典案例，同時也建議參考常見的兩個解法：<ul>
+<li>[<a href="http://en.wikipedia.org/wiki/Priority_inheritance">Priority Inheritance</a>]</li>
+<li>[<a href="http://en.wikipedia.org/wiki/Priority_ceiling">Priority Ceiling</a>]</li>
+</ul></ul></li>
+</ul>
+TODO: 整理一份圖文並茂的簡報<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 September 19, 2005 02:13 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>謝謝您的分享, 想請教一下,</p>
+
+<p>那 Mutual exclusion 與 semaphore 的差別在那裡??<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;bwhite&#64;gmail&#46;com">bwhite</a> 發表於</MTIfNonEmpty> October  7, 2005 05:04 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

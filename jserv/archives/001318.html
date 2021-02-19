@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 心得分享：kernel 2.6 與桌面環境的整合</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001316.html" title="C++ 與 Java 的 ABI 議題" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001319.html" title="電腦音樂與 MIDI 介紹" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001316.html">« C++ 與 Java 的 ABI 議題</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001319.html">電腦音樂與 MIDI 介紹 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">October 06, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">心得分享：kernel 2.6 與桌面環境的整合</h3>
+
+應葉平教授的邀請，我將在下週二在台大迴廊咖啡館分享一個主題：「kernel 2.6 與桌面環境的整合」，詳情可參閱 mailing-list 的信件 [<a href="https://list.slat.org/pipermail/slat-talk/2005-October/005122.html">TOSSUG 心得分享時間： kernel 2.6 與桌面環境的整合</a>] 與 [<a href="http://www.tossug.org/">TOSSUG (Taipei Open Source Software User Group)</a>] 的 wiki [<a href="http://wiki.tossug.org/%E5%BF%83%E5%BE%97%E5%88%86%E4%BA%AB">心得分享</a>]。<br><br>
+
+以下引述相關資訊：<ul>
+<li>時間：10/11 星期二，分享時間 7:30pm 開始，聊天時間到十點打烊為止。</li>
+<li>主題：簡介 Linux Kernel 2.6 與桌面環境的整合</li>
+<li>分享人：jserv</li>
+<li>摘要：<ul>
+以往我們總認為 Kernel hackers 與桌面系統的高手是生活在兩個極端的世界，前者高深莫測，後者則是平易近人。然而，隨著 KDE、GNOME，以及其他桌面系統的蓬勃發展，我們發現只有友善的桌面，或者高效能且穩定的核心是不夠的，適度的整合兩者的介面與功能性，是邁向新發展的必須要件。Linux Kernel 2.6 與 FreeDesktop.org 引領了這方面的新契機，此次的分享就是針對這些發展，提供大家作參考，主要的內容有：<ul>
+<li>Kernel 設計的挑戰</li>
+<li>桌面環境還欠缺什麼？</li>
+<li>整合的機制</li><ul>
+<li>Hotplug / udev / D-Bus</li>
+<li>Project Utopia</li></ul>
+<li>未來的挑戰</li>
+</ul></ul></li>
+<li>地點：台大體育館的迴廊咖啡（[<a href="http://www.alucafe.com/map.htm">地圖</a>]），有免費的無線上網，請別把 notebook 忘在家裡。</li>
+</ul>
+以上，歡迎有興趣的朋友前來指教，謝謝！
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 October  6, 2005 12:04 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

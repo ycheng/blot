@@ -1,0 +1,369 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>帝國反抗君之古戰場。PowerOp請您速至 blog.yam.com/ystuan 支援前線！: 自由取得Red Hat Enterprise Linux的功能 -- White Box Enterprise Linux</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~ystuan/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~ystuan/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~ystuan/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~ystuan/archives/000617.html" title="Free/Open Source Software that I use on Microsoft Windows" />
+
+<link rel="next" href="http://blog.linux.org.tw/~ystuan/archives/000623.html" title="[安裝紀錄]OpenNMS 1.1.3 on White Box Enterprise Linux" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~ystuan/" accesskey="1">帝國反抗君之古戰場。PowerOp請您速至 blog.yam.com/ystuan 支援前線！</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~ystuan/archives/000617.html">&laquo; Free/Open Source Software that I use on Microsoft Windows</a> |
+
+<a href="http://blog.linux.org.tw/~ystuan/">Main</a>
+| <a href="http://blog.linux.org.tw/~ystuan/archives/000623.html">[安裝紀錄]OpenNMS 1.1.3 on White Box Enterprise Linux &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">April 26, 2004</h2>
+
+<div class="blogbody">
+
+<h3 class="title">自由取得Red Hat Enterprise Linux的功能 -- White Box Enterprise Linux</h3>
+
+<p>擁有Red Hat Enterprise Linux(RHEL)可能要花費數百到數千美金;但是,如果只要擁有RHEL的*功能*,你可以自由取得......</p>
+
+<p>Red Hat Enterprise Linux(RHEL)是紅帽公司出的企業級Linux發行套件,價錢包含了一年的售後服務,目標客戶當然是企業.<br />
+不過它不是我要談的主角.我們今天要談的是,RHEL的原始碼仍然是開放的(除了幾個商業軟體之外),更重要的,我要介紹兩個致力於"將RHEL的原始碼編譯成可執行檔,進一步包裝成發行套件"的組織.另外也分享一下,我對其中一者的一點點經驗.</p>
+
+<p>話說在前頭,這兩個發行套件都和紅帽公司無關.如果你自己有足夠的技術能力,你可以安裝這兩個發行套件;如果你認為你需要紅帽的技術支援服務,你應該去購買RHEL.(這樣聽起來應該不會像賣泡麵的吧,我們談的可是自由軟體呢)<br />
+底下的說明文字轉錄自他們的網站:<br />
+<a href="http://www.whiteboxlinux.org/">http://www.whiteboxlinux.org/</a><br />
+"White Box Enterprise Linux"<br />
+This product is derived from the Free/Open Source Software made available by Red Hat, Inc but IS NOT produced, maintained or supported by Red Hat. Specifically, this product is forked from the source code for Red Hat's _Red Hat Enterprise Linux 3_ product under the terms and conditions of it's EULA.</p>
+
+<p><a href="http://caosity.org/">http://caosity.org/</a><br />
+CentOS-3 from cAos project<br />
+The cAos project also hosts two Enterprise Linux rebuilds, CentOS-2 and CentOS-3, based on Redhat Enterprise Linux as2.1 and 3 ES respectively.<br />
+The project is focused on producing enterprise-level community-produced solutions.</p>
+
+<p>好,我用的是White Box Enterprise Linux,因為懶得自己下載,所以在台北的天瓏書局購買了網路下載版(NT$ 350).放了有快一個月吧,都沒有動手安裝.(後來發現<a href="http://www.opennms.org/">OpenNMS</a>官方網站<a href="http://blog.opennms.org/archives/000045.html">決定要支援的是</a>,我當時還沒聽過的CentOS -_-|||</p>
+
+<p>嗯,為了不讓我的新台幣白白浪費,加上上面的網誌也有人回覆我的留言,認為應該用OpenNMS給RH9的套件就可以了,所以,我還是決定就給它錯下去了:p 它的誕生日是2004/4/20晚上七點多(GMT +8)</p>
+
+<p>安裝很簡單,呼嚕嚕就裝好了,如果你對任何Red Hat的發行套件有安裝經驗,連介面你都應該很熟悉.因為我前面說了,只分享*一點點*經驗,所以這部份就略過啦:p</p>
+
+<p>啊啊,雖然真的很簡單,這樣寫好像還是太欠打了,請大家參考新竹縣教育研究發展暨網路中心的楊錦昌先生所撰寫<a href="http://apt.nc.hcc.edu.tw/FC1_X/index.htm">Fedora Core 1的安裝及調校網站</a>,其中的<br />
+<a href="http://apt.nc.hcc.edu.tw/FC1_X/01_net_install/install.htm">作業系統網路安裝</a>部分,大致上都一樣啦!</p>
+
+<p>重點來了,裝好後要怎麼做套件更新呢?<br />
+請看<a href="http://whiteboxlinux.org/faq.html">FAQ</a>的第一題<br />
+建議先改掉套件更新的來源站台,因為官方網站的頻寬有限<br />
+請修改 /etc/sysconfig/rhn/sources, 在兩行前面加上#把它們註解掉,<br />
+把另外兩行前面的#拿掉,使用mirror.physics.ncsu.edu這個映射站台.<br />
+我把我的設定檔用diff指令比較一下給大家看:<br />
+[root@csg10 root]# diff /etc/sysconfig/rhn/sources /etc/sysconfig/rhn/sources.orig<br />
+34,35c34,35<br />
+< #yum WBEL-3.0 http://whiteboxlinux.org/pub/3.0/en/os/i386<br />
+< #yum updates-released http://whiteboxlinux.org/pub/3.0/en/updates<br />
+---<br />
+> yum WBEL-3.0 http://whiteboxlinux.org/pub/3.0/en/os/i386<br />
+> yum updates-released http://whiteboxlinux.org/pub/3.0/en/updates<br />
+38,39c38,39<br />
+<  yum WBEL-3.0 ftp://mirror.physics.ncsu.edu/pub/whitebox/3.0/en/os/i386/<br />
+<  yum updates-released ftp://mirror.physics.ncsu.edu/pub/whitebox/3.0/en/updates/<br />
+---<br />
+> # yum WBEL-3.0 ftp://mirror.physics.ncsu.edu/pub/whitebox/3.0/en/os/i386/<br />
+> # yum updates-released ftp://mirror.physics.ncsu.edu/pub/whitebox/3.0/en/updates/<br />
+[root@csg10 root]#</p>
+
+<p>接著,點選螢幕左下角的Gnome大腳|系統工具|Up2Date Network,按照螢幕說明操作,熟悉Red Hat的朋友這部分應該不成問題.<br />
+第一次更新了超過十個套件吧,我有勾選安裝新的Kernel,不過還沒重開來測試.今天才想到應該也可以用up2date這個指令自動完成:</p>
+
+<p>[root@csg10 root]# up2date -uv</p>
+
+<p>Fetching package list for channel: WBEL-3.0...</p>
+
+<p>Fetching ftp://mirror.physics.ncsu.edu/pub/whitebox/3.0/en/os/i386//headers/header.info...<br />
+########################################<br />
+#######################################<br />
+Fetching package list for channel: updates-released...</p>
+
+<p>Fetching ftp://mirror.physics.ncsu.edu/pub/whitebox/3.0/en/updates//headers/header.info...<br />
+########################################<br />
+#######################################<br />
+Fetching Obsoletes list for channel: WBEL-3.0...</p>
+
+<p>Fetching Obsoletes list for channel: updates-released...</p>
+
+<p>Fetching rpm headers...</p>
+
+<p>Name                                    Version        Rel<br />
+----------------------------------------------------------</p>
+
+<p>All packages are currently up to date<br />
+[root@csg10 root]#</p>
+
+<p>好,目前沒有新套件,我的下一步應該會把這個動作寫進crontab,以及去訂閱mailing list,以便知道最新的套件更新的訊息.</p>
+
+<a name="more"></a>
+
+
+<span class="posted">Posted by ystuan at April 26, 2004 10:32 AM
+
+<br /></span>
+
+<div class="comments-body">
+<div class="comments-head"><a name="pings"></a>Pings</div>
+
+</div>
+
+
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>Comments</div>
+
+<div class="comments-body">
+<p>昨晚又逛了一下WBEL的mailing list,看來至少還有一個Tao Linux也在做同樣的事:</p>
+
+<p>http://taolinux.org/</p>
+<span class="comments-post">Posted by: <a href="http://blog.linux.org.tw/~ystuan/">PowerOp</a> at April 27, 2004 09:37 AM</span>
+</div>
+<div class="comments-body">
+<p>someone says cAos has a more active Community support, while Whitebox is more like a one-man-show.</p>
+
+<p>anyway, whitebox is ok.</p>
+<span class="comments-post">Posted by: <a href="mailto&#58;bash99&#64;163&#46;com">bash99</a> at May 12, 2004 02:55 PM</span>
+</div>
+<div class="comments-body">
+<p>為了要能自動安裝新版的kernel,我去修改up2date的設定<br />
+用的指令是 rhn_register --configure --nox <br />
+結果現在要用up2date的時候都會要我先到Red Hat Network去註冊 :(<br />
+變通的方法是用`yum update`指令來作套件更新<br />
+--<br />
+利用Google,用底下的字串去搜尋,可以找到更多資訊rhn_register site:beau.org<br />
+其實這就是去搜尋WBEL的郵件論壇.看起來有正解:<br />
+======quote======<br />
+Don't run rhn_register.  There is no need.  Check your<br />
+/etc/sysconfig/rhn/sources file and comment out the "default up2date" line<br />
+and you should be good to go.<br />
+======end quote======<br />
+等到我可以連回我的WBEL時候再試試.</p>
+<span class="comments-post">Posted by: <a href="http://blog.linux.org.tw/~ystuan/">PowerOp</a> at May 12, 2004 03:14 PM</span>
+</div>
+<div class="comments-body">
+<p>bash99:<br />
+    Yup, I saw that kind of comments about WBEL on the mailing list.<br />
+    Like I said, the only reason that I'm gonna stick with WBEL is that, I've spent my money to buy its CDs :p</p>
+<span class="comments-post">Posted by: <a href="http://blog.linux.org.tw/~ystuan/">PowerOp</a> at May 12, 2004 03:18 PM</span>
+</div>
+<div class="comments-body">
+<p>這位大大您好:</p>
+
+<p>能找到您的這份文件，真是幸運</p>
+
+<p>小弟工作上需要，要在HP ProLiant 380G3伺服器(有安裝smart array 5i磁碟陣列卡)，上面要安裝RH 9。上過HP的網站看了一下 380G3的OS support，結果之發現支援到RH 8.0，後來試著用RH 9光碟安裝，果然失敗。</p>
+
+<p>後來我找到了一份文件與HP發散的修正磁片，總算成功將RH 9裝在380G3上面，但我還是有以下幾個問題。由於RH 9已經未再更新，而HP網站放置的smart array的陣列卡driver並無for RH 9的，而RH 9內附的driver已經很老舊，常看到HP針對smart array陣列卡發修正driver，有點擔心。</p>
+
+<p>而HP似乎表達強烈支援RHEL的決心，而在HP網站上也確實是看到HP針對RHEL 3持續都有製作driver的修正。在網路上蒐集到資料，RHEL 3 AS一套似乎要賣約5萬多元，在台灣該向哪一家公司買比較有支援? 應該不像MS windows一樣還要算使用人數的授權吧?</p>
+
+<p>不少文件上提到RHEL似乎是以RH 9為本體持續修正所發行的版本，那是不是FC系列與RH 9差別真的很大?</p>
+
+<p>最後，還是想請問您，若按照您的方式所up2date出來的，跟RH販賣的RHEL除了少數商業軟體有差別之外，其他部份真的完全一樣嗎?</p>
+
+<p>還請不吝指點，謝謝!<br />
+</p>
+<span class="comments-post">Posted by: <a href="mailto&#58;xhuang&#64;bbs&#46;ee&#46;ntu&#46;edu&#46;tw">xhuang</a> at August 28, 2004 11:48 PM</span>
+</div>
+<div class="comments-body">
+<p>(註：xhuang有把他的問題貼在連線Linux版 tw.bbs.comp.linux<br />
+底下的文字是我原本貼在那邊的回應，稍加調整後，貼一份在這裡)</p>
+
+<p>關於你的問題，首先，你說這是工作。工作和自己玩不一樣，常常是應用程式決定用哪個Linux Distro，用什麼硬體。</p>
+
+<p>你的應用程式方便告知嗎？有沒有跟來源（廠商／開發的同事／社群官方網站）確認過能否裝在RH 9以外的發行套件？</p>
+
+<p>既然你的硬體是HP ProLiant 380 G3，不曉得你找過HP的IT Resource Center討論區了嗎？<br />
+http://forums.itrc.hp.com/cm/<br />
+Linux群組底下還細分數個群組。可以使用頁面上方的搜尋功能，建議點選旁邊的"more options"使用進階搜尋</p>
+
+<p>你應該已經找到"ProLiant Server Support Matrix"這份資料，並且針對DL 380 G3這個型號的介紹研讀過了：<br />
+http://h18004.www1.hp.com/products/servers/linux/hpLinuxcert.html<br />
+http://h18004.www1.hp.com/products/servers/linux/dl380g3-drivers-cert.html</p>
+
+<p>關於購買RHEL，Red Hat的網站上面列了一家叫做 創鑫資訊<br />
+http://www.hk.redhat.com/partners/resellers.html<br />
+不過我記得它本來叫做 創佑資訊 。利用Internet Archive的Wayback Machine，<br />
+http://www.archive.org/web/web.php<br />
+在WayBackMachine的搜尋欄位輸入<br />
+http://www.hk.redhat.com/partners/resellers.html<br />
+會發現Feb 14, 2004的歷史資料還是叫做 創佑<br />
+http://web.archive.org/web/20040214143103/www.hk.redhat.com/partners/resellers.html<br />
+剛剛打了網頁上面 創鑫資訊 的電話，<br />
+星期天，語音總機還是說「創佑資訊你好，現在是下班時間‧‧‧」</p>
+
+<p>上面這段是事實，底下這句就是臆測了。我猜，創佑應該是跟哪家名字裡有 鑫 的公司合併還是結盟，所以改名了？</p>
+
+<p>至於Fedora Core，FC版本更新很快，你的硬體也不標明支援，我建議你在RHEL 3或上面提到的那些clone之中選一個。要強調的是，我並沒有使用FC，也沒有在盯它的網站，也許其他的網友有不同的看法。</p>
+
+<p>我並沒有"RH9 up2date成為RHEL clone的經驗"唷，似乎是你過獎了。我這篇文章介紹的是，有一些組織/個人，將Red Hat所提供的RHEL 3原始碼自行編譯成可執行檔，進一步包裝成發行套件，例如<br />
+http://www.whiteboxlinux.org/<br />
+http://caosity.org/<br />
+http://taolinux.org/<br />
+我並沒有說我從RH 9，用更新套件的方式升級成RHEL 3 clone，我是全新安裝。升級這檔子事應該是可以沒錯，不過我沒有功勞，也沒有苦勞唷。也許看看Red Hat自己的資料：<br />
+http://www.redhat.com/solutions/business/migration/<br />
+不過，你才剛裝好不是嗎？不考慮移掉RH 9再來一次嗎？容我提醒，你真正該問自己的問題是：我能不能拿這個適合RH 9的應用程式套件，安裝在RHEL 3或<br />
+是它的clone？的確有很多For RH 9的rpm都可以這樣做。</p>
+
+<p>我還是回到「工作」二字，建議你思考一下。既然是工作，就要考慮（內部／外部）客戶的狀況：<br />
+她們願意給多少資源（人力、物力）- 錢夠多嗎？人夠多嗎？<br />
+限定的交期 - 案子有多趕？<br />
+預估的系統壽命 - 系統上線之後要跑幾年？<br />
+任務的關鍵程度 - 系統使用是5x8還是7x24？可以忍受多久的downtime？</p>
+
+<p>極端一點的說，如果客戶錢多，那就買RHEL 3 + HP server的硬體支援（過保固了嗎？），你只要管應用程式就好。當然，凱子不是人人都碰得到，錢不夠的話，也許就可以考慮其他的搭配方式。</p>
+
+<p>我假設一個狀況好了，如果錢不是多到爆，但是時間還夠，建議你先用clone跑你的應用程式，測試一段時間再跟上面談，要不要用RHEL 3，support怎麼做之類的。</p>
+
+<p>再聊。</p>
+<span class="comments-post">Posted by: <a href="http://blog.linux.org.tw/~ystuan/">PowerOp</a> at September  3, 2004 10:52 AM</span>
+</div>
+<div class="comments-body">
+<p>後來我到http://www.whiteboxlinux.org下載了whitebox linux 3.0 Respin 1，順利的裝在HP proliant 380G3上面，目前看起來算順暢，很感謝您提供的相關資訊。</p>
+
+<p>http://taolinux.org/也有類似的works，但是為何用了whitebox linux，主要原因只是它的網頁style看了比較順眼.. :)</p>
+<span class="comments-post">Posted by: <a href="mailto&#58;xhuang&#64;bbs&#46;ee&#46;ntu&#46;edu&#46;tw">xhuang</a> at September  4, 2004 12:44 AM</span>
+</div>
+<div class="comments-body">
+<p>嗯， Respin 涵蓋了套件更新，安裝好之後只要再更新 respin之後才又修正的套件即可。<br />
+Tao Linux我在本篇的第一則comment有提到囉。<br />
+題外話，當初我裝whitebox的機器現在不歸我用了，要再找一台。因為打算安裝OpenNMS和Nagios，還在考慮要不要用CentOS，甚至用Debian sid :)</p>
+<span class="comments-post">Posted by: <a href="http://blog.linux.org.tw/~ystuan/">PowerOp</a> at September  6, 2004 02:50 PM</span>
+</div>
+<div class="comments-body">
+<p>Here's how to use Cent OS 3.1 updates:<br />
+http://forums.erexi.com.tw/viewtopic.php?t=146</p>
+<span class="comments-post">Posted by: <a href="http://forums.erexi.com.tw/viewtopic.php?t=146">Sean</a> at September 30, 2004 04:01 AM</span>
+</div>
+<div class="comments-body">
+<p>請問一下wbel~<br />
+系統大致上的運作是如何呢?<br />
+和rh有啥不一樣?3Q</p>
+<span class="comments-post">Posted by: <a href="mailto&#58;honoka45&#64;hotmail&#46;com">Annie</a> at July  7, 2005 05:16 PM</span>
+</div>
+<div class="comments-body">
+<p>Annie:<br />
+    首先，我手邊已經沒有機器跑WBEL了。我會建議使用CentOS，請參考「愛恨紅帽-02：複製品全面進攻」<br />
+http://blog.linux.org.tw/~ystuan/archives/001090.html<br />
+    回到妳的問題，由於WBEL，CentOS都是基於Red Hat所釋出的RHEL程式碼加以自行編譯，所以系統本身運作上，是沒有什麼不同的。我認為有差別的地方，在「愛恨紅帽-01：自由軟體的獲利模式」提過了：<br />
+http://blog.linux.org.tw/~ystuan/archives/001089.html</p>
+<span class="comments-post">Posted by: <a href="http://blog.linux.org.tw/~ystuan/">PowerOp</a> at July  9, 2005 03:05 PM</span>
+</div>
+
+
+
+
+</div>
+</div>
+</body>
+<!-- Site Meter XHTML Strict 1.0 -->
+<script type="text/javascript">var site="s22PowerOp"</script>
+<script type="text/javascript" src="http://s22.sitemeter.com/js/counter.js?site=s22PowerOp">
+</script>
+<noscript><div>
+<a href="http://s22.sitemeter.com/stats.asp?site=s22PowerOp">
+<img src="http://s22.sitemeter.com/meter.asp?site=s22PowerOp" alt="Site Meter" /></a>
+</div></noscript>
+<!-- Copyright (c)2005 Site Meter -->
+
+</html>

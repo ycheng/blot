@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: BSD License 與 GPL 的相容性案例 -- qemu</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002087.html" title="解析 CuRT 與嵌入式系統設計" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002089.html" title="AsmJit : C++ 封裝的 Just-In-Time Assembler" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002087.html">« 解析 CuRT 與嵌入式系統設計</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002089.html">AsmJit : C++ 封裝的 Just-In-Time Assembler »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February 01, 2009</h2>
+
+<div class="blogbody">
+
+<h3 class="title">BSD License 與 GPL 的相容性案例 -- qemu</h3>
+
+去年在 [<a href="http://blog.linux.org.tw/~jserv/archives/002042.html">不再囉唆：NetBSD 簡化 BSD 授權條款</a>] 提及 BSD 授權條款的變革，其中 GNU/FSF 發現原本 BSD 授權的問題，導致無法與 GNU GPL 保持相容，從而將原本四個條款的 BSD 授權之中的一項，視為 [<a href="http://www.gnu.org/philosophy/license-list.html#OriginalBSD">obnoxious BSD advertising clause</a>]，主要「不相容」的問題，肇因於 GNU GPL 其「遞迴性」的設計中，不允許增加額外限制 (強制性廣告本質上就是新的限制)。我們要知道，儘管許多以 BSD License 發行的軟體專案，逐漸改採加州柏克萊分校於 1999 年，對 FSF 做出正式回應，刪去原始 BSD 授權條款的第三條「廣告條款」而生的 New BSD License，避開 GNU GPL 的不相容問題，如此的案例仍相當廣泛，本文舉出知名指令集與硬體架構模擬器專案 [<a href="http://bellard.org/qemu/">qemu</a>] 中，所發生的 BSD License 與 GNU GPL 的不相容案例，並談論其解決方案。<br />
+<br />
+Qemu 作為一個系統模擬器，除了 CPU 與諸多系統 Bus 外，還得模擬常見的網路裝置，而被模擬的環境一般稱為 "Guest OS"，相對來說，提供模擬器執行的環境，就叫 "Host OS"，而 Qemu 就扮演讓 Host 與 Guest 兩個 OS 間，網路封包與傳輸得以連結的角色。其中，透過 [<a href="http://sunsite.nus.sg/pub/slirp/">SLiRP</a>] 就是一個很有效的途徑，以下摘錄網頁上的簡介：<ul class="code" style="margin: 6px;">
+"SLiRP is a free SLIP/CSLIP/PPP emulator which allows a normal user with a shell account on a Unix system make it act like a SLIP/CSLIP/PPP account."
+</ul>
+而在 [<a href="http://sunsite.nus.sg/pub/slirp/features.html">SLiRP Features</a>] 中提到：<ul class="code" style="margin: 6px;">
+"The TCP/IP code is based on 4.4BSD which is widely regarded as a very stable and complete implementation. ... The TCP/IP code was actually taken from the excellent FreeBSD 2.0 sources."
+</ul>
+由上述可見，SLiRP 的開發，很大部份來自加州柏克萊分校的 BSD，後來重新在 FreeBSD 2.0 核心實現，自然是以具備四項條款的 BSD License 發行，原始作者為 Danny Gasparovski，後繼維護者為 Kelly Price，這兩位的名字很重要，下文會再次提及。在 Qemu 開發初期，即包含了一份 SLiRP 的核心元件 libslirp 的原始程式碼，位於原始程式碼的 slirp/ 目錄，一直到最近的 qemu 釋出版本仍有如此的程式碼。而最近，開發者 Anthony Liguori 在 qemu 的 Subversion revision [<a href="http://lists.gnu.org/archive/html/qemu-devel/2009-01/msg01765.html">6451</a>] 中，移除了 BSD License 的廣告條款，以下是更動紀錄：<pre class="code" style="margin: 6px;">
+Log Message:
+-----------
+Remove the advertising clause from the slirp license
+
+According to the FSF, the 4-clause BSD license, which slirp is covered under,
+is not compatible with the GPL or LGPL[1].
+
+[1] http://www.fsf.org/licensing/licenses/index_html#GPLIncompatibleLicenses
+
+There are three declared copyright holders in slirp that use the
+4-clause BSD license, the Regents of UC Berkley, Danny Gasparovski,
+and Kelly Price.
+Below are the appropriate permissions to remove the advertise
+clause from slirp from each party.
+
+Special thanks go to Richard Fontana from Red Hat for contacting
+all of the necessary authors to resolve this issue!
+</pre>
+中間是一開始筆者陳述 William Hoskins 在 1999 年刪去原始 BSD License 中「廣告條款」的聲明，已於稍早的文章提過，這裡忽略。咱們看看為了解決 4-clause BSD license 與 GNU GPL 不相容的議題，而透過知名 open free software / source license 律師、RedHat 的 Open Source Licensing and Patent 法律顧問 -- Richard Fontana -- 的處理經過，以下是在 SVN 更動紀錄的附帶紀錄，是郵件往返取得授權更動的資訊，首先，致信給 SLiRP 作者 Danny Gasparovski：<pre class="code" style="margin: 6px;">
+Subject: RE: Slirp license
+Date: Thu, 8 Jan 2009 10:51:00 +1100
+From: "Gasparovski, Daniel"
+To: "Richard Fontana"
+
+Hi Richard,
+I have no objection to having Slirp code in QEMU be licensed
+under the 3-clause BSD license.
+Thanks for taking the effort to consult me about this.
+Dan ...
+</pre>
+同時也要致信給 SLiRP 的維護者 Kelly Price：<pre class="code" style="margin: 6px;">
+Date: Thu, 8 Jan 2009 19:38:56 -0500
+From: "Kelly Price"
+To: "Richard Fontana"
+Subject: Re: Slirp license
+
+Thanks for contacting me, Richard.  I'm glad you were able to find
+Dan, as I've been "keeping the light on" for Slirp.  I have no use
+for it now, and I have little time for it (now holding onto
+Keenspot's Comic Genesis and having a regular US state government
+position). If Dan would like to return to the project, I'd love to
+give it back to him.
+
+As for copyright, I don't own all of it.  Dan does, so I will defer
+to him.  Any of my patches I will gladly license to the 3-part BSD
+license.  My interest in re-licensing was because we didn't have
+ready info to contact Dan. If Dan would like to port Slirp back out
+of QEMU, a lot of us 64-bit users would be grateful.
+
+Feel free to share this email address with Dan.  I will be glad to
+effect a transfer of the project to him and Mr. Bellard of the QEMU
+project.
+</pre>
+我們可見，最合理的解決方式就是，央請原始作者為前述「不相容」的議題，更改授權模式，是此，一旦 qemu 中 slirp 的程式碼改以 3-clause BSD license 發行時，即不再與 qemu 其他以 LGPL 或 GPL 發行的程式碼，產生授權上的衝突，整件事得以圓滿解決。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 February  1, 2009 11:47 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2088" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,2834 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: February 2005 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2005_01.html" title="January 2005" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2005_03.html" title="March 2005" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/2005_01.html">« January 2005</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/2005_03.html">March 2005 »</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">February 28, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000995"></a>
+<h3 class="title">新酷音釋出新版 libchewing 與 scim-chewing</h3>
+
+<p>[<a href="http://chewing.csie.net/">新酷音</a>] 團隊很高興宣佈在二二八紀念日釋出 libchewing 0.2.6 與 scim-chewing 0.2.0，詳情可參考我在 mailing-list 上的公告： [<a href="http://chewing.good-man.org/pipermail/chewing-devel/2005-February/000034.html">libchewing 0.2.6 & SCIM-chewing 0.2.0</a>]。</p>
+
+<p>不過剛剛也才想到應該順便補一份繁體中文的 NEWS entry，好吧，下次改進。</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000995.html">11:48 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=995" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000994"></a>
+<h3 class="title">FreeDesktop Xgl 文件</h3>
+
+之前在 blog [<a href="http://blog.linux.org.tw/~jserv/archives/000915.html">Xgl -- New X server on OpenGL/Glitz 現況</a>] 提到 Xgl 在 David Reveman 的領導下已經有很卓越的進展，而在 [<a href="http://blog.linux.org.tw/~jserv/archives/000914.html">X Developer's Meeting</a>] 之後，David 就在 FreeDesktop.org 上建立新的 wiki page [<a href="http://www.freedesktop.org/Software/Xgl">Software/Xgl</a>]。<br>
+<br>
+在 [TODO] 可以看到許多進行中的計畫，而 Xgl 也對於 Embedded System 與硬體加速相當重視，甚至考慮到不同平台的實作，想嘗鮮的朋友可以參考 [Installation Instructions]，不過要注意的是，請確定 Mesa/Solo 在您的硬體環境有不錯的效能表現，否則結果可想而知。這個議題可參考我過去的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/000809.html">Xgl 研究</a>] 與 [<a href="http://blog.linux.org.tw/~jserv/archives/000790.html">GL 實作研究</a>]。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000994.html">09:42 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=994" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000993"></a>
+<h3 class="title">ssh X Forwarding 與 Xauth</h3>
+
+之前閱讀 Mark McLoughlin (GNOME 開發者) 的 blog [<a href="http://www.gnome.org/~markmc/blog/25022005">SSH, X Forwarding and Xauth</a>]，才釐清很多觀念，很多看似「理所當然」的設計，如果不去深入研究原理，很可能會陷入泥淖而不自知。<br />
+<br />
+當使用 "ssh -Y" 時，ssh X Forwarding 會建立 proxy X server 指向 local display，這過程就如同一個 ssh tunnel，而我們可以發現 $DISPLAY 環境變數已經被修改，指向這個 tunnel 對應的 proxy X server。<br />
+<br />
+當然，X forwarding 可沒這麼簡單，X Window System 設計之初就是徹底網路化的視窗系統，為了能夠存取資源，必須在遠端機器的 ~/.Xauthority 加入 xauth cookie。好玩的地方就在這，剛剛提到的 xauth cookie 並非是經過傳遞，相反的是後續產生的，於是我們可以發現這個事實：<ul class="code" style="margin: 6px;">
+When you try and connect from the remote host to the local display over the tunnel, the SSH client compares the cookie in the first protocol message and if it matches the one it generated for the tunnel, it swaps that cookie with the original cookie and allows the connection to complete.
+</ul>
+至於為何要作如此的設計呢？Mark McLoughlin 給我們這樣的提示：<ul class="code" style="margin: 6px;">
+At first that might just seem like misguided paranoid delusional crackrock, but it does actually make sense. With this cool trick, if you SSH to a compromised machine (i.e. a machine where an attacker can access you ~/.Xauthority), then your display is only vulnerable while you remain logged in. Once you log out again, the compromised cookie is useless.</ul>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000993.html">09:09 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=993" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000992"></a>
+<h3 class="title">《百年孤寂》</h3>
+
+很久沒有閱讀經典著作，覺得心頭很空虛，談吐也欠缺深度，《百年孤寂》或許是賜予我乾旱許久心田的甘霖吧。<br />
+<br />
+注意到《百年孤寂》是在 <a href="http://osxchat.blogspot.com/">#osxchat</a> 上瞥見以下的 IRC log：<ul class="code" style="margin: 6px;">
+21:15 &lt;@lukhnos> zonble: 台北連續下雨, 害我想到《百年孤寂》裡的馬康多<br />
+21:18 &lt;@momizi&gt; 嗚嗚，從社會主義角度去讀百年孤寂是件很疲勞的事啊<br />
+21:18 &lt;@lukhnos&gt; why<br />
+21:18 &lt;@lukhnos&gt; 我單純只是想到馬康多下雨下了三年多<br />
+21:18 &lt;@lukhnos&gt; 下到香蕉園爛了, 經濟垮了<br />
+21:18 &lt;@momizi&gt; 對啊 就是要從香蕉園切入<br />
+21:19 &lt;@lukhnos&gt; 只有奧瑞里奧上校的叔叔跟他老婆繼續天天做愛<br />
+21:19 &lt;@gugod&gt; 從 compter science 角度來讀《百>》就更累了 (茶)<br />
+21:19 &lt;@gugod&gt; -- don't ask<br />
+21:19 &lt;@lukhnos&gt; 試問用 DP 在下雨天種香蕉的 Big-O 為何?<br />
+21:19  * lukhnos sorry to gugod    # I asked<br />
+21:21  * gugod slash lukhnos w/ an "@" in the complexity space of theta n-log(n)<br />
+</ul>
+關於 #osxchat 的官方說法是「一群使用MacOS X工作、平時又泡在IRC裡頭的人的交流頻道」，不過這個 IRC channel 討論的範疇相當廣泛，所以我這個非 MacOS X 使用者也熱於掛在此 channel，等待新的驚喜，《百年孤寂》就是這樣的禮物。<br />
+<br />
+查詢 [<a href="http://www.books.com.tw">博客來網路書店</a>] 找到 [<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010006451">書籍館 --&gt;百年孤寂</a>]，馬奎斯的作品充滿了魔力，深深吸引讀者的心，可以在 [讀者書評] 清一色五顆星的評比，光看到這就讓我眼睛為之一亮，決定再花些時間來蒐羅相關資訊。<br />
+<br />
+用 Google 找了一下，在 [<a href="http://www.millionbook.net/wg/m/maerkesi/bngd/">龍騰世紀書庫-->百年孤獨(加西亞·馬爾克斯)</a>] 可以線上閱讀電子版的簡體中文翻譯，可以先來解饞。<br />
+<br />
+因為篇幅過長，早上先讀一段落，該來工作了。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000992.html">08:42 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=992" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000991"></a>
+<h3 class="title">推播、推敲</h3>
+
+自從我在 blog 寫到這篇 [<a href="http://blog.linux.org.tw/~jserv/archives/000984.html">電腦科技的「書中自有顏如玉」</a>]，我就覺得自己以前似乎寫過描述 WWW 發展的札記，經過一番尋找，終於在硬碟某個角落找到。<br>
+<br>
+那篇文章寫於 Jan 30, 2001 標題是「推播、推敲 ─ 電腦網路技術之回顧與挑戰」，當時我就讀國立成功大學二年級，利用放寒假的空檔把所見所聞整理成這篇文章，不過後來被系刊退稿後，就扔到某個角落至今，四年後在拿出來看實在很有意思，於是將以排版後做成 PDF：<ul>
+<li><a href="http://jserv.sayya.org/writing/push-technology.pdf">推播、推敲 ─ 電腦網路技術之回顧與挑戰</a></li>
+</ul>
+當然，當時的想法不是很成熟，也寫得不深入，不過對我個人來說，是很值得收藏的創作。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000991.html">02:27 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=991" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 27, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000990"></a>
+<h3 class="title">繁簡轉換的議題</h3>
+
+<p>中文資訊化實在是很複雜的議題，儘管我試著不去理會，但是這些既有的問題卻在我身上反覆的出現，不得不花點心思去處理。</p>
+
+<p>蘇哲領導的 [<a href="http://www.scim-im.org/">SCIM 輸入法平台</a>] 與台灣本土的 [<a href="http://chewing.csie.net/">新酷音</a>] 算是在許多方面來說已經克服中文輸入法的問題，但是就算身處於 Unicode-ready 的環境下，我們還是有太多問題。</p>
+
+<p>舉例來說，昨天跟 jie 透過 gaim 在 MSN 聊天，很多簡體字雖然正確無誤的呈現，可是就是看不懂，昨天還因為我看不懂簡體的「補償」一詞，鬧了很多笑話，想起來真叫人難過，明明就是同文同種，為何看不懂？我知道 Firefox 有個 [<a href="http://tongwen.mozdev.org/">同文堂</a>] 可以用，但是在 gaim 裡頭就是不行，搞到最後，還是先將訊息複製到 Firefox，然後再轉換。</p>
+
+<p>所以，剛剛將工作進度忙到一定程度後，我就開始涉獵這方面的資料，首先我記得 Tsung 提到 [<a href="http://www.longwin.com.tw/~jon/blog/archives/000407.html">繁簡轉換</a>]，這是很重要的資訊，cpatch.org 的 Kii Ali 整理了很詳盡的對照表與兩岸術語的注意事項，這些都在 bgconv 這個軟體可以使用，可惜的是，表格本身是 GNU GPL，但是程式就不曉得是什麼授權了，也沒看到 source code。</p>
+
+<p>然後又在 [<a href="http://www.cnic.org/">網路天書</a>] 找到 [<a href="http://www.cnic.org/index.php/Cnic_talk:%E7%B9%81%E7%AE%80%E4%BD%93%E9%97%AE%E9%A2%98">Cnic talk:繁簡體問題</a>]，裡面不乏有些意識型態的題材，但是大部分的討論都還值得一看，特別要讀一下 [Talk between Johna and Mountain] 這個段落。</p>
+
+<p>總之，看了沒多久，我又開始頭暈了，這些問題太複雜，不輸給實作 VM 的難度。</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000990.html">04:26 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=990" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000989"></a>
+<h3 class="title">恐嚇一下</h3>
+
+剛剛看到 palmpilote 兄的 blog [<a href="http://palmpilote.twbbs.org/index.php?itemid=428">好玩的Ransom製作網頁</a>]，真是好玩，所以我也弄了一個：
+
+<table width='750'><tr><td>
+<img src='http://contactsheet.org/images/ransom/n.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/o.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/space.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/s.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/o.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/f.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/t.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/w.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/a.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/r.gif' width='35' 
+height='40'>
+
+<img src='http://contactsheet.org/images/ransom/e.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/space.gif' width='35' 
+height='40'>
+<br clear='all'><img src='http://contactsheet.org/images/ransom/p.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/a.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/t.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/e.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/n.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/t.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/s.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/exclamation.gif' width='35' 
+height='40'>
+<br clear='all'><br>
+<br clear='all'><br>
+<img src='http://contactsheet.org/images/ransom/l.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/e.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/t.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/space.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/j.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/a.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/v.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/a.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/space.gif' width='35' 
+height='40'>
+<br clear='all'><img src='http://contactsheet.org/images/ransom/f.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/r.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/e.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/e.gif' width='35' 
+height='40'>
+<img src='http://contactsheet.org/images/ransom/exclamation.gif' width='35' 
+height='40'>
+</td></tr></table>
+
+我是直接把 CGI 生出來的 HTML 給複製貼上到 blog，就變成這個恐嚇性質的內容了。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000989.html">01:47 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=989" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000988"></a>
+<h3 class="title">移植 Win32 程式到 Linux 的好文章</h3>
+
+<p>IBM developerWorks 有篇很不錯的文章 [<a href="http://www-128.ibm.com/developerworks/eserver/articles/es-MigratingWin32toLinux.html?ca=dgr-lnxw09Win32CPPtoLinux1">Migrating Win32 C/C++ applications to Linux on POWER, Part 1</a>]  / [<a href="http://www-106.ibm.com/developerworks/eserver/library/es-win32linux.html?ca=dgr-lnxw09Win32CPPtoLinux2">	Migrate Win32 C/C++ applications to Linux on POWER, Part 2</a>]，對於有心從事移植 Win32 C/C++ 應用程式到 Linux 的移植工作者，應該可以獲得啟發。</p>
+
+<p>這兩篇文章有很清楚的 Win32 API <--> POSIX 對照表，比較重要的 Thread model 也有提及，thread stack size 的部分要留意，而 concurrent 當然也是重點，mutex 的處理是第二部分的內容，有些差異比方說 Win32 的 WaitForSingleObject(mutex, INFINITE))	對應到 POSIX 的 pthread_mutex_lock(&mutex)。</p>
+
+<p>看起來應該還會有系列文章出現，繼續等待吧。</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000988.html">01:19 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=988" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000987"></a>
+<h3 class="title">小字註解 -- Ruby  (寶石？)</h3>
+
+話說上週參加 [<a href="http://wiki.pingyeh.net/FSCIWorkshop">中文輸入自由軟體工作坊</a>] 時，Arne 提到希望 IMM (輸入法掛載程式) 有個 output engine，可以選擇輸出方式（漢字、羅馬拼音、漢字加注音 (ruby) 等等。<br />
+<br />
+雖然 Arne 說的英文很容易懂，但是資質平庸的我還是猜了頗久，不過後面一直提到 "Ruby"，讓我很納悶，輸入法程式跟 Ruby (寶石) 有什麼關係？於是回家之後用力找資料，看見 Jedi 的 blog 一篇文章 [<a href="http://jedi.org/blog/archives/004813.html">W3C Ruby</a>] 提到：<ul class="code" style="margin: 6px;">
+「<a href="http://www.w3.org/TR/ruby/">Ruby</a> 是印刷用語，指的是印在字旁（也有可能是上方或下方）的小字註；國語日報那種中文字旁邊加注音符號的，基本上也可以視為一種 Ruby 的實做。在全球資訊網上也有 Ruby ，但是各種瀏覽器的支援度卻有所不同。」
+</ul>
+哈哈，原來是這麼一回事，看來是我孤陋寡聞了，受教受教，感謝 Jedi 的分享。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000987.html">01:06 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=987" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000986"></a>
+<h3 class="title">Gaim-1.1.4 + OpenSSL 發佈</h3>
+
+延續 [<a href="http://blog.linux.org.tw/~jserv/archives/000819.html">Gaim-1.1.2 + OpenSSL 發佈</a>] 的發展，更新到 gaim-1.1.4 codebase，加入對 OpenSSL  的支援，可在以下網址下載：<ul>
+<li><a href="http://jserv.sayya.org/gaim/gaim-1.1.4-openssl.tar.bz2">gaim-1.1.4-openssl</a></li>
+</ul>
+其 MD5 為 0d0a38cc01ac8148ccf694205c2a45d5<br />
+<br />
+從 gaim-1.1.2-openssl  到 gaim-1.1.4-openssl 最大的改變就是 security，所以請務必升級，謝謝！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000986.html">12:12 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=986" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 26, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000985"></a>
+<h3 class="title">幾張美妙的 KDE Artwork</h3>
+
+雖然最近跑去玩 [<a href="http://blog.linux.org.tw/~jserv/archives/000963.html">XFCE -- 婀娜多姿的小姑娘</a>]，但是我對 KDE 的熱愛一絲不減，是永遠的 KDE Fan，或許是帶有一襲偏見，所以我總是認為 KDE  的 Artwork 作得很突出 (看來這個敘述會得罪 GNOME Fans)。在 [<a href="http://www.kdedevelopers.org/node/view/896">Eye Candy Watch</a>] 提供了許多令人驚豔的 Artwork：<ul>
+<li>[登出對話框]<ul>
+<img src="http://websvn.kde.org/*checkout*/trunk/kdebase/ksmserver/shutdownkonq.png?revision=139214&pathrev=139214" /></ul></li>
+<li>[關於對話框]<ul>
+<img src="http://www.kde.org/stuff/clipart/konqi-official-logo-aboutkde-100x167.png" /></ul></li>
+</ul>
+這是 KDE 的吉祥物 Konqi 在未來 KDE (3.4 or later) 呈現的樣貌，看起來真棒，Konqi 可威風了：<br />
+<center><img src="http://ktown.kde.org/~binner/konqi_basse.jpg" /></center><br />
+Konqi 在 KDE 2 正式與廣大的 KDE 使用者見面，經過幾年的發展，顯得更有精神，也成為世界一流的軟體專案，由衷感到高度的興奮 :)<br />
+<br />
+KDE rules!<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000985.html">08:13 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=985" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000984"></a>
+<h3 class="title">電腦科技的「書中自有顏如玉」</h3>
+
+發現最近取的標題一個比一個怪。<br>
+<br>
+下午閱讀 Slashdot 時，瞥見 [<a href="http://slashdot.org/article.pl?sid=05/02/25/2223201&from=rss">The First Image Published on the Web</a>]，這個標題相當有趣， 為人類文明帶來 Internet 的 CERN，在 WWW 的第一張圖片究竟是放什麼呢？引述新聞內容：<ul class="code" style="margin: 6px;">
+rcastro0 writes "A charming picture of "<a href="http://musiclub.web.cern.ch/MusiClub/bands/cernettes/firstband.html">Les Horribles Cernettes</a>" was the first ever to grace a web browser window, according to Silvano de Gennaro from the <a href="http://musiclub.web.cern.ch/musiclub/musiclub.html">CERN Music Club site</a>. He writes 'Back in 1992, after their show at the CERN Hardronic Festival, my colleague Tim Berners-Lee asked me for a few scanned photos of "the CERN girls" to publish them on some sort of information system he had just invented, called the "World Wide Web".'</ul>
+實在有意思，原來 WWW  上第一張圖是這個樂團的玉照：<br />
+<center><img src="http://musiclub.web.cern.ch/MusiClub/bands/cernettes/pictures/LHC5.jpg" /></center><br />
+這也讓我想起去年在 SayYa BBS 上曾經發表過標題為「Lena」的 post，內文如下：<ul class="code" style="margin: 6px;">
+我想工程背景的朋友，聽到 Lena 的名字或許不熟悉，但是絕對有看過一眼 Lena 雍容華貴的照片，甚至「玷污」過，喔，別誤會，這裡是說「分解」、「重組」該影像 :)<br />
+<br />
+傍晚去附近德安百貨用餐時，瞥見一位戴帽子的女士，衣著相當有品味，而她嫣然轉身時，令我深深著迷，是的，多麼 Impressive! 我一直思索，為何適才我會如此著迷呢？阿！是的，那就是 Lena 的身影。<br />
+<br />
+Lena 是帶著羽飾帽子的女性特寫照片，是標準影像資料庫最常引用的靜態影像資料，那種漂亮我說不上來，嚴格來說，無法捕捉人物的感覺，但是因為背景與頭髮部分都比較平坦，較易於壓縮處理。<br />
+<br />
+我沒有去追溯 Lena 這張照片的歷史，但是文獻大量引用的結果，Lena 曝光率頗高，也算是研讀枯燥 paper 時的一種樂趣，或許「書中自有顏如玉」。<br />
+<br />
+好像這樣的描述太抽象，這裡有 Lena 經典圖片：<br />
+<center><img src="http://www.csie.ntu.edu.tw/~kmchao/life/lena.jpg" /></center>
+</ul>
+隨後，khoguan (KhoGuan Phuann) 很快的作了補充：<ul class="code" style="margin: 6px;">
+本來是 Playboy 的大張全身裸照，被學者取下頭肩的部份放在 paper 中。現在 Lena 正在安享晚年：<ul>
+[<a href="http://www-2.cs.cmu.edu/~chuck/lennapg/lenna.shtml">The Lenna Story</a>]
+</ul>
+畢竟外國人比較開放，不會因為年輕時拍裸照，變成日後 婚姻、家庭生活的陰影。現在日本許多年輕女孩拍裸照，拍A片，不知在既保守又放盪的現代日本社會，她們的將來又會是怎樣呢？
+</ul>
+letoh 則補充說：<ul class="code" style="margin: 6px;">
+找了一下以前看過的一篇文章，出自暨大電子雜誌 [<a href="http://emag.ncnu.edu.tw/show.asp?dataID={8D972BFD-1BAE-4A4A-ADC9-2C185D90457B}">網路上的第一夫人 – Lena 之謎</a>]。<br />
+<br />
+不曉得能不能直接連，不行的話可以到這看 [<a href="http://emag.ncnu.edu.tw/">暨大電子雜誌</a>]，在過刊內容中選第 18 期。
+</ul>
+Computer Science 實在是很有趣的學問，建構在數學的基礎，卻時常必須大量參考建築學、生物學、化學、語言學、邏輯學、社會學、電子學、... 等領域，而引用的資料來源更是琳瑯滿目。所長這篇文件寫得非常引人入勝，古時中國讀書人說的「書中自有顏如玉」，或許可被扭曲的解釋電腦科技發展所引用圖片的趣味吧。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000984.html">07:47 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=984" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000983"></a>
+<h3 class="title">SCO 版鐵達尼號</h3>
+
+幾年前還在唸高中的時候，《鐵達尼號》(Titanic) 紅透半天，好像不去看就跟不上時代一樣 (不過我至今都還未觀賞過這齣電影)，而《鐵達尼號》的製作與 Linux 可是有關係的，在一篇舊文章 [<a href=" http://www.glink.net.hk/~voidoo/ulinux/redhat.html">大眾化的紅帽子 - Red Hat</a>] 提及：<ul class="code" style="margin: 6px;">
+為 Titanic 製作電腦特技效果的公司在製作過程中用了 105 台跑 Red Hat Linux 的 Alpha 電腦 (另有二百多台 SGI 及 55 台 NT)。近年很多雜誌介紹 Linux，都會推介或以 Red Hat 做 Linux 代表，Red Hat 自改也獲獎無數。
+</ul>
+似乎又扯遠了，這裡說的「鐵達尼號」是比喻手法，參閱 [<a href="http://www.theregister.co.uk/2005/02/25/sco_titanic/">Captain McBride and the SCO Titanic</a>]，這篇分析文件寫得很有意思，描述 SCO 的 CEO 兼總裁 Darl McBride 是如何駕駛 SCO 這部「鐵達尼號」，不過結局不說您大概也知道了，是的，觸礁而逐漸下沈中。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000983.html">01:11 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=983" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000982"></a>
+<h3 class="title">十七孔橋之美</h3>
+
+剛剛在 <a href="http://www.deviantart.com/">deviantArt</a> 上瞥見這份大作：<br />
+<center><img src="http://jserv.sayya.org/gallery/Shiqikongquiao.jpg" /></center><br />
+<br />
+在 [<a href="http://www.deviantart.com/view/15482723/">出處</a>] 有作者的註解，引述如下：
+<ul class="code" style="margin: 6px;">
+ Shiqikongqiao ( Seventeen Arches Bridge ) crosses the water with a graceful curved design, linking Nanhudao with the mainland at the Summer Palace's Kunming lake in Beijing. The bridge has a handrail with some 500 stone carved lions and other exotic creatures. ....no words can describe the beauty of this Imperial complex,....enjoy !
+</ul>
+原來這壯觀之景是取自十七孔橋，南湖島與東岸之間，橫臥一座十七孔漢白玉長橋。剛剛 Google 找到的詳細的資訊：<ul class="code" style="margin: 6px;">
+該橋望柱雕有小獅544只，仿盧溝橋而建，長150米，寬8米，如一道彩虹飛跨兩岸，漫步走過十七孔橋，即來到東堤。 </ul>
+雖然我從未去過大陸遊歷，但是配合上圖想像，依稀能夠感受此等震撼呢 :-)<br />
+<br />
+北京旅遊集團也有一份 [<a href="http://www.szupdate.com/lvyou/image/beijing/yiheyuan/shiqikongqiao.htm">圖文並茂的介紹</a>]。 <br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000982.html">12:24 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=982" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000981"></a>
+<h3 class="title">為何要反軟體專利？</h3>
+
+之前在 blog 提到 [<a href="http://blog.linux.org.tw/~jserv/archives/000931.html">香蕉共和國與軟體專利</a>] 與 [<a href="http://blog.linux.org.tw/~jserv/archives/000913.html">軟體專利的毒害</a>]，因為寫得不甚清楚 (基本上只是備忘用)，很多朋友對此不知所云，而恰好剛剛讀到 zunix 的 blog [<a href="http://www.osaffairs.org/index.php?p=88">軟件為甚麼是版權而不是專利</a>]，有了不錯的解釋，想深入探究的朋友可加以閱讀。<br>
+<br>
+zunix 幫我們點出兩個重點：<ul>
+<li>版權保障你的作品不會被抄襲，但可以有雷同，而專利郤連雷同也不可以。</li>
+<li>如果給與軟件專利便會可能導致出現了無數無辜的侵權人，這是無辜者的負擔，是法庭資源的負擔，社會亦會因為這種純遷就商人的法律而產生動蕩。</li>
+</ul>
+所以，大聲的向軟體專利說「不」！<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000981.html">11:17 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=981" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000980"></a>
+<h3 class="title">早逝的仙女棒</h3>
+
+這個標題取得很奇怪，先說明一下。去年中秋節，小貓在我家院子玩仙女棒，這是我們第一次玩，當時還拍了一些照片，還挺有趣的。<br />
+<br />
+說也奇怪，當小貓沈浸在歡樂的氣氛時，我心頭卻浮現出一種難以言表的感傷，直到看到 [<a href="http://blog.xychen.org">Roy Chan 的 blog</a>] 兩篇紀念韓國演員李恩宙的 blog [<a href="http://blog.xychen.org/archives/2005/02/24/lee-eun-joo/">悼．李恩宙</a>] 與 [<a href="http://blog.xychen.org/archives/2005/02/25/death-of-artists/">再談李恩宙及藝人之死</a>] 時，當時的感覺才得以訴諸文字予以闡述 (按：怕用詞不夠明確，我要表達的意思用物件導向的術語稱為 serialization)。<br />
+<br />
+前幾天 jie 跟我提到她在觀賞《<a href="http://www.krmdb.com/stills/2002/LoverConcerto-2002/index.b5.shtml">向左愛．向右愛</a>》(Lover Concerto) ，這算是李恩宙相當重要的作品，結果隔一天就傳出自殺的噩耗，老實說，我也不知道該作什麼回應。我很喜歡 Roy Chan 的文字，在 [<a href="http://planet.debian.org.hk/">Planet DebianHK</a>] 的眾多作者來說，不但有技術的深度，對於時事分析也有其獨到處，也因此，特別等到第二份追憶發表完，我才敢 follow up。<br />
+<br />
+在撰寫本 blog 時，我試著沈澱思緒，不過似乎還抓不到那份感覺，所以先引用 Roy Chan 的話告一段落：<ul class="code" style="margin: 6px;">
+「這幾年香港不少娛樂圈名人都先後身故，才華橫溢、風趣抵死的黃霑的離去是否象徵香港文化界的唯一小高峰早已逝去？而敬業的張國榮和李恩宙先後因過份投入角色而自殺身故又代表了什麼呢？細看今日香港電視/電影甚至其他行業的新一代，不免有很多感觸。」
+</ul>
+誰能預知光鮮的外表能夠駐留多久呢？點燃仙女棒的瞬間，該是如何的光彩奪目，比起其他煙火，仙女棒的重量明顯較為沈重，但與玩者的距離卻相對近，就在咫尺，玩者揮舞著仙女棒，浸淫於人工的假象，然而火藥燃燒殆盡那刻，怎不叫人悵然呢？仙女棒的感受不啻如這些才華洋溢的藝人般，透過各種傳播媒體，低失真的呈現於我們的五官感受前，正如莎士比亞說的：「人生是個大舞台，每一個人都在扮演著自己的角色。」，這些仙女棒的角色就是讓廣大的觀眾得以在平日無趣的生活中，激起值得回味的漣漪。<br />
+<br />
+只不過，這些漣漪往往是短壽的，又是個香消玉殞的故事，怎不叫人大嘆世間的無常呢？或許，這一切就是充滿遞迴 (recursive) 意味的大劇碼。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000980.html">10:56 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=980" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000979"></a>
+<h3 class="title">IIIMF 背後的英雄們</h3>
+
+說來好玩，當我忙著設計下一代的 Kaffe VM core 而沒什麼心思去思考輸入法的時候，Sun Microsystems 的 <a href="http://blogs.sun.com/roller/page/eyan">Ervin Yan</a> 就寫信我通知 [<a href="http://blog.linux.org.tw/~jserv/archives/000895.html">新酷音整合到 JDS (Java Desktop System)</a>]，讓我瞬間對 IIIMF 燃起高度的興趣。爾後在葉平教授的邀請下，在 [<a href="http://wiki.pingyeh.net/FSCIWorkshop">中文輸入自由軟體工作坊</a>] 分享過去研讀 XIM、SCIM，以及 IIIMF 的資料與實作心得分享，雖然手頭還是有很多計畫要忙，不過看來輸入法大概還是會在我 2005 年度計畫中。<br />
+<br />
+後來為了問一個很笨的 IIIMF LE 問題，跑去 #fedora-i18n 發問，遇到 <a href="http://tciiimf.sourceforge.net/">iiimf-le-xcin</a> 的維護者 <a href="http://www.livejournal.com/users/llch/">Leon Ho</a>，分享了許多有趣的項目，也解答我對於 IIIMF 設計的疑惑。不過第二個問題總是在第一個問題解決時瞬間繃出來的，所以我又欲罷不能的跑去 irc.freestandards.org 的 #iiimf channel 撒野，果然一看帳號列表就嚇到了：
+<ul><pre class="code" style="margin: 6px;">
+[Users #iiimf]
+[@llch ] [ Hideki   ] [ jens ] [ Mat  ] [ ssriram]
+[ ervin] [ HidekiMPK] [ miura] [ tagoh  ]
+</pre></ul>
+這些都是在 im-sdk 的 ChangeLog 常出現的大人物呢 :-)<br />
+<br />
+當然也包含 Hideki Hiura 這位 OpenI18N.org 主席，有大師的加持，或許我寫 LE 更起勁，無論如何，感謝這些 IIIMF 背後的偉大英雄們！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000979.html">10:07 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=979" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000978"></a>
+<h3 class="title">衣帶漸寬終不悔</h3>
+
+昨天用餐時，又因為忙著自己的計畫 (按：參考 [<a href="http://blog.linux.org.tw/~jserv/archives/000912.html">最近的研究方向</a>])，又忘記時間，趁著商家還未關門，先行淋浴然後匆匆套上牛仔褲就往外頭衝，只見我一路跑一路覺得很不對勁。<br />
+<br />
+究竟是哪裡不對勁呢？是阿，就是我忘記繫皮帶，因此牛仔褲顯得鬆垮垮。保持忙碌是好事，不過比起去年剛退伍時的體重有接近 10 公斤的落差，或許躲在電腦前 coding 跟搖筆桿或許還真的有熱量消耗？這也讓我聯想起柳永的詞《蝶戀花》：
+<ul><pre class="code" style="margin: 6px;">
+獨佇危樓風細細，望極春愁，黯黯生天際。草色煙光殘照里，無人會得憑欄意。
+也擬疏狂圖一醉，對酒當歌，強樂還無味。衣帶漸寬終不悔，為伊消得人憔悴。
+</pre></ul>
+就北宋的詞人來說，柳永的詞不算雋永，反而有些鄙俗的色彩，不過這闕詞倒是流傳頗廣，意境也恰到好處，特別是最後的「衣帶漸寬終不悔，為伊消得人憔悴。」真是把這般情感給寫活了。讓我想到 1999 年我在台中一中學生宿舍，某個室友早已進入夢鄉的深夜，面對大學志願的選擇徬徨無助時，一邊凝視老舊的一中宿舍落漆的天花板，一邊凝視多次整修的老舊木質書桌，而最後目光移至當時剛買的《<a href="http://www.jjhou.com/jjfbooks-internet.htm">親手打造網際網路四大服務</a>》 一書，為其深入的技術分析所折服，並且書後的附錄更是激勵著我，於是我撕去原有的志願列表，一路踏進這條「不歸路」。<br />
+<br />
+1999 年至今，資質平庸的我，靠著多一份的努力，稍微有些心得，而本週三竟然還有榮幸到《親手打造網際網路四大服務》一書作者 [<a href="http://www.jcwang.com/">王家俊</a>] 前輩所開的公司面試，這實在是非常值得一書，這次的面試還有 ACM 國際程式設計比賽全球第四名的得主林永傑前輩參與，於是我們提到許多 IT 產業的變遷與當今台灣產業的挑戰，也有他們當時在台大的往事。<br />
+<br />
+《親手打造網際網路四大服務》在 [附錄四 決戰 ACM] 的結語提到：<ul class="code" style="margin: 6px;">
+「希望國內全體不管是資訊學生或者從業人員，都能重新思考自己的定位，也都可以在自己的崗位上多為台灣成為一個世界級的資訊大國而努力。我們這一批新生代的資訊程度已經在某些方面與世界級尖端水準相提並論，而我們整個資訊大環境是否已經成熟到可以迎接這一些新鮮人，讓他們的努力得到完全的發揮？有好的人才，還需要有好的發展環境，這樣也許能讓我們真的在二十一世紀有所作為。」
+</ul>
+這些文字寫於 1997 年，也就是王家俊前輩正要從台大資訊所畢業前夕，可配合閱讀該書 [附錄三 21 世紀資訊工程之轉型]，這本書經過我無數的翻閱，已經留有些歲月的痕跡。2005 年，我抱著本書去見作者，聆聽他從台大畢業、海軍服務、前往美國矽谷，最後回到台灣創業，這八年的轉變，或許有許多與現實的妥協，但是與這兩位前輩意見交流後，我發現箇中的精神非但沒有消磨，反而因為時間與經歷的焠煉，顯得更加光亮，從他們身上我看到那種無與倫比的活力與智慧。<br />
+<br />
+在某些角度來說，我還是未經世故的小小「工讀生」，儘管從事過某些軟體專案的開發，卻難以獲得要領，更別說最終的成效，但是既然我已經選擇這條不歸路，希望我能夠秉持前輩的精神，在陷入泥淖時勇於脫身，在歧路迷惘時能夠勇於做出決定，繼續朝著正途前進。<br />
+<br />
+的確，「衣帶漸寬終不悔」，最後就以王家俊前輩在書上的簽名勉勵自己：<ul>
+「敬群： 百尺竿頭 更進一步」
+</ul>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000978.html">08:33 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=978" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000977"></a>
+<h3 class="title">只是巧合？</h3>
+
+<p>之前在 blog 上提到 [<a href="http://blog.linux.org.tw/~jserv/archives/000944.html">臨時有變卦</a>]，因為一些因素，我取消前往比利時的行程，為此不免覺得遺憾不已。</p>
+
+<p>而今天收看 BBC News 時赫然發現原本我要轉機的機場暫時關閉，而台北飛的班機也因為天候取消，也因此當初的決定讓我省了不少冤枉錢，省了不少交通費與等待的時間，得以從事更多計畫，至少也在寫作本 blog 的同時，一個人舒適的欣賞窗外雨霧迷濛，泡著好茶...</p>
+
+<p>當初的那種感覺很巧合的靈驗，為此也不得不相信這回事，只是巧合嗎？</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000977.html">07:40 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=977" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000976"></a>
+<h3 class="title">專案管理與架構</h3>
+
+剛剛在閱讀 [<a href="http://blog.wctang.info/">wctang's blog</a>]，找到一篇篇名為 "Architect" 的文章，相當受益。<br />
+<br />
+前半段花了一些篇幅介紹 StarTeam，我比較有興趣的部份在於 branch 的處理，摘錄這個部份的內容如下：<ul class="code" style="margin: 6px;">
+<li>StarTeam 使用 Project, View, Folder 來管理物件</li>
+<li>Project<ul>
+  <li>Project 是完整的管理單位</li>
+  <li>Project 可建立多個 View ，而每個 View 都可看到不同的 Folder </li>
+</ul></li>
+<li>View<ul>
+  <li>View 的主要功能是在管理分支，也可以用來管理不同的用戶可看到不同的東西，但以權限來區分更有效</li>
+  <li>StarTeam 的 View 具階層架構，對應於 CVS 的分支也可以有階層架構</li>
+  <li>View 有 Branch View 和 Reference View ， Branch View 是把文件複製分開管理，而 Reference View 則是仍是看到同一份文件</li>
+  <li>StarTeam 可以定義 Label ，而 Label 是定義由 File 和 View 共同定義的，同一個 file 在不同的 View 中有不同 Label 的命名空間</li>
+  <li>Label 有 View Label 和 Revision Label</li>
+  <li>具有 Promotion Label，是 Label 的 Label ，如定義為 Build, Release 等 Promotion，可指向不同的 Revision Label</li>
+</ul>
+</ul>
+因為本身有參與幾個 Free/Open-source software 計畫，很多時候為了開發新功能，都會分出基於特定需求的 branch，比方說我在 Kaffe.org 就有 KMM (Kaffe Multimedia) 與 KOE (Kaffe-based Operating Environment) 這兩個 branch，這些都是基於實驗性質或特殊需要，但是最終會整合回 mainline，往往成為開發人員的夢魘。<br />
+<br />
+CVS、subversion，以及 GNU Arch 的基本指令我大概都會，不過面對我前述的問題，老實說，我還是「土法煉鋼」來處理，是阿，很笨沒錯，所以多方涉獵新的途徑來解決這樣的需求是很重要的。看到 wctang 對於 StarTeam 的介紹真讓我精神為之一振，實在太有意思了。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000976.html">04:27 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=976" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000975"></a>
+<h3 class="title">Richard M. Stallman 的 blog</h3>
+
+<p>自從有好用的 RSS Reader -- <a href="http://liferea.sourceforge.net/">Liferea</a> 後，我就可以很有效率的閱讀許多新聞與 blog，這些豐富的資訊全在一個視窗裡頭可以飽覽，讓人真有種「秀才不出門，能知天下事」的感覺。</p>
+
+<p>扯了這麼多，我要說的是，Free Software Foundation 老前輩 Richard M. Stallman 也有 blog 唷，請參考 [<a href="http://www.fsf.org/blogs/rms/">RMS's accounts of his travels and free software activities.</a>]，看看老前輩有什麼特別的行程。</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000975.html">03:31 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=975" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000974"></a>
+<h3 class="title">Skyeye -- 強力 Open Source ARM emulator</h3>
+
+<p><a href="http://www.skyeye.org/">Skyeye</a> 這個開源計畫是北京清華團隊的驕傲，就目前 open source ARM emulator 來說，很難有完整度再好的項目了。</p>
+
+<p>在我入伍前，我曾經維護 Skyeye 台灣區的 mirror，不過後來機器更新後，這個 mirror 就沒再維護，而我也沒有注意新版的發展。想不到剛剛玩了一陣子，竟然被 Skyeye 的完整度所驚嚇，真是太夢幻了，不僅有良好的網路支援，甚至連 FBDev/LCD 也做出來。</p>
+
+<p>我試著用 Skyeye 來模擬 Cirrus Logic 出品的 <a href="http://www.cirrus.com/en/products/pro/detail/P139.html">EP7312</a>  硬體平台，其 block diagram 如下：<br />
+<img src="http://www.cirrus.com/en/images/product_diagrams/7312blkdiag_mag.gif" /></p>
+
+<p>然後在上面運作 ARM-Linux，跑了簡單的測試 touchscreen 小程式，整個模擬狀況如下：<br />
+<img src="http://jserv.sayya.org/skyeye/screenshots/skyeye-lcd.png" /></p>
+
+<p>Skyeye 實在是太棒了！</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000974.html">03:20 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=974" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000973"></a>
+<h3 class="title">Qvwm 新的維護者</h3>
+
+去年因為工作需求，接觸了 <a href="http://www.csg.is.titech.ac.jp/~kourai/qvwm/">Qvwm</a>，不過發現 Qvwm 作者已經不維護這個專案，但是我陸續做了一些改進，也提交許多 patch，這些成果可以參考我 [<a href="http://jserv.sayya.org/">個人首頁</a>] 上 Projects::Qvwm 的部份。<br />
+<br />
+經過一番醞釀與斡旋，Mitch Davis 與我成為 qvwm 新的維護者，而我們有了新的網頁 [<a href="http://qvwm.sourceforge.net/index_en.html">qvwm : A fast Windows-like window manager</a>]，而 Mitch 人在澳洲工作繁忙，所以現在由我繼續維護這個專案的進行，詳細資訊可以參考 [<a href="http://sourceforge.net/projects/qvwm">qvwm 在 SourceForge 上的專案頁面</a>]。<br />
+<br />
+我們的幾個目標如下：<ul>
+<li>UTF-8 support</li>
+<li>FreeDesktop.org's EWMH (_NET_WM) support</li>
+<li>modularization</li>
+</ul>
+而我在 irc.freenode.net 開了 #qvwm channel (我的 nick 是 "jserv2")，歡迎有興趣的朋友一起來開發，體驗一個 Window Manager 產生的歷程！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000973.html">02:20 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=973" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000972"></a>
+<h3 class="title">台中捐血中心祝您新春愉快</h3>
+
+嗯，剛剛收信時，意外瞥見一篇標題為「台中捐血中心祝您新春愉快」的信件，才想到自己今年還沒去捐血，有空出門踏青時，應該要順道找捐血站「放血」一下 :-)<br />
+<br />
+引述信中內文：<ul class="code" style="margin: 6px;">
+親愛的捐血人：<br />
+<br />
+連日來寒冷的天氣，不但讓感冒人數增加，可捐血人數大幅減少，也讓醫院用血量大增，因此，血液庫存量急速降低。希望各位捐血人在冷颼颼的天氣中，不要忘了出門挽袖捐熱血，幫助醫院裡需要輸血的病人。<br />
+<br />
+台中捐血中心 敬啟
+</ul>
+熱血的朋友，一起來挽袖捐熱血吧，衝衝！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000972.html">01:36 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=972" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 25, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000971"></a>
+<h3 class="title">Solaris 9 新注音</h3>
+
+Sun Microsystems 一直對 X Window System 的 i18n (internationalization) 處理有很卓越的貢獻，而 Sun Solaris 裡頭則有相當豐富的技術展現。在 [<a href="http://chewing.csie.net/">新酷音</a>] 尚未整合到 JDS (Java Desktop System) 之前，IIIMF svn repository (im-sdk) 有一份 Sun Microsystems 釋出的 sun_le_asia，不過後來 Ervin Yan 用 GTK+ 重新改寫 aux 與對 LE 重新組織後，今年一月份徹底切割 tch_le_sun 與 sch_le_sun，基本上已經相當成熟。<br />
+<br />
+不過，過去的 sun_le_asia 則提供了一個有趣的設計，也就是「繁體新注音輸入法」，詳情可參考 [<a href="http://docs.sun.com/app/docs/doc/816-0670/6m751touj?l=zh_TW&a=view">新注音輸入法</a>]。Solaris 9 上面的「新注音」基本上是用新拼改過來的，所以很不符合台灣使用者既有的習慣，看快照大概就知道是怎麼一回事。<br />
+<br />
+儘管 im-sdk 現在已經移除「新注音」並改用「新酷音」，但是我從過去的 repository 翻出來，做了 [<a href="http://jserv.sayya.org/iiimf/sun-le-asia.tar.bz2">一份複製</a>] (參考 zh_TW/input_methods/newzy 目錄)，裡頭有一些有趣的斷詞規則可以參考，比方說：
+<ul class="code" style="margin: 6px;">
+/* 以下單字為: 前後均不可聯的字, 在分詞時作用類同標點符號 */
+uchar NonLinkHZ[2 * NUM_NONLINKHZ + 2] =                    
+<ul>"是的了不也而你我他與它她其就和或"; </ul>
+
+/* 以下單字為: 只可與前聯, 不可與後聯. */
+uchar PreLinkHZ[2 * NUM_PRELINKHZ + 2] = 
+<ul>"們性員子上下中內外化者家兒年月日時分秒街路村";</ul>
+
+/* 以下單字為: 只可與後聯, 不可與前聯. */
+uchar SufLinkHZ[2 * NUM_SUFLINKHZ + 2] = 
+<ul>"不在這從到那哪第各每某本總當由如以為被使更且指於但"
+"將可應會該此全很都近約";</ul>
+</ul>
+新酷音在 libchewing-0.2.6 都還只是建構在統計學的基礎上，希望能夠在 0.3 branch 做出 heuristic 的整合。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000971.html">10:57 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=971" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000970"></a>
+<h3 class="title">尋寶</h3>
+
+<p>下午無聊時，在大陸的 LinuxFans 論壇尋寶意外瞥見這篇 [<a href="http://www.linuxfans.org/nuke/modules.php?name=Forums&file=viewtopic&t=105099&sid=2636">xdevconf-2005-notes</a>]，這是之前我在 blog 上面提到 [<a href="http://blog.linux.org.tw/~jserv/archives/000952.html">X Developer's Meeting 紀錄</a>]，雖然我已經拜讀 ajax 整理的紀錄，但是讓我覺得有趣的是大陸 LinuxFans 論壇後續的回文。</p>
+
+<p>引述了我們在去年舉辦的 [<a href="http://ircconf.debian.org.tw/">Debian@Taiwan IRC Conference</a>] 的主題「FreeDesktop.org 與 X.org 嶄新發展概況」，雖然很多部份語焉不詳，但是希望也能對大陸的朋友有所幫助 :-)</p>
+
+<p>這也讓我對新書《揭開 X Window System 神秘面紗》的撰寫過程產生高度的鼓舞，正如之前在 blog [<a href="http://blog.linux.org.tw/~jserv/archives/000924.html">不朽的意志</a>] 所說的，真希望能夠將技術的深度與自己的堅持融入字裡行間，成為真正有靈魂的作品。</p>
+
+<p>自勉之！</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000970.html">10:37 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=970" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 23, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000969"></a>
+<h3 class="title">"Kaffe" 該如何發音？</h3>
+
+雖然 <a href="http://www.kaffe.org/">Kaffe</a> 不是什麼特別優秀的 Java VM 實做，但是 Kaffe 可貴處在於其發展文化，但是 "Kaffe" 到底該如何發音呢？在 Kaffe mailing-list 上有人問道，而 Kaffe developers 之一的 Dalibor Topic 回覆：[<a href="http://www.kaffe.org/pipermail/kaffe/2005-February/101632.html">A small question:how can I pronounce the "kaffe"?</a>]，引述部份內容如下：<ul class="code" style="margin: 6px;">
+Given that Tim Wilkinson began writing Kaffe while he was in Sweden, it should sound like the swedish word 'Kaffe'. Which, according to my not v ery extensive google searching sounds like this:
+<ul>http://www.pessie.net/ljud3/kaffe.wav</ul>
+</ul>
+我做了一份 [<a href="http://jserv.sayya.org/kaffe/sound/kaffe.wav">聲音複製</a>]，這是北歐「咖啡」的念法。<br />
+<br />
+同時，正如我在之前 blog 提到的 [<a href="http://blog.linux.org.tw/~jserv/archives/000966.html">Kaffe 1.1.5 內幕消息</a>]，為了迎接這個盛會，FOSDEM 2005 上將會有一群 Free Java Hacker 大聲念著 "Kaffe" 唷！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000969.html">09:36 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=969" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 22, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000968"></a>
+<h3 class="title">玩弄 Optex 望遠鏡</h3>
+
+去年某個走在捷運大街，瞥見在販售日本 OPTEX 出品的天文望遠鏡，覺得還不錯，就買下來了。<br />
+<br />
+無奈這幾天台北又濕又冷，又是寒流又是大雨，這台天文望遠鏡就被只能擺在房間裡頭「修養」，不過昨天跟朋友聊到星象，所以今天用了一些時間閱讀這方面的資料，因為住在公寓頂樓，所以天氣好的時候，架子抱上去就可以觀賞了。<br />
+<br />
+期待著好天氣。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000968.html">09:10 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=968" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000967"></a>
+<h3 class="title">對 spam comment 沒轍</h3>
+
+<p>今天中午看自己的 blog，竟然被嚇到，因為多了上百篇 spam comment，而我翻閱了一些資料，似乎沒找到可以手動大量移除的方式 (我在 blog.linux.org.tw 沒有任何系統權限)，這不禁讓我想到之前才抱怨過的 [<a href="http://blog.linux.org.tw/~jserv/archives/000823.html">不喜歡用 Movable Type</a>]，這種 spam 真讓人抓狂。</p>
+
+<p>Movable Type 雖然功能強大，但是我根本不會用，是很想自己架設機器，卻沒有多餘的心力來維護，實在很麻煩 :(</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000967.html">08:45 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=967" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000966"></a>
+<h3 class="title">Kaffe 1.1.5 內幕消息</h3>
+
+本來是想當神秘驚喜的，不過既然新聞稿都寫好了，先來透漏一下已經一年沒有推出新版的 <a href="http://www.kaffe.org/">Kaffe</a>，即將於 [<a href="http://www.fosdem.org/2005">FOSDEM 2005</a>] 盛會上，由 Kaffe.org core team 為所有開發者釋出 Kaffe 1.1.5 :-)<br>
+<br>
+這個行程預計在我之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/000779.html">FOSDEM GNU Classpath developer room</a>] 已經提過，正式的時程可參閱 [<a href="http://www.gnu.org/software/classpath/events/escape_fosdem05.html">Escape the Java Trap! - GNU Classpath Hacker Room</a>]。<br>
+<br>
+Kaffe 1.1.5 相較於 1.1.4 有許多變更，等正式釋出後相信許多開發者可以感受其差異，比較可惜的是，我過去做的一些實驗性的特徵，看來還要等再下一個 release 才會整合，畢竟我們已經延誤一段時日了。<br>
+<br>
+在編修 Release Note 的時候都會有高度的成就感，或許這就是激勵我持續參與 Free/Open-Source Software Projects 的動力吧 :-)<br>
+<br>
+Just Kaffe It!<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000966.html">08:14 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=966" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 21, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000964"></a>
+<h3 class="title">XFCE 手寫辨識支援</h3>
+
+<p>著名的 [<a href="http://gpe.handhelds.org/">GPE 計畫</a>] 有個名為 Rosetta 的手寫辨識引擎，雖然已經很久沒有維護，但是其 source code 還頗直覺，介面也不差，或許沒有牽涉太多理論，但是實測的效果還不錯。剛剛在玩 [<a href="http://blog.linux.org.tw/~jserv/archives/000963.html">XFCE -- 婀娜多姿的小姑娘</a>] 時，一邊跟 Kanru Chen 討論，一邊動手移植 Rosetta，去掉一些 GPE Widget，改成 XFCE UI，於是第一版的手寫辨識 for XFCE 就完成了，請參閱以下快照：<br />
+[Training 畫面]<br />
+<img src="http://jserv.sayya.org/xfce/screenshot/roseta.png" /></p>
+
+<p>[手寫辨識使用實例]<br />
+<img src="http://jserv.sayya.org/xfce/screenshot/roseta2.png" /></p>
+
+<p>剛剛也在 IRC 上跟 Kanru Chen 聊到這個成果的下個方向，或許是搭配許氏注音鍵盤排列，因為恰好將注音符號對應成 25 個英文，所以理論上只要有辦法 training 注音符號成為這 25 個英文字母即可 ("Q" 沒有使用)，這麼說來，手寫注音辨識或許會比較簡單，說不定就可以把 [<a href="http://chewing.csie.net/">新酷音</a>] 放到 PDA 或者手機上面使用了。</p>
+
+<p>就算不用在 PDA 等 handheld devices，XFCE 的手寫支援還是有其價值在，比方說用在 Kiosk 或者是公用電腦，旁邊放個手寫版，就可以輕鬆的搭配手寫辨識來使用了。完整的手寫筆跡辨識很難，更別說要拿出 Free/Open-Source 的解決方案，但是像是「手寫酷音」或許是個很好的方向，畢竟很多台灣人也寫不出所有的常用字了，寫注音符號輕鬆多了 :-)</p>
+
+<p>我對手寫辨識沒有太大的概念，不過作這種沒有技術的 hacking 倒是還挺在行的，希望有機會能接觸到從事這方面辨識的先進指點一番。</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000964.html">11:27 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=964" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000963"></a>
+<h3 class="title">XFCE -- 婀娜多姿的小姑娘</h3>
+
+<p>其實很久以前就玩過 <a href="http://www.xfce.org/">XFCE</a>，不過當時在相當早期，還在模仿 CDE 的時代，後來 XFCE 4.2 有了突飛猛進的發展，在閱讀 Tsung 的 blog [<a href="http://www.longwin.com.tw/~jon/blog/archives/000491.html">Xfce 4.2 flash demos</a>] 後，著實著實為其驚豔不已，讓我不得不換掉習慣的 KDE 與 GNOME。</p>
+
+<p>依據過去的習慣，我會用 cvs repository 裡頭的套件來建構，不過這次花了一些時間學習 Debian packaging，所以日後要更換應該比較容易，而 XFCE 4.2 的 Compositor 感覺不是很順手，於是動手改了一下，主要是讓效果比較接近 xcompmgr，這個 [<a href="http://jserv.sayya.org/xfce/xfwm-composite-1.diff">patch</a>] 很簡單，有興趣的朋友可以自己抓來玩玩。</p>
+
+<p>呈現的快照如下：<br />
+<img src="http://jserv.sayya.org/xfce/screenshot/1.png" /></p>
+
+<p>接下來我想改的部份大致有：<br />
+* 整合 xcompmgr 的其他絢麗特徵<br />
+* 移植我在之前 blog 提到的 [<a href="http://blog.linux.org.tw/~jserv/archives/000852.html">Prism2 WirelessLAN 驅動與整合</a>]<br />
+* 移植 <a href="http://gpe.handhelds.org/">GPE</a> 許多優秀的應用程式</p>
+
+<p>這些當然只是玩票性質啦，不過 XFCE 與 GPE 的共通其實頗多的，如果能夠適度整合應該很不錯。</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000963.html">09:42 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=963" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 19, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000959"></a>
+<h3 class="title">中文輸入自由軟體工作坊活動圓滿落幕</h3>
+
+<p>葉平教授提議的 [<a href="http://wiki.pingyeh.net/FSCIWorkshop">中文輸入自由軟體工作坊</a>] 今天圓滿落幕，有許多與會的貴賓以及前輩蒞臨指導，所有的簡報都已經上線，有興趣者可以下載參考。</p>
+
+<p>我分享的部份就如之前在 blog 提到的 [<a href="http://blog.linux.org.tw/~jserv/archives/000943.html">中文輸入自由軟體工作坊</a>]，再度老生常談聊聊這些新輸入法架構的變革，並且也展示最新版的 [<a href="http://chewing.csie.net/">SCIM/新酷音</a>] 與 CLE (Chinese Language Engine for IIIMF)。前者已經頗穩定了，功能也算齊全，預計月底會依據 [<a href="http://blog.linux.org.tw/~jserv/archives/000936.html">新酷音進度報告</a>] 釋出新版本，至於後者呢，整合許多現有的 IIIMF LE 成果，授權部份大致上處理好了，以 GNU GPL 釋出，不過模組化的設計還沒完備，我還要加把勁。</p>
+
+<p>gugod 在簡報 [<a href="http://gugod.org/ChewingHacks/slides/start.html">Chewing 輸入函式庫攻略</a>] 提到 libchewing 內部設計的重要文件，有心研究智慧型注音實做的朋友，務必拜讀 :-) 神奇的 gugod 還熬了一夜寫了「酷音輸入法的拼音支援」，真是有意思，而這些成果都在 subversion 裡頭。</p>
+
+<p>居士前輩，劉燈，以及 zonble 的分享也相當棒，讓我對自由軟體工作者背後支持的信念大大的鼓舞，同時我們也可以窺見當今大環境的架構還是有其弊端，需要吾人投入的部份仍相當多，一起加油吧！</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000959.html">08:46 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=959" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 17, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000956"></a>
+<h3 class="title">Miguel de Icaza 聊 Mono/GNOME</h3>
+
+在 Slashdot 上有篇報導 [<a href="http://linux.slashdot.org/article.pl?sid=05/02/14/1443258&from=rss">Miguel de Icaza Talks About Mono</a>]，提到 GNOME 發起人兼 Mono 計畫主持人 Miguel de Icaza 最近有份關於 GNOME 與 Mono 的談話，其 [<a href="http://www.lugradio.org/guide.php#episode21">錄音記錄</a>] 我已經在 SayYa 上作了 [<a href="http://jserv.sayya.org/mono/lugradio-s2e9-140205-high.ogg">ogg 格式的複製</a>]。<br />
+<br />
+聆聽 Miguel 風趣的談話時，我想起過去在 SayYa BBS 看到 khoguan 兄的 post，引述如下：<ul class="code" style="margin: 6px;">
+作者: khoguan (KhoGuan Phuann) 站內: khoguan<br />
+標題: 富爭議性的 Mono project<br />
+時間: Sat Mar 13 00:28:39 2004<br />
+<br />
+Mono project 的主持者墨西哥人 Miguel de Icaza （也就是 GNOME 的開創者）不但是電腦技術上的天才，他的 EQ 也一樣非常了不起。<br />
+<br />
+面對外界質疑的聲浪，他總是有風度的盡力加以化解。在 slashdot 或是在 ONLamp 上都可以看到他以讀者的身份，回應其他讀者的攻擊，如：<ul>
+<li><a href="http://slashdot.org/comments.pl?sid=96718&cid=8269654">Mono and dotGnu:  What's the Point?::Reply</a></li>
+<li><a href="http://www.onlamp.com/pub/a/onlamp/2004/03/11/mono.html">Will Mono Become the Preferred Platform for Linux Development?::Patent isses with Microsoft remain a problem. </a></li>
+</ul>
+有太多 hacker 不擅與人交往，但凡是成為自由軟體的鉅子者則都散發出吸引大眾的人格特質。
+</ul>
+這一小時的大師談話真是精彩 :)<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000956.html">08:37 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=956" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000955"></a>
+<h3 class="title">深入書寫與手寫字體</h3>
+
+我一直很佩服對於字型處理有深入研究的前輩，比方說 [<a href="http://edt1023.sayya.org/">李果正</a>] 與 [<a href="http://firefly.idv.tw/">螢火飛</a>] 這兩位前輩的投入，讓我這個後輩能省下許多時間，也才能參與更多計畫，特此感謝。<br />
+<br />
+真正開始接觸到字形處理，大約是在 2002 年為了撰寫一份備忘錄 [<a href="http://jserv.sayya.org/qtopia/doc/qte.txt">Qt/Embedded 與 Qtopia 中文處理實戰</a>] (Big5 編碼)，因為 Qt/Embedded 內部使用 Unicode，而當時現有的字形並不多，必須「東拼西湊」(後來這些成果由 momodalo 整合到 [<a href="http://zaurus.cis92.net/chinese_rom/">Zaurus SL-5500 Chinese Rom 3.10c</a>])，所以我這個門外漢就乖乖的去找資料，並發信給一些前輩求助。很高興，拜 Internet 所賜，我很快就找到答案，而且是來自權威人士 :-)<br />
+<br />
+在去年因為工作需要，開始對 Font rendering 技術作分析，主要是考慮到 Embedded System 上效能與呈現效果的 tradeoff，也開始研究一些著名 toolkit 在這個議題的實作，比方說 Xft/XRender、Pango，以及 Freetype 等，不過我發現最後還是在數值上打轉，整天作 benchmarking 罷了。<br />
+<br />
+剛剛閱讀李果正前輩的 blog [<a href="http://bs2.twbbs.org/blog/post/EdwardLee/816">印刷體？書（手）寫體？</a>]，裡頭以很簡單的觀念闡述現在 Unicode CJK section 字形處理的若干問題，引述如下：<ul class="code" style="margin: 6px;">
+「Unicode 協會把他們分別編上了不同的編碼，雖然也有說明是同一個字，但編碼不一樣，在字型製作及電腦軟體的應用上就大不相同。例如，我們慣用的明宋體字型的區分將會被打破，長期而言會影響一國的文字文化。<br />
+<br />
+像這種字的形狀不同，但卻是同一個字的情形，除非是異體字的情況，不然似不應分成不同的編碼較妥。我們可以由字型的製作及取用上去做區分，否則英文手寫體的字母，是不是也得另外編上不同的編碼呢？另外，中文的草書體，是否也得另外編上不同的編碼？」
+</ul>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000955.html">07:08 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=955" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000954"></a>
+<h3 class="title">不虎爛的 Hula</h3>
+
+"Hula" 發音聽起來很像「虎爛」，但是這個計畫一點都不虎爛，相當務實呢 :)<br />
+<center><img src="http://nat.org/2005/february/hula.png" /></center><br />
+在 Nat Friedman 的 blog [<a href="http://nat.org/2005/february/#15-February-2005">The Hula Project</a>] 提到 <a href="http://hula-project.org/">Hula</a> 這個 open source mail & calender server 的新計畫。還記得之前 Microsoft 抨擊 GNOME Evolution 作得再好，也只能跟 OutLook Express 拼，但是跟 Microsoft OutLook 還差得遠，現在 Ximian/Novell 則贊助這個計畫，釋出推出完整的 solution。<br />
+<br />
+從 Nat 的 blog 中可以發現兩個重點：<ul>
+<li>build a JavaScript-based rich client for mail and calendaring.<ul>
+仿效 <a href="http://www.gmail.com/">GMail</a> 的設計，透過 JavaScript 來強化互動性</ul></li>
+<li>build a real web-based calendar.</li>
+</ul>
+甚至還試圖整合 IM (即時通訊) 與 SMS (簡訊) 系統，真是令人高度期待的專案。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000954.html">05:20 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=954" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000953"></a>
+<h3 class="title">即將到來的 Linux Desktop 圖形技術革命</h3>
+
+嗯，我喜歡「革命」這個用詞，或許因為我的觀點一直比較偏左吧 :)<br>
+<br>
+資深 GNOME 開發者 Seth Nickel 在他的 blog 提到 [<a href="http://www.gnome.org/~seth/blog/xrendering">Next-Generation Rendering For the Free Desktop</a>]，這篇文件揭露了許多進行中計畫的進展，很令人振奮。剛剛本來想歇息，沒想到拜讀兩次後，整個人熱血起來，順手就來更新 [<a href="http://jserv.sayya.org/freedesktop/">過去作的簡報</a>]，如果時間許可的話，會安排在下次的 Debian@Taiwan [<a href="http://ircconf.debian.org.tw/">IRC Conference</a>] 中跟與會的朋友介紹 (希望抽得出時間)。<br>
+<br>
+Seth Nickel 提到 RedHat 的 Desktop Team 全力促成下一代的 Linux Desktop 新技術，並著手許多實驗性技術的整合，這個 Team 的成員有：<ul>
+<li><a href="http://fishsoup.net/blog">Owen Taylor</a> -- GTK+/Pango 維護者</li>
+<li>Søren Sandmann -- X Hacker</li>
+<li>Diana Fong </li>
+<li><a href="http://bitplanet.net/">Kristian Høgsberg</a> -- X Hacker</li>
+<li>Carl Worth -- Cairo 維護者</li>
+</ul>
+在本篇 blog 中可以發現現有的技術資源大致有：<ul>
+<li>A sophisticated drawing layer (cairo using glitz/opengl or render as backends)</li>
+<li>Stock renderers built on top of that drawing layer (pdf/ps rendering backed by cairo - such as Alex Larsson's xpdf fork in evince, svg rendering backed by cairo, etc)</li>
+<li>A toolkit that agressively takes advantage of the features in the drawing layer, exposing them to applications and themes (gtk+)</li>
+<li>A window+compositing manager that can work closely with the toolkit but essentially takes the window contents as a static image in compositing (metacity with luminocity-like GL compositing manager features fused in to deal with window effects, synching up smooth resizing, live window thumbnailing, crazy pagers, etc)</li>
+<li>A hardware driver system to expose a low-level hardware accelerated rendering path to the drawing layer (opengl or render with hardware accel)</li>
+</ul>
+在 [What It Might Look Like] 一節則提到 "With that model we can implement things like:" 以下許多令人振奮的發展方向，有意思的是 "Hardware accelerated PDF viewers"，這點在 Apple MacOS X 已經實現了，是否能夠透過 X (Re)architecture 在 Linux 提出同等甚至更佳的設計呢？<br>
+<br>
+RedHat 的 Desktop Team 主要的平台是 GNOME，而 SuSE/Novell 也有類似的實驗室，以 KDE 為主，儘管會有發展分歧的顧慮，但是在 FreeDesktop.org 的協調與共同規格的實現，最後受益的，肯定是廣大的 Linux users。<br>
+<br>
+在此對這些偉大的前輩們，致上十二萬分的敬意！<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000953.html">05:02 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=953" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 16, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000952"></a>
+<h3 class="title">X Developer's Meeting 紀錄</h3>
+
+<p>之前提到的 [<a href="http://blog.linux.org.tw/~jserv/archives/000914.html">X Developer's Meeting</a>] 已經圓滿落幕，FreeDesktop developers 之一的 <a href="http://freedesktop.org/~ajax/">ajax</a> 幫我們整理部分的紀錄，可參考：<br />
+<ul><a href="http://freedesktop.org/~ajax/xdevconf-2005-notes.txt">XDevConf2005 Notes</a></ul></p>
+
+<p>雖然只有前兩天的內容，但是裡面所提的重點實在有意思，我特別對 David Flynn 的 X Proxy and Multicast Demo 有高度興趣 (隨後影像檔會上線)，這也引發與會的開發者高度討論。</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000952.html">04:58 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=952" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000951"></a>
+<h3 class="title">考古：爪哇</h3>
+
+這裡的「爪哇」是 Java 的意思，考古是因為我無意間瞥見 1997 年 JavaOne 的 slide：[<a href="http://java.sun.com/javaone/sessions/slides/TT27/startit.html">Java Runtime Internals</a>]<br />
+<br />
+雖然我已經涉獵過類似的資料，但是回去閱讀十年前 (是的，雖然在 1997 年的 slides，但是內容跟十年前的文件是一致的) 的資料，覺得很有意思，想到自己當時在網路上看到 Sun Microsystems 的 JDK 1.0beta 與 HotJava Alpha release，就成為「白老鼠」，沒想到一路就迷上 Java 技術了，爾後更深入 Java VM 實作，先後加入 <a href="http://jos.sourceforge.net/">JOS</a> (Free Java OS) 與 <a href="http://www.kaffe.org/">Kaffe</a> 兩個計畫，也獲得 VM Internals 很多寶貴的經驗。<br />
+<br />
+好快阿，十年就這麼過了，所以標題就訂為「考古」 :)<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000951.html">04:30 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=951" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 15, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000950"></a>
+<h3 class="title">Kaffe 也實作出 jawt 支援</h3>
+
+<p>之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/000932.html">GCJ 首度實現 Free AWT Native Interface Implementation</a>] 提到 GCJ (java-gui-branch) 已經初步支援 jawt 了，剛剛利用一點時間移植到 Kaffe 去，可參閱我在 mailing-list 上的訊息： [<a href="http://www.kaffe.org/pipermail/kaffe/2005-February/101536.html">ANN: Kaffe supports JAWT now</a>]。</p>
+
+<p>運作的快照如下：<br />
+<center><img src="http://jserv.sayya.org/kaffe/screenshots/qoj-jawt-kaffe.png" /></center></p>
+
+<p>左上方是用 GTK+ 打造的 AWT/Swing peer，以 KaffeVM 驅動，而右下方則是普通的 Qt3/X11 應用程式，看似獨立的兩者，卻是透過 JAWT 來牽繫的，這也是為何此應用程式要稱為 QOJ (Qt on Java) 了。</p>
+
+<p>圖中的 Qt3 應用程式是使用 Qt OpenGL module 來繪製方塊，可透過左上方的選單來改變旋轉的軸向，很有趣的範例。 </p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000950.html">06:31 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=950" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 14, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000946"></a>
+<h3 class="title">很有意思的 Kaffe 圖</h3>
+
+Sven de Marothy 作了一個很棒的圖片： http://www.qc.physto.se/~sven/werbung.png<br />
+<br />
+看了很久，才知道裡頭是雙關用語，很有意思 :-)<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000946.html">08:36 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=946" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000945"></a>
+<h3 class="title">JOGL on GCJ</h3>
+
+<p>GCJ Hackers 之一的 Anthony Green 前輩告知，現在 <a href="http://jogl.dev.java.net/">JOGL</a> 終於能夠在 GCJ 上面運作了！需要 gcc 4.0 experimental 才能運作，其畫面如下：<br />
+<center><img src="http://spindazzle.org/green/pics/2004-02-13-gear.jpg" /></center><br />
+詳情請參閱： [<a href="http://www.spindazzle.org/green/index.php?p=38">jogl on gcj</a>]，當然這是建構在 Thomas Fitzsimmons 最近實作出的 jawt support in gcj，可參考我之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/000932.html">GCJ 首度實現 Free AWT Native Interface Implementation</a>]。</p>
+
+<p>Free Java rules!</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000945.html">12:30 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=945" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000944"></a>
+<h3 class="title">臨時有變卦</h3>
+
+<p>嗯，今年又去不了 <a href="http://www.fosdem.org">FOSDEM</a> 這個年度盛會了 :(</p>
+
+<p>有時候直覺還是相信一下比較好，特別是這種感受很強烈。唉，我就是跟歐洲無緣，真麻煩，都規劃好了，臨時就是有變卦，好吧，就多幾天休假來彌補這個遺憾吧。</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000944.html">12:13 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=944" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 13, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000943"></a>
+<h3 class="title">中文輸入自由軟體工作坊</h3>
+
+<p>「中文輸入自由軟體工作坊」是葉平教授提議的活動，詳情可以參考 [<a href="http://openvanilla.org/?Codefest20050219">Codefest20050219</a>]，邀請了一些專家為大家分享，而我應該順便去那邊「泡茶」聊聊，剛剛作簡報的時候，涉獵漢字全球化的資料，順便記錄為 [<a href="http://blog.linux.org.tw/~jserv/archives/000942.html">漢字走向全球化的挑戰</a>]，不過二月 19 日當天我應該不會分享這麼嚴肅的主題。</p>
+
+<p>我的 Agenda 到現在還沒定案，估計會介紹 XIM 歷史背景 (UNIX 歷史真有意思)、IIIMF 的背景 (如果時間允許的話，介紹一下 Sun Java Desktop System 裡面應用 IIIMF 的實例)、SCIM 平台，以及最近作的 [<a href="http://chewing.csie.net/">新酷音</a>] 與 [<a href="http://sdl-im.csie.net/">SDL_im</a>] 等話題，希望不會太枯燥 :)</p>
+
+<p>很期待 [圓桌討論: 中文輸入自由軟體近、中、長程的方向] 這個項目，看看能否激發出更好的點子。</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000943.html">06:01 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=943" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000942"></a>
+<h3 class="title">漢字走向全球化的挑戰</h3>
+
+在之前 blog [<a href="http://blog.linux.org.tw/~jserv/archives/000849.html">快快樂樂作中文資訊處理</a>] 所提及：
+<ul>很多人看到「中文資訊處理」這個議題都不快樂。</ul>
+中文資訊處理的問題不在於 DBCS (Double-Bytes Character System) 技術的引進，這在十幾年前早已達成像樣的技術水準了，真正的問題在於全球化帶來的挑戰。<br />
+<br />
+台灣中文學界的權威龔鵬程教授在上個月的文章作了這樣的分析： [<a href="http://www.fgu.edu.tw/~kung/post/post48.htm">漢字：由面對歐洲中心論到面對全球化</a>]，首先點出重點：<ul class="code" style="margin: 6px;">
+<p>文字改革有二種型態，一種是在文字制度內部改，例如秦始皇的「書同文」；或印尼改用印度字母，後來又改用阿拉伯字母；改變都仍在同一種文字系統內進行。另一種卻是文字制度的變革，例如北韓把漢字廢了，改用諺文；越南改用拉丁化字，把表意文字轉變為拼音文字。
+</p>
+<p>
+中國的文字改革，則是起於體制內的改變，而逐漸要廢除漢字，變成了改變體制。大陸所推行的，就是以簡化為階段過渡，最終要達到拼音化目標。</p>
+</ul>
+再來，龔教授引導我們放眼中外，分析世界五大塊文字分佈：<ul>
+<li>拉丁字母</li>
+<li>漢字</li>
+<li>印度字母</li>
+<li>阿拉伯</li>
+<li>斯拉夫</li>
+</ul>
+復又以哲學命題來闡述這五大系統中，拉丁字母與漢字間的思想體系差異，我們也可以從中一窺教授在這個基礎上，是如何看待漢字拼音化與漢字簡化的議題：<ul class="code" style="margin: 6px;">
+漢字文字學的基本常識：字也者，由初文孳乳而寖多者也。其初簡、其後繁是不待說的。一字多義時為了辨義，也會不斷增加符號，如云加雨成雲，加艸成芸；文本義就是花紋，但字義分化後加糸成紋。又，字本身之古今字亦有古簡後繁者，如无與無，囗與國。說文字發展之規律  只能由繁而簡，顯非事實，違背了文字學的基本常識。</ul>
+錢鍾書就在《管錐編》中指出：「道與邏各斯都兼有道理 (ratio) 與言說 (oratio) 二義，故可『相參』」。誰也不敢像德希達那樣，率直指出西方邏各斯中心主義及語言中心論是走錯了路，以免被指為漢字沙文主義，除了歧異，箇中的特性很值得吾人去探索。<br />
+<br />
+不過，比較可惜的是，龔教授在 [面向全球推廣漢字的挑戰] 一節的論點較薄弱，在引述中文資訊處理的發展時，並未完全指出目前最大的問題。是的，「萬碼奔騰」或許是問題，但是真正的問題在於資訊交換與表意系統的轉換，而後面指出的：<ul class="code" style="margin: 6px;">
+中文電腦發展另一問題，是中文作業系統環境。電腦是西方的發明，故其作業環境就是英文。中文要能具有中文操作系統、程式語言及應用程式等整體的中文環境，跟英文一樣，仍是需要努力的。</ul>
+事實上在某些程度已經克服了。<br />
+<br />
+這是一篇很值得再三閱讀的論文。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000942.html">05:10 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=942" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000941"></a>
+<h3 class="title">x86 與 non-x86 開機程序比較</h3>
+
+IBM developerWorks 上的好文章： [<a href="http://www-106.ibm.com/developerworks/library/pa-migrate2/?ca=dgr-lnxw01BootProcess">Migrating from x86 to PowerPC, Part 2: Anatomy of the Linux boot</a>]，探討 GNU/Linux 在不同硬體架構下的開機程序差異，這篇文章有兩張很好的附圖可作為比較：<ul>
+  <li>典型 x86 Linux 啟動程序：<br />
+<center><img src="http://www-128.ibm.com/developerworks/library/pa-migrate2/fig1a.gif" width="586" height="253" /></center></li>
+  <li>典型 ARM / PowerPC Linux 啟動程序<br />
+<center><img src="http://www-106.ibm.com/developerworks/library/pa-migrate2/fig2.gif" width="586" height="148" /></center></li>
+</ul>
+此外，[Resources] 也有很多參考資訊。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000941.html">02:14 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=941" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000940"></a>
+<h3 class="title">小遊戲大智慧</h3>
+
+Sun Microsystems 最近辦了一個比賽 [<a href="http://www.woogley.net/games.html">Java 4K Game Programming Contest</a>]，顧名思義就是限制作品要在 4k 內，然後儘可能做出又炫又好玩的 Java 遊戲。<br />
+<br />
+剛剛測試了一下，用 <a href="http://www.kaffe.org/">Kaffe</a> 跑其中幾個遊戲會有問題，畫面顯示似乎不太正確，不確定是否原本的遊戲就是如此，我要來 hack 一下才知道，不過 Sun 舉辦這個比賽真有意思，也讓我見識到原來 4K 的 Java 遊戲也可以作得這麼棒 :-)<br />
+<br />
+小遊戲大智慧！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000940.html">07:54 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=940" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000939"></a>
+<h3 class="title">自由軟體授權與 Sun Microsystems</h3>
+
+<p>有時候一些朋友會問我：<br />
+<ul>「要從事開放原始碼 (Open Source)  軟體開發，需要有哪些條件？」</ul></p>
+
+<p>好難的問題，不過，我認為首要的需求是對法律有基本的認知，能夠分辨現有法律條款中的差異性，當然就是要有足夠的堅持，最後才是技術，技術可以學的，更可以改，可是觀念一旦植入腦海之後，想要動搖或者質疑既有的論點，絕對不是簡單的事情。</p>
+
+<p>Kaffe Developers 之一的 <a href="http://www.advogato.org/person/robilad/">Dalibor Topic</a> 在他的 blog 針對 Sun Microsystems 最近針對 J2SDK 的授權方式的更動作出這樣的回應 [<a href="http://www.advogato.org/person/robilad/diary.html?start=61">A license for each season</a>]，當然，這篇 blog 需要搭配 Dalibor 之前所提到相似的論點與質疑一同閱讀 (包含之前 Kaffe core team 向 Sun Java 申請取得 TCK 的發展)，但是無論如何，我們可以發現 Sun Java 開放的態度其實撲朔迷離。 (2004)</p>
+
+<p>剛剛閱讀 Carlos Liu 的 blog [<a href="http://freelinuxer.net/~carlos/2005/02/sun-cddl-and-1670-patents.html"> 談談 Sun 的用心，CDDL and 1670 Patents</a>]，其子標題為「 回：<a href="http://barb.51.net/index.php?itemid=846">Stallman對Sun開放專利的批評</a>」，Carlos 所描述與整理的資訊在時間點更靠近現在，也可以從這些 links 得知許多更廣泛的比較，我們也發現 Sun 還是加諸「限制」於這些條款。</p>
+
+<p>我個人相當欣賞 Sun Microsystems，而 Sun 也對整個 IT 產業有很大的向上提升價值，對於電腦技術也分享並促進發展，功不可沒，但是時到今日，Sun 在這些議題上實在作得很不漂亮，並且口徑也不一致，實在令人困惑。</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000939.html">06:01 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=939" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000938"></a>
+<h3 class="title">光寶老闆的創業故事</h3>
+
+從我習慣依賴 WWW 後，我就很少有閱讀雜誌的習慣，畢竟我總是可以找到更新、更完整，甚至更正確的資訊，但是《商業周刊》卻是少數我有興趣的紙本雜誌中，堅持一定要去閱讀的，因為每次都可以獲得不同的啟發。<br />
+<br />
+因應農曆新年，《商業周刊》在二月份的出刊是將第 898 期與 899 期合刊出版，封面故事為「生命之宴」，子標題為「探索你生命中最刻骨銘心的那一餐」這系列的故事中，148 頁到 149 頁就是描述 [<a href="http://www.liteon.com/">光寶集團</a>]  董事長宋恭源先生過去創業歷程中，最令他與其他創業伙伴最難忘的一餐，這一餐非常的簡單，就是「菜脯蛋」。<br />
+<br />
+非常榮幸有機會可以進去光寶科技服務。在內湖科技園區的瑞光路上聳立著鮮明的地標，是的，那就是光寶科技總部，在我還在面試階段時，就被這高聳的大樓所深深震撼，讓我打從心中好奇這段創業的歷程，而感謝那邊的長官照顧，順利成為正式職員後，有時候我就在一樓的陳列廳觀賞著光寶集團各階段發展與茁壯的資訊，不過，愚昧的我一直無法深入體驗箇中的甘苦。<br />
+<br />
+《商業周刊》的這份報導很值得一看，看似平凡不過的「菜脯蛋」是如何代表著宋董事長與其創業團隊中打拼滋味的象徵呢？這裡就不多加闡述了，而引述宋董事長的話：<ul class="code" style="margin: 6px;">
+「每個成功的公司，好的團隊、有好感情，是必要的條件。」</ul>
+模糊的估算，這份報導我大概讀了五次，每次閱讀都在不同心境下。當我從上班所在的 19 樓向下眺望時，高聳的光寶科技總部大樓幾乎可以盡收內湖科技園區全貌，各式建築相形之下都相當渺小。三十年前光寶科技以 LED 起家，而今成為台灣超過三十年的四大長壽電子集團之一，我，一個平凡的工程師，置身於總部對著窗外眺望風景全覽時，又是持以何種心情呢？這個比我年紀還大上許多的企業，至今屹立不搖，並不斷創造出新價值，如果不是當初堅持到底的信念，沉穩謹慎的步調，又怎有現在的價值呢？<br />
+<br />
+企業最重要的還是人本，要如何牽繫著團隊的感情與信念，要如何激勵彼此向上打拼，實在很值得思考。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000938.html">05:23 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=938" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000937"></a>
+<h3 class="title">網路電台</h3>
+
+<p>網路電台當然不是新玩意，打從我迷上網路的時候就很流行了。印象所及，第一次玩網路電台應該是在 1999 年底，剛進去成功大學唸書的時候，遇到很有活力的 champ 學長，他自己架設了一個可以點播音樂的網路電台，我也有裝起來玩，不過現在已經想不起來當時用什麼軟體架設的 (應該在 Win32 平台上)。</p>
+
+<p>去年參加 [<a href="http://www.slat.org/icos/icos04/">ICOS 2004</a>] 時，聽到台上 [<a href="http://pushpush.org/">推推聯播網</a>] 的介紹，結合技術與個人創作，實在是很有意思的呈現，只能說相見恨晚。不過呢，礙於我的生活習慣比較特別，通常我會聽音樂的時候，只是因為 coding 敲鍵盤太吵，聽音樂可以蓋掉那些自己製造的按鍵聲，偏偏我去很多公司工作時，配到的都是爛鍵盤 (但是價格不爛)，價格可能算是中上，但是我只要求安靜，NT$250 的鍵盤就夠用了，太高級的反而用不慣，總之，用不慣、coding 時會妨礙「情趣」的鍵盤，都會被我貶抑為「爛鍵盤」。</p>
+
+<p>扯了這麼多，其實就是說我對網路電台或音樂沒什麼概念，充其量只是囫圇吞棗的收聽，而，前天跟一位朋友聊天時，萌生網路電台的想法，所以就來玩看看，據說效果還不差，不過我這個「電台」只走 Peer-to-Peer，沒有 broadcasting，然後什麼流行音樂都沒有，更沒有精彩的專題報導，那有什麼呢？只是我誠摯的札記 :-)</p>
+
+<p>其實還挺有意思的，也可以訓練自己的組織與表達能力，我也好久沒有動口描述若干個議題了。</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000937.html">04:34 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=937" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000936"></a>
+<h3 class="title">新酷音進度報告</h3>
+
+<p>身為 Release Manager，我應該為 [<a href="http://chewing.csie.net/">新酷音</a>] 最近的發展進度作個報告，相當汗顏的是，整個寒假我一點靈感都沒有，或許是我每天都在搞 JIT compiler 吧 :(</p>
+
+<p>不過，其他開發者可是相當認真的做事呢，SCIM-chewing 與 libchewing 的 maintainer -- <a href="http://csie.isa-geek.org/~kanru/blog/">Kanru Chen (koster)</a> 在 wiki page [<a href="http://koster.isa-geek.org/~kanru/kwiki/index.cgi?ChewingPlans">ChewingPlans</a>] 提到很多改進的方向，而這個寒假終於可以動手作了。現在 subversion repository 裡頭的 SCIM-chewing 已經有可運作的 SetupUI，可以調整各項組態設定，比方說鍵盤排列、手動加詞的方向，以及中英切換鍵等等，效果比 JDS (Java Desktop System) 的新酷音來得好，後者可參考之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/000895.html">新酷音整合到 JDS (Java Desktop System)</a>]。</p>
+
+<p>至於使用者介面上，SCIM-chewing 也作了改進，主要是針對詞庫已有的詞彙能在下方顯示底線，而 Kanru 也著手用 GTK+ 開發管理詞庫的工具程式，可參考 [<a href="http://svn.csie.net/listing.php?repname=chewing&path=%2Fchewing-utils%2F&rev=0&sc=0">chewing-utils</a>]。至於 libchewing，MacOS X 的支援也在 <a href="http://www.gugod.org/">gugod</a> 的協助下有比較簡單的建構過程，據 gugod 在 #osxchat 上的說法，libtool 在 MacOS X 下也運作正常，當然啦，這一切都會整合到 OpenVanilla 上。</p>
+
+<p>libchewing、SCIM-chewing，以及 IIIMF-chewing 這三者已經過一段時間沒有發佈新版本，我想，SCIM-chewing 已經有很大的改變，所以下個版本會從現在的 0.1.1 直接跳到 0.2.0，而 libchewing 則會在修正詞庫更換的議題 (與 hashtable 大小有關) 後，發佈 0.2.6  新版本。</p>
+
+<p>那麼我維護的 IIIMF-chewing 呢？老實說，IIIMF Language Engine 設計實在很麻煩，在 Debian 上運作也不是很順利，而 Sun Microsystems 的工程師已經在 IIIMF 的基礎上建立一系列完整的 LE 架構，是否直接去依循呢？目前沒有定論，不過等手頭的計畫弄一段落，我就會試著去修改 IIIMF-chewing 與 xaux (with GTK+ helper)。</p>
+
+<p>對了，還要歡迎新的 svn committer -- keel，keel 現在準備考研究所，對自然語言與機器學習有高度興趣，想必對新酷音的發展有相當幫助，現在就祝福他金榜題名了。這裡也相當歡迎有興趣的朋友加入，無論是程式設計、Bug-report，或者是美工等等，新酷音都相當需要各位協助，所以呢，想加入就快吧，請<a href="http://jserv.sayya.org/">寫信給我</a>，謝謝！</p>
+
+<p>Just Do It!</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000936.html">03:23 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=936" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000935"></a>
+<h3 class="title">GNOME 開發者分佈</h3>
+
+<p>剛剛留意到 [<a href="http://live.gnome.org/GnomeWorldWide">GnomeWorldWide</a>] 的整理，這是一個描述全球 GNOME Developers 的分佈圖，也提及現有的 Developer 名單。</p>
+
+<p>不過，有眼不識泰山，剛剛才發現原來兩岸三地間有個 Official GNOME Developer，其資訊如下：<br />
+<ul>"bb" # William Brack, Tai Tung, Hong Kong</ul></p>
+
+<p>希望不久的將來，台灣有朋友可以加入這個行列中。</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000935.html">02:43 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=935" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000934"></a>
+<h3 class="title">Web Browser 速度大車拼</h3>
+
+剛在 Slashdot 上讀到 [<a href="http://slashdot.org/article.pl?sid=05/02/11/2016227&from=rss">Browser Speed Comparisons</a>]，光是標題就很吸引我了，所以我立刻連上 [<a href="http://www.howtocreate.co.uk/browserSpeed.html">Browser speed comparisons</a>]，裡頭有很多深入的比較項目。
+
+這份比較主要有幾個項目： 
+<ul>
+<li>Cold start</li>
+<li>Warm start</li>
+<li>Rendering CSS</li>
+<li>Rendering table</li>
+<li>Script speed</li>
+<li>Multiple images</li>
+<li>History</li>
+</ul>
+
+當然，主要的重點還是放在 [Linux browsers] 項目上，不過頗有意思的是，竟然還有 [Supplementary results]，用幾個非主流的 Web Browser，如：Amaya、Dillo、HotJava、Links，以及 Lynx 逐一作比較。
+
+對了，我也該公布最近作的 [<a href="http://blog.linux.org.tw/~jserv/archives/000793.html">kBrowser</a>] 在這項評比的數據，儘管有些項目不是很理想，但是前面幾項表現不俗 :-)
+
+kBrowser 同樣是羅列於 [<a href="http://blog.linux.org.tw/~jserv/archives/000912.html">最近的研究方向</a>] 裡頭。
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000934.html">02:27 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=934" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000933"></a>
+<h3 class="title">Skype 尋奇</h3>
+
+<p>Skype 真是很神奇的軟體，特別建構在這樣的技術上，成為網路電話的革命，而前幾天開始，每日都會使用 Skype 與朋友交談，開始去留意 Skype 相關的技術背景，也包含如何穿透 NAT 的奧秘，這可以參考 [<a href="http://arxiv.org/pdf/cs.NI/0412017">An Analysis of the Skype Peer-to-Peer Internet Telephony Protocol</a>]，在這篇逆向工程的 paper 中，引述其中的一個重點：<br />
+<ul>2.6 NAT and Firewall<br />
+We conjecture that SC uses a variation of the STUN [1] and<br />
+TURN [18] protocols to determine the type of NAT and firewall it<br />
+is behind. We also conjecture that SC refreshes this information<br />
+periodically. This information is also stored in the Windows<br />
+registry.</ul></p>
+
+<p>SC 指的是 Skype Client，這也讓我想到，兩個月前，Jouston 弄 [<a href="http://rt.openfoundry.org/Foundry/Project/Wiki/207/">minidoochun</a>] 時，因為某個「寶」公司內部網路配置的問題，routing table 出錯了，結果 Web Browser 無法正確運作，但是可愛的 Skype 就是硬生生的活繃亂跳呢 :-)</p>
+
+<p>這篇 paper 提到的分析方式也值得一看。</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000933.html">02:08 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=933" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 12, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000932"></a>
+<h3 class="title">GCJ 首度實現 Free AWT Native Interface Implementation</h3>
+
+偉大的 GCJ Hacker -- Thomas Fitzsimmons 在 GCC mailing-list 提到他的進度： [<a href="http://gcc.gnu.org/ml/java-patches/2005-q1/msg00334.html">AWT Native Interface implementation</a>]，完全透過 cleanroom 的手法來實現，不參考 Sun 的 header 實現的 AWT Native Interface，算是 Free Java 界的大突破，引述原文：<ul class="code" style="margin: 6px;">
+I wrote this from scratch without referring to Sun's headers so there will probably be some incompatibilities.  We can resolve these as we discover them. Currently I can run the example from the AWT Native Interface specification:<ul>
+http://java.sun.com/j2se/1.3/docs/guide/awt/AWT_Native_Interface.html
+</ul>
+I'll be testing other packages in the weeks to come, like Eclipse, OpenOffice.org and the JOGL bindings.  Since so many projects require libjawt.so to build, I'd like to see this applied to mainline as well, if possible.</ul>
+咱們欣賞一下這個進展吧：
+<img src="http://people.redhat.com/fitzsim/gcj-libjawt.so-2005-02-11.png" />
+看來我的 <a href="http://www.kaffe.org/pipermail/kaffe/2004-April/045904.html">KMM</a> 計畫很快就會整合這個成果，最終回 backport 回 Kaffe Official 去。 <br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000932.html">10:13 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=932" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000931"></a>
+<h3 class="title">香蕉共和國與軟體專利</h3>
+
+<p>乍看「香蕉共和國與軟體專利」這個標題似乎八竿子打不著，先看看下面這個：<br />
+<center><a href="http://demo.ffii.org/"><img src="http://demo.ffii.org/demo0502/banners/banana486x60.png" /></a></center></p>
+
+<p>恰好呼應之前我在 blog 上提到的 [<a href="http://blog.linux.org.tw/~jserv/archives/000913.html">軟體專利的毒害</a>]，看了 banner 大概可以知道本篇 blog 的主題應該在於 "No Software Patents"，是的。</p>
+
+<p>詳細資訊請參見： [<a href="http://demo.ffii.org/demo0502/">demo.ffii.org::Home</a>]，這也是最近歐洲軟體專利法案的一項回應，建議可以追蹤一下來龍去脈。</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000931.html">04:07 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=931" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000930"></a>
+<h3 class="title">D-Bus 邁向 1.0 之路</h3>
+
+當軟體邁向 1.0 版時，特別是針對 Free/Open-Source 的軟體項目來說，絕對是相當重要的里程碑，對 <a href="http://www.freedesktop.org/Software/dbus">D-Bus</a> 來說，這些日子是邁向這個重要紀元的關鍵時間，參考 John Palmieri 的 blog [<a href="http://www.martianrock.com/?p=30">D-BUS: On the road to 1.0</a>]。<br />
+<br />
+節錄裡頭的重點：<ul class="code" style="margin: 6px;">
+I finsihed the mother of all D-BUS apps today by porting HAL’s marshaling code to the new D-BUS 0.30 codebase, fixing some D-BUS code in the process. The new recursive type system is really nice and for the most part intuitve. I was able to fix some hacks that HAL used to transfer hashes of string arrays with the new system. Next step is to port all the apps that use HAL to the new HAL API.</ul>
+看來 <a href="http://www.freedesktop.org/Software/hal">HAL</a> 與 D-Bus 將合力把 Linux Desktop 帶往全新的感受。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000930.html">01:27 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=930" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 11, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000928"></a>
+<h3 class="title">「創富」讀後</h3>
+
+剛剛在 Planet Debian@HK 看到來醫前輩發表的 [<a href="http://blog.xychen.org/archives/2005/02/11/make-money/">創富</a>] 一文，真讓人有股醍醐慣頂的感受，不僅文寫得好，連一旁的附圖也是引用得恰到好處，所以特別在海峽的另一端呼應著前輩的 blog (下圖源自於來醫前輩的 blog)<br />
+<center><img src="http://blog.xychen.org/images/boybuildingsandcastle.gif" /></center><br />
+「官商勾結」不是什麼新鮮的名詞，打從幾千年前就有了，或許今昔的差距只在於名目的不一致，而來醫也「按圖索驥」的作了一個寓言：<ul class="code" style="margin: 6px;">
+「創富」就等於在一個小小的沙地上不斷將池上的沙堆在一起成為高高的沙塔。沙只有那麼多，沙池上的大部分地方只會越來越少沙，而坐上高塔的人只有極少數。最有趣的是，誰都知道沙塔最終會倒，但沙塔上的人只會永遠向上堆，甚至把地基中的沙都挖出來。一個結果只有全輸的遊戲，偏偏這麼多人熱中去玩或者被迫去玩，多有趣的世界。
+</ul>
+這令我想到馬克思在《德意志意識型態》提及的經典論點：<ul class="code" style="margin: 6px;">
+語言和意識具有同樣長久的歷史；語言是實踐的，既為別人存在並僅僅因此也為我自己存在的，現實的意識。語言也和意識一樣，只是因為需要，由於和他人的交往的迫切需求才產生。
+</ul>
+以馬克思的觀點，意識和社會實踐最明顯的交點，便是語言本身。<br />
+<br />
+當我們可以自由的，不求報償的，不為任何物質需求而進行生產時，是我們最具人性，和其他動物最不相似的時候。對馬克思而言，自由是一種超出物質所需的創造性豐收，並且超越任何尺度，而變為自己的尺度。<br />
+<br />
+對社會發生的所有事物而言，一定的物質條件是最先被要求的。因為每個強加在自然之操作的意識 (馬克思將此視為我們人性的表徵)，自身具諷刺意味的便是一種受制於物質狀況的存在物。但，即使語言是因為需求而來，作為集體勞動的必然面，也不會遠久受制於此一必然性，文學現象正是一個明證。<br />
+<br />
+語言不僅牽涉到「意識」，更牽涉到哲學這種系統性的反思，而更顯而易見為專家，學者和一大群聯合機構所掌控，而這些都是建立於他人的勞動利得之上，這也就是馬克思所謂精神勞動與體力勞動之別的一個面向。<br />
+<br />
+Thomas Moore 撰寫、1516 年出版的《烏托邦》，造出「烏托邦」這個字，「烏」既然是「好」的意思，也是「無」的意思，所以，「烏托邦」一字雙關，就是不存在的好地方，而，Utopia 譯成「烏托邦」非常巧妙，具備信雅達三個要素。而，Utopia 的反面就是「反烏托邦」(Dystopia)，正是共產黨宣言 (1848)、巴黎公社 (1871)、納粹，乃至大衛教派，以及無數科幻小說所描述的世界。有意思的是，烏托邦幾乎都是虛構的，但，反烏托邦卻往往成為事實。<br />
+<br />
+烏托邦是西方世界對理想社會找尋的象徵，在追尋的過程或旅途裡，無論個人或社會都會經歷一種絕大變化，Ovid 所謂的蛻變 (metamorphosis)，猶如蠶蛹之變化為蝴蝶。變化的過程必然是痛苦的，旅途必然是艱辛的，但只有經歷過大痛苦才能達到更高的境界。<br />
+<br />
+人性的表徵又是如何在人類社會獲得實踐與體驗呢？馬克斯先後出版了《政治經濟學批判》和《資本論》兩部不朽鉅著，用以點題的闡述就是商品與貨幣，並由此創立了貨幣理論。這裡不想多談理論細節，不過，這裡試著用意識和社會實踐最明顯的交點 -- 語言，對這一切充滿矛盾與貪婪的蛻變過程，引述來醫前輩的話語作結：<ul class="code" style="margin: 6px;">
+「一個連基本社會知覺都沒有的商人其實和毒瘤有何分別呢？哈，或者他以為當一個身體死了還可以轉寄到另一個身體。然而他沒真的從來沒有意識到人類社會早就在刀鋒邊緣？或者應該說人類在上個世紀已經把自己逃離滅絕的最後一個機會都放棄了。」</ul>
+唉，這是我們社會運作的模式，對吧？<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000928.html">08:31 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=928" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000927"></a>
+<h3 class="title">想玩黑客松</h3>
+
+之前看到 #osxchat 的新年活動 [<a href="http://osxchat.blogspot.com/2005/01/blog-post_05.html"> 新年黑客松</a>]，相當有趣，引述 whiteg 在該新聞的部分內文：<ul class="code" style="margin: 6px;">
+黑客松 (Hackthorn) 是個自創的複合字，原文是hack跟marathorn，表示「馬拉松式的黑客活動」。這是我們在#osxchat討論的一個嘗試，想說大家花比較長的時間實際聚在一起，對目前在進行的一些計畫，是否能夠有比較大的進展。當然比較知名的就是OpenVanilla，另外可能的是svk，大家也可以就2005年想辦的活動或是想做的事互相討論。如果甚麼事都不想做的，就當作新年渡假也不錯。</ul>
+事實上，在上個月我的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/000850.html">熱血三人組</a>] 有討論到這個主題，不過目前還處於渾沌不明的狀態，而我本身沒有參與過類似的活動，只能從現有的資訊去猜測。<br />
+<br />
+剛剛看到 Sun Microsystems 員工的 blog [<a href="http://blogs.sun.com/roller/page/tduffy/20050210#late_night_hacking_at_openib">A Penguin in Purple Clothing</a>]，裡面有幾張很棒的照片，一群人聚在一起，討論如何 hacking，似乎是很棒的經驗 :-)<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000927.html">04:58 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=927" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000926"></a>
+<h3 class="title">Solaris 10 的 X Window System</h3>
+
+<center><img src="http://www.sun.com/software/solaris/images/header_solaris10.jpg" /></center><br />
+Sun Solaris 一直是許多先進技術的醞釀溫床，前天閱讀 Sun X Window System Group 的前輩 Alan Coopersmith 在其 blog 寫到 [<a href="http://blogs.sun.com/roller/page/alanc/20050209#x_changes_in_solaris_10">X Changes in Solaris 10</a>]，為我們揭開 Solairs 10 中 X Window System 的奧秘。<br />
+<br />
+Solaris 10 X Window System 一項很重要的改變是，成功整合 Xorg X11R6.8，而我們也可以從此篇 blog 看出過去的歷史：<ul class="code" style="margin: 6px;">
+"Solaris versions before now shipped with the Xsun server (and long long ago, with Xnews, a hybrid X11/NeWS server). Xsun and Xorg both sprung from the same base code from the X Consortium long ago, but evolved in different ways. We had been working on porting new extensions and x86 device drivers from XFree86 to Xsun for several years, but it was becoming increasingly difficult to do so."
+</ul>
+附帶說明一下，這個 <a href="http://en.wikipedia.org/wiki/NeWS">NeWS</a> 是過去 Sun 與其他 UNIX 大廠在制訂 Graphics Standard 時，所提出的規格，平心而論，NeWS 的技術水準比當時的 MIT X Window System 來得高，但是卻封閉保守許多。<br />
+<br />
+另外，關於 Solaris 10 整合 Xorg 的過程，可參考之前兩篇 blog [<a href="http://blogs.sun.com/roller/page/alanc/20040917#xorg_in_solaris">Xorg in Solaris</a>] 與 [<a href="http://blogs.sun.com/roller/page/alanc/20040923#more_on_xorg_in_solaris">More on Xorg in Solaris</a>]。<br />
+<br />
+這個過程中，Sun 貢獻 <a href="http://www.freedesktop.org/Software/XEvIE">XEvIE</a>，並重新檢閱 Damge 與 XFixes 這兩個新 X Extensions。有意思的是支援 Solaris 10 Service Management Facility (SMF) 與Role-Based Access Control (RBAC)，後者的介紹可以參考這篇 blog [<a href="http://blogs.sun.com/roller/page/alanc/20050114#the_desktop_configuration_rights_profile">Desktop Configuration Rights Profile</a>]。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000926.html">04:28 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=926" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000925"></a>
+<h3 class="title">不甜蜜的維琪</h3>
+
+在 SayYa BBS 上，跟 duan 兄 (似乎是 ghost 兄先提起的) 聊到長相甜美的女子兩人組蜜雪維琪，或許這幾天接觸了些歷史典故，乍看「蜜雪維琪」字眼時，無法直接聯想起這兩位小女生，相反的，盤據於心的是法國維琪 (Vicky)，在這個地點，曾經是希特勒時代，扶植貝當將軍主持的維琪政府，這段歷史又可以扯到猶太人的無謂犧牲...<br>
+<br>
+1940 到 1945 年歐洲的局勢讓後世的史學家埋首許久，這段時期稱為維琪法國 (Vicky Franch)，不過剛剛查詢後才發現，正式名稱應該為 French State，法語稱之為 État françai 。<br>
+<center><img src="http://www.travel.com.tw/map_eur/french.gif" /></center><br>
+維琪是法國中部的都市，確切地點我沒有查到。<br>
+<br>
+1940 年五月前後，法國軍隊相繼敗北，遭敵方俘獲的法軍高達 15 萬之譜，首都巴黎更是受到輪番的轟炸，舉國上下惶惶然不知所措。值此關鍵時刻，英軍退縮海峽對岸按兵不動，美國則嚴守孤立政策，這下子，究竟是要在民心浮蕩的情況下，跟強勢的德軍搞得玉石俱焚呢？還是要保有物資建設呢？法國當局決定後者，伴隨著種種嚴苛的限制。<br>
+<br>
+貝當將軍所主持的維琪政府處境始終極為不利，一方面要對付政府內部的法國納粹分子，一方面要設法盡快把落于德國手中的數十萬法軍戰俘釋放回來。於是乎，在此背景，猶太人便成為「棄卒保車」、「交換人質」的犧牲品。<br>
+<br>
+當時除了戴高樂的「自由法國」流亡政府與微不足道的少數共產黨份子外，絕大多數法國人民的確是毫無保留地支持維琪政府。[按] 剛剛用 Google 找了一下，有篇關於戴高樂的紀念文可一讀： [<a href="http://www.chinahrd.net/hr_jlr/grzy/gr_jt.asp?pageID=1691&id=5448">偉大的平凡</a>]。<br>
+<br>
+依稀，過去觀看的紀錄片，如今血淋淋的映射於眼簾深處，怎能磨滅呢？我不是學者，更不是多愁善感的詩人，只是後世一位微不足道的工程師，透過熟悉的映像技術來放映這些看似不熟悉，卻也難以忘卻的悲劇。<br>
+<br>
+無意得罪蜜雪維琪的 fans，我只是想說，這個「維琪」一點都不甜蜜，滿滿的血腥！<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000925.html">04:00 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=925" onclick="OpenComments(this.href); return false">迴響 (4)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 10, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000924"></a>
+<h3 class="title">不朽的意志</h3>
+
+這幾個月陸續整理過去發表於 BBS 的文件與自己研究 Embedded Graphics Design 時撰寫的手札，集結為新書《揭開 X Window System 神秘面紗》，在去年的 <a href="http://ircconf.debian.org.tw/">IRC Conference 2004</a> 已經為與會的朋友預告了。雖然這是本技術底子很「硬」的書，但是我希望能融合我的執著與情感於其中，聽起來有些荒謬，但信不信由你，這些日子以來，我就是這樣進行這個撰書計畫的。<br />
+<br />
+引述 1949 年諾貝爾文學獎得主福克納 (William Faulkner) 的經典說法：<ul class="code" style="margin: 6px;">
+「我相信人類不僅能夠忍耐痛苦，而且還可以克服致勝；他的不朽在於他在萬物中那永不懈怠的聲音，而在於他有靈魂，有慈悲，犧牲，以及堅忍的精神，而作家的責任就是寫出這些事情來。」
+</ul>
+不僅在純文學的作品裡頭可以感受這份靈性，事實上，任何領域的著作只要秉持 Faulkner 所云的「慈悲、犧牲，以及堅忍」的精神，勢必可以創造其不朽的價值。<br />
+<br />
+自勉之！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000924.html">09:11 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=924" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000923"></a>
+<h3 class="title">南庄神仙谷風美瀑布群</h3>
+
+<p>昨天陪家人一同觀賞電視，瞥見某頻道的瀑布探索，相當有意思，不去國外的奇山峻谷，而回頭在小小的台灣島上看看能否找到令人驚豔的美景。其中有一幕就是外景隊走訪苗栗縣的南庄，目的地就是南庄神仙谷風美瀑布群。剛剛 Google 片刻後，發現 [<a href="http://www.rbvillas.com.tw/red-828.htm">這裡</a>] 有篇觀光簡介：<br />
+<center><img src="http://www.rbvillas.com.tw/photos/828-33.jpg" /></center></p>
+
+<p>只見外景隊跋山涉水，驚險的用纜索攀住，吃力的溯流而上，為得是一窺神仙谷之美，讓我印象最深刻的是，當受限於地形因素，無法進入半月型的水濂洞，而只能在幾十尺外欣賞主瀑時，該領隊這麼說：<br />
+<ul>大自然要你保持距離，才能窺見大自然之美，這是自然的本意，而若是你一味強求，終將無法抵抗大自然的力量。</ul></p>
+
+<p>或許這不是非常寓意深遠的電視節目，但我深深為這幾字所打動心扉，竟也沾濡幾份文藝氣息，索性就在本 blog 作些創作吧，並獻給我美麗的故鄉 -- 苗栗。<br />
+<hr><br />
+<center><b>南庄潭</b></center></p>
+
+<p>溪裡還有童年的印記。</p>
+
+<p>曾經赤腳走過，縱身躍入那碧綠的寒潭，聽童稚的歡笑化身成一隻蝴蝶，飄飛於嶙峋的卵石之間；也曾伸手探尋過，在清澈的激流裡瞥見一群魚蝦、一叢水草，那一串串驚呼遂成為生命最初、最美的悸動。</p>
+
+<p>一陣山嵐、一場晨昏變化的光影，大自然的鍾靈毓秀，像餵養精神的食糧，一點一滴在我心中灌澆成形。我浸淫著、體受著，藏在心底磨成一顆圓潤的珍珠，並在往後不如意的日子裡，時時拿出來擦拭。那徐徐舒緩的清涼與熱力，正是撫平我情緒，讓我有勇氣奮力邁進的泉源阿。</p>
+
+<p>暴風雨驟然狂烈衝擊，宛若沙河流蕩的狂嘯；宛若星煞奔騰，竄向無限膨脹的一剎那；宛若我數年來，青春蒸熔而成的火脈，始終抑鬱於我茍延的肉體，在忍受未死去的痛楚前，卻因際遇而驟然噴發。</p>
+
+<p>光線覆蓋的死寂下，偷偷繕寫失落的鄉愁，而田園已逝，曾淒止的晨陽，宛如幼貓，輕盈的躍過昔日走過的徑道，有風鼓翼而逝，悄然穿越記憶的迴廊，揚起塵埃紛飛往事...</p>
+
+<p>依稀，童樨的目光如頃星，成一溪不回首的水漾，自我之流放，朝跌宕內心不止的跫音漫步，而，回憶卻縹緲如煙，子夜的盡頭，眸子背後黑亮世界悄然運轉，無人讀懂的心悸，湃然蟄伏於賦歸之洋，願同迷失的往事，與明日的朝露，蒸乾而無痕。</p>
+
+<p>是此，放鬆緊握雙拳中的怨懟，攤開雙手，心繫「胞衣跡」再次縱身躍入。</p>
+
+<p><p align=right><br />
+群 於苗栗老家<br />
+2005-02-10 傍晚<br />
+</p></p>
+
+<p>[群註] 「胞衣跡」為客家人稱呼故鄉的說法，詳情可參閱李喬在自由副刊發表的 [<a href="http://www.libertytimes.com.tw/2001/new/jun/28/life/article-2.htm">精神故鄉在哪裡？</a>] 一文。</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000923.html">05:28 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=923" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000922"></a>
+<h3 class="title">幾種主要語言實作的記憶體需求比較</h3>
+
+剛剛讀 GNOME & Mono 的發起者 Miguel de Icaza 在其 blog 寫到的 [<a href="http://primates.ximian.com/~miguel/archive/2005/Feb-09.html">Gnome memory use in various languages</a>]，對 pure C、Mono 1.0/1.4、Python、Perl，以及 Java (Sun's JDK and Kaffe) 在同樣運作 GTK+ 程式時的記憶體需求作了比較，詳情參閱 [<a href="http://www.advogato.org/person/lupus/diary.html?start=15">Memory footprint improvements in mono</a>]。<br />
+<br />
+更讓我感興趣的就是 [Ahead of Time Compilation] 了，Mono 1.1.x branch 對 AOT 作了很不錯的進展，Migual 提到其中的重點：<ul class="code" style="margin: 6px;">
+"Mono was running in Just-in-Time compiler mode. One of the things that we have been working on in Mono in the 1.1.x series is improving the produced code for precompiled code. Expect the numbers for our next release to be even closer to C."
+</ul>
+關於 Mono AOT 的詳細資訊，請參閱 mono/docs/aot-compiler.txt 。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000922.html">04:38 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=922" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000921"></a>
+<h3 class="title">Nano-X Window System 的消息</h3>
+
+今天接到 <a href="http://www.microwindows.org/">Nano-X Window System</a> (也就是 Microwindows) 的設計人暨 <a href="http://www.censoft.com/">Century Software</a> CEO -- Greg Haerr 的來信，對於我之前作的 [<a href="http://blog.linux.org.tw/~jserv/archives/000908.html">Kaffe 新的 AWT backend -- Nano-X</a>] 給予肯定，這是網路與 Free/Open-Source 令人著迷之處，可以很方便的與遙遠的創作切磋，有了前輩的鼓舞後，真讓我熱血不已，迫不及待要繼續來 cvs commit 新的 changes 了 :-)<br />
+<br />
+利用這個機會，我順便問及 Nano-X Window System 的 cvs repository 出了什麼問題？因為似乎很久無法使用了，Greg 回覆道：<ul class="code" style="margin: 6px;">
+"I have been having problems with CVS since I replaced my server with a new box.  The file microwindows-src-snapshot.tar.gz, although old, is very very close to the latest CVS.  Pull it off the web site.  You'll notice that there are some changes to the make system, which allow Microwindows to be built for different architectures without requiring multiple trees to be pulled."
+</ul>
+而，Nano-X Window System 的首頁也提及：<ul class="code" style="margin: 6px;">
+"The CVS source release will be packaged and released as v0.91 shortly.  Quite a few enhancements and patches have been received, which will be released as v0.92."</ul>
+所以，咱們耐心等待吧。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000921.html">03:46 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=921" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000920"></a>
+<h3 class="title">Gmail</h3>
+
+<p>去年某一天，在 <a href="http://blog.vgod.info/">vgod</a> 的個人板看到 Gmail Invitation 的訊息，就寫信跟 vgod 索取了一個，而昨天看到 rostin 的分享 [<a href="http://rostin.mjes.tpc.edu.tw/plog/index.php?op=ViewArticle&articleId=47&blogId=1">製作Gmail的小圖</a>]，就順手弄了以下的小圖：<br />
+<center><img src="http://jserv.sayya.org/jserv-gmail.png" /></center><br />
+並且也更新了 [<a href="http://jserv.sayya.org/">首頁</a>]，很多時候，Web mail 還是有其價值，比方用在防火牆環境下，而我慣用的 email client，如 Pine 與 mutt，處理編碼時似乎笨笨的，至少這個議題在 Web Browser 作得還不差。</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000920.html">03:23 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=920" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000919"></a>
+<h3 class="title">FreeBSD 徵求新 Logo</h3>
+
+FreeBSD 的 logo 一向是可愛的小惡魔：
+<img src="http://www.freebsd.org/gifs/freebsd_1.gif" />
+而剛剛看到 Slashdot 上的新聞 [<a href="http://bsd.slashdot.org/article.pl?sid=05/02/09/1955251&from=rss">FreeBSD Announces Contest To Replace Daemon Logo</a>]，得知 FreeBSD core team 正舉辦獎金 500 美元的 Logo 設計競賽，至於為何要舉辦這個比賽，官方的說法是：<ul class="code" style="margin: 6px;">
+"This daemon character seems cute from somebody's point of view, but somebody may think which does not suit for the professional products to indicate that are using the FreeBSD inside."</ul>
+真有意思，小惡魔太可愛了，怕不夠 Powerful :-)<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000919.html">05:14 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=919" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000918"></a>
+<h3 class="title">群居終日</h3>
+
+大年初一，外頭瀰漫著農曆新年的歡愉氣氛，而我內心卻被種種情愫所擾。<br />
+<br />
+或許慣於追逐技術的我，對於文學早已如脫韁野馬般，縱使恣意涉獵，然終將營養不均，恐怕如孔丘所描述的「群居終日，言不及義，好行小惠，難矣哉」，不禁質問著，此「群」不正是彼「群」嗎？這讓我回想起我在 2001-11-25 寫的日記提到：<ul class="code" style="margin: 6px;">
+「前夜，閒賦在家的我，試圖以沉沉睡眠釋放過去幾日來的壓力、痛楚，以及眾多不確定性，竟然做個有意思的夢：我置身於車水馬龍的街道，提著慣用的公事包，進入一家高科技產業公司。經過面試後，我以第十六名員工的編號正式跟著一群人打拼，幾年後，這家小公司迅速成長到原來多倍的規模，資金也悉數回收，但此之際，我與我的主管卻萌生創業夢，帶著麾下兩名工程師，共同組間工作室，研發某個被頗有前景但被裁撤的計畫。<br />
+<br />
+日以繼夜的投入，讓我嚴重吃不消，但，產品的雛型，一日一日的浮現，更是吸引大家投入研發。然，某日成果發表會，我無緣分享這份喜悅，我竟然於途中被一輛砂石車所輾死...<br />
+<ul>
+『阿？！』
+</ul>
+原來這只是夢，但，我的手似乎還留有些痛楚，大概餘悸尚存吧，不禁，想到《周禮春官》所記載的：<ul>
+『觀天地之會，辨陰陽之氣，以日月星辰，占六夢之吉凶。一曰正夢，二曰噩夢，三曰思夢，四曰寤夢，五曰喜夢，六曰懼夢。』
+</ul>
+不具有占卜命運能力的我，此時也不免猜測，試著理解夢的暗示，不過，還是單純的當個夢境就好。」
+</ul>
+幾年後，這個夢境似乎只是換個面貌罷了。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000918.html">01:47 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=918" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000917"></a>
+<h3 class="title">從 XLIFF 看翻譯工具與辦公室應用的整合</h3>
+
+<p>剛剛閱讀 Tim Foster 的 blog [<a href="http://blogs.sun.com/roller/page/timf/20050208#openoffice_org_sxw_to_xliff">OpenOffice.org .sxw to XLIFF</a>]，讓我頗吃一驚，原來翻譯工具可與辦公室應用軟體作如此的整合。</p>
+
+<p>在 FreeDesktop.org 上有個 [<a href="http://xliff-tools.freedesktop.org/wiki/">XLIFF Tools</a>] 的子計畫，主要是強化 [<a href="http://www.oasis-open.org/committees/tc_home.php?wg_abbrev=xliff">OASIS XML Localisation Interchange File Format (XLIFF)</a>] 的支援，而 Tim Foster 稍早用 Java 開發了一個 <a href="http://blog.sun.com/roller/page/timf/20050204">XLIFF Editor</a>，而現在 OpenOffice 能夠初步的整合這個設計，的確非常優秀。</p>
+
+<p>很不錯的出發點。</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000917.html">12:14 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=917" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 09, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000916"></a>
+<h3 class="title">LinuxTW -- 台灣的 Linux 入口站</h3>
+
+<p>Gentoo Developers 之一的 Benny 公告這則新聞： [<a href="http://free.tnc.edu.tw/modules/news/article.php?storyid=1704">LinuxTW -- 台灣的 Linux 入口站</a>]，引述新聞稿部分內文：<br />
+「有鑑於台灣 Linux 社群資源太過分散. 所以 LinuxTW 決定在此時為台灣 Linux 社群注入一股新的動力，所以 LinuxTW 在今天宣布 Linux Taiwan Portal 成立。 這個 Linux Taiwan Portal 網站不會只是一個 Linux 相關討論區的延伸，而是一個可以讓大家將台灣 Linux 社群的活力，在此發表與展現的一個舞台。」</p>
+
+<p>聽起來相當有意思，所以我也在 <a href="http://www.linuxtw.org/">LinuxTW</a> (附帶一提，這個 URL 跟我平常會去逛的網站 LinuxTV 實在是太像了，害我常打錯) 弄個 [<a href="http://www.linuxtw.org/modules/sections/index.php?op=listarticles&secid=1">小貓 Linux</a>] 專欄，如果有想到什麼好題材的話，就往裡頭丟 :-)</p>
+
+<p>無論如何，看到台灣 Linux 社群有這麼多活動與更多熱心朋友加入，實在是令人高興的事情。</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000916.html">08:34 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=916" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000915"></a>
+<h3 class="title">Xgl -- New X server on OpenGL/Glitz 現況</h3>
+
+<p>去年有參加 Debian@Taiwan 舉辦的 [<a href="http://ircconf.debian.org.tw/">IRC Conference</a>] 的朋友，應該會對於我在 [FreeDesktop.org 與 X.org 嶄新發展概況] 提到的 X over GL 的發展感到高度的興趣。在我之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/000809.html">Xgl 研究</a>] 中有提到我最近的涉獵與研究途徑，那麼，近況又是如何？</p>
+
+<p>上一篇 blog [<a href="http://blog.linux.org.tw/~jserv/archives/000914.html">X Developer's Meeting</a>] 提到本週末會舉辦如此的盛會，也會進行 X Window System Rearchitecture Proposal 的審定與討論，而所有的更新部分都置放於 FreeDesktop Xserver cvs repository 的 <a href="http://cvs.freedesktop.org/xserver/xserver/hw/xgl/">xgl</a> 中，"X server on hardware-accelerated GL " 目前還需要努力之處在於 Xglx，然而這涉及許多層面。</p>
+
+<p>我們可以發現 Window content 是直接 GL textures 的形式去 rendering，這是直接對應到 video memory 中，而對於半透明視窗的移動與 region operations 來說，3D Hardware 可勝任此 Compositing 的工作量，為此不再需要耗費額外的 overhead。</p>
+
+<p>實作的規劃與負責人是目前任職於 Novell 的 David Reveman，日前他也展示以下快照：<br />
+<center><a href="http://nat.org/2005/february/xgl-shot.png"><img src="http://nat.org/2005/february/xgl-thumb.png" /></a></center></p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000915.html">05:35 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=915" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000914"></a>
+<h3 class="title">X Developer's Meeting</h3>
+
+<p>二月份的活動真不少，不僅中國人在慶祝農曆新年，老外也很多活動呢 :-)</p>
+
+<p>除了 FOSDEM 2005 外，本月最迷人的活動大概就是 [<a href="http://wiki.fontconfig.org/wiki/Software_2fXDevConf">X Developer's Meeting</a>]，此次前來的前輩都是相當著名的開發者，也包含 X Window System 的共同設計者 Jim Gettys，議程很精彩：<br />
+--- Saturday, February 12<br />
+* DND Specification Issues - Owen Taylor and George Staikos<br />
+* Freedesktop Forum: What Problems Do We Need To Solve - Havoc Penningon, George Staikos, Jim Gettys<br />
+* xrestop, xephyr, and X on handhelds - Mathew Allum<br />
+* Testing Strategies - Stuart Anderson, Free Standards Group and X.org<br />
+--- Sunday, February 13<br />
+* X Proxy and Multicast Demo - David Flynn, Realm Systems<br />
+* A Unified View of Improving X Desktop Rendering - The Owen Taylor, Søren Sandmann, Kristian Høgsberg and Diana Fong show<br />
+* Cairo Status - Carl Worth, Red Hat<br />
+* X Input Redirection - Deron Johnson, Keith Packard<br />
+* A New Input System - Kristian Hogsberg, Jim Gettys<br />
+* Polling And Scheduling in the X Main Loop - Kristian Høgsberg, Red Hat<br />
+* X and Media Support - Leon Shiman<br />
+--- Monday, February 14<br />
+* 3D Graphics Pipelines - Nick Triantos, NVidia<br />
+* X on GL - David Reveman, Novell<br />
+* Mesa Solo - Jon Smirl<br />
+* Merging fbdev and DRM - Jon Smirl<br />
+* Open Source Legal Issues, Patents and Copyrights - Scott Peterson and Greg Jones<br />
+* X.org Update - Audience</p>
+
+<p>如果不克前來，也可參考 [Attend via IRC] 與 [Attend via Audio/Video feeds]。</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000914.html">05:08 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=914" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000913"></a>
+<h3 class="title">軟體專利的毒害</h3>
+
+在日本境內，最受歡迎的文書處理工具過去一直是「一太郎」(學過日文課程的朋友或許會接觸過)，而非 Microsoft Word，在 Microsoft 強勢的攻擊下，「一太郎」還是保有相當程度的市場佔有率。剛剛查詢 Google 的資料，根據 [<a href="http://www.tca.org.tw/ippc/image/week/report96.htm">軟體市場動向、開拓市場的策略－2001上半年日本市場動向〔上〕 </a>] 所及：<ul class="code" style="margin: 6px;">
+「文書處理軟體 － 微軟的『Word』是此類代表性的文書處理軟體。Just System的『一太郎』則排名第二。兩者皆有壓倒性的市佔率。」
+</ul>所以看來「一太郎」當時還有不俗的表現。<br />
+<br />
+我昨天閱讀 ZDNet 時，赫然瞥見這則新聞 [<a href="http://news.zdnet.co.uk/business/0,39020645,39187082,00.htm">Patent for help function sparks legal fight</a>]，看來 Microsoft 在日本國內文書處理軟體最 大的競爭者「一太郎」面臨嚴重的軟體專利控訴，而且情勢似乎相當不利。<br />
+<br />
+為此，歐洲 [<a href="http://www.nosoftwarepatents.com/">Anti Software Patent</a>] 組織的活動經理 Florian Mueller 作此回應：<ul class="code" style="margin: 6px;">
+"I'm devastated to read that the survival of Microsoft Word's major competitor in Japan is now in jeopardy. Let's hope that European politicians will learn this lesson and make sure we don't get the same problems here. With the directive that's proposed by the EU Council, that's exactly what would happen within a very few years."
+</ul>
+唉，又是一則濫用軟體專利保護的個案，這毒害實在恐怖。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000913.html">04:07 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=913" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 08, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000912"></a>
+<h3 class="title">最近的研究方向</h3>
+
+<p>最近這一個月都躲在台北內湖的住所，作自己規劃的研究，試著過著類似藝術家的 Freelance 生活。雖然不再有來自雇主的壓力，但是手上仍有許多進行中的計畫，昨天整理一下，大致有以下的研究方向：</p>
+
+<p>* Embedded System Graphics H/W and S/W Integration<br />
+* Java Just-In-Time Compiler Targeted in Resource-Limited Devices<br />
+* Customized and Standard-compatible Web Browser Design and Implementation<br />
+* Tree-SSA Optimization Infrastructure</p>
+
+<p>這些剛好對應到最近參與的幾個計畫： KittenBox、Kaffe、kBrowser，以及 GCC 4.0，我也準備好自己的實驗室，想不到好名稱，就叫 "jserv's Lab" 吧，這是一個四坪大的客廳，有沙發、睡帶、一台桌上型電腦、Compaq nc4000、無線網路，以及零星的電腦周邊。</p>
+
+<p>目前除了許多基礎研究的項目沒有太大的突破，讓人比較灰心外，其他都還算過得去，不過，這裡也要呼籲熱心的朋友，歡迎「投資」我的研究，無論是提供資金、硬體設備，還是捎信問候 (最好有明信片) 都好，謝謝 :-)</p>
+
+<p>我的聯絡資訊可以參考 [<a href="http://jserv.sayya.org/">首頁</a>]。</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000912.html">03:06 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=912" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 07, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000911"></a>
+<h3 class="title">GTK+ 2.6.2 釋出</h3>
+
+<p>這幾天重要的新聞之一就是 GTK+ 2.6.2 釋出，這個版本最大的特色就是成功整合 <a href="http://www.cairographics.org">Cairo</a> 這個向量繪圖引擎，這不僅可以提供高品質的顯示與印表輸出支援，更重要的是，Cairo 支援多種 backends，詳情可參考 GTK+ 的設計者 Owen Taylor 的訪談 [<a href="http://www.osnews.com/story.php?news_id=9609">GTK+ Goes Cairo; Owen Taylor on X/Cairo/GTK+ Integration</a>]。</p>
+
+<p>關於 GTK+ 2.6.2 其他的更動，可參考 [<a href="http://www.gnomefiles.org/app.php?soft_id=370"> Latest Version: 2.6.2</a>]。</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000911.html">06:05 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=911" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 06, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000909"></a>
+<h3 class="title">透過 VNC 達成 Citrix 提供的服務</h3>
+
+<p>「透過 VNC 達成 Citrix 提供的服務」這個標題聽起來有點怪，在說明之前，先提及 <a href="http://www.citrix.com/">Citrix</a> 的 MetaFrame 技術，這是非常傑出的設計，無縫的 (seamless) 整合許多 connection session，並且也針對企業的需求，提供兼具穩定性與彈性的組合... (後面消音，聽起來像是廣告台詞)。Citrix MetaFrame 有個很棒的設計，就是能夠把 Thin Client 與 Desktop 整合在一起，透過其 Citrix 制訂的通信協定，指定使用伺服器上某個應用程式，然後呈現在 Desktop 上，但是使用者不需要顧慮這箇中的實現方式，感覺就好像這些應用程式就跑在本機端。</p>
+
+<p>我過去在 <a href="http://www.channel.com.tw/">W-Channel Inc.</a> 服務時，曾經花了些時間開發一個實驗性的設計，我稱為 XD (neXt Desktop)，這是一個 Thin Client 與 Desktop 整合的新途徑，當時修改 <a href="http://zero-install.sourceforge.net/">Zero-Install</a> 與 Citrix client，但是還沒整合 VNC 進去，這個計畫因為某種原因中斷。</p>
+
+<p>過了幾個月，在 SourceForge.net 看到 [<a href="http://metavnc.sourceforge.net/">MetaVNC</a>] 的計畫，真讓我耳目一新，把 VNC Client 與 Desktop 作了某種程度的整合，可以同時取用不同 VNC server 上的應用程式資源 (透過加強的 TightVNC extension)，做到協同運算，而且已經有足夠的穩定性，剛剛也稍微 hack 一下 Unix 版本，看來其 client 還有很多發揮的空間，我覺得比較可行的方式為改進其 built-in window manager 的設計。</p>
+
+<p>看來新年有許多可以著墨之處 :-)</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000909.html">07:59 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=909" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000908"></a>
+<h3 class="title">Kaffe 新的 AWT backend -- Nano-X</h3>
+
+經過一段時間的 hacking，現在 Kaffe 有新的 AWT backend，以著名的 <a href="http://www.microwindows.org/">Nano-X Window System</a>(Jan 30, 2005 為避免 Microsoft 的官司，從 MicroWindows 命名為 Nano-X Window System) 打造新的 AWT，所以現在 Kaffe official 支援 GTK+、Xlib、Qt，以及 Nano-X 等 AWT backends，詳情可以參考我在 kaffe mailing-list 上的新聞： [<a href="http://www.kaffe.org/pipermail/kaffe/2005-February/101429.html">ANN: New AWT backend based on Nano-X</a>]，眼見為憑，看張快照吧：<br>
+<img src="http://jserv.sayya.org/kaffe/screenshots/kaffe-nano-x.png" /><br>
+對 Embedded System 的應用來說，Kaffe 這個新的 AWT backend 或許會有幫助，特別是需要使用輕量級的 Java/AWT 的場合來說。<br>
+<br>
+Just Kaffe it!<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000908.html">07:04 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=908" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 05, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000907"></a>
+<h3 class="title">Hurd-L4 新進展</h3>
+
+<p>在 Slashdot 看到的新聞： [<a href="http://slashdot.org/article.pl?sid=05/02/04/028220&from=rss">First Program Executed on L4 Port of GNU/HURD</a>]，自 1990 年開始的 Hurd microkernel 計畫，是以第一代的 microkernel，亦即 Mach 的架構為主，也已經可運作 GUI 與 Web Browser 一類比較複雜的應用。而現在開發人員將心思移轉到第二代的 microkernel，也就是 <a href="http://l4ka.org/">L4</a>，L4 系列有很多分支，但是一般說來，整個 microkernel 的 system call 大約十來個 (Mach 這樣的 microkernel 還是不免有近百個 system call)，而，這個 Hurd/L4 的移植過程終於有了成果。</p>
+
+<p>參考 [<a href="http://portal.wikinerds.org/gnu-hurd-l4-first-program">the first software on HURD-L4</a>]，可以找到相關的歷史背景與簡要的技術內容。</p>
+
+<p>GNU rules!<br />
+ps: 恰好是本 blog 的第一百篇，就貢獻給 GNU 吧。</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000907.html">02:42 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=907" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000906"></a>
+<h3 class="title">pngcrush -- PNG 最佳化工具</h3>
+
+<p>在摩托學園看到訪客兄分享的 [<a href="http://moto.debian.org.tw/viewtopic.php?p=33695">pngcrush 享受無失真高畫質圖檔格式</a>] ，非常有意思，原來 Debian 上已經有這麼多好用的工具。</p>
+
+<p>這一系列的工具程式可參考 [<a href="http://pmt.sourceforge.net/">PNG and MNG tools</a>]，而規格可參考 [<a href=""http://pmt.sourceforge.net/specs/index.html">The PNG, MNG, and JNG specifications</a>]。</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000906.html">02:30 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=906" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 04, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000903"></a>
+<h3 class="title">minisip -- SIP User Agent</h3>
+
+<a href="http://www.minisip.org/">minisip</a> 是個很傑出的 SIP User Agent 計畫，由瑞典的 KTH 研究單位開發，在 Linux 已經有很卓越的表現，看看美麗的快照：(click to enlarge)<br>
+<center><a href="http://www.minisip.org/images/minisip_ipaq_video_medium.jpg"><img src="http://www.minisip.org/images/minisip_ipaq_video_small.jpg"></a></center><br>
+有心研究 VoIP 與 SIP 的朋友，強力推薦閱讀 [<a href="http://www.minisip.org/publications.html">Publications</a>]，裡頭的發表文獻頗值得拜讀。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000903.html">03:47 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=903" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000902"></a>
+<h3 class="title">Taurus JavaVM</h3>
+
+<a href="http://www.geocities.com/SiliconValley/Lab/6125/javavm/specification.html">Taurus JavaVM</a> 是一個新興的 cleanroom JavaVM 實作計畫，主要的平台是 Handheld devices，目前的功能有：<ul>
+<li><a href="http://www.geocities.com/SiliconValley/Lab/6125/javavm/instructions.html">Full virtual instruction set support</a></li>
+<li>Support for exceptions</li>
+<li>Support for character based Input/Output</li>
+<li>Capable of running Java code as complex as 'javac', the Java Compiler</li>
+<li><a href="http://www.geocities.com/SiliconValley/Lab/6125/javavm/native.html">Support for core native methods, but not extension DLLs</a></li>
+</ul>
+授權方式為 GNU GPL，1.1.0 source tarball 不過才 280kb，很適合做為初學者研究 JavaVM 的起步。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000902.html">03:19 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=902" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000901"></a>
+<h3 class="title">Ubuntu 使用感</h3>
+
+<p>繼 [<a href="http://weblogs.mozillazine.org/djst/archives/007352.html">Gentoo Linux review</a>] 與 [<a href="http://weblogs.mozillazine.org/djst/archives/007427.html">test VidaLinux Desktop OS</a>] 之後，djst 相當熱情更新 [<a href="http://weblogs.mozillazine.org/djst/archives/007449.html">Hands on Ubuntu Linux</a>]。</p>
+
+<p>這篇 blog 的內容相當值得有心使用與推廣 Debian/Ubuntu 的朋友。</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000901.html">03:08 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=901" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000900"></a>
+<h3 class="title">W3C Amaya 新發展</h3>
+
+W3C <a href="http://w3.org/Amaya/">Amaya</a> 是個歷史悠久的計畫，試圖整合 Web Browser / Web Content Editor / Media Content Manager 的特性為一個整合性平台，在 Wiki 尚未風行前，WWW 的發明人 Tim Berners- Lee 就與小組成員使用 Amaya 來作內部資訊交換，詳情可參考 [<a href="http://w3.org/Amaya/Amaya.html">Amaya Overview</a>]。<br>
+<br>
+Amaya 9.0 以後徹底改寫，以下是嶄新的功能列表：<ul>
+<li>new User Interface</li>
+<li>HTML 4.01</li>
+<li>XHTML 1.0</li>
+<li>XHTML Basic</li>
+<li>XHTML 1.1</li>
+<li>HTTP 1.1</li>
+<li>MathML 2.0</li>
+<li>CSS 2</li>
+<li>SVG support (transformation, transparency, and SMIL animation on OpenGL platforms)</li>
+</ul>
+所以，一起來試試 :-)<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000900.html">03:01 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=900" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000899"></a>
+<h3 class="title">KDE 競賽資訊</h3>
+
+在 Linux Desktop 極富盛名的 KDE 計畫，時常會針對特定主題作競賽，並尋求 sponsor 提供支援，直接促進軟體發展與蓬勃的互動模式。KDE 最近設立 <a href="https://mail.kde.org/mailman/listinfo/kde-contests">KDE Contest mailing-list</a>，至於詳細內容可以參考 [<a href="http://theobromas.blogspot.com/2005/02/kde-contests.html">kde-contests</a>]。<br>
+<br>
+也希望能有更多的台灣朋友參與 :-)<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000899.html">02:51 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=899" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 03, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000896"></a>
+<h3 class="title">RHUG 之死</h3>
+
+一個專案計畫宣告死亡，不見得是壞事，特別在 Free/Open-Source 領域來說，能夠眾目睽睽的宣判死亡，很可能是有另外的好消息。<br>
+<br>
+以往 GCJ 還很不成熟的時候，有個 <a href="http://sources.redhat.com/rhug/">RHUG</a> 的計畫，負責將 GCJ 編譯 Java 程式所需要的 patch 與 tricky stuff 包裝好，降低使用上的困難度。那麼，現況如何呢？看看下圖：<br>
+<center><img src="http://sources.redhat.com/rhug/headstone.jpg" /></center><br>
+聽起來很友善的計畫，為何宣判死亡呢？<br>
+<br>
+答案很簡單：「因為 GCJ 成熟了，你不需要任何其他的 patch 或複雜的程序，直接編譯就是了！」多麼令人振奮的好消息。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000896.html">08:41 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=896" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000895"></a>
+<h3 class="title">新酷音整合到 JDS (Java Desktop System)</h3>
+
+<p>下午收到 Sun Microsystems 的員工 Ervin Yan (IIIMF committer of OpenI18N.org) 通知說，<a href="http://chewing.csie.net">新酷音</a> 已經初步整合到 JDS (Java Desktop System) 裡頭。JDS 的輸入法系統稱為 TCh_LE (繁體中文輸入法引擎)，以 IIIMF 為基礎， 內建新酷音輸入法，這是新酷音整合到國際專案的一項成功案例。</p>
+
+<p>剛剛也將快照收錄到 [<a href="http://chewing.csie.net/screenshots.html">新酷音的快照目錄</a>] 中，有興趣的朋友可以參考。</p>
+
+<p>酷！</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000895.html">08:36 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=895" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000894"></a>
+<h3 class="title">Embedded Linux 應用的一個範例</h3>
+
+<center><img src="http://linuxdevices.com/files/misc/manifold_labs_plugzilla-sm.jpg"></center><br>
+LinuxDevices.com 總是可以給我們很多驚奇，之前的報導 [<a href="http://linuxdevices.com/articles/AT5551778698.html">Device Profile: Manifold Labs Plugzilla audio processor</a>]，
+Manifold Labs 透過 2.4 Kernel + Realtime patch，搭配許多重量級的 Sound Providers，當然這其中也採用頗多 Free/Open Source 的成果，可在報導中提到的 link 找到。<br>
+<br>
+好，我們來看看硬體規格：<ul>
+<li>Intel 845 series motherboard</li>
+<li>internal PCI audio card. </li>
+<li>2.0GHz P4 Celeron processor</li>
+<li>256MB of RAM (expandable to 2GB).</li>
+</ul>
+比較有趣的是這一段：<ul class="code" style="margin: 6px;">
+The device boots from a 20GB hard drive, using a 2.6.0 initrd kernel that "decides what application image to boot," according to Plugzilla developer Don Elwell. "From there, we use the kexec() patches/utility to 'reboot' into the proper application kernel. This allows us to provide updated kernels/applications as a single image, and not have to doodle around with grub configuration files and/or master boot records.
+</ul>
+原來使用快速 reboot patch，有什麼好處呢？這允許系統更新時，能夠更安全，而不至於因為損毀 MBR 而造成無法開機的窘境，而後面的部分提到 Realtime 能力的整合，以及 ALSA 計畫對本裝置的重要性。<br>
+<br>
+其實，我們可以發現這個定價 3000 美金的 "Box"，事實上可以透過 Free/Open Source 的軟體技術以及適度的硬體搭配來做到不錯的效果，而價格甚至還有調整的空間，有興趣的朋友甚至可以依據這些提示，作一個應用來玩玩 :-)<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000894.html">04:16 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=894" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 02, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000893"></a>
+<h3 class="title">LinuxDevices.com 上關於 FOSDEM 2005 的介紹</h3>
+
+舉辦第五年的 [<a href="http://www.fosdem.org/">FOSDEM</a>] -- Free and Open Source software developer's European Meeting 在二月底於比利時布魯塞爾盛大舉行，而 LinuxDevices.com 當然也會有專文報導，這是預告 [<a href="http://www.linuxdevices.com/news/NS4010217129.html">Free European Linux event looks at tools, kernels, more</a>]，可以看到相當多令人振奮的議程，而，這只是一小部分而已，事實上有太多計畫都有自己的 Talk room，比方說 Free Java 陣營的議程可以參考我的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/000779.html">FOSDEM GNU Classpath developer room</a>]。<br>
+<br>
+Happy Hacking!<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000893.html">06:22 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=893" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000892"></a>
+<h3 class="title">FireFly BSD Inc.</h3>
+
+前天在 #bsdchat IRC Channel 看到 <a href="http://www.fireflybsd.com/">FireFly BSD Inc.</a> 的消息，基於對 <a href="http://www.dragonflybsd.org/">DragonFly BSD</a> Developers 的崇拜，所以我就立刻跑去看。從 [<a href="http://www.fireflybsd.com/aboutus.php">Who we are</a>] 可以發現，這其實就是 DragonFly BSD 原班人馬成立的技術諮詢公司，相信在商業與技術互動的情況下，DragonFly BSD core team 可以發展出「心目中的 FreeBSD」(這是他們 fork FreeBSD 的原因)。<br>
+<br>
+非常有幸的，去年參加 AsiaBSDConf，聆聽資深 FreeBSD committer 與 DragonFly BSD 靈魂人物 -- Jeffrey Hsu 精彩的演講，特別是 VM 的設計、TCP Transport 的改善，以及 Shared Memory 實現的新途徑，這些都非常精闢，驗證 Operating System Concepts 所學，非常受益，於是回去沒多久我就成為 DragonFly BSD Fan :-)<br>
+<br>
+喔，還跟 Jeffrey Hsu 拍了 [<a href="http://www.wretch.cc/album/show.php?i=ctChou&b=5&f=1087188083&p=2">合照</a>]，感謝前輩加持。Hsu 的演說特別之處，就是能夠用簡單卻清楚的方式來描述種種卓越的設計方式，而且很容易懂 (當然，Hsu 以前是台灣人)，最重要是非常和善，果然有大師風範。 <br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000892.html">05:29 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=892" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 01, 2005</h2>
+
+
+<div class="blogbody">
+<a name="000888"></a>
+<h3 class="title">美輪美奐的 Konqueror</h3>
+
+<p>KDE 3.4 近日會釋出，而在 KDE Developer Journals 的 [<a href="http://www.kdedevelopers.org/node/view/831">about:konqueror</a>] 提到 Konqueror 最新的進展，真是漂亮，引來欣賞：<br />
+<img src="http://muse.19inch.net/~jr/konqueror-about-wee.png" /><br />
+我很喜歡這個配色，看起來很舒服。</p>
+
+<p>KDE rules!</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000888.html">05:43 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=888" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000887"></a>
+<h3 class="title">要如何拒絕？</h3>
+
+<p>參與 Free/Open-Source 計畫時，我們 (特別是身份為 Maintainer 時) 總是會遇到某些 pending patch 不是很適合目前的發展模式，又難以拒絕，而看到 Linux Kernel Hackers 之一的 Robert Love 寫的 blog [<a href="http://tech9.net/rml/log/2005013101">Welcome</a>] 之後，我知道該怎麼作了。</p>
+
+<p>注意到圖下面的文字 :-)</p>
+
+<p>Happy Hacking!</p>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/000887.html">03:03 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=887" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+
+</body>
+</html>

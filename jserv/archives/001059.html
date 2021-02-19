@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: GNOME 2.10 介紹文章</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001058.html" title="軟體工程師的思維與工作型態" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001060.html" title="C++ sucks!" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001058.html">« 軟體工程師的思維與工作型態</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001060.html">C++ sucks! »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 15, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">GNOME 2.10 介紹文章</h3>
+
+日前，GNOME 2.10 已經釋出了，而在 GNOME Journal 有篇專文介紹 [<a href="http://www.gnomejournal.org/article/17/gnome-210-desktop-and-development-platform">GNOME 2.10 Desktop and Development Platform</a>]，很值得一看，相信對一些仍抱持 "Desktop Environment" 只是「表面工夫」的人士來說，應該可以大幅改變看法。<br />
+<br />
+Desktop Environment 事實上是許多技術的結合，特別是對於 KDE 與 GNOME 來說，更是撮合了許多文化的色彩，這裡點出本篇介紹文章的幾個重點：<ul>
+<li>強化的基礎，更符合 FreeDesktop 規格以及對於記憶體需求 (memory footprint) 做了大幅改善</li>
+<li>新的選單結構</li>
+<li>GNOME-System-Tools 工具的 "Shared Folder" 與無線網路支援</li>
+<li>GNOME Applets 的 CPU frequency scaling applet 與 Trash applet</li>
+<li>Metacity WM 的新特徵 (也有 eye-candy)</li>
+<li>強化的 GNOME-VFS</li>
+</ul>
+其中，GNOME base 的更動與 GNOME-VFS 是最吸引我的部份，這些在 GNOME 2.10 真的有很大的改進，或許使用者不會有立即的察覺，但是整個架構上的確非常精練，而我也開始研讀這些更動。再來是 System-Tools 與 Applets 也讓人耳目一新，Desktop Environment 是此可以說與系統的整合度已經相當高了，展露於外的是這些介面，而真正骨子裡頭的設計更讓人著迷。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March 15, 2005 11:09 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

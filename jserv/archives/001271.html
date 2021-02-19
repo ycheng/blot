@@ -1,0 +1,279 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Vectorization 的呈現</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001270.html" title="幾篇介紹 GPU 發展的中文文件" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001272.html" title="語言的感動" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001270.html">« 幾篇介紹 GPU 發展的中文文件</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001272.html">語言的感動 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">August 25, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Vectorization 的呈現</h3>
+
+最近的一項基礎研究 [<a href="http://blog.linux.org.tw/~jserv/archives/001262.html">PNG 處理最佳化</a>]，讓我對 vectorization optimizations 又感到高度興致了，之前 [<a href="http://blog.linux.org.tw/~jserv/archives/001270.html">幾篇介紹 GPU 發展的中文文件</a>] 所引用的資料也指出，現在計算機架構大幅採用 SIMD 的設計理念。那麼，在軟體的觀點來看，又是如何？這些艱澀的理論，其實用很簡單的小程式就可以看出來，所以我寫了一隻 Hello World 規模的測試程式：<ul><pre>
+jserv@venux:~/simd$ cat multi.c 
+#include 
+void multi(short *a, short c)
+{
+	int i;
+#pragma vector aligned
+	for (i = 0; i < 100; i++) {
+		a[i] *= c;
+	}
+}
+int main(int argc, char **argv)
+{
+	short a[100];
+	int c;
+	for (c = 0; c < 100; c++) {
+		a[c] = c;
+	}
+	multi(a, 5);
+}
+</pre></ul>
+這個程式當然不必解說，但有趣的地方在於 "#pragma vector aligned" 的 qualifier，提示 compiler 處理 loop 時，使用 aligned instructions 來達成 vectorization。在我的測試機器上有 GCC4 與 Intel C++ compiler 8.0，以下是 GCC 的版本資訊：<ul>
+$ gcc -v<br>
+Using built-in specs.
+Target: i486-linux-gnu
+Configured with: ../src/configure -v --enable-languages=c,c++,java,f95,objc,ada,treelang --prefix=/usr --with-gxx-include-dir=/usr/include/c++/4.0.2 --enable-shared --with-system-zlib --libexecdir=/usr/lib --enable-nls --without-included-gettext --enable-threads=posix --program-suffix=-4.0 --enable-__cxa_atexit --enable-libstdcxx-allocator=mt --enable-clocale=gnu --enable-libstdcxx-debug --enable-java-gc=boehm --enable-java-awt=gtk --enable-gtk-cairo --with-java-home=/usr/lib/jvm/java-1.4.2-gcj-4.0-1.4.2.0/jre --enable-mpfr --disable-werror --enable-checking=release i486-linux-gnu
+Thread model: posix
+gcc version 4.0.2 20050808 (prerelease) (Debian 4.0.1-4ubuntu5)
+</ul>
+
+為了一般性，我不用從 cvs repository 建構的 GCC mainline (未來的 GCC 4.1)，而是改用 Ubuntu/Debian 所用的版本。好，實地跑一次：<ul><pre>
+$ make -f makefile.multi
+gcc -o multi.gcc401 \
+        -march=pentium4 -msse2 -O5 \
+        -ftree-vectorize --ftree-vectorizer-verbose=5 \
+        multi.c
+
+multi.c:6: note: not vectorized: can't determine dependence between: 
+*D.2060_11 and *D.2060_11
+multi.c:3: note: vectorized 0 loops in function.
+multi.c:14: note: not vectorized: unsupported use in stmt.
+multi.c:6: note: not vectorized: possible dependence between data-refs
+*D.2125_16 and *D.2125_16
+multi.c:11: note: vectorized 0 loops in function.
+</pre></ul>
+
+看來在 GCC 4.0.1 中，autovectorization 還不夠能應付這樣的案例，那 Intel C++ compiler 8.0 呢？<ul><pre>
+$ make -f makefile.multi-icc 
+/opt/intel_cc_80/bin/icc -o multi.icc80 -march=pentium4 multi.c
+multi.c(6) : (col. 2) remark: LOOP WAS VECTORIZED.
+multi.c(14) : (col. 2) remark: LOOP WAS VECTORIZED.
+</pre></ul>
+
+看來 multi() function 已經被 vectorized，那這兩者的差異到底在哪呢？用 objdump 來看看實做的組合語言，首先是 GCC 產生的：<ul><pre>
+$ objdump -S multi.gcc401
+08048348 <multi>:
+ 8048348:	55                   	push   %ebp
+ 8048349:	89 e5                	mov    %esp,%ebp
+ 804834b:	53                   	push   %ebx
+ 804834c:	8b 5d 0c             	mov    0xc(%ebp),%ebx
+ 804834f:	b9 01 00 00 00       	mov    $0x1,%ecx
+ 8048354:	8b 55 08             	mov    0x8(%ebp),%edx
+ 8048357:	83 c2 02             	add    $0x2,%edx
+ 804835a:	0f b7 42 fe          	movzwl 0xfffffffe(%edx),%eax
+ 804835e:	0f af c3             	imul   %ebx,%eax
+ 8048361:	66 89 42 fe          	mov    %ax,0xfffffffe(%edx)
+ 8048365:	83 c1 01             	add    $0x1,%ecx
+ 8048368:	83 c2 02             	add    $0x2,%edx
+ 804836b:	83 f9 65             	cmp    $0x65,%ecx
+ 804836e:	75 ea                	jne    804835a <multi+0x12>
+ 8048370:	5b                   	pop    %ebx
+ 8048371:	5d                   	pop    %ebp
+ 8048372:	c3                   	ret   
+</pre></ul>
+看起來非常「樸實」-- WYSIWYG (What You See Is What You Get)，可以從剛剛的 C 語言程式碼想像出以上的片段，而 Intel C++ compiler 呢？來看看：<ul><pre>
+$ objdump -S multi.icc80 
+08048738 <multi>:
+ 8048738:	55                   	push   %ebp
+ 8048739:	8b ec                	mov    %esp,%ebp
+ 804873b:	83 e4 f0             	and    $0xfffffff0,%esp
+ 804873e:	53                   	push   %ebx
+ 804873f:	83 ec 0c             	sub    $0xc,%esp
+ 8048742:	8b 55 08             	mov    0x8(%ebp),%edx
+ 8048745:	8b da                	mov    %edx,%ebx
+ 8048747:	8d 8a c0 00 00 00    	lea    0xc0(%edx),%ecx
+ 804874d:	0f bf 45 0c          	movswl 0xc(%ebp),%eax
+ 8048751:	66 0f 6e c0          	movd   %eax,%xmm0
+ 8048755:	66 0f 61 c0          	punpcklwd %xmm0,%xmm0
+ 8048759:	66 0f 70 c0 00       	pshufd $0x0,%xmm0,%xmm0
+ 804875e:	66 0f 6f 0b          	movdqa (%ebx),%xmm1
+ 8048762:	66 0f d5 c8          	pmullw %xmm0,%xmm1
+ 8048766:	66 0f 6f 53 10       	movdqa 0x10(%ebx),%xmm2
+ 804876b:	66 0f 6f 5b 20       	movdqa 0x20(%ebx),%xmm3
+ 8048770:	66 0f 6f 63 30       	movdqa 0x30(%ebx),%xmm4
+ 8048775:	66 0f d5 d0          	pmullw %xmm0,%xmm2
+ 8048779:	66 0f 7f 0b          	movdqa %xmm1,(%ebx)
+ 804877d:	66 0f 7f 53 10       	movdqa %xmm2,0x10(%ebx)
+ 8048782:	66 0f d5 d8          	pmullw %xmm0,%xmm3
+ 8048786:	66 0f d5 e0          	pmullw %xmm0,%xmm4
+ 804878a:	66 0f 7f 5b 20       	movdqa %xmm3,0x20(%ebx)
+ 804878f:	66 0f 7f 63 30       	movdqa %xmm4,0x30(%ebx)
+ 8048794:	83 c3 40             	add    $0x40,%ebx
+ 8048797:	3b cb                	cmp    %ebx,%ecx
+ 8048799:	77 c3                	ja     804875e <multi+0x26>
+ 804879b:	0f b7 8a c0 00 00 00 	movzwl 0xc0(%edx),%ecx
+ 80487a2:	0f af c8             	imul   %eax,%ecx
+ 80487a5:	0f b7 9a c2 00 00 00 	movzwl 0xc2(%edx),%ebx
+ 80487ac:	0f af d8             	imul   %eax,%ebx
+ 80487af:	66 89 8a c0 00 00 00 	mov    %cx,0xc0(%edx)
+ 80487b6:	0f b7 8a c4 00 00 00 	movzwl 0xc4(%edx),%ecx
+ 80487bd:	0f af c8             	imul   %eax,%ecx
+ 80487c0:	66 89 9a c2 00 00 00 	mov    %bx,0xc2(%edx)
+ 80487c7:	66 89 8a c4 00 00 00 	mov    %cx,0xc4(%edx)
+ 80487ce:	0f b7 8a c6 00 00 00 	movzwl 0xc6(%edx),%ecx
+ 80487d5:	0f af c8             	imul   %eax,%ecx
+ 80487d8:	66 89 8a c6 00 00 00 	mov    %cx,0xc6(%edx)
+ 80487df:	83 c4 0c             	add    $0xc,%esp
+ 80487e2:	5b                   	pop    %ebx
+ 80487e3:	8b e5                	mov    %ebp,%esp
+ 80487e5:	5d                   	pop    %ebp
+ 80487e7:	90                   	nop 
+</pre></ul>
+
+packed/aligned 的處理，很明顯比 GCC 好很多，而且也運用到 MMX instructions，中間 movdqa/pmullw 恰好能夠處理 short integer data type (DWORD/2)。
+
+GCC 在這部份顯然還有加強的地方，所以在 [<a href="http://gcc.gnu.org/wiki/GCC%204.1%20Projects">GCC 4.1 Projects</a>] 就有 [<a href="http://gcc.gnu.org/wiki/Autovectorization%20Enhancements">Autovectorization Enhancements</a>] 的子計畫，其設計方式可以參閱 GCC source code 的 tree-vectorizer.c。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 August 25, 2005 12:42 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>用 %xmm0, %xmm2 的話 應該是屬於 SSE/SSE2 的指令喔<br />
+intel 已經不鼓勵大家使用 MMX 了</p>
+<span class="comments-post">由 <a href="mailto&#58;microos&#64;pchome&#46;com&#46;tw">小魚</a> 發表於</MTIfNonEmpty> March  7, 2006 09:16 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

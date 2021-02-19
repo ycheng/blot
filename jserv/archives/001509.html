@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: NetBSD 的 framebuffer console 與 progress bar 支援</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001508.html" title="2006 年初 Mark Shuttleworth 一行人訪台" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001510.html" title="初探 Linux Mobile Phone" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001508.html">« 2006 年初 Mark Shuttleworth 一行人訪台</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001510.html">初探 Linux Mobile Phone »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February 13, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">NetBSD 的 framebuffer console 與 progress bar 支援</h3>
+
+NetBSD hacker - Jared McNeill - 最近在 NetBSD 實做了 framebuffer console 與 progress bar 的支援：<br>
+<center><img src="http://jserv.sayya.org/misc/NetBSD_Splash_Progress.jpg"></center><br>
+他也做了 [<a href="http://www.invisible.ca/~jmcneill/netbsd/vesa/splashboot_small.mp4">展示影片</a>] (MPEG-4 格式)，詳情可參考 wiki [<a href="http://www.invisible.ca/core/VESA_Framebuffer_console_in_NetBSD">VESA Framebuffer console in NetBSD</a>]，截至目前為止，已經實做的項目有：<ul>
+<li>Basic framebuffer support<ul>
+  <li>Changes video resolution</li>
+  <li>Sets up rasops and wsdisplay subsystems</li>
+  <li>Attaches as the system console</li></ul></li>
+<li>XFree86 "just works"</li>
+<li>Support for XFree86 'wsfb' display driver<ul>
+  <li>Removes dependency on options INSECURE for running X server on i386</li></ul></li>
+<li>Optional boot splash screen support</li>
+<li>Setup an ANSI palette via VBE</li>
+<li>Progress bar (via options RASOPS_PROGRESS)</li>
+<li>Virtual screens support (using wsdisplay_vcons from macallan, not yet part of -current)</li>
+<li>Fast scrolling (shadow framebuffer code added to rasops)</li>
+</ul>
+Sweet !<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 February 13, 2006 10:14 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

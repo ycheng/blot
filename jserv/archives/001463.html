@@ -1,0 +1,300 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 探索 Linux Memory Model (下)</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001462.html" title="M$ Inside 的 ATM 提款機" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001464.html" title="通訊地址" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001462.html">« M$ Inside 的 ATM 提款機</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001464.html">通訊地址 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 29, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">探索 Linux Memory Model (下)</h3>
+
+延續 [<a href="http://blog.linux.org.tw/~jserv/archives/001461.html">探索 Linux Memory Model (上)</a>]，翻譯 IBM 軟體工程師 Vikram Shukla 的文章 [Explore the Linux memory model]。<br>
+<br>
+<b><u>Paging model in general</u></b><br>
+如前面所提，paging unit 轉換 linear addresses 為 physical address，一組 linear address 聚集為 page，linear addresses 本質上是連續的，paging unit 對映這些連續的記憶體為對應真實記憶體位址，稱為 page frames。注意，paging unit 讓 RAM 切割為固定大小的 page frame 成為可見的。[譯注：我們也得以邏輯上存取到實體的 RAM]<br>
+<br>
+因為如此，paging 有以下優點：<ul>
+<li>一個 page 所規範的存取權限，將可安全的限制一段位於 page 中 linear address 的使用</li>
+<li>page 的長度等於 page frame 的長度</li>
+</ul>
+用以對應這些 page 到 page frame 的資料結構，稱為 page table，儲存於主記憶體中，並會在 paging unit 使用前，由 kernel 妥善初始化，下圖表示 page 到 page frame 的比對與對映關係：<br>
+<center><img src="http://www-128.ibm.com/developerworks/linux/library/l-memmod/fig3b.gif"></center><br>
+<br>
+注意 Page1 的 address 與 Page Frame1 的對應 address 相符。<br>
+<br>
+在 Linux 中，paging unit 的使用不僅是 segmentation unit，就如我們之前在 Linux 與 segmentation 所見，每個 segment descriptor 使用相同的 linear addressing 集合、讓 segmentation unit 轉換到 logical address 的轉換使用量降到最少。透過這種對 paging unit 的使用方式，Linux 大幅降低跨越多種不同硬體平台的 memory management 與 portability 困難度。<br>
+<br>
+<br>
+<b><u>paging 中所需的資訊</u></b><br>
+這裡描述了在 x86 架構中 paging 所需的資訊，這對於 Linux 實現 paging 很重要。paging unit 作為 segmentation unit 輸出中取得 linear address，稍後則表示為以下項目：<ul>
+<li>Directory 是以 10 MSBs (Most Significant Bit 是二進位表示法中，最高的 bit，有時也指最左的 bit) 表示</li>
+<li>Table 是以中間 10 bits 表示</li>
+<li>Offset 是以 12 LSBs (Least Significant Bit 是二進位表示法中，最低的 bit，有時也指最右的 bit) 表示</li>
+</ul>
+轉換 linear address 為其對應的實體 addressing 是個兩階段的程序。第一步使用稱為 Page Directory 的轉換表格 (從 Page Directory 到 Page Table)，而接下來使用 Page Table 的表格進行轉換 (Page Table 外加所欲的 page frame 的 Offset)，示意如下圖：<br>
+<center><img src="http://www-128.ibm.com/developerworks/linux/library/l-memmod/fig3c.gif"></center><br>
+Page Directory 的 physical address 載入於 cr3 register，linear address 的 directory 欄位決定指向正確 Page Table 的 entry，而 The address in table field determines the entry in the Page Table that contains the physical address of the page frame containing the page. The offset field determines relative position within the page frame. [譯注：保留原文，這個形容詞子句實在太難翻譯了] 既然 offset 量為 12 bits，每個 page 包含了 4 kb 的資料量。<br>
+<br>
+簡述實體記憶體位址的計算方式：<ul>
+<li>cr3 + Page Directory (10 MSBs) = 指向 table_base</li>
+<li>table_base + Page Table (10 個中間的 bits) = points to page_base</li>
+<li>page_base + Offset = physical address (取得 page frame)</li>
+</ul>
+既然 Page Directory 與 Page Table 長度都是 10 bits，可定址的範圍就是 1024 * 1024 kb，並且 Offset 可以定址到 2^12 (4096 bytes)，因此，全部由 Page Directory 規範的可定址範圍就是 1024 * 1024 * 4096 (等於 2^32 = 4 GB)。所以，在 x86 硬體架構來說，可定址的上限就是 4 GB。<br>
+<br>
+<br>
+<b><u>Extended paging</u></b><br>
+Extended paging 是由移除 Page Table 轉換表並且 linear address 的劃分是由 Page Directory (10 MSB) 與 Offset (22 LSB) 的改變而來的。22 LSBs 對 page frame 產生 4 Mb 的上限值 (2^22)，extended paging 與正常的 paging 是共存的，並且可對應到更大的連續 linear address。作業系統透過設定 PSE (page size extension) flag，移除 Page Table，因而提供 extended paging<br>
+<br>
+36-bit PSE 擴充了 36-bit 實體記憶體定址支援到 4 Mb pages，而 maintaining a 4- byte page-directory entry thereby providing a simple mechanism to address physical memory above 4 GB without requiring major design changes to operating systems. [譯注：這裡是精髓] 因此，這個途徑對於要求 paging 有了實際的限制。<br>
+<br>
+<br>
+<b><u>Linux 的 paging model</u></b><br>
+Linux 的 paging 機制很接近上述的一般性 paging，不過 x86 架構引入了 three-level page table 機制，包含以下項目：<ul>
+<li>Page Global Directory (pgd) - 多層次 page table 之上的抽象層面，每個 page table 的 level 處理不同大小的記憶體，global directory 也可能會處理 4 Mb 大小的區域。每個 entry 會是指向較小 directory 的較低層面的 table，所以 pgd 是 page table 的 directory。當程式碼存取這個結構 (某些 driver 會有此動作)，就稱為 "walk" 了 page table。</li>
+<li>Page Middle Directory (pmd) - page table 的中間層面。在 x86 架構中，pmd 並非存在於硬體，但包含在 kernel code 的 pgd 實做中。</li>
+<li>Page Table Entry (pte) - 直接與 page 處理的底層，對照到 PAGE_SIZE 這個數值定義，包含 page 和對應 bit 的實體記憶體 address。例如，當 entry 是有效的，表示相對的 page 存在於真實記憶體中</li>
+</ul>
+<center><img src="http://www-128.ibm.com/developerworks/linux/library/l-memmod/fig4a.gif"></center><br>
+為了支援 large memory area，three-level paging 模式也與 Linux kernel 協同運作。當沒有要求 large-memory-area support [譯注：Kernel configuration 選項] 時，會回到 two-level paging，並且 defining the pmd as "1." [譯注：這部份不太懂，還待釐清]。這些 level 在編譯時期就最佳化處理過，enabling both the second and third levels (using the same set of code) by just enabling or disabling the middle directory. The 32-bit processor uses pmd paging and 64-bit processors use pgd paging. [譯注：這部份不太懂，還待釐清]<br>
+<br>
+就如你所知，在 64-bit 處理器中：<ul>
+<li>21 MSBs 並未使用</li>
+<li>13 LSBs 以 page offset 表示</li>
+<li>剩餘的 30 bits 切割為：<ul>
+  <li>10 bits 給 Page Table</li>
+  <li>10 bits 給 Page Global Directory</li>
+  <li>10 bits 給 Page Middle Directory</li>
+</ul></li>
+</ul>
+從這個架構可見，真正用以定址的，只有 43 bits，所以在 64-bit 處理器上，可用的 virtual memory 量就是 2 的 43 次方。<br>
+<br>
+每個 process 有其獨立的 page directory 與 page table，而為了去參考包含真正使用者資料的 page frame，在 x86 架構，作業系統開始載入 pgd 到 cr3 register 中。Linux 將 cr3 register 存入 TSS segment 的內容中，並在一個新 process 開始在 CPU 執行時，將另一個 TSS segment 的值載入 cr3 register 中。這導致 paging unit 參照目前 page table。<br>
+<br>
+Each entry into the pgd table points to a page frame containing an array of pmd entries which in turns points to a page frame containing pte which finally points to a page frame containing the user data. [譯注：又是複雜的形容詞子句，還是建議直接去翻《<a href="http://www.oreilly.com/catalog/understandlk/">Understanding the Linux Kernel, Third Edition</a>]》第二章的圖表] 如果嘗試找尋的 page 已被 swap out，一個 swap entry 會儲存於使用中的 pte table (當有 page fault 被觸發時)，找尋記憶體中待 reload 的 page frame。<br>
+<br>
+下圖顯示我們正在每個對應到 page frame entry 的 pae table level 新增 offset，我們透過打破 segmentation unit 的輸出 linear address，獲得 offset。而為了打破對應到每個 page table 的 linear address，需要在 kernel 中使用多個 macro，不過這裡不會探討這些 macro 的細節，而是看看 linear address 的切割。<br>
+<center><img src="http://www-128.ibm.com/developerworks/linux/library/l-memmod/fig4b.gif"></center><br>
+<br>
+<br>
+<b><u>保留的 page frame</u></b><br>
+Linux 保留少數 page frame 給 kernel code 與資料結構使用，這些 page 永遠不會被 swap 到磁碟中。從 0x0 到 0xc0000000 (PAGE_OFFSET) 之間的 linear address 為 user code 與 kernel code 所參照，而 PAGE_OFFSET 到 0xffffffff 的部份，則由 kernel code 所定址。這意味著，即便硬體定址的範圍達 4GB，但只有 3 GB 是給使用者應用程式的定址。<br>
+<br>
+<br>
+<b><u>paging 是如何運作的？</u></b><br>
+在 Linux process 所採用的 paging 機制可分為兩個階段：<ul>
+<li>開機階段，系統準備 page table 給 8 Mb 的實體記憶體所用</li>
+<li>之後，完成實體記憶體的 reset 對應動作</li>
+</ul>
+在開機階段，startup_32() call 負責初始化 paging，實做程式碼位於 arch/i386/kernel/head.S 檔案中，上述的 8 Mb 對應發生於 PAGE_OFFSET 位址之上。初始程序起始於編譯時期靜態定義的 swapper_pg_dir 陣列，在編譯時期置放於 0x00101000 特定的位址中。<br>
+<br>
+此舉建立給兩個靜態定義的 page -- pg0 與 pg1 的 page table entry，這些 page frame 的大小預設為 4 kb，除非 page size extension bit 被設定 (請參考前面 Extended paging 的部份，以得知 PSE 的資訊)。指向 global array 的 data address 儲存於 cr3 register 中，作者認為是前述第一階段為 Linux process 設定 paging unit 時。其餘 page entry 是在第二階段所設定的，第二階段是由 paging_init() 呼叫所開始的。<br>
+<br>
+RAM 的對應是在 PAGE_OFFSET 與 x86 32-bit 架構的 4 Gb 上限 (0xFFFFFFFF) 之間位址完成的，這表示約莫 1 GB 的 RAM 可在 Linux 起始時作對映動作。然而，如果設定 HIGHMEM_CONFIG，超過 1 GB 的真實記憶體也會對映到 kernel - 請記住，這是暫時的記憶體配置安排，這些是由 kmap() 呼叫所完成。[譯注：這部份的「魔法」還有許多變化空間，KernelTrap.org 的文章 [<a href="http://kerneltrap.org/node/6067">Linux: Using 1GB of RAM Without HighMem</a>] 可以看到最近的一些突破，由 Jens Axboe 起草，並且獲得 Linus Torvalds 與 Ingo Molnar 的 feedback，整個討論 thread 都很值得參考]<br>
+<br>
+<br>
+<b><u>Physical memory zone</u></b><br>
+前面作者已經提過在 IA32 架構下，Linux kernel 以 3:1 的比例切割 virtual memory，也就是 3 GB virtual memory 給 user space，而 1 GB 是 kernel space 所用，而 kernel code 與其資料結構必須常駐 [譯注：「常駐」似乎是 DOS 時代 TSR 常見的術語，不過因為這部份不會被 swap out，所以譯者認為這樣的翻譯很適當] 於定址空間上層的 1 GB 中。不過，定址空間更大的使用者是 physical memory 的 virtual mapping。<br>
+<br>
+這個 mapping 的存在是因為如果記憶體驅動沒有 map 到 kernel 定址空間，kernel 無法管理該記憶體區段，也因此，the maximum amount of physical memory that could be handled by the kernel was the amount that could be mapped into kernel's virtual address space minus the space needed to map the kernel code itself. [譯注：又是複雜的形容詞子句] 在 x86 運作的 Linux 可以在真實記憶體 1 GB 以下運作。[譯注：在 LKML 中，Linus Torvalds 提出以下的看法：<ul>
+since PAE depends on the 3G/1G split (we could make it work for a pure
+2G/2G split, but that's a separate issue, and then we'd need to change the
+CONFIG_PAGE_OFFSET defaults to be something like<ul>
+default 0x80000000 if VMSPLIT_2G && X86_PAE
+</ul>
+(but that's definitely not appropriate for now - that's a separate issue,
+after somebody has verified that PAE and 2G:2G works)
+</ul>
+J.A. Magallon 補充道：<ul>
+Basically the option boils down to how much virtual address space you
+want to assign to the kernel and user space. The kernel can always
+access all of memory, but in some cases part of that memory will be
+available as high memory that needs to be mapped in first (see
+references to kmap() and kmap_atomic() in the kernel). So whether
+changing the mapping or using highmem is the best option for you,
+depends entirely on what you run on that machine. If you require a huge
+user address space, then you don't want to change away from the 3/1
+user/kernel default setting. However, if you don't need the full 3G of
+adress space to user apps, then you are better off increasing the kernel
+address space range to get rid of the high memory mapping.<br>
+<br>
+For the "typical" case of 1GB machine, using the _OPT setting to just
+move the offset slightly is a really good choice as it only removes a
+little bit of the user address range.
+</ul>
+不過譯者認為作者只是一般性的描述，畢竟這議題實在是相當複雜，就不拘泥字句了。]<br>
+<br>
+為了服務更多使用者、支援更大的記憶體、改善系統效能，並且建立與硬體架構無關的記憶體描述方式，Linux memory model 必須作充分的修改。為了達成以上目標，新的模式將記憶體劃分為給每個 CPU 的 bank，而每個 bank 就稱為一個 node，每個 node 切割為若干個 zone。Zone 作為記憶體的範圍表示，有以下分類：<ul>
+<li>ZONE_DMA (0-16 MB) - 包含設定 ISA/PCI 裝置所需的較低實體記憶體區域的範圍</li>
+<li>ZONE_NORMAL (16-896 MB) - 直接由 kernel 對映上層實體記憶體區域的範圍，所有的 kernel 操作只能在該 memory zone 中發生，也因此，這是對系統效能有最大衝擊的區域</li>
+<li>ZONE_HIGHMEM (896 MB 或更高) - 並未被 kernel 所對映的剩餘有效記憶體區域</li>
+</ul>
+node 使用的概念在 kernel 中是透過 struct pglist_data 所實做的，zone 則是由 struct zone_struct 所表示，實體的 page frame 則是由 struct Page 表示。並且，這些資料結構會保存於 global structure array struct mem_map，而這又儲存於 NORMAL_ZONE 的開端。下圖顯示 node、zone，以及 page frame 之間的關聯：<br>
+<center><img src="http://www-128.ibm.com/developerworks/linux/library/l-memmod/fig5.gif"></center><br>
+high memory zone 的出現於 kernel memory management，開始於 Pentium II 的 virtual memory extension 被實做 (以透過 PAE 存取到 64 GB 的記憶體，PAE 是 Physical Address Extension，存在於最近的 IA32 架構)，並且支援 4 GB 實體記憶體。這個概念被應用於 x86 與 SPARC 平台上，一般來說，4 GB 記憶體是透過 kmap() 呼叫，對映 ZONE_HIGHMEM 到 ZONE_NORMAL 之上作為存取。請注意，在 32-bit 硬體架構安置超過 16 GB 的 RAM 並不是明智的舉動，即便 PAE 是有效的。<ul>
+(PAE is an Intel-provided memory address extension that enables processors to expand the number of bits that can be used to address physical memory from 32 bits to 36 bits through support in the host operating system for applications using the Address Windowing Extensions API.)</ul>
+physical memory zone 的配置是由 zone allocator 所完成，這個 zone allocator 負責分割記憶體為若干 zone，視每個 zone 為 unit for allocation purposes。Any particular allocation request utilizes a list of zones from which the allocation may be attempted, in a most-preferred-to-least-preferred order.[譯注：譯者還沒理解這部份的實做，不翻譯]<br>
+<br>
+舉例來說：<ul>
+<li>A request for a user page should be filled first from the "normal" zone (ZONE_NORMAL)</li>
+<li>if that fails, from ZONE_HIGHMEM</li>
+<li>and if that fails, from ZONE_DMA</li>
+</ul>
+The zone list for such allocations consists of the ZONE_NORMAL, ZONE_HIGHMEM, and ZONE_DMA zones, in that order. On the other hand, a request for a DMA page may only be fulfilled from the DMA zone, so the zone list for such requests contains only the DMA zone. <br>
+<br>
+<br>
+<b><u>結論</u></b><br>
+Memory management 是個複雜又令人費解的巨大工程，像是 scheduling、paging，以及 multiple-process 之間的交互運作，是相當大的挑戰，作者希望本文可協助讀者建立基本的知識，以理解 Linux memory management 設計與實做的議題，作為一個出發點。<br>
+<br>
+<br>
+<b><u>參考資料</u></b><br>
+<ul>
+<li><a href="http://www.ibm.com/developerworks/linux/library/l-memory/">Inside memory management</a> (developerWorks, November 2004) provides an overview of the memory management techniques that are available in Linux, including how memory management works, how to manage memory manually, semi-manually, and automatically.</li>
+<li><a href="http://www.ibm.com/developerworks/linux/library/l-mem26/">Kernel comparison: Improved memory management in the 2.6 kernel</a> (developerWorks, March 2004) details new techniques to improve the use of large amounts of memory, reverse mapping, storage of page-table entries in high memory, and the greater stability of the memory manager.</li>
+<li><a href="http://www.ibm.com/developerworks/linux/library/l-nonx86.html">Linux, outside the (x86) box</a> (developerWorks, May 2005) will show you what to do for non-x86 architectures.</li>
+<li><a href="http://www.ibm.com/developerworks/linux/library/l-shared.html">Use shared objects on Linux</a> (developerWorks, May 2004) shows you how to make the most of shared memory.</li>
+<li>This <a href="http://home.earthlink.net/~jknapka/linux-mm/vmoutline.html">Outline of the Linux Memory Management System</a> is a set of experience-based notes on how Linux memory management works in the real world.</li>
+<li><a href="http://www.oreilly.com/catalog/linuxdrive3/index.html">Linux Device Drivers, Third Edition</a> (O'Reilly, February 2005) has <a href="http://lwn.net/images/pdf/LDD3/ch15.pdf">an excellent chapter on memory management and DMA</a>.
+<li><a href="http://www.oreilly.com/catalog/understandlk/">Understanding the Linux Kernel, Third Edition</a> (O'Reilly, November 2005) provides a guided tour of the code that forms the core of all Linux operating systems.</li>
+<li><a href="http://www.phptr.com/bookstore/product.asp?isbn=0131453483&rl=1">Understanding the Linux Virtual Memory Manager</a> (Prentice Hall, April 2004) provides a comprehensive guide to Linux virtual memory.</li>
+<li>Find more resources for Linux developers in the <a href="http://www.ibm.com/developerworks/linux/">developerWorks Linux zone</a>.</li>
+</ul>
+[譯注：終於翻譯完了，也多了許多 hacking tasks]<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 29, 2006 03:57 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

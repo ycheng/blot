@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Asho's Blog: February 2004 Archives</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~asho/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~asho/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~asho/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~asho/archives/2004_01.html" title="January 2004" />
+
+<link rel="next" href="http://blog.linux.org.tw/~asho/archives/2004_03.html" title="March 2004" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~asho/" accesskey="1">Asho's Blog</a></h1>
+<span class="description">一個喜歡研究的傻小子 :-)</span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~asho/archives/2004_01.html">&laquo; January 2004</a> |
+
+<a href="http://blog.linux.org.tw/~asho/">Main</a>
+| <a href="http://blog.linux.org.tw/~asho/archives/2004_03.html">March 2004 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">February 29, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000589"></a>
+<h3 class="title">Debian 上播放 Midi 檔案</h3>
+
+<p>Midi 是以電子琴或是吉他等設備所演奏出來的音樂，有別於一般 CD 唱片，Midi 只有音樂而已，但是受歡迎的程度可不亞於一般的唱片喔，小弟也是 Midi 的愛好者之一。</p>
+
+<p>要播放 Midi 檔案，首先要有硬體支援，早期是音效卡透過外接 Midi 裝置達到播放的效果，目前音效卡有內建 Midi 音效處理晶片的只有 Sound Blaster Live，只要讀取官方所提供的 "聲音樣本"，就能夠處理 Midi 合成。這麼說的話，沒有此音效卡就無法播放 Midi 了嗎？請不用擔心，以上所說的是以 "硬體" 直接播放來說明，反之，我們也可以使用 "軟體" 來處理播放 Midi 音效。</p>
+
+<p>在 Linux 上常見的 Midi 音效播放程式為 Timidity，此程式在 Debian Testing/Unstable 皆有附，但有該軟體還不夠，還必須要有 timidity-patches，此套件包含了 timidity 對於各種樂器的補正文件，有了這些 patch 檔案資訊，timidity就能針對 midi 檔案對應的樂器加以模擬並播放出音樂來，很可惜的是 timidity-patches 只有在 stable 上，testing/unstable 並沒有，所以請另行安裝。</p>
+
+<p>在此，小弟建議捨棄 timidity-patches 這個套件，請另外抓取 http://www.stardate.bc.ca/eawpatches/eawpats12_full.rar，然後解壓縮。小弟是解壓縮在 /usr/share/timidity/eawpats/ 之下，然後編輯 /etc/timidity.cfg 並加入以下設定內容：</p>
+
+<p>dir /usr/share/timidity/eawpats/<br />
+source gravis.cfg<br />
+source gsdrums.cfg<br />
+source gssfx.cfg<br />
+source xgmap2.cfg</p>
+
+<p>OK!!!設定好了，準備播放 midi 檔案，由於 Timidity 在執行時需要設定 "輸出輸入"，什麼是輸入呢？可以說是 User Interface Input，由於 Timidity 有許多個 User Interface，比如 gtk+，ncurse，X toolkit 等，可以在 timidity -h 中查閱，小弟便不詳述。輸出呢？可以指定 -Od：dsp device 直接輸出；-Os：ALSA PCM；-Oe：esound server；-Ol：ogg files，方法很多，小弟也不詳述，舉最簡單的例子來說。</p>
+
+<p>1：以 gtk+ 為介面播放<br />
+代碼:</p>
+
+<p>timidity -ig -Od your-midi.mid</p>
+
+<p><br />
+相信喇叭中就會聽到許多好聽的音樂了。(想必您已經設定好音效卡了吧...)</p>
+
+<p>2：以 aRts 為音效輸出<br />
+代碼:</p>
+
+<p>artsdsp timidity -ig -Od your-midi.mid</p>
+
+<p><br />
+KDE 中有 kmid 以及 kmidi 這兩個程式可以播放 midi 音樂，前者純粹是播放軟體，但必須搭配 ALSA，因為在編譯時以 ALSA 為主，也可以重新編譯成 OSS support。後者是 timidity 的另一個介面，可以做到 midi to wav 的功能，但播放便不建議使用，因為 kmidi 是即時轉換 midi to wav 然後在播放，所以需要快速的 CPU 才不會停滯，建議還是用上述介紹的方式播放 midi 檔案即可。</p>
+
+<p>timidity 也可以 Server 的方式啟動，可以搭配 ALSA 有不錯的效能，但無法與 sound server 相容，只能擇其一。</p>
+
+<p>底下有一篇關於 ALSA 與 midi 的介紹，相信您會得到更多幫助。<br />
+http://www.tldp.org/linuxfocus/ChineseGB/September2002/article259.shtml</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000589.html">12:13 PM</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000588"></a>
+<h3 class="title">Debian GNU/Linux 無痛起步第一版修正</h3>
+
+<p>最新連結在 moto.dot 上</p>
+
+<p>http://moto.debian.org.tw/viewtopic.php?t=2968</p>
+
+<p>希望不會降低購買的慾望。</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000588.html">12:12 PM</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000585"></a>
+<h3 class="title">Debian 無痛起步出書了</h3>
+
+<p>無痛起步總算出版了，由 Moto 大大與小弟一起努力生出來。但收到書時其實有點小沮喪，因為有 "滿多" 錯誤，大部分是底線的問題，這其實是因為......</p>
+
+<p>但總而言之，書出版了，如果有第二版的機會，一定會把錯誤校訂好。</p>
+
+<p>未來的計畫是有兩個</p>
+
+<p>1：Debian 系統的進階了解。<br />
+去掉安裝等繁瑣的內容，以 Debian 管理的原理與哲學為主，比如 debconf 的來龍去脈，如何在 package 中加入 debconf entry 來控管套件等。當然，如果我有考上 DD，也不會缺少考試的內容與步驟。</p>
+
+<p>2：Debian Server。<br />
+市面上已經有許多這樣的書籍了，比如 VBird 鳥哥撰寫了相當多的文獻，小弟不敢夜郎自大，寫出曠世劇作，或是寫出企業運行的 Server 組態。轉而代之的是以 basic 為主吧，希望能以 Debian 為 platform 搭配網際網路的觀念說明，有時也會以 source code 為主，但這本書應該會在上研究所之後才開始動工吧？</p>
+
+<p>嗯...這一本書是小弟第一次撰寫的，其實我有犯下許多錯誤，比如跟出版社交接的問題等，造成文件上在出版時會與自己的 pdf 檔案有出入，小弟真的是罪該萬死，甚至是死千萬次也不夠。藉由這一次的經驗，我學到了很多，不管是 Debian 或是出版的心情起伏，都讓我上了一課，這段期間，多虧了 jesse，chuany 以及 Moto 老哥給我不斷地打氣與鼓勵，才能繼續寫作下去，現在出版了，或許有朋友也會發現錯誤來幹橋小弟，但仍然謝謝您們的關心與批評，小弟才能更進步，繼續創作，也請給予小弟時間，讓小弟繼續努力進步，絕對不會讓大家失望的。</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000585.html">12:35 AM</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">February 17, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000582"></a>
+<h3 class="title">qref</h3>
+
+<p>qref 可能很少人聽過，其實就是 Debian Reference 專案。</p>
+
+<p>小弟現在是經過 WcTang 兄的指導接下來翻譯的，現在官方已經變動許多，有很多還沒翻譯。</p>
+
+<p>但是...現在小弟比較沒辦法花太多時間翻譯了，因為還有 33 天就要考研究所了...:-(</p>
+
+<p>只希望能吊車尾考上...讓我有更多時間繼續貢獻東西。</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000582.html">11:43 AM</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

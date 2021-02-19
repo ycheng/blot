@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 以Qt4 的 QAbstractEventDispatcher 與 Gtk+/GNOME 元件作緊密整合</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001533.html" title="Follow Your Dreams" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001535.html" title="史上最慘烈的 Orz" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001533.html">« Follow Your Dreams</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001535.html">史上最慘烈的 Orz »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February 25, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">以Qt4 的 QAbstractEventDispatcher 與 Gtk+/GNOME 元件作緊密整合</h3>
+
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001392.html">GParts - GTK+/GNOME 與 Qt/KDE 應用程式的整合</a>] 提過包含 [<a href="http://www.scheinwelt.at/~norbertf/common_main_loop/">Common Main Loop</a>] 等一系列的技術，用以解決棘手的問題：GTK+ 底層的 event loop 是建構於 GLib，而 Qt 則是一套複雜的 C++ Framework，如果要讓兩者協同運作，首先就會遇到 main loop 的議題。在這方面的進展，也促使 [<a href="http://gparts.blogspot.com/">GParts</a>] 的可能性，而我也在今年 [<a href="http://blog.linux.org.tw/~jserv/archives/001410.html">KDE@Taiwan 第二次使用者聚會</a>] 整理過去開發的心得，做了 [<a href="http://jserv.sayya.org/kde/kparts-xparts-gparts-kdetw2006.pdf">淺談 KParts、XParts，以及 GParts 與桌面整合技術</a>] (PDF slides) 的分享，事實上，在世界各地，已經有若干開發者如火如荼地展開這方面的技術突破，而 Trolltech 也在 Qt 4.1 提出 [<a href="http://doc.trolltech.com/4.1/qabstracteventdispatcher.html">QAbstractEventDispatcher</a>] API 作為回應，引用 class description 如下：<ul class="code" style="margin: 6px;">
+The QAbstractEventDispatcher class manages Qt's event queue, excluding GUI-related events.<br>
+<br>
+It receives events from the window system and other sources. It then sends them to the QCoreApplication or QApplication instance for processing and delivery. QAbstractEventDispatcher provides fine-grained control over event delivery.<br>
+<br>
+For simple control of event processing use QCoreApplication::processEvents().<br>
+<br>
+For finer control of the application's event loop, call instance() and call functions on the QAbstractEventDispatcher object that is returned. If you want to use your own instance of QAbstractEventDispatcher or of a QAbstractEventDispatcher subclass, you must create your instance before you create the QApplication object.<br>
+<br>
+The main event loop is started by calling QCoreApplication::exec(), and stopped by calling QCoreApplication::exit(). Local event loops can be created using QEventLoop.<br>
+<br>
+Programs that perform long operations can call processEvents() with various QEventLoop::ProcessEventsFlag values OR'ed together to control which events should be delivered.<br>
+<br>
+QAbstractEventDispatcher also allows the integration of an external event loop with the Qt event loop. For example, the Motif Extension included with Qt includes a reimplementation of QAbstractEventDispatcher that merges Qt and Motif events together.
+</ul>
+於是乎，透過 Qt 4.1 的 [<a href="http://doc.trolltech.com/4.1/qabstracteventdispatcher.html">QAbstractEventDispatcher</a>] API，允許我們在 Qt Event Loop 中「調整」其 dispatcher 行為，讓其他 GUI Toolkit/widget set 得以共享 main loop 並不打擾其預期 event processing 行為。<br>
+<br>
+在 2004 年初，知名 KDE 開發者 Zack Rusin 也在 KDE 開發者文件網頁寫了一篇文章 [<a href="http://developer.kde.org/documentation/tutorials/qtgtk/main.html">Integrating Qt/KDE into Gtk/GNOME apps</a>]，他設計了 QtGTK 這個輕量級的 library，證明這個概念的可行性，當然，那是 Qt3 時代的產物，相關的討論可參考 KDE.News 的新聞 [<a href="http://dot.kde.org/1073668213/">GTK+ Apps Get Free Reign on KDE Technology</a>]， Daniel Molkentin 也延續這個發展，在以 Gtk+ 2.x 撰寫的 Beep Media Player (即 XMMS2) 中「嵌入」KDE KFileDialog，並提供兩份展示照片 [<a href="http://ktown.kde.org/~danimo/screenies/bmp_kde_diropen_dlg.png">KDE Directory Open in XMMS2</a>] 與 [<a href="http://ktown.kde.org/~danimo/screenies/bmp_kde_fileopen_dlg.png">KDE File Open in XMMS2</a>]。而去年 Zack Rusin 加入 Trolltech 後，整個 KDE 與 FreeDesktop 也激發更多創新，[<a href="http://doc.trolltech.com/4.1/qabstracteventdispatcher.html">QAbstractEventDispatcher</a>] 一類的機制在 Qt 4.x 出現後，未來 KDE 與 GNOME 兩大桌面計畫的整合又會如何呢？咱們拭目以待 :-)<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 February 25, 2006 01:54 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1534" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

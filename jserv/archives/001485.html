@@ -1,0 +1,477 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 再探羅塞達碑石 : 連續時間系統與離散系統的橋樑</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001484.html" title="Protech 的 Panel PC" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001486.html" title="Tor : 第二代 onion routing" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001484.html">« Protech 的 Panel PC</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001486.html">Tor : 第二代 onion routing »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February 04, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">再探羅塞達碑石 : 連續時間系統與離散系統的橋樑</h3>
+
+剛剛用了一點時間翻譯 Jack W. Crenshaw 發表於 Embedded.com 的專欄文章 [<a href="http://www.embedded.com/showArticle.jhtml?articleID=175002472">More on the Rosetta Stone</a>]，該文用很淺顯的描述，介紹到數位類比與離散時間系統的基本概念，很值得入門參考。<br>
+<br>
+<table cellpadding="0" cellspacing="0">
+<tr>
+<td></td>
+</tr>
+</table>
+<!-- End SiteCatalyst code version: G.7. -->
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td><a href="/"><img src=
+"http://i.cmpnet.com/embedded/redesign/logo.gif" alt="Embedded.com"
+border="0"></a></td>
+<td width="20">&nbsp;&nbsp;</td>
+</tr>
+</table>
+<p><h1>再探羅塞達碑石 / More on the Rosetta Stone</h1>
+<font size="2" face="verdana,arial,helvetica,sans-serif">
+<!-- author(s) -->
+<font face="verdana,arial" size="2">原作： Jack W. Crenshaw</font> <br>
+<font face="verdana,arial" size="2">繁體中文翻譯： <a href="http://blog.linux.org.tw/jserv/">黃敬群 (Jim Huang / jserv)</a></font>
+<br>
+Dec 14 2005 (12:21 PM)<br>
+URL: <a href=
+"http://www.embedded.com/showArticle.jhtml?articleID=175002472">http://www.embedded.com/showArticle.jhtml?articleID=175002472</a></font></p>
+<p><font size="2" face="verdana,arial,helvetica,sans-serif">過去幾個
+月，我已經嘗試深入解釋一個原始而又有用的等式，並且我比喻該等式為
+「羅塞達碑石」。 [譯注：羅塞達碑石 (Rosetta Stone) 的典故是，1799 年
+拿破崙遠征埃及時期，法軍上尉 Pierre-François Xavier Bouchard 在尼羅河
+口港灣城市羅塞塔 (Rosetta，今日稱為 el-Rashid) 發現此碑石，自此揭開
+古埃及象形文字之謎。羅塞塔碑石製作於公元前 196 年，，原本是一塊刻有
+埃及國王托勒密五世召書的碑石，但由於這塊碑石同時刻有同一段文字的三種
+不同語言版本，使得近代的考古學家得以在對照各語言版本的內容後，解讀出
+已經失傳千餘年的埃及象形文之意義與結構，而成為今日研究古埃及歷史的
+重要里程碑。由於是破解埃及象形文這種如謎題般的事物之起始點，「羅塞塔
+碑石」也因而被比喻為解決難題或謎題的關鍵線索或工具，本文點題正是取此
+引申義。]</font></p>
+<center><font size="2" face=
+"verdana,arial,helvetica,sans-serif"><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn01.gif"></font></center>
+(1)
+<p>這個等式將我們所在真實世界的連續時間，以及電腦賴以運作的離散時間系統，
+巧妙的連結起來。如果讀者之前已經閱讀過這系列的專欄文章，我們已經有了所需
+的基本概念：泰勒級數、指數函數，以及綜合除法 [譯注：綜合除法 (synthetic 
+division) 為 nested multiplication，又稱 Horner 法，即中國古代之秦九韶法]。
+如果讀者之前沒有接觸，這邊有個簡短的複習。</p>
+<p>這裡先以略不同於之前所提的泰勒級數作出發：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn02.gif"></center>
+(2)
+<p>之所以作更動，是因為這一項造成模稜兩可的情況：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn0A.gif"></center>
+<p>這一項我稍早曾使用過，如果逐字解析，可以得到以下語意：</p>
+<p>&bull; 首先計算 <i>x</i> = 0 時，<i>f</i>(<i>x</i>) 的值</p>
+<p>&bull; 再取其導函數</p>
+<p>不過這是錯誤的，因為既然 <i>f</i>(0) 是個常數值，取其導函數就沒有意義 
+[譯注：恆為 0]。正確的認知應該是：</p>
+<p>&bull; 先取 <i>f</i>(<i>x</i>) 的導函數</p>
+<p>&bull; 再計算 <i>x</i> = 0 時，導函數的值</p>
+<p>論及泰勒級數時，我稍加延遲給予更多的符號更動，好讓讀者熟悉符號的表示
+與意義，我希望能更加清楚的表達。不過很顯然，等式 (2) 很難理解，所以我們即刻
+將使用這些表示法。</p>
+<p>泰勒級數允許我們預測一個函數未來的值 -- <i>所有的</i>未來值，依據特定點
+的值，以及其導函數，也就是探討 <i>x</i> = 0 時。當然，我們還需要除了 <i>x</i> 
+= 0 以外的值，所以我們可略為改變這些變數。</p>
+<p>過去我並沒有使用嚴謹的數學，來對這些級數作衍生，但我給了一些解釋與足夠的
+範例讓讀者明白。</p>
+<p>在看了泰勒級數後，我們觀察了指數函數： <i>e<sup>x</sup></i>，指數函數最基本
+的特性就是其導函數等於自身：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn03.gif"></center>
+(3)
+<p>以這個定義作出發，我們使用泰勒級數來表示指數函數：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn04.gif"></center>
+(4)
+<p>如果讀者正在思索這個等式，可以比較等式 (2) 與等式 (4) 相近的表示方式。</p>
+<p>最後，讓讀者知道綜合除法，允許我們得到類似這樣的衍生關係：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn05.gif"></center>
+(5)
+<p>讀者不需要透過這個技巧來演繹「羅塞達碑石等式」，將會在稍後當我們應用時，會
+派上用場。之前我應該提過，這個級數只適用 |<i>x</i>| &lt; 1 的情況。
+There's a moral in here somewhere, which is that elegant math doesn't protect 
+us from stupidity. [譯注：這句話經典，保留不譯以強調之]。如果 |<i>x</i>| &gt;1，
+很顯然，級數的每一項將會較之前來得大，所以這個級數將無法涵蓋。</p>
+<p><font size="3" color="#003366" face="Verdana"><b>Smooth
+operators</b></font><br>
+<p>如果讀者先前有從事過程式設計，我就不必提及 operator 是什麼了。
+"+" 是個 operator，而 "-"、"*"，以及 "/" 都算是。簡單來說，一個 operator 使用
+一個或一個以上的參數 [譯注：即 operand]，並施加一些操作，該符號告訴我們這些被
+操作或運算的對象，做了哪些事情，例如 "+" 告訴我們作加法運算。用 C++ 語言的術語，
+operator 可以被 overloaded。兩個整數的相加，就像是對兩個浮點數，甚至是複數的加法
+相似的途徑，而兩個向量或矩陣的加法則有很大的差異，不過基本的涵義可以說是一致。</p>
+<p>概念上來說，這是相當具有威力的。中心思想就是，我們不需要關心 operand 到底是什麼
+值、什麼型態。如此一來，"1 + 1" 的加法運算，可以說是跟 "1.23456 + 6.54321" 在概念
+上一致的。</p>
+<p>現在，這部份就是關鍵：與 operator 關聯者，就是一組施加於 operand 的操作與運算。
+一旦得知這些規則後，到底你使用什麼符號就不是這麼重要了，我可以輕易的使用這樣的
+表示法：</p>
+<p><i>x</i> banana <i>y</i></p>
+<p>(6)</p>
+<p>而不是 <i>x</i> + <i>y</i> 一類的，只要我們認可 "banana" 是個 operator。</p>
+<p>本文將會注意到導函數的符號，就如讀者所知，這個符號：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqnB.gif"></center>
+<p>意味著對函數 <i>f</i>(<i>x</i>) 做了某種運算，而在這個例子來說，是計算函數曲線
+的斜率，或是至少在一個範圍內，<i>x</i> 的值。不過很明顯 [譯注：「很明顯」這個用詞，
+總讓譯者想到數學界的一代宗師高斯所發表的數學文獻中，有些惱人的字眼：「現在我們就
+得到...」或是「現在我們明顯可見...」一類的用詞，忽略在導入結論中，那些繁複的過程，
+譯者很希望譯文中不要有太多這類的「黑盒子」]，我們可以使用這些不同的表示法，其涵義
+是一樣的：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqnC.gif"></center>
+<p>像是：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn07.gif"></center>
+(7)
+<p>(最後一個是特例，在物理學上，當獨立的變數為時間時，可以簡化表示為此) 我將會述及，
+如果我們使用其他的表示法，泰勒級數可以更加簡便。任何階的導函數可以被更低階的導函數所
+定義： </p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn08.gif"></center>
+<p>(8)</p>
+<p>現在，我希望讀者可以同意符號的使用並不會影響要表達的意思，現在我將要引入一個同義
+單元： <i>D</i>，讀者可以同意其定義方式為：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn09.gif"></center>
+(9)
+<p>就如之前所說，只要讀者認同 <i>D</i> 表示「對獨立變數取微分」的操作運算 [譯注：或
+者，operator]，就很清楚了。正如等式 (8)，我們也必須認可這個寫法：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn10.gif"></center>
+(10)
+<p>有了這個定義，我們可以改寫等式 (2) 為：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn11.gif"></center>
+(11)
+<p>現在我們來到相當精彩的部份了。想像一下，可以對函數本身找出自己的因式：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn12.gif"></center>
+(12)
+<p>啊？！發生什麼事情，這怎麼可能呢？我們可以指派一個 operator 來取得 operand 的
+因數嗎？當然可以，就像是這樣：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn13.gif"></center>
+(13)
+<p>我們也已經同意，一個 operator 可在任何 operand 施加操作，所以等式 (12) 的意思
+等同於等式 (11)，也就是：取得 <i>f</i>(<i>x</i>) 的多階導函數，並且計算 <i>x</i> = 0 的
+值。而我們只是稍加簡化符號使用的形式。</p>
+<p>現在我們看看括號中級數的形式，在等式 (12) 中，這等同於指數函數的形式，因此我們可以
+這樣改寫：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn14.gif"></center>
+(14)
+<p>如果泰勒級數的因式 operator 表示法讓讀者覺得很難接受，取指數的 operator 必定更加
+打擊讀者。記住：符號本身沒有太大的意義，等式 (11) 與 (14) 的表示是一致的，因為我們
+已經建立表示法的規範。等式 (14) 並未能減輕我們的負擔，只是讓我們得以透過更精簡的方式，
+來作表示。</p>
+<p><font size="3" color="#003366" face="Verdana"><b>The importance
+of being discrete</b></font><br>
+前面所及的，是 <i>f</i>(<i>x</i>) 在連續系統中的行為，而現在我們要來探討不連續的情況。
+前面已經提過「羅塞達碑石等式」，是聯繫連續時間系統與離散時間系統的橋樑。相當清楚，獨立
+的變數不必是時間，在目前所提到的等式中，我有計畫的使用更一般性的變數： <i>x</i>。我們
+使用時間作探討的原因是，在嵌入式系統中，對電腦運算更有意義。</p>
+<p>現在假設我們有一台嵌入式的電腦，該電腦裝置對應到真實、實體的系統：車子的導航控制
+系統。我們可以讓車子的時速表產生正比於車速的電壓變化，並且電腦可以透過數位類比轉換 
+(A/D converter) 來取得該電壓資料。而這個電壓變化，如同車速，是時間的連續函數： 
+<i>v</i>(<i>t</i>)，關係圖如下圖 (一)：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/12Crenshaw01.gif"></center>
+<p>儘管電壓變化是連續性的，但對於電腦來說，並非如此，電腦只能從數位類比轉換中，讀取
+特定的數值，並且受軟體設計的控制。這些由電腦處理的數值，原本在圖 (一) 以點表示，我姑且
+稱他們為：
+<i>y</i><sup>0</sup>,<i>y</i><sup>1</sup>, . . .
+<i>y<sup>n</sup></i>。為了紀錄，這些數列並非無限長的延伸下去，有可能在長時間的紀錄後，
+現在這個時間的車速就不再保存。現在，我們稱為目前時間為： <i>t<sup>n</sup></i>。</p>
+<p>一般來說，這並不足以知道每一個時間點所測量的電壓變化，我們也必須知道測量過程中的
+時間點。以數學的術語來說，圖 (一) 中每個黃色點，表示一個 
+<i>ordered pair</i>, {<i>t<sub>i</sub></i>,<i>y<sub>i</sub></i>}。為了徹底表示量測的
+資料，我們必須一併保存量測到的電壓變化與時間值，這樣的資料稱為「<i>以時間為標記的
+資料</i>」。</p>
+<p>然而，在圖 (一) 中，我們可以發現，這些測量是在一定間隔 &Delta;<i>t</i> 取得的，如果
+可以的話，我們總是這麼作，因為如果不在一定間隔測量，數學運算會複雜許多。對於所有讀者
+可能會感興趣的控制系統，測量的間隔僅可能會一致，在這樣的案例來說，我們不需要儲存時間
+標記，因為我們可由下面的式子計算：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn15.gif"></center>
+(15)
+<p>當以「羅塞達碑石 operator」處理時，讀者可以放心的假設時間間隔總是一致的。</p>
+<p>現在，重要的部份：表示電壓變化 <i>v</i>(<i>t</i>) 測量的數列 <i>y<sub>n</sub></i> 會
+變化，電壓變化是由平滑曲線所表示的連續時間函數，然而測量值 <i>y<sub>n</sub></i> 是一組
+離散的數列，對應到特定的時間點。對電腦來說，探討像是 <i>y</i><sub>4.5</sub> 的測量值，
+沒有意義，因為<i>測量結果不存在</i>。
+<p>換句話說，我們嘗試著控制以連續時間系統變化的裝置，我們想要控制 <i>v</i>(<i>t</i>)，
+而非 <i>y<sub>n</sub></i>。這也就是在連續與離散世界中的關係，我們僅能在離散的時間點測量
+電壓變化，但是我們必須使用這些測量值，去推測連續時間相關的函數。所以，這是「羅塞達碑石」
+出現之處。</p>
+<p><font size="3" color="#003366" face="Verdana"><b>Back to the
+Taylor Series</b></font><br>
+現在，讓我們回到泰勒級數，稍早已經簡化成等式 (14) 的形式。</p>
+<p>為了簡化，我一貫假設展開式在大約 <i>x</i> = 0 的點。很顯然，方程式對其他起始點來說，
+還是成立的。我們可以對變數略作些更動，定義以下：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn16a.gif"></center>
+(16)
+<p>於是：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn16b.gif"></center>
+<p>並且：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn17.gif"></center>
+(17)
+<p>將這些代入等式 (14) 可得：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn18.gif"></center>
+(18)
+<p>我們只需要再三個步驟。第一個並不重要，只是以測量階段的大小值 <i>h</i> 來
+替代 &Delta;<i>t</i>，這裡不解釋為何要使用 <i>h</i> 而非 &Delta;<i>t</i>。
+原因消失在時間的迷霧中，但這個符號在絕多數的數值計算教科書被採用，所以我延續
+這個傳統。</p>
+<p>第二步是精巧且微妙的。記得之前提過所測量的數值 {<i>y</i><sub>0</sub>,
+<i>y</i><sub>1</sub>, ..., <i>y<sub>n</sub></i>}，都是在時間 {<i>t</i><sub>0</sub>,
+<i>t</i><sub>1</sub>, ..., <i>t<sub>n</sub></i>} 的 <i>v</i>(<i>t</i>) 函數值，
+也就是：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn19.gif"></center>
+(19)
+<p>這看來更合理，然後改寫等式 (18) 為：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn20.gif"></center>
+(20)
+<p><font size="3" color="#003366" face="Verdana"><b>What does it
+mean?</b></font><br>
+永遠別忘記表示法本身的意義，再說一次，我們試著讓表示法更簡潔，但必須要能夠被理解，
+像是簡化的版本，要能夠被理解為與原本泰勒級數相似。更明確來說，
+像是 <i>Dy<sub>n</sub></i> 的項會被理解為：</p>
+<p>&bull; 首先，取得 <i>v</i>(<i>t</i>) 的導函數</p>
+<p>&bull; 再來計算當 <i>t</i> =<i>t<sub>n</sub></i> 時，導函數的值</p>
+<p>看到這裡，讀者或許會問：「但是我該如何得到導函數？我現在只測量電壓變化」，
+真實世界中，我們的確不知道 <i>v</i>(<i>t</i>) 的導函數，因為我們不可能知道 [譯注：
+世事難料，誰知道下一秒車速會受到什麼新的變因影響？]。等式 (20) 看來就有點無用，但
+並非如此，讀者將會在稍後發現。</p>
+<p>直到現在，我們沒有發明什麼新東西。等式 (18) 就跟等式 (2) 一樣，只是看起來比較
+複雜罷了，但是我們可以速記等式 (18)，作稍後使用。</p>
+<p>Oliver Heaviside 大約在 1885 年發明「應用微積分」(operational calculus) 的一
+系列方法，對當時數學界引發很大的討論，純數學家叫囂說那些方法不嚴謹，沒辦法透過
+數學途徑來驗證完備性。隨著時間消逝，科學家持相反的意見，純數學家還是認定那些在
+數學上是不完備的，但物理學家與應用數學家欣然採納這方法，以便得到實用的答案。
+最後，某人建構一個完備的數學證明，終結了長久的辯論。</p>
+<p>在處理類似等式 (18) 與 (20) 時，Oliver Heaviside 注意到，儘管像是 D 的符號清楚
+表示特定的操作 operator，他還是可以對這些 operator 施加代數運算，就像一般的代數
+運算一般，而且他總是獲得正確的結果。這是應用微積分的中心思想。</p>
+<p>既然 Oliver Heaviside 沒辦法證明他的操作在數學上是完備的，讀者可以理解為何
+數學家過去對此相當敏感，但是 Oliver Heaviside 不介意，反正他總是得到答案。</p>
+<p><font size="3" color="#003366" face="Verdana"><b>Introducing
+<i>z</i></b></font><br>
+稍後才會探討等式 (20) 的益處，而現在，讓我們來看看 transformation [譯注：讀者
+看到 "z" 與 "transformation"，或許會聯想到離散時間系統的 Z-transform，將一個離散
+的訊號，從 time domain 轉換成 frequency domain，不過作者這裡並不直接述及這部份]。
+z operator 是一個處理離散資料的表格的 operator，而非處理連續系統的函數，其目標是
+在置放離散資料的表格中，一步接著一步推動「指標」，也因此，定義為：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn21.gif"></center>
+(21)
+<p>如果 <i>z</i> 讓我們在資料集合中，推進一個項目，讀者應該可以理解其相反的
+操作 <i>z</i><sup>-1</sup> 則是逆向推進一個項目。而逆向的操作會比正向 z operator 
+操作來得有用，因為我們跟電腦都不能預知未來，我們無法在上一次測量的資料流中，得知
+下一個項目。如果 <i>y<sub>n</sub></i> 表示上一次的測量，
+那麼 <i>y<sub>n</sub></i><sub>+1</sub> 還未發生。
+相反地，我們可輕易得知 <i>y<sub>n</sub></i><sub>-1</sub>, <i>y<sub>n</sub></i><sub>-2</sub>, 或者
+更前面的項目。我們所必須要做的，就是查看在資料流中，較舊的那些項目。控制系統一類
+的應用稱 <i>z</i><sub>-1</sub> 為 unit delay，因為該操作讓資料陣列反向一個或以上的
+位置。</p>
+<p>我們現在位於泰勒級數轉換為「羅塞達碑石」的最後一階段，替換等式 (21) 左邊的項為
+等式 (20)，我們得到：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn22.gif"></center>
+(22)
+<p>我們得到有趣的結果：<i>z</i> 與 <i>e<sup>hD</sup></i> 兩者都是 operator，對位於
+離散表格中的值 <i>y<sub>n</sub></i> 進行操作與運算，但是 operand 在等式兩側都是一致
+的，所以，透過 Heaviside 提出的方法，我們可以將 <i>y<sub>n</sub></i> 因數抵銷，這樣
+就得到「羅塞達碑石等式」的形式：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn23.gif"></center>
+(23)
+<p><font size="3" color="#003366" face="Verdana"><b>Manipulating
+operators</b></font><br>
+現在我們已經跨越了重要的藩籬，等式 (22) 顯示兩種不同對 <i>y<sub>n</sub></i> 的操作，
+而等式 (23) 則了無參數，只包含 operator 而無 operand，這是應用 Heaviside 提出的方法。
+他建議我們可以如代數運算般，處理 operator，而不必注意我們現在處理的到底為何，這真的不是
+很原始的概念。在這之後，我們思考像是 "+" 一類簡單的 operator，但是我們卻可以轉換成不同
+的型態，並保有處理對象的正確性，這是十分有用的。</p>
+<p>我們將在未來的專欄文章探討其他的使用，而目前來說，我將要給讀者看一個轉換，這也是
+為何我們不必為不知悉 <i>v</i>(<i>t</i>) 的導函數而擔憂。</p>
+<p>如果 Heaviside 提出的方法是正確的，而且我們可以對這些 operator 作處理，我們就可以
+解等式 (22) 的 <i>D</i>，得到：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn24a.gif"></center>
+<p>或</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn24b.gif"></center>
+(24)
+<p>先讓這些 operator 如過去一般，在 <i>y<sub>n</sub></i> 施加運算處理：</p>
+<center><img src=
+"http://i.cmpnet.com/embedded/gifs/2005/0512/1205Cren_eqn25.gif"></center>
+(25)
+<p>看看什麼出現在等式左邊： <i>y<sub>n</sub></i> 那些複雜的導函數 (或者，更精確來說，
+<i>t<sub>n</sub></i> 代入的值)，我們所擁有的，就是數值微分的公式。
+在 <i>v</i>(<i>t</i> 給定的測量值 <i>y<sub>n</sub></i>，我們可以藉由存放於離散資料
+表格中的操作，找出其導函數。</p>
+<p>看來很棒，不是嗎？當然，讀者一定想知道我們如何計算施加於 <i>y<sub>n</sub></i> 的 
+operator l<i>n</i>(<i>z</i>)，答案是：與我們在等式 (22) 所作的運算一樣，延展該函數
+為指數數列，現在就是在 <i>z</i> 的時間，並套用在 <i>y<sub>n</sub></i> 的操作上。</p>
+<p><font size="3" color="#003366" face="Verdana"><b>Where have we
+been?</b></font><br>
+讓我們回顧所作的一切，我從泰勒級數作出發，並且給予讀者足夠的範例，再來，我簡約成
+等式 (22) 的形式，這是透過泰勒級數與 <i>e<sup>x</sup></i> 指數級數之間的相似性。
+而後，藉由 Heavisid 的應用微積分的啟發，我給予讀者 "naked operator" 的形式，而這
+正是我們的「羅塞達碑石」。最後，我注意到，一旦我們得到這個形式，就可以用代數運算
+的方式，來對 operator 進行處理，這也導出其他關聯性。</p>
+<p>我將會在日後的專欄中，給予讀者看些例子，並且會探討等式 (25) 進行數值微分的應用，
+也會給讀者積分與內插的公式，這些都衍生自等式 (24)，再會！</p>
+<p><i><b>Jack Crenshaw</b> is a senior software engineer at General
+Dynamics and the author of</i> Math Toolkit for Real-Time
+Programming<i>, from CMP Books. He holds a PhD in physics from
+Auburn University. E-mail him at <a href=
+"mailto:jcrens@earthlink.net">jcrens@earthlink.net</a>.</i></p>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 February  4, 2006 08:29 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

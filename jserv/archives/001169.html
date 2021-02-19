@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 使用 VIA x86 的理由</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001168.html" title="透過 MIT roofnet Project 快速架設社區無線網路" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001170.html" title="Debian Sarge is out!" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001168.html">« 透過 MIT roofnet Project 快速架設社區無線網路</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001170.html">Debian Sarge is out! »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">June 06, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">使用 VIA x86 的理由</h3>
+
+為何要使用 VIA x86 的解決方案呢？除了 Jouston 之前提到的 [<a href="http://jouston.no-ip.com/archives/000147.html">Luke 現在只有手掌大</a>]，我想有以下幾個重點：<ul>
+  <li>快速的開發時程：<ul>根本不需要 cross-compilation，降低出錯機會。而且在 target 上面裝整套的開發工具也是相當方便，省下安裝 Remote debugger 繁複的時間與金錢投入。</ul></li>
+  <li>豐富的應用程式：<ul>大部分的時間根本不需要 porting，直接 copy 就能動了</ul></li>
+  <li>穩定可靠的硬體：<ul>雖然 ARM 與 MIPS 硬體相較便宜，但是穩定度可能不見得好，這時候 BSP 就必須花很多心思處理，也就是開發人員的素質要夠，甚至必須跟硬體廠商 co-work，而 VIA x86 的配備很標準，相關的 Linux drivers 甚至都以 BSD 或 GPL 釋出</ul></li>
+  <li>經濟實惠 -- 在出貨量不大時，考慮到前三者，我想結果很明顯</li>
+  <li>高效能</li>
+</ul>
+等等，最後一點是怎麼回事？VIA 的硬體效能不是跟 Intel 或 AMD 的硬體有些落差嗎？在解釋之前，我引述 Linux kernel hacker 兼前任 Debian kernel package maintainer -- Herbert Xu 的說法：<ul class="code" style="margin: 6px;">
+BTW, we can now pump 5Gb/s through the Crypto API using a 1Ghz VIA CPU with the Padlock so encryption is no longer necessarily the slowest piece along the pipeline :)
+</ul>
+那麼 VIA PadLock 的效能到底有多好呢？OpenBSD hacker --  Theo de Raadt 針對 AES 運算作了一份 benchmark [<a href="http://marc.theaimsgroup.com/?l=openbsd-misc&m=107577297024182&w=2">AES performance</a>]，引述其中 8192 bytes AES 運算的比較結果：<ul class="code" style="margin: 6px;">
+- 17339.74k on 1.6GHz amd64 in 32bit mode<br />
+- 14654.16k on P3/1GHz<br />
+- 735548.02k on VIA C3/1GHz<br />
+</ul>
+果然真是亮麗的表現，而之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/000818.html">使用 OpenSSL 的理由</a>] 也提到 OpenSSL 已經成功整合 VIA PadLock 的支援，所以已經可以 seamless 的發揮硬體效能，又加上 VIA Unichrome 規格的公開、VeXP 與 VeMP 兩大多媒體計畫的現身，以及 C7 的出爐，VIA x86 在多媒體的表現肯定也值得關注。<br />
+<br />
+喔，對了，週六拿到 VIA 送的 [<a href="http://www.viaembedded.com/product/epia_sp_spec.jsp?motherboardId=261">EPIA Mini-ITX</a>]，所以最近終於可以將 [<a href="http://jserv.sayya.org/kittenbox/">KittenBox</a>] 移轉到新硬體上，希望測試穩定後，就可以正式公開本計畫了，當然，這是個 Free and Open Source Software Project。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 June  6, 2005 10:40 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>Trackback 引用:</p>
+
+<p>Jserv's blog: 使用 VIA x86 的理由<br />
+http://junglezone.blogspot.com/2005/08/jservs-blog-via-x86.html</p>
+
+<p>Excerpt:<br />
+逛到 Jserv 的 blog... 看到這篇, 提到 Embedded 不一定要用 ARM 或 MIPS, VIA 也是個選擇.</p>
+
+<p>Weblog:<br />
+Jungle Zone</p>
+
+<p>Tracked:<br />
+August 18, 2005 07:14 PM</p>
+<span class="comments-post">由 <a href="http://junglezone.blogspot.com">積奇</a> 發表於</MTIfNonEmpty> August 18, 2005 07:17 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

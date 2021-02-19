@@ -1,0 +1,306 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: May 2010 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2010_04.html" title="April 2010" />
+
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2010_06.html" title="June 2010" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2010_04.html">« April 2010</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+| <a href="http://blog.linux.org.tw/~jserv/archives/2010_06.html">June 2010 »</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+
+
+<h2 class="date">May  9, 2010</h2>
+
+
+<div class="blogbody">
+<a name="002147"></a>
+<h3 class="title">gcc-vcg-plugin : 視覺化 GCC 內部結構</h3>
+
+對岸的 Eric Fisher 做了一個很棒的工具 [<a href="http://code.google.com/p/gcc-vcg-plugin/">gcc-vcg-plugin </a>]，本質上是個 GCC Plugin，可輸出 VCG 格式的圖例，作為分析 GCC 內部架構使用。筆者在 Ubuntu Maverick (10.10 開發中版本) 測試過，配合 gcc-4.5 作驗證，先寫一個測試小程式： (test.c)<pre class="code" style="margin: 6px;">
+void second() { }
+void top() { second(); }
+</pre>
+這的確沒什麼特別之處，只是想驗證 CFG (Call Flow Graph) 的樣貌。筆者安裝 [<a href="http://code.google.com/p/gcc-vcg-plugin/">gcc-vcg-plugin </a>] 時，指定 --prefix=/tmp/gcc-vcg-plugin 並預先安裝好 [<a href="http://code.google.com/p/vcgviewer/">vcgviewer</a>]，注意，依據 README 應安裝 Gtk+ 2.x 的版本。GCC 一開始是 GNU C Compiler，但後來陸續追加若干 Language front-end，發展為完整的 compiler driver，那我們就來看實際處理語意分析、生成組合語言的 'cc1' (在  'cc1' ˊ之前的 'cpp` 負責作 preprocessor，處理巨集替換)。<br />
+<br />
+原本 cc1 處理的方式為： (路徑依據 Ubuntu Maverick)<pre class="code" style="margin: 6px;">
+$ /usr/lib/gcc/i486-linux-gnu/4.5/cc1 test.c 
+ second top
+Analyzing compilation unit
+Performing interprocedural optimizations
+ &lt;visibility&gt; &lt;*free_lang_data&gt; &lt;early_local_cleanups&gt; &lt;whole-program&gt; &lt;inline&gt;Assembling functions:
+ second top
+Execution times (seconds)
+ TOTAL                 :   0.00             0.01             0.02                599 kB
+Extra diagnostic checks enabled; compiler may run slowly.
+Configure with --enable-checking=release to disable checks.
+</pre>
+GCC 4.4 以來引入 Plugin 的機制，就可在不修改編譯器的情況下，覆蓋編譯器的行為，而 [<a href="http://code.google.com/p/gcc-vcg-plugin/">gcc-vcg-plugin </a>] 就提供分析 GCC 內部結構的機制，於是我們配合 GDB 與 [<a href="http://code.google.com/p/gcc-vcg-plugin/">gcc-vcg-plugin </a>] 提供的 vcg.gdbinit 巨集指令：<pre class="code" style="margin: 6px;">
+$ gdb -x src/vcg.gdbinit -tty /dev/null -q \
+-args /usr/lib/gcc/i486-linux-gnu/4.5/cc1 test.c \
+-fplugin=/tmp/gcc-vcg-plugin/lib/gcc-vcg-plugin/vcg.so -O2
+</pre>
+注意到 "-fplugin=/tmp/gcc-vcg-plugin/lib/gcc-vcg-plugin/vcg.so" 這個選項，即告知 GCC 預先載入此特製的 Plugin，去改變原有編譯器行為。接著就會取得 "(gdb) " 的命令提示，比方說筆者想分析 GCC 的 "execute_one_pass"，只要設定中斷點，並稍候呼叫 [<a href="http://code.google.com/p/vcgviewer/">vcgviewer</a>] 顯示即可，流程如下：<pre class="code" style="margin: 6px;">
+(gdb) break execute_one_pass
+Breakpoint 1 at 0x8521c96
+(gdb) run
+Starting program: /usr/lib/gcc/i486-linux-gnu/4.5/cc1 test.c \
+-fplugin=/tmp/gcc-vcg-plugin/lib/gcc-vcg-plugin/vcg.so -O2
+
+Breakpoint 1, 0x08521c96 in execute_one_pass ()
+(gdb) view_cfg
+</pre>
+輸出的參考畫面：<br />
+<center><img src="http://jserv.sayya.org/gcc/gcc-vcg.png" width="778" height="420" /></center><br />
+即顯示 test.c 的 top-level function。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2010/05/gcc-vcg-plugin.html">12:29 PM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2147" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<h2 class="date">May  8, 2010</h2>
+
+
+<div class="blogbody">
+<a name="002146"></a>
+<h3 class="title">演講：Android 系統元件探討 (台中場)</h3>
+
+五月下旬，小弟將會在台中探討一個特別的主題「Android 系統元件探討」，希望對台灣許多對 Android 系統移植與產品化有興趣的朋友，能有些幫助。時間是 5 月 22 日，以下摘錄酷！學園的議程公告：[<a href="http://phorum.study-area.org/index.php/topic,61209.0.html">2010 五月份 SA@Taichung 雙連發 - Android 系統元件探討 (5/22 下午場) </a>]：<ul>
+    <li>議程簡介：儘管 Android 是相當火紅的專案，市面上有大量的書籍與資料探索 Android 應用程式開發，但鮮少有專文探討 Android 系統中若干經典的軟體元件，如 Dalvik VM, SurfaceFlinger, PixelFlinger, libagl, AudioFlinger, HAL 等項目，往往得在原始程式碼中探險許久，才會有些端倪。講者有幸能在系統層面耕耘一段時日，於是想藉由
+  Study Area 的場合，將這些系統元件作一簡要探索。</li>
+    <li>大綱：<ul>
+        <li>拆解 Android 架構：專注於系統層面</li>
+        <li>特化的 Dalvik VM</li>
+        <li>系統元件：SurfaceFlinger, PixelFlinger, libagl, AudioFlinger</li>
+        <li>跟想像有些落差的 Android HAL</li>
+    </ul></li>
+    <li>注意事項：<ul>
+        <li>本議程僅探索 Android 系統層面的元件，不探討 Android 應用程式開發</li>
+        <li>免費分享的初衷是引導更多熱心的朋友投入 ARM / Embedded / Android 系統開發，礙於時間與資源的限制，無法確保每處技術細節皆正確，但相當歡迎討論交流</li>
+    </ul></li>
+    <li>時間： 2010 年 05 月 22 日 (星期六) /   下午 02:00 ~ 05:00</li>
+    <li>地點： 逢甲大學 校本部 資訊電機館 102 教室（資電館正門進來右轉靠右第2間教室）</li>
+</ul>
+在從事 <a href="http://0xlab.org/">0xlab</a> 的 Android 客製化版本 [<a href="http://blog.linux.org.tw/~jserv/archives/2010/04/0xdroid_--_comm_1.html">0xdroid</a>] 開發後，小弟有幸能從 bionic (C Library), Dalvik VM, PixelFlinger (2D blitter), 一路接觸到 Android HAL 等鮮少有技術文件的項目。這些實際就是 Android 底層的基礎建設，包含頗多獨到的設計 (當然也有些特別的限制)，此議程即就小弟的認知，作為分享與探討，期待您的指教，謝謝！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2010/05/android_1.html">11:45 PM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2146" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+
+<div class="blogbody">
+<a name="002145"></a>
+<h3 class="title">演講：探索嵌入式 ARM 平台與 SoC (Part I + II) [台北場]</h3>
+
+去年九月份，很高興有機會在台南分享 [<a href="http://blog.linux.org.tw/~jserv/archives/002117.html">探索嵌入式 ARM 平台與 SoC -- Part I + Part II</a>]，而本月則會在台北講同個主題的更新版本議程，詳情可參考酷！學園公告 [<a href="http://phorum.study-area.org/index.php/topic,61210.0.html">2010 五月份的 SA@Taipei - 探索嵌入式 ARM 平台與 SoC (Part I + II)</a>]，時間定為 2010 年 05 月 15 日 (星期六)。<br />
+<br />
+以下摘錄議程公告資訊：<ul>
+  <li>簡介：雖然 ARM 嵌入式平台早已充斥於我們的日常生活，舉凡手機、導航系統等電子產品，但探討其原理架構的課程，往往有如英文諺語 "an arm and a leg" 背後的意思一般，所費不貲。講者嘗試整理過去幾年開發的心得，以心得分享的方式，免費介紹 ARM 硬體特性與原理，並以一個具體而微的即時多工作業系統 (以講者開發的 CuRT 為例)，作為探索架構與軟體驗證的對象。</li>
+  <li>議程大綱：<ul>
+    <li>ARM 架構快速瀏覽<ul>
+        <li>Architecture version vs. Implementation</li>
+        <li>ISA feature</li>
+    </ul></li>
+    <li>ARM SoC 平台<ul>
+        <li>整合多種不同功能的複雜IC 組合，針對特定的市場或應用需求</li>
+        <li>典型組成</li>
+    </ul></li>
+    <li>關鍵概念<ul>
+        <li>工作模式、暫存器組、系統狀態</li>
+     </ul></li>
+     <li>ARM 定址與組合語言概況<ul>
+         <li>ARM SoC 與 CuRT 的硬體啟動程序 (以 PXA255 為例)</li>
+         <li>ARM 中斷、例外處理，以及系統暫存器的對應</li>
+     </ul></li>
+  </ul></li>
+  <li>注意事項：<ul>
+    <li>本議程不包含實習，僅討論基礎概念，如有任何客製化需求，請與講者聯繫</li>
+    <li>免費分享的初衷是引導更多熱心的朋友投入 ARM/Embedded 系統開發，礙於時間與資源的限制，無法確保每處技術細節皆正確，但相當歡迎討論交流</li>
+    <li>議程進行所使用的軟體，列表如下：<ul>
+        <li>CodeSourcery ARM GNU Toolchain -- http://www.codesourcery.com/sgpp/lite/arm</li>
+       <li>Ubuntu LInux 9.10 + qemu 0.10.x 以上</li>
+       <li>CuRT -- http://jserv.sayya.org/kernel/curt-src-v1.tar.bz2</li>
+    </ul>
+  </li></ul>
+  <li>參考資訊：<ul>
+    <li>[<a href="http://www.slideshare.net/jserv/arm-and-soc-traning-part-i-overview">Part I 簡報</a>]</li>
+    <li>[<a href="http://infocenter.arm.com/">ARM Information Center</a>]</li>
+    <li>師大資訊系的嵌入式系統課程教材，使用 CuRT -- http://sites.google.com/site/embedded2009/introduction-to-curt-v1</li>
+    <li>OPENCSL -- http://opencsl.openfoundry.org/</li>
+    <li>[<a href="http://jserv.sayya.org/helloworld/">深入淺出 Hello World 系列演講</a>]</li>
+    <li>[<a href="http://jserv.sayya.org/debugger/">快快樂樂學 gdb</a>]</li>
+    <li>[<a href="http://www.slideshare.net/jserv/clang-usinggdb">以 GDB 重新學習 C 語言程式設計</a>]</li>
+  </ul></li>
+  <li>時間：2010 年 05 月 15 日 (星期六) 上午 09:00 ~ 12:00 / 下午 14:00 ~ 17:00</li>
+  <li>時間規劃： 6 hr</li>
+  <li>地點：國立臺灣大學進修推廣部-303 教室台北市羅斯福路四段107號 (位於羅斯福路上靠近基隆路口)</li>
+</ul>
+期待您的參與及指教，另外，之前也預告過今年的姊妹議程 [<a href="http://blog.linux.org.tw/~jserv/archives/002128.html">2010 年免費課程：親手打造 ARM 平台的 Boot Loader</a>]，則會在近期進行分享，也請多支持，謝謝！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2010/05/_arm_soc_part_i_1.html">10:41 PM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2145" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<h2 class="date">May  4, 2010</h2>
+
+
+<div class="blogbody">
+<a name="002144"></a>
+<h3 class="title">0xlab 徵求合作夥伴</h3>
+
+<center><img src="http://0xlab.org/imgs/0xlab.png" width="166" height="83" /></center><br />
+記得有句話說：「涓涓細流一旦停止喧嘩，浩浩大海也將終止呼吸」，姑且不論大環境如何，面對資訊技術的巨變，選擇以步伐聲代替嘆息，這是 [<a href="http://0xlab.org/">0xlab</a>] 的堅持，我們在台灣從事軟體開發，並投身於 open source 事業。自去年 4 月 27 日創立的一年以來，我們很慶幸一直都能持續參與 open source 專案開發，無論是 Android 抑或相關的項目 (詳細可參見 [<a href="http://0xlab.org/projects.html">0xlab::projects</a>] 列表)，同時也積極與若干硬體大廠合作，甚至還和其中幾家締結 source code level 的協同開發。而今，[<a href="http://0xlab.org/">0xlab</a>] 希望能找到更多一同合作打拼的工作夥伴。<br />
+<br />
+或許我們就是一顆顆生命力頑強的種子，從不詛咒著貧瘠的土壤，相反地，透過不放棄努力與持續追求，試著融入當今的環境，這大概是徵才的最重要訴求：對軟體開發抱持熱情，並相信 open source 的資訊服務轉型契機。稍早的簡報 [<a href="http://blog.linux.org.tw/~jserv/archives/2010/04/0xdroid_--_comm_1.html">0xdroid -- community-developed Android distribution by 0xlab</a>] 大致談過我們的研發方向、態度，以及相關的技術水平，敬邀更多合作夥伴的加入。與我們合作可有相當多元的方式，無論是純粹 open source 專案參與開發者、短期專案合作，或者長期技術營運投入等等，皆可提出。<br />
+<br />
+以技術職務來說，[<a href="http://0xlab.org/">0xlab</a>] 現有三個預期的領域：<ul>
+    <li>Kernel Hacker: 主要是 Linux Kernel 開發，包含 device driver, performance / power optimization, boot loader 調整, 嶄新核心開發工具引入等等</li>
+    <li>Application Framework Developer: Android framework, UI customizations, Automated Testing Suite, stability / performance tuning 等等</li>
+    <li>System / Toolchain Engineer: 維護 GNU Toolchain 與相關的系統軟體 (如 LLVM)，熟悉 ARM 架構者為佳</li>
+</ul>
+歡迎對上述任一項開發有興趣的朋友，與我們聯繫，請多利用 email 信箱： &lt;contact @ 0xlab.org&gt; 或私下與小弟討論，謝謝！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2010/05/0xlab.html">10:46 PM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2144" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<h2 class="date">May  2, 2010</h2>
+
+
+<div class="blogbody">
+<a name="002143"></a>
+<h3 class="title">演講：以 GDB 重新學習 C 語言程式設計 (元智大學)</h3>
+
+繼稍早在成功大學作 [<a href="http://blog.linux.org.tw/~jserv/archives/2010/04/_gdb_c_1.html">以 GDB 重新學習 C 語言程式設計</a>] 的免費教育訓練後，五月 5 日也將在元智大學作系列演講，大致的課程規劃如之前，講究「作中學」，並全程使用 GDB 去動態分析與修改程式碼，以筆者開發的 [<a href="http://code.google.com/p/eserv/">eServ</a>] 作為探討對象。<br />
+<br />
+關於此議程的資訊，請參考 [<a href="http://cse.tw/982class/">2010 Spring CSE.TW資訊課程</a>]，這是由一群有熱情的元智大學學生發起的項目，多次分享探討軟體開發的議題，有幸能受邀在此演講，衷心期望能對該校學生有所啟發。以下摘錄報名資訊：<ul>
+  <li>主題：以 GDB 重新學習 C 語言程式設計</li>
+  <li>時間：2010/05/05 18:30-20:30</li>
+  <li>地點：元智大學一館 R1401A</li>
+</ul>
+基於時間考量，可能會刪減之前在成功大學的案例探討，並添增程式分析技巧的項目。期待您的指教，謝謝！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2010/05/_gdb_c_2.html">11:22 PM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2143" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+
+</body>
+</html>

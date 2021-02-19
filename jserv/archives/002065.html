@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 《The Art of Debugging》第一章開放下載</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002064.html" title="「我是軟體 -- 那些處理器教我的事」簡報上線" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002066.html" title="COINS 編譯器架構" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002064.html">« 「我是軟體 -- 那些處理器教我的事」簡報上線</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002066.html">COINS 編譯器架構 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">September 10, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">《The Art of Debugging》第一章開放下載</h3>
+
+<center><img src="http://jserv.sayya.org/debugger/debugging_cover.jpg" width="363" height="480" /></center><br />
+由 LinuxDevices.com 的新聞 [<a href="http://www.linuxdevices.com/news/NS5214776990.html">Free book chapter explains debugging</a>]，得知 Norman Matloff 與 Peter Jay Salzman 的大作《The Art of Debugging》已開放下載第一章的內容，正巧就是專門探討開放源碼的偵錯除錯工具，標題為〈Some Preliminaries For
+ Beginners And Pros〉。<br />
+<br />
+除了前述的新聞內容提供的下載位址，筆者則做了一份複製 [<a href="http://jserv.sayya.org/debugger/debugging_samplechapter.pdf">debugging_samplechapter.pdf</a>] (17 Mb)。這章提到三個優秀的工具：<ul>
+  <li>GDB : 還需要多談嗎？史上最強大的跨平台 Debugger</li>
+  <li>DDD (Data Display Debugger)</li>
+  <li>Eclipse CDT (透過 GDB-MI)</li>
+</ul>
+撇開工具能夠協助我們達到多大的功效，不妨先看看作者在 1.3.2 段落的精湛介紹：<ul class="code" style="margin: 6px;">
+<b>Of What Value Is a Debugging Tool for the Principle of Confirmation?</b><br />
+<br />
+The classic debugging technique is to simply add trace code to the program to print out values of variables as the program executes, using printf() or cout statements, for example. You might ask, “Isn’t this enough? Why use a debugging tool like GDB, DDD, or Eclipse?”<br />
+<br />
+First of all, this approach requires a constant cycle of strategically adding trace code, recompiling the program, running the program and analyzing
+the output of the trace code, removing the trace code after the bug is fixed, and repeating these steps for each new bug that is discovered. This is highly time consuming and fatigue making. Most importantly, these actions distract you from the real task and reduce your ability to focus on the reasoning process necessary to find the bug.<br />
+<br />
+In contrast, with graphical debugging tools like DDD and Eclipse, all you have to do in order to examine the value of a variable is move the mouse
+pointer over an instance of that variable in the code display, and you are shown its current value. Why make yourself even wearier than necessary,
+for longer than necessary, during an all-night debugging session by doing this using printf() statements? Do yourself a favor and reduce the amount of time you have to spend and the tedium you need to endure by using a debugging tool.<br />
+<br />
+You also get a lot more from a debugging tool than the ability to look at variables. In many situations, a debugger can tell you the approximate location of a bug. Suppose, for example, that your program bombs or crashes
+with a segmentation fault, that is, a memory access error. As you will see in our sample debugging session later in this chapter, GDB/DDD/Eclipse can immediately tell you the location of the seg fault, which is typically at or near
+the location of the bug.<br />
+<br />
+Similarly, a debugger lets you set watchpoints that can tell you at what point during a run of the program the value of a certain variable reaches a
+suspect value or range. This information can be difficult to deduce by looking at the output of calls to printf().
+</ul>
+雖然是老生常談了，但「多想兩分鐘，您可以更開心地編寫、開發程式」，稍後的段落中，即可窺見善用除錯工具，對整體開發的效益。而，現在視覺化呈現也相當優秀，何不更深入採用呢？<br />
+
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 September 10, 2008 08:41 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>哇，這本書才剛發行唷，Amazon沒有書評，應該是好書吧。ddd好像很好玩的樣子，謝謝前輩的分享。<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;none&#64;yahoo&#46;com">someguest</a> 發表於</MTIfNonEmpty> September 10, 2008 09:41 PM</span>
+</div>
+<div class="comments-body">
+<p>學長，typo：優繡的工具</p>
+<span class="comments-post">由 <a href="http://kidwm.net/">WM</a> 發表於</MTIfNonEmpty> September 11, 2008 12:19 AM</span>
+</div>
+<div class="comments-body">
+<p>@WM,</p>
+
+<p>Fixed now.  Thanks!</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> September 11, 2008 08:56 AM</span>
+</div>
+<div class="comments-body">
+<p>"達到多到的功效" may be "達到多大的功效"?</p>
+
+<p>:)</p>
+<span class="comments-post">由 <a href="mailto&#58;hsiaoting&#46;wang&#64;gmail&#46;com">Hsiao-Ting</a> 發表於</MTIfNonEmpty> January 13, 2010 08:48 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2065" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

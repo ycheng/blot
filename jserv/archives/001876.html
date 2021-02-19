@@ -1,0 +1,317 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: sizeof 在語言層面的陷阱</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001875.html" title="GPE Phone Edition" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001877.html" title="OSDC.tw 2007 - RT nanokernel for Embedded Linux" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001875.html">« GPE Phone Edition</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001877.html">OSDC.tw 2007 - RT nanokernel for Embedded Linux »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February 12, 2007</h2>
+
+<div class="blogbody">
+
+<h3 class="title">sizeof 在語言層面的陷阱</h3>
+
+小弟與許多開發者一樣，在低階程式設計時使用 C 語言、開發應用程式時使用 C++ 或 C#，而這三種語言在某些關鍵字與運算子有雷同，但這也是造成潛在錯誤的原因。sizeof 就是 C / C++ / C# 等三種程式語言所共有的 operator (注意：不是 function)，顧名思義就是用以取得數值型別的位元組大小，大量用在 macro 定義中，比方說計算陣列 A 的元素個數，就可以這麼寫：<br />
+<pre class="code" style="margin: 6px;">
+#define getNumberInArray(a) \
+	(sizeof(a) / sizeof(a[0]))
+</pre>
+這是相當常見的 C/C++ 技巧，但越是簡單的東西，越容易令人忽略細節，我們就來看看在不同語言層面中，sizeof 會有什麼差異。在 ANSI C 規格中，sizeof(char) 被嚴格定義為 1 個 size_t，所以考慮以下程式碼：<br />
+<pre class="code" style="margin: 6px;"><span class="keyword">#include</span> &lt;stdio.h&gt;
+<span class="keyword">int</span> main()                                                                                          
+{
+    printf(<span class="literal">"%d, %d\n"</span>, <span class="keyword">sizeof</span>(<span class="literal">'J'</span>), <span class="keyword">sizeof</span>(<span class="keyword">char</span>));
+    <span class="keyword">return</span> 0;
+}</pre>
+輸出會是什麼呢？編譯並執行看看：<br />
+<pre class="code" style="margin: 6px;">
+$ gcc -o sizeof sizeof.c
+$ ./sizeof 
+4, 1
+</pre>
+第二項的輸出 "1" 乃是依據 ANSI C 規格，不過第一項就比較有意思，當我們用 C++ compiler 重新編譯並執行時：<br />
+<pre class="code" style="margin: 6px;">
+$ g++ -o sizeof sizeof.c
+$ ./sizeof
+1, 1
+</pre>
+所以同樣是 sizeof('J')，在 C 與 C++ 語言就有不同的表徵，C++ 設計的本意是與 ANSI C 相容，但實際上存在些微的差異，這裡就是一個好例子。我們可從以上輸出得知，C++ 中 sizeof('J') 等同於 sizeof(char)，所以我們看到輸出 "1"，但是對於 C 語言來說，有著 "default to int" 的語意，所以等同於計算 sizeof(int)，又在 32-bit 硬體架構來說，大致會輸出 "4"，而 C# 與 C++ 對此有類似的表現，不過還是得考慮 sizeof('x') 或 sizeof(L'x') 的不同行為 (多國語文的 multi-character)。<br />
+<br />
+再來作一個實驗：<br />
+<pre class="code" style="margin: 6px;"><span class="keyword">#include</span> &lt;stdio.h&gt;
+<span class="keyword">struct</span> Empty { } empty;
+<span class="keyword">int</span> main()
+{
+        printf(<span class="literal">"sizeof(empty) = %d\n"</span>, <span class="keyword">sizeof</span>(empty));                                              
+        <span class="keyword">return</span> 0;
+}</pre>
+先用 C compiler 編譯並執行：<br />
+<pre class="code" style="margin: 6px;">
+$ gcc -o sizeof sizeof2.c
+$ ./sizeof 
+sizeof(empty) = 0
+</pre>
+計算一個沒有內容的 struct，其 sizeof 為 "0"，似乎很合理，那麼 C++ 呢？<br />
+<pre class="code" style="margin: 6px;">
+$ g++ -o sizeof sizeof2.c
+$ ./sizeof 
+sizeof(empty) = 1
+</pre>
+奇怪，GNU G++ 竟然輸出 "1"，這是為什麼呢？依據 Standard C++ language definition 的說法：<ul class="code" style="margin: 6px;">
+A class with an empty sequence of members and base class objects is an empty class. 
+Complete objects and member subobjects of an empty class type shall have nonzero size.
+</ul>
+這也是說，沒有任何一個 complete object 可有 zero size，任何空的 structure 空間至少為 "1"，除非是 base class (pure virtual)，因為那不是 complete object。這個定義是有實際需求的，考慮以下程式碼：<pre class="code" style="margin: 6px;">
+struct Bar { };
+struct Foo {
+    struct Bar a[2];
+    struct Bar b;
+};
+Foo f;
+</pre>
+我們可以發現，在 f 這個 object 的 member：a 與 b，如果 sizeof(Bar) = 0，那麼 f.a[] 與 f.b 是否就有相同的 address 呢？為了避免歧異性，C++ 標準審議委員決定禁止 zero-sized addressable objects 的存在，所以基於 C++ 技術上考量，freestanding objects 必須有 non-zero size (非零大小)，這是 C 與 C++ 語言層面的差異之一。<br />
+<br />
+當然 sizeof 既然是個 operator，可作的變化可多了，比方說觀察 object value assign 的變化，不過這裡就不列舉了，因為 sizeof 大多出現於與低階 I/O 或記憶體操作有關之處，不然就是在 header file 中的 macro，這都是隨著專案需求，很可能一下子用 C compiler，而轉眼改用 C++ compiler 編譯的程式碼，但倘若我們忽視語言層面的差異，將會造成許多難以偵測的錯誤，筆者恰好在日前的專案遇過，於是稍加紀錄，慎之。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 February 12, 2007 04:02 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>的確是個很難注意的陷阱...不過jserv會用c#啊！</p>
+<span class="comments-post">由 <a href="mailto&#58;k3&#64;maillinator&#46;com">k3</a> 發表於</MTIfNonEmpty> February 12, 2007 08:57 PM</span>
+</div>
+<div class="comments-body">
+<p>To k3<br />
+哈哈，我猜跟 Mono Project 有關。</p>
+<span class="comments-post">由 <a href="http://yukuan.blogspot.com">York</a> 發表於</MTIfNonEmpty> February 12, 2007 10:15 PM</span>
+</div>
+<div class="comments-body">
+<p>喔喔! 原來有這樣的陷阱! 真是長見識 -.-</p>
+<span class="comments-post">由 <a href="mailto&#58;easonlee&#64;gmail&#46;com">Eason</a> 發表於</MTIfNonEmpty> February 13, 2007 11:59 AM</span>
+</div>
+<div class="comments-body">
+<p>考慮 typeof(Bar) == 0, 遇到這種狀況會怎樣?</p>
+
+<p>struct Bar { };</p>
+
+<p>...<br />
+  Bar b[20];<br />
+  Bar *i = b, *j = b+20;  /* i == j ?? */<br />
+...</p>
+<span class="comments-post">由 <a href="mailto&#58;palatis&#64;gmail&#46;com">Palatis</a> 發表於</MTIfNonEmpty> February 13, 2007 01:43 PM</span>
+</div>
+<div class="comments-body">
+<p>上了一課，不過想問 Jserv ：「這篇文章是否可以給我轉貼？」</p>
+<span class="comments-post">由 <a href="http://blog.pixnet.net/pinglunliao">PingLunLiao</a> 發表於</MTIfNonEmpty> February 13, 2007 09:44 PM</span>
+</div>
+<div class="comments-body">
+<p>To PingLunLiao,</p>
+
+<p>歡迎轉貼，只要指明出處以作更正之參考即可，謝謝！</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> February 14, 2007 09:15 AM</span>
+</div>
+<div class="comments-body">
+<p>@Palatis:<br />
+test.c:<br />
+--<br />
+#include <br />
+typedef struct { } Bar;</p>
+
+<p>int main()<br />
+{<br />
+	Bar b[20];<br />
+	Bar *i = b, *j = b+20; /* i == j ?? */</p>
+
+<p>	printf("sizeof(b) = %d\ni = %d\nj = %d\n", sizeof(b), i, j);<br />
+	return 0;<br />
+}<br />
+--<br />
+J:\>gcc test.c</p>
+
+<p>J:\>a<br />
+sizeof(b) = 0<br />
+i = 2293596<br />
+j = 2293596</p>
+
+<p>J:\>g++ test.c</p>
+
+<p>J:\>a<br />
+sizeof(b) = 20<br />
+i = 2293576<br />
+j = 2293596</p>
+<span class="comments-post">由 <a href="http://scrappedblog.blogspot.com/">roytam1</a> 發表於</MTIfNonEmpty> February 25, 2007 10:07 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1876" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

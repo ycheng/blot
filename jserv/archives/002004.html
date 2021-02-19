@@ -1,0 +1,352 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Buffon 投針試驗：當圓周率計算遇上機率論</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002003.html" title="QtWebKit: 將 Web 2.0 技術帶入行動通訊的系統設計" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002005.html" title="Qt4/Character Map - 查看字型的好用工具" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002003.html">« QtWebKit: 將 Web 2.0 技術帶入行動通訊的系統設計</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002005.html">Qt4/Character Map - 查看字型的好用工具 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">April 04, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Buffon 投針試驗：當圓周率計算遇上機率論</h3>
+
+<center><img src="http://jserv.sayya.org/misc/Givenchy-PI.jpg" width="371" height="256" /></center><br />
+1999 年，一向以優雅高檔著稱的 [<a href="http://www.givenchy.com/">Givenchy</a>]，推出由知名設計師 Serge Mansau 所設計的「π香水」(pi)，據稱，是一款令人精神充沛的木質味香水，瓶身造型展現π的精神：無止盡的學習與探索，而不規則的密度感、基於琥珀色調的雕刻圖案，使其得以在眾多男用香水中脫穎而出。是的，計算圓周率一直是令人著迷的議題，從古埃及至今，無數專家學者乃至業餘數學家前仆後繼地投入，1777 年，Georges-Louis Leclerc，Comte de Buffon (1707—1788) 提出嶄新的途徑，將圓周率這等幾何問題出發的計算，巧妙地以機率統計原理來表示，自此，開創使用隨機數值處理典型數學表示的先河，我們就來看看傳奇性的 Buffon 投針試驗。<br />
+<br />
+法國數學家、科學家、《自然史》作者，也是風格家的 Comte de Buffon 在 1777 年某日，邀請賓客齊聚大廳，共襄盛舉一次試驗活動。古稀之年的 Buffon 鋪好一張白紙，其上預先畫好了一條條等距的平行線，接著取出一大把質量均等、長度為平行線間距一半的小針，待賓客就座後，Buffon 發言道：<ul class="code" style="margin: 6px;">
+「煩請各位將這些小針一根一根扔往白紙上，並且告知扔下的針是否與紙上平行線相交」
+</ul>
+<center><img src="http://jserv.sayya.org/misc/buffon-pin.gif" width="215" height="131" /><br />
+(示意圖)</center><br />
+客隨主意，雖摸不著頭緒，但也一個個加入了試驗的行列。一把小針扔完了，把它撿起來又扔，而 Buffon 則在一旁不停地記數著，忙碌了將近一個鐘頭。最後，Buffon 高聲宣佈：<ul class="code" style="margin: 6px;">
+「各位賓客，依據我的紀錄，剛才的投針結果，共投針 2212 次，其中與平行線相交有 704 次。而總數 2212 與相交數 704 的比值為 3.142。」
+</ul>
+說到這裡，Buffon 故作停頓，神秘張望賓客，接著說：<ul class="code" style="margin: 6px;">
+「這就是圓周率π的近似值！」
+</ul>
+Buffon 利用平凡不過的除法，計算出圓周率的近似值，並宣稱投針的數目越多，圓周率的近似值將會越精準，這就是數學史上著名的 Buffon 投針問題，記載於其著作《機率算術試驗》(1777 年)，此外，Buffon 也試著將機率應用於審判場合，比方說，若能對每個審判員規定某個足以理解真相或說出真相機會的數值，即可算出法庭作出正確判決的機會，換言之，就是「審判的概率」(Probabilite des jugements)。<br />
+<br />
+圓周率π在這種看似雜亂的場合出現，實在出乎意料。一個直觀的理解途徑可透過物理上的對應，取一根鐵絲，將其彎成一個圓圈，適度剪裁使其直徑恰等於平行線間距離 d。於是乎，對於這個圓圈來說，無論如何扔下，都將和平行線有兩個交點。也就是說，若圓圈扔下的次數為 n，那麼，相交的交點總數必為 2n。接著，我們展開物理的形變，將圓圈拉開、拉直，這樣就成為長度為 πd 的鐵絲，再將這條鐵絲扔下，與平行線相交的情況就複雜許多，由於 1 < π < 4，我們可歸納交點數量為 4 個 (跨越三個間隔)、3 個 (跨越兩個間隔)、2 個 (跨越一個間隔)，1 個 (不跨越間隔，僅一端碰觸平行線)，以及 0 個 (幾乎與平行線平行)。注意，在形變的過程中，鐵線在圓圈和直線這兩個型態的長度同為 πd，根據機會均等的原理，在同等大量的投擲下，兩者與平行線組交點的總數應有一致的期望值，換言之，當長為 πd 的鐵絲扔下 n 次，其與平行線相交的交點總數應接近 2n。<br />
+<center><img src="http://jserv.sayya.org/misc/buffon-expect.jpg" width="200" height="150" />(示意圖：考慮AB與XY這兩個間距)</center><br />
+當正多邊形之邊數趨於無限多時，極限就是正圓，在概念上來說，也就是上述產生形變的小針，而小針觸碰線的次數，依據機率統計原理，應比照特定之比例。接著，我們將鐵線切為長度為 (1/2)d 的小線，在物理上大量的扔放小線的行為來說，小線碰線的期望值 m 應保持等比例，也就是說：<ul class="code" style="margin: 6px;">
+πd : (1/2)d ≈ 2n : m
+</ul>
+這也是 Buffon 投針試驗中所作的參數配置，約分後可得漂亮的式子：<ul class="code" style="margin: 6px;">
+π ≈ n / m
+</ul>
+在古典數學中，求圓周率之值是幾何問題，而 Buffon 卻以此拍案叫絕的方式，以機率方法打通兩個看似風馬牛不相及的領域，成為幾何概率的典型例子。此外，Buffon 還翻譯了牛頓的著作，並探討牛頓和萊布尼茨發現微積分的歷史，集多年研究成果編成巨著《自然史》(四十四卷，1749—1808) ，原定出版五十卷，Buffon 生前僅出版三十六卷，後八卷由他的學生完成，其中包含物種進化的思想，推動了古生物學的發展。涉獵廣泛的 Buffon 也是第一個對地質史劃分時期的科學家，首次提出太陽與慧星碰撞產生行星的理論。<br />
+<br />
+近代科學的發展下，原本壁壘分明的個別人文、科學、哲學思想領域走向空前的大融通，匯流而成當代種種巨大變革，一如 Buffon 首次打破機率與幾何學的藩籬。數學領域的變遷也受到這等啟蒙，1904 年，R·Chartres 甚至提出另一種表示法：若寫下任意兩個整數，測這兩者互質的機率為 6 / π^2。<br />
+<br />
+我們以更嚴謹的態度分析這個實驗結果，分析投下的小針與平行線相交的關係圖，如下：<br />
+<center><img src="http://jserv.sayya.org/misc/buffon-fig.png" width="400" height="545" /></center><br />
+其中，針與平行線的銳角交角為θ，針的中點到最近一條直線的距離為 Y。我們可得之，若 Y ≦ d/2 * sinθ，則小針壓線，反之，若 Y ＞ d/2 * sinθ，則小針不壓線。進一步來看，在上圖下方中，點 (θ, Y) 若落於矩形中的曲線下部分，針就壓線，反之就是不壓線，因此，針壓線的機率就是曲線下部分在長方形中所占的比例。經過分析後，我們就可著手以機率統計理論來探討。<br />
+<br />
+先來看看 pdf (probability density function) 的表示。Y 在 0 到 d/2 之間的 pdf 為：<br />
+<center><img src="http://jserv.sayya.org/misc/math/buffon-fig-1.png" width="43" height="41" /></center><br />
+而 θ 在 0 與 π/2 之間的 pdf 為：<br />
+<center><img src="http://jserv.sayya.org/misc/math/buffon-fig-2.png" width="41" height="42" /></center><br />
+既然 Y 與 θ 為獨立之隨機數值，換言之，獨立事件之機率為其乘積，表示為：<br />
+<center><img src="http://jserv.sayya.org/misc/math/buffon-fig-3.png" width="81" height="41" /></center><br />
+而由前述分析可得，針與平行線相交的充要條件為：<br />
+<center><img src="http://jserv.sayya.org/misc/math/buffon-fig-4.png" width="100" height="41" /></center><br />
+我們知道，曲線下的面積就是針與平行線相交的機率，透過積分可知：<br />
+<center><img src="http://jserv.sayya.org/misc/math/buffon-fig-5.png" width="253" height="44" /></center><br />
+所以當 n 個細線被扔下，而其中 h 個與平行線相交，其機率為：<br />
+<center><img src="http://jserv.sayya.org/misc/math/buffon-fig-6.png" width="67" height="44" /></center><br />
+簡化後即可求得圓周率：<br />
+<center><img src="http://jserv.sayya.org/misc/math/buffon-fig-7.png" width="74" height="41" /></center><br />
+經過幾百年的演繹與探討，Buffon 投針試驗逐漸演化為一種數值方法的前身：「蒙地卡羅方法」(Monte Carlo method)，也就是透過利用亂數取樣 (random sampling) 模擬來解決數學問題。第二次世界大戰期間，Monte Carlo 方法被系統性地應用於科學研究中，誕生了 MANIAC (Mathematical Analyzer, Numerical Integrator and Computer)，而 Stanislaw Ulam、John von Neumann、Nicholas Metropolis、Enrico Fermi 等人發展法一種基於樣本統計的方法，來解決關於在原子彈設計中，中子隨機擴散問題和 Schrodinger 等式的特徵值估計問題。該方法的原理最初是 Stanislaw Ulam 闡述的，後來由 John von Neumann 深入研究，於 1949 年發表一篇名為 "The Monte Carlo method" 的論文而聞名，當然，到了進入電腦時代，這個方法才得以由原本手動產生亂數來解決問題，變成實際性的數值方法。<br />
+<br />
+Monte Carlo 方法是由 Nicholas Metropolis 所命名，取自其亂數機率有如賭博一般，而恰似北非最西側的摩洛哥首都 Monte Carlo，也就是知名賭城，種種奇豔動人的賭場生活寫照。所有具有隨機效應的過程，均可能以 Monte Carlo 方法大量模擬單一事件，並藉由統計上平均值，獲得某設定條件下實際最可能測量值，更廣泛來說，自然界裏的布朗運動、電波的噪音、基因的突變、交通即時路況等等，無處不含有隨機的變化，均有可適用的場合。<br />
+<br />
+最後，且讓我們實地模擬 Monte Carlo 方法始祖的 Buffon 投針，以下是小弟的 C 語言小實驗：[<a href="http://jserv.sayya.org/misc/buffon.c">buffon.c</a>]<br />
+<pre class="code" id="codemain" style="margin: 6px;"><span class="comment">/**
+ * buffon.c - Simulating Buffon's Needle Problem
+ *
+ * Authored by Jim Huang &lt;jserv.tw@gmail.com>
+ * Public Domain.  Runtime confirming to POSIX.1-2001.
+ */</span><span class="keyword">
+#include</span> &lt;stdio.h><span class="keyword">
+#include</span> &lt;stdlib.h><span class="keyword">
+
+#include</span> &lt;math.h><span class="keyword">
+#include</span> &lt;time.h>
+&nbsp;
+<span class="keyword">int</span> main( <span class="keyword">int</span> argc, <span class="keyword">char</span> **argv )
+{
+	<span class="keyword">int</span> i;
+	<span class="keyword">int</span> ntrial = 99991; <span class="comment">/* the largest prime number &lt; 100000 */</span>
+
+	<span class="keyword">int</span> crossing = 0;
+	srand48( time( NULL ) );
+&nbsp;
+	<span class="comment">/*
+	 * ----------------------------------------
+	 * ||
+	 * || 1                         
+	 * ||                / ) Theta   ||x
+	 * -----------------/----------------------
+	 * x &lt;= 1/2 * sin( Theta ), when needles cross a crack.
+	 */</span>
+	<span class="keyword">for</span> (i = 0; i &lt; ntrial; i++) {
+		<span class="keyword">double</span> theta = M_PI * drand48(); <span class="comment">/* 0 &lt;= Theta &lt;= PI */</span>
+
+		<span class="keyword">double</span> x = drand48(); <span class="comment">/* 0 &lt;= x &lt; 1 */</span>
+		<span class="keyword">if</span> (x &lt;= 0.5 * sin(theta))
+			crossing++;
+	}
+	printf(<span class="literal">"Needles dropped on floor = %8d \n"</span>, ntrial);
+	printf(<span class="literal">"Those that cross a crack = %8d \n"</span>, crossing);
+	printf(<span class="literal">"\tPI Estimate: "</span>);
+	printf(<span class="literal">"%0.5f \n"</span>, (<span class="keyword">double</span>)ntrial / (<span class="keyword">double</span>)crossing);
+	<span class="keyword">return</span> 0;
+}</pre>
+我得到最接近的輸出為：<pre class="code" id="codemain" style="margin: 6px;">
+Needles dropped on floor =    99991 
+Those that cross a crack =    31830 
+        PI Estimate: 3.14141
+</pre>
+其中 99991 是五位數中最大的質數，在隨機試驗中沒有特別的意義。行文至此，彷彿聞到「π香水」給予人充沛與活力的美妙體驗，謎樣的數學，謎樣的π。<br />
+<br />
+參考資料：<ul>
+  <li>Wikipedia [<a href="http://en.wikipedia.org/wiki/Buffon%27s_needle">Buffon's needle</a>]</li>
+  <li>George Reese - [<a href="http://www.mste.uiuc.edu/reese/buffon/">Buffon's Needle : An Analysis and Simulation</a>]</li>
+</ul>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 April  4, 2008 04:32 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>谢谢你的介绍，以前知道这种求 pi 的方法，不过一直不知道为什么，现在明白了。</p>
+
+<p>这个式子 m ≈ (2ln) / (πd) 里的 l 应该还是大写的吧。<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;cyfdecyf&#64;gmail&#46;com">Chen Yufei</a> 發表於</MTIfNonEmpty> April  4, 2008 06:48 PM</span>
+</div>
+<div class="comments-body">
+<p>有趣！將有趣的想法實做佩服！</p>
+
+<p>不過有一個小地方不解</p>
+
+<p><br />
+其中，針與平行線的銳角交角為θ，針的中點到最近一條直線的距離為 Y。我們可得之，若 Y ≦ l/2sinθ，則小針壓線，反之，若 Y ＞ l/2sinθ，則小針不壓線。進一步來看，在上圖下方中，點 (θ, Y) 若落於矩形中的曲線下部分，針就壓線，反之就是不壓線，因此，針壓線的機率就是曲線下部分在長方形中所占的比例。經過分析後，我們就可著手以機率統計理論來探討。</p>
+
+<p><br />
+Y ≦ l/2sinθ , Y ＞ l/2sinθ 這邊這兩個式子有點百思不解</p>
+
+<p>是否是 等號右邊少了個 d</p>
+
+<p>Y ≦ d*1/2sinθ</p>
+
+<p>,and</p>
+
+<p>Y ＞ d*l/2sinθ</p>
+
+<p>或者您假設在這邊 d = 1 ?</p>
+
+<p>PS: 希望會來還可以看到更多對自然的觀察與瞭解後自己實做的例子！</p>
+<span class="comments-post">由 <a href="mailto&#58;suglwu&#64;gmail&#46;com">suglwu</a> 發表於</MTIfNonEmpty> April  4, 2008 07:12 PM</span>
+</div>
+<div class="comments-body">
+<p>>> 其中 k 為比例係數。接著考慮到 L = πk 的特例，從前面的物理原理可知：</p>
+
+<p>特例應該是 L = πd<br />
+:)</p>
+<span class="comments-post">由 <a href="mailto&#58;gohiei&#64;nttu&#46;edu&#46;tw">gohiei</a> 發表於</MTIfNonEmpty> April  4, 2008 07:57 PM</span>
+</div>
+<div class="comments-body">
+<p>有個疑惑 ...<br />
+接著考慮到 L = πk 的特例。 這邊既然已經說使用 L = πk(d??) 這個特例了，那以後的推導都是建立在這個前提下。因此，<br />
+π ≈ (2Ln) / (dm) ， 也應該是在剛剛那個前提下所推導出來的結果，但是後來卻直接用 L = d/2 去產生π ≈ n / m這個式子，有點奇怪。推導過程中程中，有哪一個步驟消去 L = πk(d??)這個前提假設嗎??  L = d/2 和條件的 L = πk(d??) 應該是不等吧?? 是我漏看哪邊了嗎??</p>
+<span class="comments-post">由 <a href="mailto&#58;r93072&#64;csie&#46;ntu&#46;edu&#46;tw">GeorgeKang</a> 發表於</MTIfNonEmpty> April  6, 2008 10:04 AM</span>
+</div>
+<div class="comments-body">
+<p>@GeorgeKang, @gohiei, @suglwu, @Chen Yufei,</p>
+
+<p>感謝指教，原本的寫法在觀念上容易令人混淆，已經改寫該段落，只以簡單的比例作表示。</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> April  6, 2008 07:19 PM</span>
+</div>
+<div class="comments-body">
+<p>呵呵，與數學有關的小品文章真是有意思啊！其實，現在很多物理模擬的軟體，依舊是採用Monte Carlo方法呢！</p>
+<span class="comments-post">由 <a href="mailto&#58;yuanchao&#64;gmail&#46;com">YChao</a> 發表於</MTIfNonEmpty> April  8, 2008 05:08 AM</span>
+</div>
+<div class="comments-body">
+<p>百度上延伸討論，可參考： http://zhidao.baidu.com/question/55780192.html</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> July 16, 2008 12:20 AM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2004" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

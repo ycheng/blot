@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: MPX：Multi-Pointer X Server </title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001642.html" title="謝謝你，Scott McNealy" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001644.html" title="愛上 UNIX" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001642.html">« 謝謝你，Scott McNealy</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001644.html">愛上 UNIX »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">April 26, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">MPX：Multi-Pointer X Server </h3>
+
+先說一個故事，以前我在 W-Channel 服務時，當時有個國內的大客戶要求一個相當特別的功能，希望能在我們的 Linux-based Thin client 中同時做到「前景顯示、前景部份操控」與「遠端顯示、遠端完全操控」，細節就不提了，設計頗 tricky，並且也 hack 了 X Extensions 才克服，結果沒多久，客戶說很滿意，期望再加入「多點操控」，簡單來說，就是希望能夠每個遠端登入都擁有自己的 cursor 並操控應用程式。<br>
+<br>
+從事那個專案的開發，讓我學到頗多 X Window System 的內部設計與限制，前述的要求即 Multi-Point，在兩年前，類似的解決方案不多見。現在，來自南澳大利亞大學 Wearable Computer Labs  的 Peter Hutterer 成功實做 [<a href="http://wearables.unisa.edu.au/mpx/">The Multi-Pointer X Server (MPX)</a>]，他所要克服的議題，就很類似兩年前那個專案的需求，引用網頁介紹：<ul class="code" style="margin: 6px;">
+The Multi-Pointer X Server (MPX) is compatible to legacy applications such as the GIMP, the Firefox web browser and numerous other applications. Each mouse device that is connected to the host computer can be configured to have a distinct system cursor. All cursors can operate on all applications. This allows for two-handed interaction and/or collaboration on a single display.
+</ul>
+而，所謂「一圖勝千文」，咱們看看以下示意圖：<br>
+<center><img src="http://wearables.unisa.edu.au/mpx/files/images/xeyes.png"></center><br>
+圖中有四個 Xeyes 應用程式，並且硬體提供四個 mouse，這四個 X Input device 彼此獨立，亦即系統配置四個 X cursors，上圖即展示在 [<a href="http://wearables.unisa.edu.au/mpx/">MPX：The Multi-Pointer X Server</a>] 達到的效果。<br>
+目前的實做以 Xorg 為基礎，同時，為了更適合 Multi-Point 操控，Peter Hutterer 還發展了 Multi-Pointer Window Manager (MPWM)，連同 patch 與 release tarball 都可自網頁取得。<br>
+<br>
+注意到 FAQ 所提到的：<ul class="code" style="margin: 6px;">
+Limitations?<br>
+...<br>
+Some applications (e.g. xterm) stop listening for events when a LeaveNotify is received. Even if multiple mice are within the window, if one mouse leaves the window, xterm will not receive events.
+Finally, the X Protocol does not allow to specify devices on GrabPointer or QueryPointer requests. MPX has to guess which pointer to use. In some cases, this can be a semantically wrong choice.
+</ul>
+也就是說，如果我們要發展更好的 Multi-Point 機制，勢必還得處理 XEvent expose/notify 的議題。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 April 26, 2006 08:50 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

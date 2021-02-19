@@ -1,0 +1,883 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>帝國反抗君之古戰場。PowerOp請您速至 blog.yam.com/ystuan 支援前線！: [繁體中譯]OpenNMS Administrator Reference Guide</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~ystuan/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~ystuan/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~ystuan/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~ystuan/archives/000623.html" title="[安裝紀錄]OpenNMS 1.1.3 on White Box Enterprise Linux" />
+
+<link rel="next" href="http://blog.linux.org.tw/~ystuan/archives/000636.html" title="用squid在win32(Microsoft Windows)架設proxy server" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~ystuan/" accesskey="1">帝國反抗君之古戰場。PowerOp請您速至 blog.yam.com/ystuan 支援前線！</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~ystuan/archives/000623.html">&laquo; [安裝紀錄]OpenNMS 1.1.3 on White Box Enterprise Linux</a> |
+
+<a href="http://blog.linux.org.tw/~ystuan/">Main</a>
+| <a href="http://blog.linux.org.tw/~ystuan/archives/000636.html">用squid在win32(Microsoft Windows)架設proxy server &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">June 16, 2004</h2>
+
+<div class="blogbody">
+
+<h3 class="title">[繁體中譯]OpenNMS Administrator Reference Guide</h3>
+
+<b>[2005/12/19]請注意，這篇網誌已經過時了，請到<a href="http://sourceforge.net/docman/?group_id=4141">OpenNMS Project Documentation</a>，Language選Trad. Chinese，就會看到我提交給官方的繁體中文安裝手冊，或者直接點選<a href="http://sourceforge.net/docman/display_doc.php?docid=29926&group_id=4141">這裡</a>。對這個主題有興趣，歡迎到我的<a href="http://blog.yam.com/ystuan/">新基地</a>逛逛</b>
+<p>
+原始網址<a 
+href="http://www.opennms.org/users/docs/docs/html/adminref.html">http://www.opennms.org/users/docs/docs/html/adminref.html</a>
+<br>譯者: Austin Tuan (ystuan 老鼠 hotmail 點 com) 歡迎來信,請於主旨欄加上[Linux]字樣,萬一被hotmail當作spam,我好撿回來 :)
+<html><!--This file was generated automatically by man2html.xsl.-->
+<body VLINK="#006a6a" LINK="#000000" bgcolor="#ffffff">
+	
+
+<p>
+<table cellpadding="3" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099"><b><font FACE="Arial" SIZE="+4" color="#ffffff">OpenNMS管理者參考指南</font></b></td>
+</tr>
+<tr>
+<td bgcolor="#ffffff">
+<p>OpenNMS.org<br>
+						2001 年出版<br>版本: 1.0.0<br>
+
+			版權(c) 
+		1999, 
+		2000, 
+		2001, 
+		Oculan Corp.
+	<br>
+<a href="http://www.opennms.org/">www.opennms.org</a>
+<br>
+</p>
+</td>
+</tr>
+</table>
+</p>
+
+
+	
+<p>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2"> 序言</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">誌謝和版權</font></b></td>
+</tr>
+</table>
+</p>
+	
+	
+<p>
+<b><font size="+1"><b>Copyrights</b></font></b>
+</p>
+<p>
+			以下版權與OpenNMS 源碼或文獻是相關的:
+		</p>
+
+	
+<ul>
+		
+<li> 
+<p>Copyright (c) 1999-2001 Oculan Corp. All rights reserved.</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 1996-2001 PostgresSQL, Inc.</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 1994 Regents of California, Inc.</p> 
+</li>
+
+		
+<li> 
+<p>Copyright (c) 1994-2001 Sun Microsystems, Inc</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 1994-2001 IBM Corporation</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 2001 Microsoft Corporation</p> 
+</li>
+		
+<li> 
+
+<p>Copyright (c) 2001 Netscape</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 2001 Red Hat, Inc.</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 1999-2001 ExoLab Group</p> 
+</li>
+		
+<li> 
+<p>Copyright (c) 1999-2001 Apache Software Foundation</p> 
+
+</li>
+		
+<li> 
+<p>Copyright (c) 1998-2001 The Mozilla Organization</p> 
+</li>
+	
+</ul>
+	
+<p>
+<b><font size="+1"><b>有用的資訊鏈結</b></font></b>
+</p>
+<p>
+			以下URLs 與OpenNMS 源碼或文獻是相關的:
+		</p>
+
+	
+<ul>
+		
+<li> 
+<p>
+<a href="http://www.w3.org/TR/xsl/">XSLFO Spec, Oct 2000</a>
+</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.ibiblio.org/xml/books/bible/updates/15.html">XSLFO 聖經</a>
+</p> 
+</li>
+		
+
+<li> 
+<p>
+<a href="http://www.xslinfo.com/">XSL 資訊站台</a>
+</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.xml.org/">XML 組織</a>
+</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.docbook.org/">Docbook 組織</a>
+
+</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.oreilly.com/catalog/docbook/chapter/book/docbook.html">O'Reilly 的DocBook大全</a>
+</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.opennms.org/">OpenNMS.org</a> - OpenNMS 網站</p> 
+</li>
+
+		
+<li> 
+<p>
+<a href="http://xml.apache.org/">apache.org</a> - Xerces, XML4J 等的官方網站</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.sun.com/">Sun</a> - JAVA 的官方網站</p> 
+</li>
+		
+
+<li> 
+<p>
+<a href="http://www.w3.org/">W3C Organization</a> - XSLFO 和 XML 的官方網站</p> 
+</li>
+		
+<li> 
+<p>
+<a href="http://www.postgresql.org/">PostgreSQL</a> - PostgreSQL 的官方網站</p> 
+</li>
+	
+</ul>
+
+
+
+	
+<p>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2">1 第一章</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">管理者參考指南概觀</font></b></td>
+</tr>
+</table>
+</p>
+
+	
+<dl>
+<dd>
+<a name="chap1sect1"></a>
+		
+<p>
+<b><font face="Arial">1.1 關於本文件</font></b>
+</p>
+		
+<p>
+		本文件描述OpenNMS的設定. 下面的章節我們將談到每個設定檔和它的作用. 
+		其中一部份有提供範例, 不過其實大部分設定檔的內容都是不解自明的. 
+		</p>
+	
+</dd>
+</dl>
+
+
+
+
+<p>
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+<td bgcolor="#000099" align="left"><b><font face="Arial" color="#ffffff" size="+2">2 第二章</font></b></td>
+</tr>
+<tr>
+<td align="left"><b><font face="Arial" size="+1">各個設定檔</font></b></td>
+</tr>
+</table>
+</p>
+
+	
+<dl>
+<dd>
+<a name="chap2sect1"></a>
+		
+<p>
+<b><font face="Arial">2.1  actiond-configuration.xml</font></b>
+</p>
+		
+<p>
+		在事件(events)產生時所呼叫的外部程式稱為(actions). 這個設定檔控制最多可以同時
+		執行的action數量, 以及等待action執行完畢回傳結果的逾時值。
+		</p>
+	
+</dd>
+</dl>
+
+	
+<dl>
+<dd>
+<a name="chap2sect2"></a>
+		
+<p>
+<b><font face="Arial">2.2  AvailabilityReports.xsl SVGAvailReport.xsl PDFAvailReport.xsl</font></b>
+</p>
+		
+<p>
+		這三個檔案的資訊是關於如何將可用性報表轉換成PDF格式.
+		</p>
+	
+</dd>
+</dl>
+
+	
+<dl>
+<dd>
+<a name="chap2sect3"></a>
+		
+<p>
+<b><font face="Arial">2.3  viewsdisplay.xml</font></b>
+</p>
+		
+<p>
+		這個檔案定義在web UI中顯示時, 各個類別的呈現方式. 這些類別則是
+		定義在<strike>views.xml</strike>categories.xml.
+		</p>
+	
+</dd>
+</dl>
+
+	
+<dl>
+<dd>
+<a name="chap2sect4"></a>
+		
+<p>
+<b><font face="Arial">2.4  <strike>views.xml</strike>categories.xml</font></b>
+</p>
+		
+<p>
+		(譯註:views.xml這個設定檔拿掉了，categories.xml還在。省略這一段的翻譯)
+		</p>
+	
+</dd>
+</dl>
+
+	
+<dl>
+<dd>
+<a name="chap2sect5"></a>
+		
+<p>
+<b><font face="Arial">2.5  capsd-configuration.xml</font></b>
+</p>
+		
+<p>
+		這個檔案定義, 對於已經發現的節點(包含由discovery daemon或SNMP所發現的), 
+		我們能夠偵測出哪些服務. 它還可定義,若發掘了某些網路位址/網路位址區段,則應該受控或排除在外.  
+		對於沒有定義到的其他網路位址,它可用一個預設的狀態(管理政策)來規範.
+		</p>
+		
+<pre>
+		&lt;capsd-configuration rescan-frequency="86400000"
+			management-policy="unmanaged"&gt;
+
+		</pre>
+		
+<p>
+		最後,這個檔案可以讓你設定"rescan-frequency"(重新掃描網路的頻率).這個設定決定了時間間隔多久需重新掃描網路上的設備,
+		並且重新確認其上有哪些服務. 這個數字的單位是毫秒,預設值是86400000,也就是24小時.  
+		</p>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap2sect6"></a>
+		
+<p>
+<b><font face="Arial">2.6  <strike>controller-configuration.xml</strike></font></b>
+
+</p>
+		
+<p>
+		(譯註:這個設定檔拿掉了,省略這一段的翻譯)
+		</p>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap2sect7"></a>
+		
+<p>
+<b><font face="Arial">2.7  service-configuration.xml</font></b>
+
+</p>
+		
+<p>
+		這個檔案定義opennms本身要啟動的服務. 它和VM有關,並且控制哪個服務在哪個VM中開啟. 
+		</p>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap2sect8"></a>
+		
+<p>
+<b><font face="Arial">2.8  create.sql database-schema.xml</font></b>
+
+</p>
+		
+<p>
+		一般來說, 在安裝過程中, 指令稿install.pl會去呼叫create.sql, 來建立OpenNMS資料庫. create.sql中的註解很易懂. 
+		OpenNMS資料庫的schema定義在database-schema.xml; 執行篩選時, 系統會參照它來執行資料庫查詢. 
+		</p>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap2sect9"></a>
+		
+<p>
+<b><font face="Arial">2.9  datacollection-config.xml</font></b>
+
+</p>
+		
+<p>
+		這個檔案包含給RRDTool的資料收集資訊. 
+		</p>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap2sect10"></a>
+		
+<p>
+<b><font face="Arial">2.10  notifications.xml</font></b>
+
+</p>
+		
+<p>
+		這個檔案定義哪個事件或UEI發出告警, 以及發出告警的途徑. 
+		</p>
+		
+<pre>
+		&lt;notification name="nodeAdded"&gt;
+			&lt;uei&gt;&lt;![CDATA[http://uei.opennms.org/products/bluebird/nodes/nodeAdded]]&gt;&lt;/uei&gt;
+			&lt;rule&gt;&lt;![CDATA[IPADDR IPLIKE *.*.*.*]]&gt;&lt;/rule&gt;
+
+			&lt;destinationPath&gt;Email-Network/Systems&lt;/destinationPath&gt;
+			&lt;text-message&gt;OpenNMS has discovered a new node named %parm[nodelabel]%.    Please be advised.&lt;/text-message&gt;
+			&lt;subject&gt;%parm[nodelabel]% discovered.&lt;/subject&gt;
+		&lt;/notification&gt;
+
+		</pre>
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap2sect11"></a>
+		
+<p>
+<b><font face="Arial">2.11  destinationPaths.xml</font></b>
+</p>
+		
+<p>
+		這個檔案用來定義告警的目標路徑(destination path), 例如告警應該送給誰, 傳送方式用傳呼, 電郵, 或者電郵-傳呼.
+		</p>
+
+	
+</dd>
+</dl>
+	
+<dl>
+<dd>
+<a name="chap2sect12"></a>
+		
+<p>
+<b><font face="Arial">2.12  notificationCommands.xml</font></b>
+</p>
+		
+<p>
+		這個檔案定義如何達成在destinationPaths.xml中所使用的各種聯絡方式.  
+		這包括了可執行檔的所在位置, 各種聯絡方式的別名(aliases), 以及特定傳送方式尚需的其他資訊. 
+		</p>
+
+		
+<pre>
+		&lt;command type="email"&gt;
+			&lt;name&gt;/bin/mail&lt;/name&gt;
+			&lt;lookup&gt;email&lt;/lookup&gt;
+			&lt;lookup&gt;mail&lt;/lookup&gt;
+
+			&lt;comment&gt;for sending email notifications&lt;/comment&gt;
+			&lt;argument streamed="false"&gt;
+				&lt;substitution&gt;-s&lt;/substitution&gt;
+				&lt;switch&gt;-subject&lt;/switch&gt;
+
+			&lt;/argument&gt;
+			&lt;argument streamed="false"&gt;
+				&lt;switch&gt;-email&lt;/switch&gt;
+			&lt;/argument&gt;
+			&lt;argument streamed="true"&gt;
+
+				&lt;switch&gt;-tm&lt;/switch&gt;
+			&lt;/argument&gt;
+		&lt;/command&gt;
+		</pre>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect13"></a>
+		
+<p>
+<b><font face="Arial">2.13  discovery-configuration.xml</font></b>
+</p>
+		
+<p>
+		這個檔案定義要發掘的網路位址範圍，(ping sweep)以及逾時，重試次數，以及用來做發掘的執行緒(thread)數目。這個檔案也提供 
+		初次發掘間隔時間(initial-sleep-time)和重新發掘間隔時間(restart-sleep-time)。這些數值以毫秒(miliseconds)為單位，用來決定
+		OpenNMS執行後，間隔多久要開始針對網路位址清單作發掘；以及每次發掘之間的間隔時間。
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect14"></a>
+		
+<p>
+<b><font face="Arial">2.14  eventconf.xml</font></b>
+</p>
+		
+<p>
+		這個檔案定義通用事件識別碼(Universal Event Identifiers或UEIs)以及它們的事件遮罩(masks)，
+		描述，記錄檔訊息，和嚴重程度。
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect15"></a>
+		
+<p>
+<b><font face="Arial">2.15  eventd-configuration.xml</font></b>
+</p>
+		
+<p>
+		這個檔案定義eventd的運作參數，例如逾時值以及監聽器執行緒(listener threads)的數量。
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect16"></a>
+		
+<p>
+<b><font face="Arial">2.16  users.xml / groups.xml</font></b>
+</p>
+		
+<p>
+		這些檔案存放使用者的資訊，例如他們的聯絡方式，所屬群組和會員資格。這些檔案的資訊是用來做web UI的身份認證
+		及告警所需的聯絡方式。
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect17"></a>
+		
+<p>
+<b><font face="Arial">2.17  log4j.properties</font></b>
+</p>
+		
+<p>
+		這個檔案定義log4j的屬性。它包括記錄檔大小，更迭(rotation)，以及各類別記錄檔的記錄層級。
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect18"></a>
+		
+<p>
+<b><font face="Arial">2.18  magic-users.properties</font></b>
+</p>
+		
+<p>
+		這個檔案的優先權高於users.xml，它包含了一些特殊使用者的資訊。這是刻意用來控制和web UI互動的某些功能之權限。
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect19"></a>
+		
+<p>
+<b><font face="Arial">2.19  opennms-database.xml</font></b>
+</p>
+		
+<p>
+		這個檔案定義了供OpenNMS使用的資料庫型態，名稱，認證，以及套用的模板。
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect20"></a>
+		
+<p>
+<b><font face="Arial">2.20  opennms-mapping.xml</font></b>
+</p>
+		
+<p>
+		這個檔案是空的，但是因為opennms-database.xml的DTD需要而存在。
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect21"></a>
+		
+<p>
+<b><font face="Arial">2.21  <strike>opennms-jms.xml</strike></font></b>
+</p>
+		
+<p>
+		(譯註:這個設定檔拿掉了,省略這一段的翻譯)
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect22"></a>
+		
+<p>
+<b><font face="Arial">2.22  outage-configuration.xml</font></b>
+</p>
+		
+<p>
+		這個檔案只是用來定義(服務)中斷管理(outage manager)可以有多少個寫入執行緒(writer threads)。
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect23"></a>
+		
+<p>
+<b><font face="Arial">2.23  poller-configuration.xml</font></b>
+</p>
+		
+<p>
+		這個檔案用來定義輪詢組合(packages)以及設定各種服務的輪詢器(pollers)。一個輪詢組合內含數種項目，例如網路位址範圍，
+		，服務，排修時段(outage calendars)，和故障時段模式(down time models).
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect24"></a>
+		
+<p>
+<b><font face="Arial">2.24  <strike>rrdtool-graph.properties</strike></font></b>
+</p>
+		
+<p>
+		(譯註:這個設定檔拿掉了,省略這一段的翻譯)
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect25"></a>
+		
+<p>
+<b><font face="Arial">2.25  rtc-configuration.xml</font></b>
+</p>
+		
+<p>
+		這個檔案定義RTC (Real Time Console)的屬性，例如用來計算故障時段百分比的週期(rolling window)，web UI刷新週期，以及多久 
+		RTC將更新送至web介面。
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect26"></a>
+		
+<p>
+<b><font face="Arial">2.26  snmp-config.xml</font></b>
+</p>
+		
+<p>
+		這個檔案用來定義網路位址或位址範圍的community strings，一個community一筆設定。
+		</p>
+	
+</dd>
+</dl>
+	
+
+<dl>
+<dd>
+<a name="chap2sect27"></a>
+		
+<p>
+<b><font face="Arial">2.27  trapd-configuration.xml</font></b>
+</p>
+		
+<p>
+		這個檔案定義SNMP trap的埠口(port)。
+		</p>
+	
+</dd>
+</dl>
+
+
+</body>
+</html>
+
+<a name="more"></a>
+
+
+<span class="posted">Posted by ystuan at June 16, 2004 12:55 PM
+
+<br /></span>
+
+<div class="comments-body">
+<div class="comments-head"><a name="pings"></a>Pings</div>
+
+</div>
+
+
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>Comments</div>
+
+<div class="comments-body">
+<p>測試一下自己的blog，為什麼主頁面出不來？</p>
+<span class="comments-post">Posted by: <a href="http://blog.linux.org.tw/~ystuan/">PowerOp</a> at June 25, 2004 12:40 AM</span>
+</div>
+
+
+
+
+</div>
+</div>
+</body>
+<!-- Site Meter XHTML Strict 1.0 -->
+<script type="text/javascript">var site="s22PowerOp"</script>
+<script type="text/javascript" src="http://s22.sitemeter.com/js/counter.js?site=s22PowerOp">
+</script>
+<noscript><div>
+<a href="http://s22.sitemeter.com/stats.asp?site=s22PowerOp">
+<img src="http://s22.sitemeter.com/meter.asp?site=s22PowerOp" alt="Site Meter" /></a>
+</div></noscript>
+<!-- Copyright (c)2005 Site Meter -->
+
+</html>

@@ -1,0 +1,366 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 取得 GNU/Linux 行程的執行檔路徑</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002040.html" title="推薦「E-GI建築師事務所實習報告」" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002042.html" title="不再囉唆：NetBSD 簡化 BSD 授權條款" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002040.html">« 推薦「E-GI建築師事務所實習報告」</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002042.html">不再囉唆：NetBSD 簡化 BSD 授權條款 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">July 03, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">取得 GNU/Linux 行程的執行檔路徑</h3>
+
+本文試著探討 GNU/Linux 於執行時期 (run-time) 的行程 (Process) 如何取得執行檔路徑，並探討 /proc/self/exe 的機制與其應用。<br />
+<br />
+進入主題前，我們該來思考本文標題：<ul class="code" style="margin: 6px;">
+「取得 Linux 行程的執行檔路徑，有什麼好處？在什麼場合需要？」
+</ul>
+這個問題最好的答案，就是看看真實需求。筆者七年前曾撰寫過一篇短文 [<a href="http://www.study-area.org/tips/floppy-linux.htm">親手打造 Floppy Linux 環境</a>]，在談及 GNU/Linux 剪裁的過程中，提到 [<a href="http://www.busybox.net/">busybox</a>] 得以將若干工具透過 symbolic link 到 /bin/busybox、且能於執行時期正確依據名稱挑選 applet 並執行的原理，就是透過 argv[0]，也就是「執行時期的名稱」。具體來說，當我們在 shell 中執行 cp、cat、chown 等指令時，busybox 會將包含「名稱」的 arvg[0] 丟給 run_applet_by_name() 去解析名稱，再去找對應的實做，並儘可能讓各工具程式達到最大的程式碼可重用性，甚至免去動態連結的負擔。<br />
+<br />
+由於該文年代久遠 (注意：筆者認為現在將 Floppy Linux 當作嵌入式系統的實習對象，已不合時宜，畢竟軟硬體進步與需求的幅度變動極大，實在沒必要削足適履，故，該文不予更新，但歡迎在原本的基礎上再行擴充，比方說打造 Disk-On-Chip/Linux 的新主題)，busybox 早已經過多次翻修 (當時用 0.6.x 版本，而且贊助此專案的 Lineo 公司也早遭收購)，對應的程式碼也經過大幅改寫，所以本文順便更新前文描述的實做部份。busybox 將可重複使用的部份拆到名為 libbb (bb 即 busybox 簡稱，乃為該專案的程式碼命名慣例)，其中包含解析 argv[0]，以下列出 main() 函式的實做，位於 busybox 1.7+ 原始程式碼的 libbb/appletlib.c 檔案中，簡化的列表如下：(本文的程式碼列表皆為簡化版本)
+<pre class="code" id="codemain" style="margin: 6px;"><span class="keyword">int</span> main(<span class="keyword">int</span> argc ATTRIBUTE_UNUSED, <span class="keyword">char</span> **argv)
+{
+	applet_name = argv[0];
+	<span class="keyword">if</span> (applet_name[0] == <span class="literal">'-'</span>)
+		applet_name++;
+	applet_name = bb_basename(applet_name);
+
+	parse_config_file(); <span class="comment">/* ...maybe, if FEATURE_SUID_CONFIG */</span>
+
+	run_applet_and_exit(applet_name, argv);
+
+	<span class="comment">/*bb_error_msg_and_die("applet not found"); - sucks in printf */</span>
+	full_write2_str(applet_name);
+	full_write2_str(<span class="literal">": applet not found\n"</span>);
+	xfunc_die();
+}</pre>
+很顯然，周遊於自訂的函式中，這行 "run_applet_and_exit(applet_name, argv)" 讓我們感到興趣，這就攸關 busybox 的原理，所以咱們看看此函式如何將 argv[0] 作處置，在同一檔案的實做碼如下：
+<pre class="code" id="codemain" style="margin: 6px;"><span class="keyword">void</span> FAST_FUNC run_applet_and_exit(<span class="keyword">const</span> <span class="keyword">char</span> *name, <span class="keyword">char</span> **argv)
+{
+	<span class="keyword">int</span> applet = find_applet_by_name(name);                                 
+	<span class="keyword">if</span> (applet >= 0)
+		run_applet_no_and_exit(applet, argv);
+	<span class="keyword">if</span> (!strncmp(name, <span class="literal">"busybox"</span>, 7))
+		exit(busybox_main(argv));
+}</pre>
+所以重點就是 find_applet_by_name() 函式，顧名思義，就是解析的動作，繼續看實做碼：
+<pre class="code" id="codemain" style="margin: 6px;"><span class="keyword">int</span> FAST_FUNC find_applet_by_name(<span class="keyword">const</span> <span class="keyword">char</span> *name)
+{
+	<span class="comment">/* Do a binary search to find the applet entry given the name. */</span>
+
+	<span class="keyword">const</span> <span class="keyword">char</span> *p;
+	p = bsearch(name, applet_names, ARRAY_SIZE(applet_main), 1, applet_name_compare);
+	<span class="keyword">if</span> (!p)
+		<span class="keyword">return</span> -1;
+	<span class="keyword">return</span> p - applet_names;
+}</pre>
+看到這裡，其實就不必再追下去了，都使出標準函式庫的 binary search 函式，顯然就是從內建的 applet 列表中比對，抓出合適的 applet 實做的索引值，內部勢必有對應的執行機制。所以，以 "ls" 來說，在 busybox 的設計中，無論我們在 shell 下執行 "../bin/ls"、"/bin/ls"、"./ls" 等等，只要能在檔案系統中找到 symbolic link 的 "ls" symbol name 與 busybox 執行檔主體，當執行時，argv[0] 就被賦予絕對或相對路徑的字串，busybox 程式透過以上機制，解析名稱，找到 (精簡的) ls applet 實做並將參數代入執行，而，「取得執行時期的執行檔路徑」對於實做 shell 本身，如 ash, msh 來說，就相當重要，因為在 shell (當然，也是由 busybox 提供實做) 下執行程式，其實就是做了 fork()/vfork() 一類的系統呼叫。<br />
+<br />
+實際上，基於安全性考量、程式碼重用性，busybox 內部實做變得更為複雜，讓我們不禁得想想，argv[0] 的應用有哪些限制？看看 argv[0] 可能的內容會有：<ul>
+  <li>絕對路徑：基本上只要去除多餘的字串表示，如 "//"，即可使用</li>
+  <li>相對路徑：需要配合目前執行程式的路徑，在檔案系統中，找出最終的絕對路徑</li>
+  <li>只有程式名稱、沒有路徑：因為 shell 透過 $PATH 環境變數找到程式，但 argv[0] 接收時僅有名稱，這時候，得循序依 $PATH 字串內容，逐一於檔案系統中找到程式的絕對路徑</li>
+  <li>其他：當透過 exec 系列的系統呼叫時，什麼名稱都有可能，端視呼叫的形式，這時候就得找出方法 (沒有一定準則)</li>
+</ul>
+提到這，或許我們才驚覺，原來貌似單純的設計，還有以上陷阱，最麻煩的就是最後一種可能性，偏偏又是最常見的，因為 /etc/init.d/* 底下那些 shell script 一開機就啟動可觀的程序了，所以，我們勢必得尋求其他機制。既然要思索執行時期的行為，最好的方式就是參閱 /proc 檔案系統。當透過 ls 列印 /proc 檔案系統時，會發現有許多數字，這些都是執行中行程的 pid (process ID)，而 /proc/_pid_/exe 就是指向對應執行檔的 symbolic link。pid = 1 的行程就是第一個 user-space 的程式，也就是 init，我們可觀察一下，先切換成 superuser/root，執行以下指令：<pre class="code" id="codemain" style="margin: 6px;">
+# ls -l /proc/1/exe
+lrwxrwxrwx 1 root root 0 2008-07-03 22:10 /proc/1/exe -&gt; /sbin/init
+</pre>
+當然，目錄 /proc/1/ 底下有很多檔案可探索，筆者就不詳述了，只要知曉 Linux /proc 如此的設計即可。再者，當一個執行中的行程存取目錄 /proc/self/ 時，其效力等同於 /proc/目前行程的 pid/，這也就是說，"/proc/self/exe" 就是對應到「目前行程對應的執行檔」。看來 /proc/self/exe 似乎可解決前述議題，但注意，這僅適用於應用程式本身，不包含其動態函式庫，對於後者，一個普遍的作法是，查閱 /proc/self/maps 的內容，即可依據位址找尋對應的函式庫名稱，或者，透過 GNU/Linux 專有的 DL_info + dladdr 組合，可取得 DL_info::dli_fname 的值，即可指出到底位於動態函式庫或應用程式主體，熟悉 Win32 API 的朋友，大概就會想到等效的 GetModuleFileName()。<br />
+<br />
+在 UNIX 家族中，也提供對應於 GNU/Linux 的 /proc/self/exe 機制，FreeBSD 上是 "/proc/curproc/file"，Solaris 是 "/proc/self/auxv"。咱們來作個小實驗，看看「自我重複執行的行程」會怎麼設計與呈現，以下是簡單的測試程式 (fork-self.c)
+<pre class="code" id="codemain" style="margin: 6px;"><span class="keyword">#include</span> &lt;sys/types.h><span class="keyword">
+#include</span> &lt;unistd.h>
+<span class="keyword">
+#define</span> MSG_1 <span class="literal">"child ends.\n"</span><span class="keyword">
+#define</span> MSG_2 <span class="literal">"parent about to fork self.\n"</span>
+<span class="keyword">extern</span> <span class="keyword">char</span> **environ;
+<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])
+{
+	<span class="keyword">char</span> *fn[] = { <span class="literal">"/proc/self/exe"</span>, 0 };
+	pid_t pid = fork();
+	<span class="keyword">if</span> (0 == pid) {
+		write(1, MSG_1, <span class="keyword">sizeof</span>(MSG_1));
+	}
+	<span class="keyword">else</span> <span class="keyword">if</span> (-1 == pid) { <span class="comment">/* unable to fork */</span>
+		_exit(-1);
+	}
+	<span class="keyword">else</span> {
+		write(1, MSG_2, <span class="keyword">sizeof</span>(MSG_2));
+		execve(*fn, fn, environ);
+	}
+	<span class="keyword">return</span> 0;
+}</pre>
+上述程式碼列表有若干重點，如下：<ul>
+  <li>"/proc/self/exe" 與 exec 函式的搭配</li>
+  <li>fork() 後，我們試著 exec "/proc/self/exe"，也就是本行程對應的執行檔名，以取代 parent process</li>
+  <li>由於重複該動作，fork() 可能會失敗，務必作確認與例外情況處理 (_exit)</li>
+</ul>
+編譯並執行：<pre class="code" id="codemain" style="margin: 6px;">
+$ gcc -o fork-self fork-self.c
+$ ./fork-self
+child ends.
+parent about to fork self.
+child ends.
+parent about to fork self.
+child ends.
+parent about to fork self.
+... (重複) ...
+</pre>
+這過程中，若打開 top 或 htop 一類的工具查看記憶體，會發現可用的記憶體很快會被消耗，不過別擔心，最後失敗就作 _exit 以離開。在未結束前，用 pstree 觀察看看 fork-self 的呈現：<pre class="code2" id="codemain" style="margin: 6px;">
+init-+-NetworkManager---{NetworkManager}
+     |-NetworkManagerD
+     |-acpid
+	...
+     |-rxvt-unicode--bash---exe-+-11599*[exe]
+     |                          `-fork-self
+	...
+</pre>
+前述論及 argv[0] 在 exec 系列系統呼叫的限制即在此，上述 pid 是會跳動的，而名稱又貌似一致，不過，Linux 內部會有機制將 /proc/self/exe 找出，是此，取得 GNU/Linux 行程的執行檔路徑，大致如此。不過，我們還是會有疑惑，既然 argv[0] 的限制這麼多、處理複雜又可能不正確，那為何 busybox 經歷多次改版，為何還保留 argv[0] 複雜的處理呢？要注意的是，busybox 可在許多不同硬體的 GNU/Linux 上運作，包含沒有 MMU 的平台，也就是 ucLinux，而，後者 (預設) 沒有 /proc/self/exe 的機制，所以，一般的作法，就是寫死執行檔路徑，當然，這樣的嵌入式系統設計就得相當小心。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 July  3, 2008 10:53 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>看糊涂了，保留argv[0]不就是为了能够当用户通过symlink执行busybox的时候，能够知道symlink的名字，然后执行相应的操作么？这个和/proc/self/exe有什么关系么？</p>
+<span class="comments-post">由 <a href="http://xiaosuo.cublog.cn">xiaosuo</a> 發表於</MTIfNonEmpty> July  4, 2008 12:49 AM</span>
+</div>
+<div class="comments-body">
+<p>@xiaosuo</p>
+
+<p>假設 busybox 執行檔本體不放在 /bin 路徑下，而在於 /opt/embedix/bin 一類的路徑，僅由 $PATH 環境變數，讓 shell 得以找到並執行其中的 applet，然後，又啟動 busybox 內建的 ash 以執行 shell script，這意味著 fork + exec，那麼，若無法確知 busybox 的絕對路徑前，該如何解析 argv[0] 呢？這就是陷阱。</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> July  4, 2008 03:45 AM</span>
+</div>
+<div class="comments-body">
+<p>busybox这样就可以了<br />
+name = strrchr(argv[0], '/');<br />
+if (name == NULL)<br />
+   name = argv[0];<br />
+else<br />
+   name++;</p>
+
+<p>applet_func = find_applet_func_by_name(name);<br />
+if (applet_func != NULL)<br />
+   return applet_func(argc - 1, argv + 1);</p>
+
+<p>怎么会有$PATH和fork + exec什么事情？</p>
+<span class="comments-post">由 <a href="http://xiaosuo.cublog.cn">xiaosuo</a> 發表於</MTIfNonEmpty> July  4, 2008 04:17 PM</span>
+</div>
+<div class="comments-body">
+<p>@xiaosuo</p>
+
+<p>若您追蹤到 busybox 的 ash 實現，就會發現，其實這個 shell 給了諸多限制，而且還得依據 hard-coded busybox exec path 來配合某些 rules 來找到真正的 exec path (shell 支援 $PATH 的) 。之前提過「argv[0] 的值可為其他：當透過 exec 系列的系統呼叫時，什麼名稱都有可能，端視呼叫的形式，這時候就得找出方法 (沒有一定準則)」，或許陳述不清，讓您誤解了，</p>
+
+<p>總之，這個狀況要想辦法解決，有 /proc/self/exe 的支持，是最方便的。</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> July  4, 2008 04:29 PM</span>
+</div>
+<div class="comments-body">
+<p>最后应该是<br />
+return applet_func(argc, argv);<br />
+刚刚和busybox的代码对了一下，如我所言。</p>
+<span class="comments-post">由 <a href="http://xiaosuo.cublog.cn">xiaosuo</a> 發表於</MTIfNonEmpty> July  4, 2008 04:33 PM</span>
+</div>
+<div class="comments-body">
+<p>您提到ash的实现，我总算是搞明白了，原来是busybox需要exec自己，耽误您功夫了，不好意思。<br />
+另外,我看的busybox 1.8.2已经支持/proc/self/exec选项了。<br />
+  │ Symbol: FEATURE_PREFER_APPLETS [=n]                                                 │<br />
+  │ Prompt: exec prefers applets                                                        │<br />
+  │   Defined at Config.in:225                                                          │<br />
+  │   Location:                                                                         │<br />
+  │     -> Busybox Settings                                                             │<br />
+  │       -> General Configuration   </p>
+<span class="comments-post">由 <a href="http://xiaosuo.cublog.cn">xiaosuo</a> 發表於</MTIfNonEmpty> July  4, 2008 04:48 PM</span>
+</div>
+<div class="comments-body">
+<p>@xiaosuo</p>
+
+<p>是的，感謝補充，就是 shell 的自我呼叫的個案。最近想減少程序代碼列表，就偷懶只陳述概念，沒想到語焉未詳，耽誤好多時間，看來還是少不了 What You See Is What You Get 的 C source code :-)</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> July  4, 2008 04:54 PM</span>
+</div>
+<div class="comments-body">
+<p>想到一个问题，如果exec self的目的最终也是为了调用self中的某个函数，为什么不直接调用，然后exit呢？</p>
+<span class="comments-post">由 <a href="http://xiaosuo.cublog.cn">xiaosuo</a> 發表於</MTIfNonEmpty> July  4, 2008 10:59 PM</span>
+</div>
+<div class="comments-body">
+<p>参考了busybox的代码，果真有这样的applet:<br />
+                a = find_applet_by_name(cmd);<br />
+                if (a) {<br />
+                        if (a->noexec)<br />
+                                run_appletstruct_and_exit(a, argv);</p>
+<span class="comments-post">由 <a href="http://xiaosuo.cublog.cn">xiaosuo</a> 發表於</MTIfNonEmpty> July  5, 2008 11:23 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2041" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

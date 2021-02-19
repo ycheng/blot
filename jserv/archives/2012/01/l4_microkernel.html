@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: 演講：L4 microkernel 的背景知識與最新的研究發展</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2012/01/develop_communi.html" title="&quot;Develop Community-based Android Distribution and Upstreaming Experience&quot; 簡報上線" />
+
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2012/01/c_1.html" title="C 編譯器跟你想的不一樣" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2012/01/develop_communi.html">« "Develop Community-based Android Distribution and Upstreaming Experience" 簡報上線</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+| <a href="http://blog.linux.org.tw/~jserv/archives/2012/01/c_1.html">C 編譯器跟你想的不一樣 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 19, 2012</h2>
+
+<div class="blogbody">
+
+<h3 class="title">演講：L4 microkernel 的背景知識與最新的研究發展</h3>
+
+今年二月 7 日，小弟將分享關於 L4 microkernel 的背景知識與最新的研究發展，詳情請參考 [<a href="http://registrano.com/events/251d83">星系統社群：第5次星系主題-L4 microkernel 的背景知識與最新的研究發展</a>]。<br />
+<br />
+第一次見到 [<a href="http://en.wikipedia.org/wiki/L4_microkernel_family">L4 microkernel</a>]，是在 William Stallings 的 [<a href="http://williamstallings.com/OperatingSystems/">作業系統叢書</a>] 讀到，那時是 1997 年，僅提供七個系統呼叫但可搭建完整作業系統基礎的 microkernel，對當時還在唸高中的我，實在是不小的衝擊。高中住校沒有辦法使用電器設備，遑論使用網際網路，唯一獲取知識的方法，就是利用每天宿舍晚自習結束到關大門前的短暫一個半小時，去附近的書店啃書，William Stallings 的大作闡述作業系統非常透徹，而關於 L4 的部份，更激起我的興趣，但這類的書籍往往售出後，就很少進貨，而我身上根本沒什麼零錢，結果一時鋌而走險，竟然沒購買而擅自攜帶出去。這本書伴隨著我在高中的課餘生涯，也讓「系統程式」與我結下不解之緣。<br />
+<br />
+像這樣去附近的店家「借取」(一開始真的有歸還，但後來就無疾而終) 了好幾本關於作業系統、編譯器設計、Linux / BSD 系統書籍的行徑，是高中生涯很特別的插曲，但「偷書」是事實，估計總價約台幣五千多元。後來接了案子，逐漸有能力償還時，這些店家要不倒閉，不然就是不接受我的賠償，於是愧疚了十多年。這幾年購書，往往會要求不打折，不然就是同一本書一次多買幾份，送給需要的朋友，此外，我持續地作免費的資訊技術分享，就是希望能多作點補償。因為談及 L4 microkernel，也抖出「偷書」的陳年往事，如今探討這個議題，自然是五味雜陳，本議程最早規劃在去年，追憶 L4 發明人 Jochen
+Liedtke 教授過世十週年，不過當時有事耽擱，只好在今年擇期探討。<br />
+<br />
+L4 在上個世紀末證明，microkernel 的效能落差並非本質的限制，而是設計與實做的議題，也因此，L4 這個高效能的 microkernel 被稱為「第二代 microkernel」，   有鑑於 CMU Mach microkernel 的若干低效能表現 (如 IPC)，L4 進一步做出精簡的設計，只 7 個系統呼叫，而且核心本身只有 12 Kbytes，只實現以下三個抽象概念的基礎建設：<ul>
+    <li>Address space</li>
+    <li>Thread</li>
+    <li>IPC</li>
+</ul>
+藉由充分使用硬體機制來實現，大幅縮減 TLB 與 cache miss 的開銷。這十年來，無論是原本從事 microkernel 抑或 RTOS 開發的廠商與研究單位，則逐漸往虛擬化技術 (virtualization) 靠攏，愈來越多技術發生「大融通」的效應，而本議程則著眼於 L4 microkernel 與日益多元的應用方式，介紹其背景知識與發展，預定提綱如下：<ul>
+    <li>Myths of Microkernel</li>
+    <li>Characteristics of second generation microkernel</li>
+    <li>Key services: memory, thread, IPC management</li>
+    <li>L4 in real world: distributed, virtualization, and reliability</li>
+</ul>
+如同之前的演講 [<a href="http://blog.linux.org.tw/~jserv/archives/2011/11/_embedded_hyper.html">Embedded Hypervisor for ARM</a>]，小弟也會發表一項新專案，這是個極小的 L4 microkernel 與作業系統環境的實做，在某個程度上，可說是回應了 2007 年發表的 [<a href="http://blog.linux.org.tw/~jserv/archives/001865.html">Orz Microkernel</a>]。期待您的指教與交流，謝謝！<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 19, 2012 11:36 AM
+
+<br /></span>
+
+</div>
+
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2195" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

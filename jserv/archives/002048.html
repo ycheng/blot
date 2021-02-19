@@ -1,0 +1,260 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: GNU Bison 與 GPL 授權的適用範疇</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002047.html" title="演講：我是軟體 -- 那些處理器教我的事 (COSCUP)" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002049.html" title="「Gtk+ 程式設計初體驗」參考範例上線" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002047.html">« 演講：我是軟體 -- 那些處理器教我的事 (COSCUP)</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002049.html">「Gtk+ 程式設計初體驗」參考範例上線 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">July 20, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">GNU Bison 與 GPL 授權的適用範疇</h3>
+
+<center><img src="http://people.debian.org.tw/~jserv/licensing.jpg" width="285" height="300" /></center><br />
+探討標題前，先看看一個答問。本月初在 ptt 的 LinuxDev 看板瞥見討論 GPL 授權效力的議題時，TroyLee 問及：<ul class="code" style="margin: 6px;">
+「如果我使用到 G++ STL，有必要特別加入 GPL 的宣告嗎？」
+</ul>
+要回答這個議題，關鍵之處在於，即使 gcc-4.3 以後 (含) 全面從 GNU GPLv2 移轉到 GPLv3，但其中若干軟體元件或組成，並非依據 GPLv3 授權發行，相反地，可能仍是 GPLv2 或「GPLv2 + 例外條款」，甚至為 public domain 的形式，完全視適用範疇而定，這點需要特別注意。而 TroyLee 的提問，就觸及 gcc/g++ 中，C++ STL (Standard Template Library) 的「適用性」，其中一個背景知識為，STL 在許多 C++ 編譯器系統的實做，是以 header file 的形式存在。以筆者系統中的 gcc 4.3.2 來說 (整個 gcc 4.3 branch 也是如此)，安裝於 GNU/Debian Linux 的 header file /usr/include/c++/4.3.2/iostream 即給予明確的聲明，以下摘錄授權宣告部份：<pre class="code" style="margin: 6px;">
+// Standard iostream objects -*- C++ -*-
+                                                                                
+// Copyright (C) 1997, 1998, 1999, 2001, 2002, 2005
+// Free Software Foundation, Inc.
+//
+// This file is part of the GNU ISO C++ Library.  This library is free
+// software; you can redistribute it and/or modify it under the
+// terms of the GNU General Public License as published by the
+// Free Software Foundation; either version 2, or (at your option)
+// any later version.
+[... 略，談及 GPL 與 FSF 的聯絡資訊 ...]
+
+// As a special exception, you may use this file as part of a free software
+// library without restriction.  Specifically, if other files instantiate
+// templates or use macros or inline functions from this file, or you compile
+// this file and link it with other files to produce an executable, this
+// file does not by itself cause the resulting executable to be covered by
+// the GNU General Public License.  This exception does not however
+// invalidate any other reasons why the executable file might be covered by
+// the GNU General Public License.
+</pre>
+從上，我們可得知：<ul>
+  <li>GNU GCC 的開發者簽署 Copyright Assignment，將著作權歸屬一致給予 FSF，且 STL 實做的著作權聲明標示從 1997 年到 2005 年</li>
+  <li>g++ 的 STL 實做以 GNU GPLv2 with exceptions 模式發行</li>
+  <li>GPLv2 的額外例外條款描述了使用 STL 的合理範疇，規範編譯、連結，與執行的行為，避免原本 GPLv2 對此語焉不詳的模糊</li>
+</ul>
+所以，這澄清了我們的疑慮，基本上只用 g++/STL 開發應用程式，儘管有 inclusion 的動作，但由於 header 已有例外條款，允許不受 GPL 感染，因此不特別釋出這部份的程式碼，是被允許的。關於 C++ template 與潛在的授權議題，可參考筆者之前的文章 [<a href="http://blog.linux.org.tw/~jserv/archives/001874.html">LGPL 與 C++ Template Library</a>]。<br />
+<br />
+誠如 [<a href="http://www.linux.org.tw/CLDP/OLD/doc/Cathedral-Bazaar.html">教堂與市集</a>] 所指出，多數商業化軟體所採用「教堂」般集中且單一開發的模式；而自由軟體則普遍採用「市集」般分散且多元的模式，g++/STL 的例子告訴我們，即使 gcc 4.3 整體採取 GNU GPLv3 授權條款，但個別組成與適用對象，值得我們思量，畢竟擁有二十年歷史的 gcc，早已摻入太多本質各異的元素，類似的情況也發生於 gcc 中 Fortran, Ada, Objective-C 等 runtime 中。<br />
+<br />
+GNU [<a href="http://www.gnu.org/software/bison/">bison</a>] 與 gcc 類似，歸屬於編譯系統的範疇，嚴格來說 GNU bison 與 Yacc 一樣，是 "compiler compiler"，也就是建構 compiler 所需的 compiler，對於電腦科學系的學生來說，應該是再熟悉不過了。bison 與 gcc 都算是 FSF 的 Richard Stallman 的心血，至於為何命名如此，端看 "bison" 的英文即可窺知一二：歐陸噸位最大的動物是「歐洲野牛」，其學名就是 Bison bonasus，自然與 gnu (牛羚) 能詼諧地對比。既然 GNU bison 是 "compiler compiler"，用途就是自動生成語法分析器，而其輸出是「分析器的程式碼」，可減少不必要的人工介入。進一步來說，把 LALR 形式的 context-free 語法描述，轉換為可做語法分析的 C 或 C++ 程式。<br />
+<br />
+GNU bison 的應用很廣泛，基本上需要複雜的語法分析的環境，都能見到其蹤跡，不只限定於 compiler，像是應用程式的系統配置模組、網頁瀏覽器的引擎 (如 WebKit)，甚至是作業系統核心，都不乏仰賴 bison。既然是 GNU/FSF 出品的專案，採用 GNU GPL 發行就是理所當然，就 bison 2.3 版來說 (2006-06-05，截至目前為止的最新版本)，授權是 GPLv2。行文至此，或許讀者還是一頭霧水，這樣設計良好的工具，到底有什麼授權疑慮呢？先回到之前 C++/STL 的例子，技術面來看，C++ template 在編譯器的實做上，其實就是依據一定的規則，將 template 本體予以「展開」並轉譯成對應的機械碼，何以 g++/STL 要特別標注例外條款，就是避免採用其 STL 實做的 C++ 應用程式，因為「被迫」接收了 g++ 所「展開」出來、以 GNU GPL 發行的 template 程式碼，導致該應用程式本體「感染」為 GPL 授權的程式，這就違反了 FSF 四大自由的首項：「執行的自由」，開發者使用這些編譯器來編譯非自由軟體並執行的「自由」也該被考慮。<br />
+<br />
+是此，GNU gcc 已在 g++/STL 的 header file 標注例外條款，而這情況也發生於 GNU bison，是的，就是因為 bison 的輸出是「分析器的程式碼」，後者的邏輯與實做，是仰賴原本以 GNU GPL 授權發行的 bison 程式碼。於是乎，若我們讓 bison 輸出的程式碼「整合」到原本的專案，比方說 [<a href="http://webkit.org/">WebKit</a>]，原本預期以 LGPL + BSD 授權來發行這個網頁瀏覽器引擎，但一旦編譯連結後，GPL 的程式碼就如病毒一般，感染整個專案，讓授權條款沒有其他選擇，只能乖乖地採用 GPL，這實在造成很多不必要的困擾。所以，在 GNU bison 2.2 版開始，FSF 加入了一項例外條款，以釐清上述疑慮。以下摘錄 WebKit 編譯過程中 bison 的輸出 ( generated_sources/kjs/grammar.cpp ) 檔案授權宣告：<pre class="code" style="margin: 6px;">
+/* Skeleton implementation for Bison's Yacc-like parsers in C
+
+   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006
+   Free Software Foundation, Inc.
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.  (...省略，同樣是 FSF 聯絡資訊) */
+
+/* As a special exception, you may create a larger work that contains
+   part or all of the Bison parser skeleton and distribute that work
+   under terms of your choice, so long as that work isn't itself a
+   parser generator using the skeleton or a modified version thereof
+   as a parser skeleton.  Alternatively, if you modify or redistribute
+   the parser skeleton itself, you may (at your option) remove this
+   special exception, which will cause the skeleton and the resulting
+   Bison output files to be licensed under the GNU General Public
+   License without this special exception.
+
+   This special exception was added by the Free Software Foundation in
+   version 2.2 of Bison.  */
+</pre>
+由上，我們可知：<ul>
+  <li>GNU bison 輸出的分析器程式碼，就是貨真價實的 GPL'd 程式，所以會隨著編譯環境 (build system) 整合到我們的專案中，這是顯性的 GPL 感染</li>
+  <li>FSF 提出的例外條款聲明，只要不修改 GNU bison 輸出的程式碼 (術語為 "Bison parser skeleton")，單純就當作中間輸出碼一般處理，那麼，可依據任何偏好的授權去套用於我們的專案，當然，包含商業化軟體</li>
+  <li>但若修改或重新散佈 Bison parser skeleton 時，FSF 也允許移除前一條的例外條款，使其成為純粹以 GNU GPL 發行的程式碼</li>
+</ul>
+這就是自由軟體迷人之處，不僅有攤在陽光下，允許眾人檢視、批評，與不斷革新變更的技術，還有圍繞在技術外，作為貫徹自由軟體原則的授權條款，我們得顧及適用範疇，也得思考各式各樣的使用情境，正如本文點出 g++/STL 與 GNU bison 的案例一般。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 July 20, 2008 04:13 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2048" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

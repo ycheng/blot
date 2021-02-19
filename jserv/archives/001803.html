@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 寫程式的呆瓜</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001802.html" title="專題演講：IT產業與數學" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001805.html" title="GPL 授權的晦暗一面" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001802.html">« 專題演講：IT產業與數學</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001805.html">GPL 授權的晦暗一面 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">October 09, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">寫程式的呆瓜</h3>
+
+單字 "goofs" 的意思就是「呆瓜」、「傻子」，多數的人應該都希望這個用詞不要套用在自身，而在我閱讀 Embedded.com 上一篇由 Ben Chelf 發表的文章 [<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=192800005">Avoiding the most common software development goofs</a>] 後，卻不由自主地反省起來。<br>
+<br>
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001648.html">software validation 小記</a>] 提過現在隨便一個知名的軟體專案，程式碼都已經跨越百萬行的門檻，面對這些大怪物，要如何證明並在有限條件內檢驗，就是當今最重要的課題之一，並且引用具有二十多年歷史的 X Window System 是如何遇到安全性的缺陷，[<a href="http://www.coverity.com/">Coverity Inc.</a>] 對此提出的因應方式，而剛剛那篇文章的作者就是 [<a href="http://www.coverity.com/">Coverity Inc.</a>] 的技術長，長期著墨於軟體品質的驗證與分析。說了這麼多，到底什麼行為稱得上是 "goofs"，而這樣的愚昧又釀造什麼悲劇呢？[<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=192800005">Avoiding the most common software development goofs</a>] 給了一個明確的例子，試看以下程式碼片段：<ul>
+<pre class="code" style="margin: 6px;"><span class="comment">/* First the options that are only allowed for root */</span>
+<span class="keyword">if</span> (getuid() == 0 || geteuid != 0)                                                              
+{
+  ...</pre>
+</ul>
+出處為 Xorg xserver 的 hw/xfree86/common/xf86Init.c 原始程式，最近的版本已經做了安全性修正，所以跟以上列表不同。看起來沒什麼錯誤，順便複習一下 POSIX API，以下是 man page 內容：<ul>
+<pre class="code" style="margin: 6px;">
+DESCRIPTION
+       getuid() returns the real user ID of the current process.
+       geteuid() returns the effective user ID of the current process.
+</pre>
+</ul>
+X server 會佔據相關的系統資源並確保 UID = 0 以作最大程度的操作，以上兩個 API 即是判斷執行時期的權限。不過，這不是重點，[<a href="http://www.coverity.com/">Coverity Inc.</a>] 指出這是導致安全性缺陷的發生點，為什麼？注意到 geteuid 後面缺了 "()"，這導致我們是以 0 去跟 geteuid 的 function pointer 去比較，而非其傳回值，恰好這個缺陷在某些情況下，會引發非預期的表現，在之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001648.html">software validation 小記</a>] 已經引用說明，這裡不再贅述。所以，解決方式就是在 geteuid 多加個 "()"，這樣的錯誤果然「呆瓜」，不是嗎？對比 X11 的眾多 Release 程式碼，可以發現這個缺陷存在多年。<br>
+<br>
+Ben Chelf 整理了幾個開發者犯錯的因素：<ul>
+<li>Ignorance.</li>
+<li>Stress.</li>
+<li>Boredom.</li>
+<li>Human Frailties.</li>
+</ul>
+字彙簡單，也容易理解，不過錯誤就這樣釀成。今天是 UNIX Desktop，或許只是導致伺服器出現安全性漏洞，修補一下即可，但如果明天是波音飛航系統、居家保全設施、醫療系統、... 又會如何？或許，[<a href="http://blog.linux.org.tw/~jserv/archives/001536.html">技術本身與道德無關；它沒有是非對錯</a>]，但無可否認的是，這些缺失往往造成道德問題，卻多肇因於這些 "goofs" 的行徑，Ben Chelf 的文章相當精彩，也讓我對自己不能精準的掌握類似問題的焦點並提出具體的解決方式，感到不安與歉意。<br>
+<br>
+唉，雖然參與過好幾個軟體專案，不過至今還只是個會寫程式的呆瓜罷了。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 October  9, 2006 01:13 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>geteuid != 0 是不是 geteuid() != 0 呢</p>
+<span class="comments-post">由 <a href="http://tenyitseng.blogspot.com/">鳥毅</a> 發表於</MTIfNonEmpty> October 11, 2006 08:55 AM</span>
+</div>
+<div class="comments-body">
+<p>剛才看錯了,請刪除吧</p>
+<span class="comments-post">由 <a href="http://tenyitseng.blogspot.com/">鳥毅</a> 發表於</MTIfNonEmpty> October 11, 2006 08:57 AM</span>
+</div>
+<div class="comments-body">
+<p>感恩你這篇的提醒..<br />
+Jserv 兄想要更精進，更開竅..<br />
+歡迎來找我們聽課..<br />
+雖不是技術課程，卻能得人生智慧喔^^<br />
+所謂一竅通竅竅通..<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;jaderabbit&#64;no&#46;spam">jaderabbit</a> 發表於</MTIfNonEmpty> October 12, 2006 01:42 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

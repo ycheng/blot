@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Solaris 10 的 X Window System</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/000925.html" title="不甜蜜的維琪" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/000927.html" title="想玩黑客松" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/000925.html">« 不甜蜜的維琪</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/000927.html">想玩黑客松 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February 11, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Solaris 10 的 X Window System</h3>
+
+<center><img src="http://www.sun.com/software/solaris/images/header_solaris10.jpg" /></center><br />
+Sun Solaris 一直是許多先進技術的醞釀溫床，前天閱讀 Sun X Window System Group 的前輩 Alan Coopersmith 在其 blog 寫到 [<a href="http://blogs.sun.com/roller/page/alanc/20050209#x_changes_in_solaris_10">X Changes in Solaris 10</a>]，為我們揭開 Solairs 10 中 X Window System 的奧秘。<br />
+<br />
+Solaris 10 X Window System 一項很重要的改變是，成功整合 Xorg X11R6.8，而我們也可以從此篇 blog 看出過去的歷史：<ul class="code" style="margin: 6px;">
+"Solaris versions before now shipped with the Xsun server (and long long ago, with Xnews, a hybrid X11/NeWS server). Xsun and Xorg both sprung from the same base code from the X Consortium long ago, but evolved in different ways. We had been working on porting new extensions and x86 device drivers from XFree86 to Xsun for several years, but it was becoming increasingly difficult to do so."
+</ul>
+附帶說明一下，這個 <a href="http://en.wikipedia.org/wiki/NeWS">NeWS</a> 是過去 Sun 與其他 UNIX 大廠在制訂 Graphics Standard 時，所提出的規格，平心而論，NeWS 的技術水準比當時的 MIT X Window System 來得高，但是卻封閉保守許多。<br />
+<br />
+另外，關於 Solaris 10 整合 Xorg 的過程，可參考之前兩篇 blog [<a href="http://blogs.sun.com/roller/page/alanc/20040917#xorg_in_solaris">Xorg in Solaris</a>] 與 [<a href="http://blogs.sun.com/roller/page/alanc/20040923#more_on_xorg_in_solaris">More on Xorg in Solaris</a>]。<br />
+<br />
+這個過程中，Sun 貢獻 <a href="http://www.freedesktop.org/Software/XEvIE">XEvIE</a>，並重新檢閱 Damge 與 XFixes 這兩個新 X Extensions。有意思的是支援 Solaris 10 Service Management Facility (SMF) 與Role-Based Access Control (RBAC)，後者的介紹可以參考這篇 blog [<a href="http://blogs.sun.com/roller/page/alanc/20050114#the_desktop_configuration_rights_profile">Desktop Configuration Rights Profile</a>]。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 February 11, 2005 04:28 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>solaris 的確 是 很多先進技術的溫床. 不過 有點可惜 之前幾年雖 有 solaris x86  的 推出, 不過很並沒有 真的 在經營. 錯失了一些好時機.<br />
+不過 最近的solaris 10也有一些滿有趣的特色 . 像 dtrace.<br />
+被戲稱 以後 工程師 想偷懶 的程度便困難了; p<br />
+http://opensolaris.org/download/index.html<br />
+</p>
+<span class="comments-post">由 <a href="http://not.yet.nirvana">elwe</a> 發表於</MTIfNonEmpty> May 18, 2005 09:50 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

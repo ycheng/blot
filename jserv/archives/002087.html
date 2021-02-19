@@ -1,0 +1,264 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 解析 CuRT 與嵌入式系統設計</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002086.html" title="演講：1985 -- 擁抱自由軟體與開放源碼，並開朗面對嶄新授權模式" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002088.html" title="BSD License 與 GPL 的相容性案例 -- qemu" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002086.html">« 演講：1985 -- 擁抱自由軟體與開放源碼，並開朗面對嶄新授權模式</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002088.html">BSD License 與 GPL 的相容性案例 -- qemu »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February 01, 2009</h2>
+
+<div class="blogbody">
+
+<h3 class="title">解析 CuRT 與嵌入式系統設計</h3>
+
+新春收到一份相當難忘的禮物，一篇由王佑中博士撰寫的文章，詳盡地分析小弟上個月釋出的 [<a href="http://blog.linux.org.tw/~jserv/archives/002082.html">CuRT - 精簡易懂的 RTOS</a>]，因為是相當仰慕的前輩執筆，當下還未能反應過來，喜悅之情，溢於言表。該文名為 [<a href="http://sites.google.com/site/embedded2009/introduction-to-curt-v1">Introduction to CuRT_v1</a>]，是下學期 [<a href="http://www.csie.ntnu.edu.tw/">國立台灣師範大學資訊工程系</a>] 的「嵌入式系統」教材的一部分。<br />
+<br />
+王佑中博士是台灣早年耕耘 GNU/Linux 重要人物，知名代表作品為 chdrv 中文終端機模擬程式，後來赴美深造，為 Realtime Linux 貢獻了極大的心力，主持了 [<a href="http://www.linuxdevices.com/links/LK7432493143.html">RED-Linux</a>] 專案，大幅改善早期 Linux 的即時能力，並提出以下創新特徵：<ul>
+  <li>a short kernel blocking time</li>
+  <li>a quick task response time</li>
+  <li>modulized and runtime replaceable CPU scheduler</li>
+  <li>a general scheduling framework</li>
+</ul>
+而即將開課的「嵌入式系統」課程，想必是高朋滿座，而使用 CuRT 作為教材的前言中，王博士提及：<ul class="code" style="margin: 6px;">
+「對大多數的人而言，一個作業系統和天書可能差別不大。然而事實是如此嗎？ 世界上有一大堆小的快不像樣的 OS，jserv 的 CuRT 就是一個例子。像這樣的 OS 理論上只要是資工系統的學生都應該要寫的出來，否則大家花了那麼多的時間學程式語言和作業系統是做什麼用的? 然而如果我們做個調查，我想大多數的人都認為自己寫一個 OS 是不可能的事。這份文件就是用來解答大家的疑惑，讓大家不要再覺得這是不可能的事情了。寫一個 OS 是多麼美好的事，在有限的生命中千萬不要遺漏了它。」
+</ul>
+多麼激勵人心的一句話啊！算算從高中開始研讀作業統並著手實做以來，也十多年了，愚昧的我仍利用業餘空檔作著「在有限生命中」的「美好的事」。該文簡單扼要提及作業系統的組成、ARM (CuRT 採用 Xscale SoC) 的初始化與必要的設定、RTOS 的心臟 -- scheduler、ISR/Driver，並穿插若干個值得一試的練習題，非常精彩。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 February  1, 2009 08:22 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>國立『臺灣師範大學』。</p>
+
+<p>好棒的文章，希望我也可以儘快完成我的夢XD</p>
+
+<p><br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;Rifurdoma&#64;gmail&#46;com">Rifur</a> 發表於</MTIfNonEmpty> February  1, 2009 09:56 PM</span>
+</div>
+<div class="comments-body">
+<p>@Rifur,<br />
+感謝指正，已修正</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> February  1, 2009 10:23 PM</span>
+</div>
+<div class="comments-body">
+<p>文章中提到的四點特徵並不是「創新」，而是「具備」。<br />
+</p>
+<span class="comments-post">由 <a href="http://heaven.branda.to/~thinker/GinGin_CGI.py">Thinker</a> 發表於</MTIfNonEmpty> February  2, 2009 12:38 AM</span>
+</div>
+<div class="comments-body">
+<p>-> 有沒有人覺得怪怪的，bl main 到底是跳到記憶體還是 BootRom 中了呢? </p>
+
+<p>我在網路上找到一個答案，不知道對不對？<br />
+http://www.aub.org.cn/Embedded_driver/Article113014.html</p>
+
+<p>-> BL是一个相对寻址，在使用BL之前你的PC要先跳到RAM里  例如你把代码（这些代码包括了BL main）都拷到 0xc0000000开始的地方，那么你需要 ldr pc,=0xc0000000 ，而因为在0xc0000000 后面也有个 BL main ， 所以，PC执行到那里自动会BL到 RAM里面的 main ，而不会到flash里的main</p>
+<span class="comments-post">由 <a href="mailto&#58;John&#46;Linq&#64;ptt&#46;cc">John Linq</a> 發表於</MTIfNonEmpty> February  6, 2009 05:16 PM</span>
+</div>
+<div class="comments-body">
+<p>恰好看到以下這個open source scheduler：</p>
+
+<p>'LightingBolt' - an open source scheduler for a STR9 is released</p>
+
+<p>http://www.keil.com/forum/docs/thread14276.asp</p>
+
+<p>* A very fast context switch, measured in [microseconds] at 48[MHz] (STR9 can run at up to 96[MHz]).<br />
+* A rewritten synchronization module. Semaphores are now truly task-safe and contain the correct logic. A new synchronization primitive (event) introduced. All synchronization elements are linked statically, and there is no need to allocate/release them, or for this matter neither any other system resource, like timers. User does not need direct access to basic system data types to use the kernel. This enhances robustness.<br />
+* The system's priority queue has been completely rewritten. It is now logarithmically correct.<br />
+* The program has been generally retrofitted to run efficiently on an ARM core.<br />
+* Strict screening by PC-lint.<br />
+* Stack level checking.<br />
+* Open source installer (NSIS) used to create a self extractor for the delivery of the source code.<br />
+* Modularity.<br />
+* Documentation.</p>
+<span class="comments-post">由 <a href="mailto&#58;johnlinq&#64;ptt&#46;cc">John Linq</a> 發表於</MTIfNonEmpty> February 23, 2009 10:15 AM</span>
+</div>
+<div class="comments-body">
+<p>正在考量是否可能將這個CuRT移植到NXP的LPC2378 Microcontroller上，<br />
+但是，因為技術能力薄弱，所以，只能夠先一陣亂搞，看看情況如何。<br />
+一陣亂搞之後發現：</p>
+
+<p>在\CuRT_v1\includes\kernel\kernel.h中</p>
+
+<p>#define TASK_STACK_SIZE   8192<br />
+#define THREAD_STACK_SIZE 8192</p>
+
+<p>這兩個數值太大了，導致最少也需要<br />
+RW-data=96 + ZI-data=231904 == 232,000 Bytes RAM<br />
+可是LPC2378只有32K不到的RAM........</p>
+<span class="comments-post">由 <a href="mailto&#58;johnlinq&#64;ptt&#46;cc">John Linq</a> 發表於</MTIfNonEmpty> May 26, 2009 01:42 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2087" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

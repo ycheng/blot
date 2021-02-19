@@ -1,0 +1,322 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: November 2008 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2008_10.html" title="October 2008" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2008_12.html" title="December 2008" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/2008_10.html">« October 2008</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/2008_12.html">December 2008 »</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">November 14, 2008</h2>
+
+
+<div class="blogbody">
+<a name="002075"></a>
+<h3 class="title">MicroXwin : 針對嵌入式系統的高效能 X Window System 實作</h3>
+
+<center><img src="http://jserv.sayya.org/embedded/microxwin-header.jpg" width="597" height="103" /></center><br />
+新創公司 DSPSOFT INC 日前提出針對嵌入式系統的高效能 X Window System 實作，即 [<a href="http://www.microxwin.com/">MicroXwin</a>]，由該公司創辦人兼 CEO，Vasant Kanchan，領導嶄新途徑的開發與產品化。MicroXwin 的思維乃是著眼於拜自由軟體蓬勃發展所賜，豐富的 X 應用程式有如過江之鯽，但，在有限硬體能力的嵌入式環境中，是否有機會獲得良好的呈現與使用者互動能力呢？為此，MicroXwin 用獨特的方式改良 X 的設計。<br />
+<br />
+X Window System 本質上是圍繞於網路通訊的視窗系統，X server 透過硬體，負責將 X client 要求的繪圖動作，予以呈現並處理運作所需的 I/O，而 X protocol 就是如此設計的核心。X 應用程式就是 X client，為了開發豐富的應用程式，會有 Gtk+ 與 Qt 一類的 Toolkit / widget set，下圖是運作示意圖：<br />
+<center><img src="http://jserv.sayya.org/embedded/xwin.gif" width="300" height="200" /></center><br />
+在沒有特殊硬體加速機制 (如 DRI 與 GLX/OpenGL) 的前提，以下因素導致原本 X Window System 效能低落並佔用系統資源：<ul>
+  <li>基於 X protocol 的規範，X client 與 X server 各自保有 buffer 與格式化的繪圖指令操作</li>
+  <li>X client 與 X server 間的必要的同步化通訊與 round-trip</li>
+  <li>對於 ARM 9 一類廣泛使用的嵌入式處理器架構，系統設計有 MMU/cache 本該能提昇的處理效能與彈性，但頻繁地在 X 應用程式與 X server 間作 context switch，導致 cache flush，致使效能大打折扣</li>
+</ul>
+是此，MicroXwin 提出新的途徑，在不更動既有 X client / Toolkit 的前提下，將 X serever 的工作搬移到底層作業系統，成為一個新的服務，並且，捨棄 X protocol 與網路通透性的機制，成為修正性、典型的繪圖系統，以下是示意圖：<br />
+<center><img src="http://jserv.sayya.org/embedded/mxwin.gif" width="300" height="200" /></center><br />
+由上圖，我們可見到若干元件：<ul>
+  <li>X11.ko kernel module : 實做部份 X server 的功能，並開放 /dev/x11dev 的介面給 X client library 存取</li>
+  <li>libX11.so 保持與原本 Xlib 二進位相容的 API</li>
+  <li>libXext.so 等 X extension library 則實做 X extension 所需的呼叫，但針對 /dev/x11devb 介面，而非網路通訊的 X protocol</li>
+  <li>X core font 由 X11.ko kernel 處理，免除繁複的記憶體操作</li>
+  <li>針對向量字體，則由 X client 端，透過 Xft/Fontconfig 處理，但更直接的呈現</li>
+</ul>
+如此嶄新的設計有著以下優點：<ul>
+  <li>Low latency 與 Low round trip</li>
+  <li>大幅減少 X request / response 所需的 buffering，免去昂貴的通訊成本</li>
+  <li>消去 context switch 的負擔，並避免 ARM 9 一類嵌入式硬體的 cache flush 問題</li>
+  <li>透過 X11.ko kernel module，圖形資料是直接由 userspace 複製到 framebuffer 硬體</li>
+  <li>(幾乎) 不需更動到任何既有 X 應用程式</li>
+</ul>
+現在 libX11 與 libXext 等 userspace library 依據 BSD style license 發佈，也提供針對 x86, ARM, MIPS 等硬體架構的 kernel module，就官方的說法，MicroXwin 在空間與記憶體需求量，均大幅低於 Xorg server，以 x86 架構為例，個別軟體元件的空間需求如下：<ul>
+  <li>libX11.so : 720K bytes</li>
+  <li>libXext.so : 7K bytes</li>
+  <li>Kernel module x11.ko : 200K bytes</li>
+</ul>
+相較而下，Xorg X server 佔用了 1.8M bytes 的空間。而針對 ARM 9 硬體，以 Nokia 770 Linux Tablet 為主要效能評比的對象，OpenHanded (已被 Intel 收購) 與 Nokia 的工程團隊已做了若干效能改進，提出 Xomap，這個奠基於 KDrive / TinyX 架構、針對 TI OMAP 硬體加速的 X server，MicroXwin 與其相較，絲毫不遜色，而且有亮眼的效能突破。網頁 [<a href="http://www.microxwin.com/demo.html">Demo</a>] 透過 x11perf 羅列了效能評比數據，筆者做了圖表整理如下：<br />
+<center><img src="http://jserv.sayya.org/embedded/microxwin.png" width="521" height="387" /></center><br />
+由此可見，MicroXwin 相較於 Xorg X server，在 asynchronous display 有著 62% 的效能提昇，而在 synchronous display of images 則有 384% 的提昇，這是主要架構變異使然，官方也提供若干組態與執行檔供驗證評估。整體來說，MicroXwin 的設計特點：<ul>
+  <li>快速的 round-trip 與 synchronus request 時間</li>
+  <li>讓 UI Toolkit 得以有更快更順暢的表現</li>
+  <li>Kernel module x11.ko 有著較 Xorg server 更高的處理優先權</li>
+</ul>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002075.html">01:20 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2075" onclick="OpenComments(this.href); return false">迴響 (13)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">November 12, 2008</h2>
+
+
+<div class="blogbody">
+<a name="002074"></a>
+<h3 class="title">自由軟體法律授權工作坊</h3>
+
+<center><img src="http://whoswho.openfoundry.org/images/eventlist/events/ossfi_01_1226019519.jpg" width="170" height="160" /></center><br />
+本月 (11 月) 的 26 日，中央研究院資訊科技創新研究中心自由軟體鑄造場 (OSSF) 將舉辦 [<a href="http://whoswho.openfoundry.org/workshop/details/4-law-and-policy.html">自由軟體法律授權工作坊</a>] 的研討會，藉此活動共同探討企業在使用開放源碼時所遇到的授權與法律議題，以下摘錄活動訊息：<ul>
+  <li>對象：嵌入式廠商及對自由軟體法律議題有興趣者</li>
+  <li>人數：約 80 人</li>
+  <li>費用：全程免費，中午供餐</li>
+  <li>議程：<ul>
+    <li>09:40~10:30 主題一：軟體的授權觀念與自由軟體授權類別</li>
+    <li>10:40~11:30 主題二：自由軟體的法律爭訟及商業應用模式</li>
+    <li>11:40~12:00 主題三：Focus Group Discussion</li>
+  </ul></li>
+</ul>
+小弟也會出席此研討會，歡迎指教，謝謝！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002074.html">08:18 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2074" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="002073"></a>
+<h3 class="title">fbvncserver : 將 Linux framebuffer 作為輸出的 VNC server</h3>
+
+日前在調整 LCD panel / controller 的 Linux device driver 時，因疑似 panel 硬體處理不善，導致無法釐清問題是發生於軟體層面，抑或潛在的硬體議題，於是需要觀察 /dev/fb* 的內容，將腦筋動到 VNC 上面，最後做了一個小工具 fbvncserver，將 Linux framebuffer 作為輸出的 VNC server。<br />
+<br />
+參與 OpenEZX 專案時，Harald Welte 寫了一個小工具 [<a href="http://svn.openezx.org/trunk/src/userspace/fbgrab/">fbgrab-viewer</a>]，原理是透過在標的裝置 (target) 端執行 [<a href="http://hem.bredband.net/gmogmo/fbgrab/">fbgrab</a>]，不斷將從 Linux frambuffer 擷取的影像，經由轉換，傳輸到桌面 (host) 端的 viewer，即可監控裝置端的畫面，當然，實際上得考慮傳輸的間隔，所以大概是每五秒傳輸一張。這個小工具在我們早期進行 Openmoko 硬體驗證時，仍派上用場，不過，問題是間歇性的擷取與轉換影像為 PNG 圖檔，還是太沈重。而過去 Sharp Zaurus Linux PDA 上，有個 [<a href="http://fbvncserver.sourceforge.net/">fbVNCServer</a>] 工具，則巧妙地建立一個 VNC server，將 Linux framebuffer 作為輸出，允許桌面端瀏覽與操控 PDA 的畫面，看似很理想，但這個軟體太依賴 Zaurus PDA 的硬體組態，本身也有點複雜，也沒有維護，所以乾脆弄個新專案。<br />
+<br />
+同樣透過 [<a href="http://libvncserver.sourceforge.net/">LibVNCServer</a>] 來建構 VNC server，大幅減輕工作量，雛型實做可參考 [<a href="http://jserv.sayya.org/embedded/fbvncserver.c">fbvncserver.c</a>]，授權方式為 GNU GPL，參考的執行畫面如下：<br />
+<center><img src="http://jserv.sayya.org/embedded/fbvncserver.png" width="600" height="316" /></center><br />
+上圖主要的畫面是 TightVNC client，視窗標題列的 AG101 則為我的裝置端名稱，當 VNC server 啟動時，終端機會有以下輸出：<pre class="code" style="margin: 6px;">
+/tmp # ./fbvncserver
+Initializing framebuffer device /dev/fb0...
+xres=800, yres=480, xresv=800, yresv=480, xoffs=0, yoffs=0, bpp=16
+Initializing Framebuffer VNC server:
+        width:  800
+        height: 480
+        bpp:    16
+        port:   5900
+Initializing server...
+07/11/2008 14:00:24 Listening for VNC connections on TCP port 5900
+</pre>
+這裡裝置端的 IP 為 10.0.4.80，而桌面端為 10.0.4.78，現在後者的 VNC client 試圖連線到前者的 fbVNCserver，會看到以下的終端機訊息更新：<pre class="code" style="margin: 6px;">
+07/11/2008 14:00:31 Got connection from client 10.0.4.78
+07/11/2008 14:00:31   other clients:
+07/11/2008 14:00:31 Client Protocol Version 3.8
+07/11/2008 14:00:31 Protocol version sent 3.8, using 3.8
+Dirty page: 70x80+6+0...                                                                 
+07/11/2008 14:00:31 rfbProcessClientSecurityType: executing handler for type 1
+07/11/2008 14:00:31 rfbProcessClientSecurityType: returning securityResult for client rf8
+07/11/2008 14:00:31 Pixel format for client 10.0.4.78:
+07/11/2008 14:00:31   32 bpp, depth 24, little endian
+07/11/2008 14:00:31   true colour: max r 255 g 255 b 255, shift r 16 g 8 b 0
+07/11/2008 14:00:32 Using compression level 1 for client 10.0.4.78
+07/11/2008 14:00:32 Using image quality level 6 for client 10.0.4.78
+07/11/2008 14:00:32 Enabling X-style cursor updates for client 10.0.4.78
+07/11/2008 14:00:32 Enabling full-color cursor updates for client 10.0.4.78
+07/11/2008 14:00:32 Enabling cursor position updates for client 10.0.4.78
+07/11/2008 14:00:32 Enabling LastRect protocol extension for client 10.0.4.78
+... (略) ...
+</pre>
+這些訊息是由 [<a href="http://libvncserver.sourceforge.net/">LibVNCServer</a>] 所輸出，表示 VNC/RFB session 已正確建立與運作。目前的實做假設裝置端的 bpp 為 16-bit (RGB565)，在多數的硬體裝置應算堪用，當然，任何修改與 patch 都非常歡迎 :-)<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002073.html">11:37 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2073" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">November 01, 2008</h2>
+
+
+<div class="blogbody">
+<a name="002072"></a>
+<h3 class="title">簡易測量 X round-trip time</h3>
+
+前文 [<a href="http://blog.linux.org.tw/~jserv/archives/002016.html">非同步 Xlib 處理機制</a>] 探討了鮮為人知的 X Window System 的非同步設計議題。無論 XOrg 實做上引入哪些新機制，基本上，典型的運作模式大致為，在 reply-receiving 函式呼叫前，client 端會預先保存 reply data，接著，server 端施行對於 client 要求而生的同步動作，而控制權從 server 重回到 client 的這段期間，稱為 "round-trip" time，可視作作繪圖指令 / 操作的往返。本文則提出一個簡易測量 X round-trip time 的途徑。<br />
+<br />
+X protocol 的設計相當洗練且豐富，在 X client 這端，我們可透過 Xlib 中的 XNoOp 函式，對 protocol 傳送 "NoOperation" 的 request，一旦經過 X transport 處理後，即可得知大概一來一往 round-trip time，以下是簡單的實做： [<a href="http://jserv.sayya.org/freedesktop/xttl.c">xttl.c</a>]
+<pre class="code" style="margin: 6px;"><span class="comment">/* Measuring X round-trip time.
+ * Copyright (c) 2008 Jim Huang &lt;jserv.tw@gmail.com>, MIT X License
+ *
+ * Build:
+ *   gcc -o xttl xttl.c -Wall `pkg-config --cflags --libs x11`
+ */</span><span class="keyword">
+#include</span> &lt;stdio.h><span class="keyword">
+#include</span> &lt;unistd.h><span class="keyword">
+#include</span> &lt;err.h><span class="keyword">
+#include</span> &lt;X11/Xlib.h><span class="keyword">
+#include</span> &lt;sys/time.h>
+<span class="keyword">
+#define</span> TRY_TIMES (10)<span class="keyword">
+#define</span> INTERVAL (1)
+<span class="keyword">int</span> main()
+{
+	Display *disp;
+	<span class="keyword">struct</span> timeval start = { 0UL, 0UL }, end = { 0UL, 0UL };
+	<span class="keyword">char</span> *disp_name;
+	<span class="keyword">int</span> ret = 0;
+	<span class="keyword">int</span> count = 0;
+
+	disp_name = XDisplayName(NULL);
+	<span class="keyword">if</span> ((disp = XOpenDisplay(NULL)) == NULL) {
+		errx(1, <span class="literal">"cannot open display %s"</span>, disp_name);
+	}
+
+	printf(<span class="literal">"X server version is %i.%i\n"</span>, 
+	       ProtocolVersion(disp), ProtocolRevision(disp));
+	printf(<span class="literal">"X Vendor string: %s\n"</span>, ServerVendor(disp));
+	printf(<span class="literal">"X Vendor release number: %i\n"</span>, XVendorRelease(disp));
+
+	<span class="keyword">while</span> (count++ &lt; TRY_TIMES) {
+		ret = gettimeofday(&amp;start, NULL);
+		<span class="keyword">if</span> (ret &lt; 0) {
+			err(1, <span class="literal">"gettimeofday"</span>);
+		}
+
+		<span class="comment">/* The XNoOp function sends a NoOperation protocol request
+		 * to the X server, thereby exercising the connection. */</span>
+		<span class="keyword">if</span> (XNoOp(disp)) {
+			<span class="keyword">struct</span> timeval diff = { 0UL, 0UL };
+			<span class="keyword">if</span> ((ret = gettimeofday(&amp;end, NULL)) &lt; 0)
+				err(1, <span class="literal">"gettimeofday"</span>);
+
+			<span class="keyword">if</span> (end.tv_sec &lt; start.tv_sec &amp;&amp;
+
+			    end.tv_usec &lt; start.tv_usec) {
+				<span class="keyword">break</span>;
+			}
+
+			diff.tv_sec = end.tv_sec - start.tv_sec;
+			diff.tv_usec = end.tv_usec - start.tv_usec;
+
+			printf(<span class="literal">" reply from display %s: XNoOP_seq=%i time=%lu.%lu ms\n"</span>,
+			       disp_name, count,
+			       (diff.tv_sec * 1000 * INTERVAL), diff.tv_usec);
+		}
+		sleep(INTERVAL);
+	}
+	XCloseDisplay(disp);
+
+	<span class="keyword">return</span> 0;
+}</pre>
+參考輸出如下：<pre class="code" style="margin: 6px;">
+$ ./xttl 
+X server version is 11.0
+X Vendor string: The X.Org Foundation
+X Vendor release number: 10502000
+ reply from display :0: XNoOP_seq=1 time=0.4 ms
+ reply from display :0: XNoOP_seq=2 time=0.5 ms
+ reply from display :0: XNoOP_seq=3 time=0.6 ms
+ reply from display :0: XNoOP_seq=4 time=0.7 ms
+ reply from display :0: XNoOP_seq=5 time=0.9 ms
+ reply from display :0: XNoOP_seq=6 time=0.5 ms
+ reply from display :0: XNoOP_seq=7 time=0.6 ms
+ reply from display :0: XNoOP_seq=8 time=0.5 ms
+ reply from display :0: XNoOP_seq=9 time=0.6 ms
+ reply from display :0: XNoOP_seq=10 time=0.5 ms
+</pre><br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002072.html">06:39 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2072" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Embedded SSL Libraries</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001654.html" title="美美的 Debian Tee" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001656.html" title="SCIM-chewing 0.3.0 與 libchewing 0.3.0 釋出" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001654.html">« 美美的 Debian Tee</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001656.html">SCIM-chewing 0.3.0 與 libchewing 0.3.0 釋出 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">May 10, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Embedded SSL Libraries</h3>
+
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001651.html">軟體多樣性對嵌入式系統的影響</a>]，提到 Jim Higgins 的文章，並以 [<a href="http://www.openssl.org/">OpenSSL</a>] 為例，說明軟體多樣性，而就 Embedded 應用來說，以下列舉我用過的 Embedded SSL libraries：<ul>
+<li>[<a href="http://www.cryptlib.com/">Cryptlib</a>]</li>
+<li>[<a href="http://www.matrixssl.org/">MatrixSSL</a>]</li>
+<li>[<a href="http://www.yassl.com/">yaSSL</a>]</li>
+<li>[<a href="http://www.axtls.co.nr/">axTLS</a>]</li>
+</ul>
+面對琳瑯滿目的解決方案與其規格，該如何取捨呢？之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001298.html">從 OpenSSL 談 SSL Programming 的抽象化</a>] 提過 SSL programming model 大致的樣貌。包含 OpenSSL 在內，我用過了以上五個 SSL libraries，授權方式先跳過，因為有 dual-licensing 的情況，但都是自由軟體。就我的認知，[<a href="http://www.cryptlib.com/">Cryptlib</a>] 與 [<a href="http://www.matrixssl.org/">MatrixSSL</a>] 性質較為接近，簡單來說，這兩項都是從實做 Crypto algorithms 作出發，前者的完整度高，就 SSL/TLS 應用來說，可視為 OpenSSL 的替代 library，不過處理 I/O 的部份就沒有 OpenSSL 那樣便利，而 [<a href="http://www.matrixssl.org/">MatrixSSL</a>] 的 API 設計很精簡，其 footprint 也適合 Embedded 應用，不過軟體整合時，還得一併處理瑣碎的 I/O，這兩者都有商業開發支援。<br>
+<br>
+[<a href="http://www.yassl.com/">yaSSL</a>] 是另一個不錯的解決方案，有 C 與 C++ 的實做，為了降低軟體整合的困難度，還提供了 OpenSSL 的 API subset，footprint 也很精簡，也提供商業開發支援。最後是 [<a href="http://www.axtls.co.nr/">axTLS</a>]，這個專案非常有趣，因為不只有 SSL/TLS library，還提供了 Embedded Web server (名為 Anti-Web)，系統模組化相當不錯，可以透過 menuconfig 挑選合適的組態，另外，內建的 Anti-Web 也支援 CGI/PHP，跟前述的 SSL libraries 相比，[<a href="http://www.axtls.co.nr/">axTLS</a>] 在 SSL crypto algorithm 的功能性是最少的，僅有最基本的實做，但是對功能專一的 Embedded 應用來說，反而是不錯的選擇。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 May 10, 2006 11:15 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>Jserv大哥<br />
+這篇文章小弟會部分轉貼到freesf的網站喔<br />
+向您告知一聲<br />
+如果覺得不妥的話，將會把它刪除</p>
+<span class="comments-post">由 <a href="mailto&#58;drogher&#64;YAHOO&#46;COM">droger</a> 發表於</MTIfNonEmpty> May 11, 2006 11:44 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

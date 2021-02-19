@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 設計 Window Manager</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/000819.html" title="Gaim-1.1.2 + OpenSSL 發佈" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/000823.html" title="不喜歡用 Movable Type" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/000819.html">« Gaim-1.1.2 + OpenSSL 發佈</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/000823.html">不喜歡用 Movable Type »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 21, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">設計 Window Manager</h3>
+
+<p>因為專案需求，所以我又要來設計新的 Window Manager，目標是融合 DirectFB 與 XDirectFB 之下運作的應用程式，換言之，就是用 DirectFB 來撰寫 X Window Manager，這個瘋狂的點子已經在剛剛幾分鐘的 hacking 確認是可行的，現在欠缺的是標準與實作方式的確立。提到 Window Manager，當然要去看看 [<a href="http://xwinman.org/">Windows Managers for X</a>] 的整理，而剛剛連線才發現，原來這個網頁已經有十個年頭了，而我有幸在去年貢獻了幾個 entries :-)</p>
+
+<p>比較讓我感興趣的項目之一，就是 <a href="http://metawm.sourceforge.net/">Meta Window Manager</a>，這是一個簡化 Window Manager 設計的 Framework，作者也提供一個測試用的精簡 Window Manager。剛剛測試後，發現真的非常方便，很容易就設計出具有自己風格的 Window Manager，可惜這個專案還欠缺 WM 應該具有的 spec，否則只要寫篇「快快樂樂打造自己的 Window Manager」就可以生出一堆有趣的應用。</p>
+
+<p>除了傳統的 Window Manager 外，我也發現一個相當特別的設計，就是運作於 Web Browser (需要 HTML 4.0 與 DHTML 支援) 的 "Window Manager"，請參考 <a href="http://dhtmlwindowmngr.sourceforge.net/">DHTML-WindowManager</a>。一打開畫面就跑出一個 Window，沒錯，而且有 Title bar，試著 Drag-and-Drop 吧，超級炫！</p>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 21, 2005 09:47 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>Hi Jserv</p>
+
+<p>請教您<br />
+雖然我在 X Window設定 focus policy 為 "click-to-focus"<br />
+然而  如果我用 Alt-PrtScr 這一個hotkey捉到的視窗<br />
+卻是 mouse 駐留的那ㄧ個視窗  而不是"click-to-focus"的<br />
+那ㄧ個</p>
+
+<p>這樣的行為與microsoft windows不一樣</p>
+
+<p>是不是換一個恰當的 X Window的window manager</p>
+
+<p>就可以得到與microsoft windows平台一樣的focus policy??</p>
+
+<p><br />
+  </p>
+<span class="comments-post">由 <a href="http://jeffrey.private@seed.net.tw">吳敏宏</a> 發表於</MTIfNonEmpty> March  9, 2006 09:35 AM</span>
+</div>
+<div class="comments-body">
+<p>X Window System 本質上沒有 Alt-PrtScr 這個 hotkey，那是你的 Desktop Environment (KDE, GNOME or others) 定義的，其行為更沒有一定的規範，請自行參閱相關 Manual，謝謝！</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> March  9, 2006 10:59 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

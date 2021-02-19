@@ -1,0 +1,368 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>damon's notepad: Debian 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~damon/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~damon/index.rdf" />
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~damon/" accesskey="1">damon's notepad</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+
+<h2 class="date">December 07, 2003</h2>
+
+
+<div class="blogbody">
+
+<a name="000529"></a>
+<h3 class="title">Debian unstable update服務恢復</h3>
+
+<p>經過前一陣子被crack的問題發生之後，debian unstable在stable了一段時間之後終於重新online了，有在使用debian unstable的朋友，衝阿<br />
+您可以在這邊找到整個被crack的過程與說明，如果您用的是有問題的kernel，儘快更新吧<br />
+http://moto.debian.org.tw/viewtopic.php?t=2446</p>
+
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000529.html">07:47 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=529" onclick="OpenComments(this.href); return false">迴響 (1174)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">October 12, 2003</h2>
+
+
+<div class="blogbody">
+
+<a name="000450"></a>
+<h3 class="title">debian desktop</h3>
+
+<p>應朋友的要求，把自己的桌面安裝方法整理一下</p>
+
+<p>安裝debian，我都是用ext3，為了配合使用debian官方的kernel image</p>
+
+<p>安裝文字編輯器(vim , joe ..balabala)</p>
+
+<p>修改/etc/apt/source.list把所有的stable都改成unstable後存檔(都要放在同一行)</p>
+
+<p>升級到unstable(apt-get update;apt-get dist-upgrade)，如果有硬體沒抓到的話考慮換kernel(apt-cache search kernel-image)<br />
+選一個新一點的，有時候可能會有一些問題，我的機器上用的是2.4.21-5-k7這一版，在不行的話考慮換2.6 kernel</p>
+
+<p>如果用debian官方包的kernel image的話再出現設定畫面的時候要選讓他作initrd.img的link並在/etc/lilo.conf要加入<br />
+initrd=initrd.img像這樣<br />
+default=Linux<br />
+initrd=initrd.img<br />
+image=/vmlinuz<br />
+        label=Linux<br />
+        read-only<br />
+安裝完之後lilo -v -v -v寫入superblock or mbr在重新開機</p>
+
+<p>安裝locales , xcin , xfonts-intl-chinese , x-window-system , rcconf , ssh<br />
+這些都抓完之後會出現設定locales跟顯示卡晶片的畫面，locales選擇en_US ISO-8859-1跟zh_TW BIG5這兩個，顯示卡就選擇自己用的那種<br />
+ssh的部份就照預設值就好，安裝完之後在用rcconf把xfs , xprint , xdm這幾個沒用到的都拿掉</p>
+
+<p>安裝gnome , gdm(apt-get install gnome gdm或是apt-get install kde gdm)<br />
+有錯誤訊息說甚麼broken package的話，就修改/etc/apt/source.list加入<br />
+deb http://snapshot.debian.net/archive/2003/08/11/debian unstable main contrib non-free<br />
+在把其他的都#掉，在用apt-get update;apt-get install gnome gdm或是apt-get install kde gdm<br />
+這些先安裝起來之後在把deb http://snapshot.debian.net/archive/2003/08/11/debian unstable main contrib non-free註解掉<br />
+在跑一次apt-get update;apt-get upgrade升級成新的版本</p>
+
+<p>安裝一些美化跟雜七雜八的東西<br />
+apt-get install xmms xine-ui xchat gftp gdeskcal gdesklets-data gaim goats esound ttf-arphic* ttf-baekmuk <br />
+ttf-kochi-gothic ttf-kochi-mincho swf-player wget<br />
+如果用kde的話可以改用kbear取代gftp，改用superkaramba取代gdeskcal , gdesklets-data ，改用kopete取代gaim，不需要裝goats<br />
+也不需要裝esound，安裝wget是因為gdesklets有個天氣的Display需要用到<br />
+安裝好gdesklets之後可以在/usr/share/gdesklets/Displays/裡面找到佈景主題<br />
+superkaramba的話http://www.kde-look.org/有專區在左邊</p>
+
+<p>這些都裝好之後再來調整gdm的一些東西<br />
+/etc/gdm/locale.conf把底下這行改成這樣<br />
+Chinese(Taiwan_R.O.C.) zh_TW.Big5<br />
+/etc/gdm/Sessions/Gnome加入<br />
+export LC_ALL=zh_TW.Big5<br />
+export LANG=zh_TW.Big5<br />
+export XMODIFIERS="@im=xcin"<br />
+exec /usr/bin/xcin &<br />
+/etc/init.d/gdm加入<br />
+export LANG=zh_TW.Big5<br />
+/etc/init.d/gdm restart<br />
+調整一下xcin改成只有酷音輸入法<br />
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;<br />
+;<br />
+;  This is the global configuration of the zh_TW.Big5 locale<br />
+;<br />
+(define zh_TW.Big5<br />
+  '((DEFAULT_IM         "chewing")<br />
+    (DEFAULT_IM_MODULE  "gen_inp")<br />
+    (DEFAULT_IM_SINMD   "DEFAULT")<br />
+    (PHRASE             "default.phr")<br />
+    (CINPUT             (chewing))<br />
+(CINPUT (chewing))這邊預設會有很多內建的輸入法，全都拿掉，改成只有chewing<br />
+(DEFAULT_IM "chewing")這邊預設是cj，改成chewing，存檔<br />
+這樣以後按ctrl + shift切換xcin就只會有酷音輸入法</p>
+
+<p>這些都修改好之後/etc/init.d/gdm start就可以看到gdm的登入畫面了</p>
+
+<p>esound是因為用gnome2所以加裝的，也可以改用alsa，不過我不會<br />
+gdeskcal , gdesklets如果用kde的話就改用superkaramba<br />
+http://art.gnome.org/<br />
+http://www.kde-look.org/<br />
+可以找到很多美化的東西<br />
+我用的佈景主題是<br />
+http://art.gnome.org/themes/gtk2/21.php<br />
+http://art.gnome.org/themes/metacity/490.php<br />
+一個是視窗裝飾，一個是視窗的其他部份，這邊也可以找到很多gdm用的佈景主題<br />
+xmms的佈景主題我用的是<br />
+http://www.xmms.org/skins.php?download=86<br />
+解壓縮後放在/usr/share/xmms/Skins/(Skins自己建立)再到選單上改用這個，順便改成用esound輸出聲音<br />
+gaim也是，音效改成用ESD<br />
+字型的話我都是用AR PL KaitiM Big5 10號字</p>
+
+<p>要用kde的話還需要安裝kde-i18n-zhtw koffice-i18n-zhtwbig5這兩個這樣kde跟koffice才能夠有中文選單<br />
+也可以在/etc/apt/source.list中加入<br />
+deb http://coyote.asoc.euitt.upm.es/mud/debian ./<br />
+在用apt-get update;apt-get install kde-theme-liquid mosfet<br />
+這樣就可以用liquid的那些風格還有顏色，搭配kde-look.org上找的aqua視窗裝飾看起來不錯</p>
+
+<p></p>
+
+<p></p>
+
+<p></p>
+
+<p><br />
+</p>
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000450.html">03:05 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=450" onclick="OpenComments(this.href); return false">迴響 (408)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+
+<a name="000449"></a>
+<h3 class="title">screen shot</h3>
+
+<p><a href="http://blog.linux.org.tw/~damon/archives/Screenshot.html" onclick="window.open('http://blog.linux.org.tw/~damon/archives/Screenshot.html','popup','width=1024,height=768,scrollbars=no,resizable=no,toolbar=no,directories=no,location=no,menubar=no,status=no,left=0,top=0'); return false">View image</a><br />
+</p>
+
+<p>環境:debian unstable , gnome 2.2 , gdeskcal , gdesklets ...balabala<br />
+無聊，拍張照片，順便問一下，在windows上有superkaramba , gdeskcal , gdesklets這樣好用的東西嗎？<br />
+在公司沒辦法一定得用windows :(</p>
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000449.html">01:43 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=449" onclick="OpenComments(this.href); return false">迴響 (821)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">September 23, 2003</h2>
+
+
+<div class="blogbody">
+
+<a name="000387"></a>
+<h3 class="title">kdm安裝完成</h3>
+
+<p>今天利用一點休假時間把kdm裝起來了</p>
+
+<p>不過有一些小問題，可能是bug，也可能不是<br />
+修改了按鈕的風格可以，修改了使用的顏色卻不行<br />
+字型沒辦法在清單中選擇中文字型<br />
+其他到是沒問題，只要把能夠正常使用中文kde的.xinitrc直接cp成.xsession<br />
+export LC_ALL=zh_TW.Big5<br />
+export LANG=zh_TW.Big5<br />
+export XMODIFIERS="@im=xcin"<br />
+exec xcin &<br />
+exec startkde<br />
+我的設定檔是這樣.xinitrc .xsession都一樣<br />
+在選擇session的時候選擇default，這樣就能夠正常的讀取.xsession中的設定值了<br />
+題外話，看過gdm , kdm之後，還是覺得gdm比較符合eye candy，對於佈景主題的support也比較完整方便，不過有一些部份需要自己手動調整有點小麻煩，所以還是選擇簡單的kdm<br />
+使用gdm的朋友可以參考chihchun的文章<br />
+http://wiki.debian.org.tw/index.php?page=gdm</p>
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000387.html">12:19 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=387" onclick="OpenComments(this.href); return false">迴響 (114)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">September 22, 2003</h2>
+
+
+<div class="blogbody">
+
+<a name="000378"></a>
+<h3 class="title">debian重裝筆記</h3>
+
+<p>趁著安裝大會，把機器重整了一次，順便寫一下小筆記好了</p>
+
+<p>安裝系統,一樣用網路安裝,選擇ext3,20g分割成/(400mb) , /var (1g) , /home (1g) , swap (1xx) , /usr (剩下的)<br />
+安裝好woody之後，直接升級到unstable<br />
+/etc/apt/source.list中有提到stable的地方都改成unstable<br />
+apt-get update;apt-get dist-upgrade<br />
+換各kernel,怪異的是2.4.22 for k7的kernel image的apm module無法modprobe，所以換成沒問題的版本<br />
+apt-get install kernel-image-2.4.21-5-k7<br />
+/etc/lilo.conf加入initrd=initrd.img<br />
+cd /;lilo -v -v -v;reboot<br />
+adduser damon audio<br />
+apt-get install x-window-system locales ttf-arphic* xcin xfonts-intl-chinese mozilla-firebird gaim xchat ssh rxvt-ml rcconf xine-ui openoffice.org openoffice.org-l10n-zh-tw openoffice.org-help-zh-tw<br />
+安裝完用rcconf把開機不需要的service全都拿掉<br />
+/etc/init.d/xxxx stop停掉不需要的service<br />
+/etc/apt/source.list把官方的都拿掉改成<br />
+deb http://snapshot.debian.net/archive/2003/08/11/debian unstable main contrib non-free<br />
+日期的部分就試到可以直接跑apt-get install kde的就好，隨便改<br />
+跑完apt-get install kde之後再把/etc/apt/source.list改回來用官方的<br />
+apt-get update;apt-get upgrade升級2003/08/11之後更新的kde相關的東西<br />
+apt-get install kde-i18n-zhtw安裝一下kde中文<br />
+編輯一下平常使用的帳號的.xinitrc<br />
+root跟平常使用的帳號的.bashxxxx檔案，讓目錄跟檔案顏色作用並重新登入<br />
+startx完成<br />
+locales如果沒有產生所要的locale的話就自己手動編輯/etc/locales.gen再重新來吧</p>
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000378.html">11:59 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=378" onclick="OpenComments(this.href); return false">迴響 (631)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">September 21, 2003</h2>
+
+
+<div class="blogbody">
+
+<a name="000375"></a>
+<h3 class="title">新竹交大debian安裝大會圓滿結束</h3>
+
+<p>今天感謝BBNS感冒還是努力的為安裝大會學員上課m(_._)m</p>
+
+<p>今天下午的新竹天空有點雲，風也很大，騎著車，帶著沈重pc 到交大，好像該買nb了，pc 這樣搬來搬去真是要人命~_~<br />
+交大網路真快，不愧是gb base的網路，用apt-get安裝東西真是超快，可以到2xx kb<br />
+雖然參加的人大約只有10幾位，不過還是有幾位很有興趣的學員參加，感謝大家的參與:)<br />
+離開交大的時候還看到彩虹喔A_Ay<br />
+</p>
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000375.html">10:31 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=375" onclick="OpenComments(this.href); return false">迴響 (842)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">September 11, 2003</h2>
+
+
+<div class="blogbody">
+
+<a name="000085"></a>
+<h3 class="title">新竹交大debian安裝大會</h3>
+
+<p>新竹交大debian安裝大會</p>
+
+<p>時間:9月21日下午14:00-17:00 <br />
+地點:交大資工系計中 工程三館三樓 <br />
+講師:damon , BBNS(交大debian user) <br />
+費用:免費 <br />
+新竹地區的學員有興趣的可以來聽聽看，會場大約可容納40人 <br />
+不需報名，要安裝的話請自行攜帶pc or nb，會場提供鍵盤、螢幕、滑鼠 <br />
+講義主要以 <br />
+http://wiki.debian.org.tw/index.php?page=VMwareInstall_Blue119 <br />
+這邊的內容為主 <br />
+有要參加的學員可以先印下來 <br />
+http://wiki.debian.org.tw/DebianInstallationNotes <br />
+您可以在這邊找到安裝磁片檔或是安裝iso檔燒成光碟，並在當天帶去，當天主辦單位無法提供這些 <br />
+當天的內容大致上為 <br />
+01.Debain介紹(stable , testing , unstable , main , contrib , non-free) <br />
+02.硬體測試 <br />
+03.安裝教學 <br />
+04.實機操作 <br />
+05.X window <br />
+06.KDE </p>
+
+<p>前四項由我主講，後面5,6由BBNS主講 <br />
+歡迎新竹有空的朋友來聽聽看瞭解一下debian<br />
+</p>
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000085.html">10:16 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=85" onclick="OpenComments(this.href); return false">迴響 (1970)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,383 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: X server 的 low-level 觀點</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001340.html" title="這個 blog 值多少錢？" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001343.html" title="Use the Source, Luke!" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001340.html">« 這個 blog 值多少錢？</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001343.html">Use the Source, Luke! »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">October 26, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">X server 的 low-level 觀點</h3>
+
+"low-level" 這個詞很妙，通常程度比較粗淺的開發者 (Low-level Programmer) 會從高階應用 (High-level application) 切入，而經驗豐富後，就稱為資深開發者 (High-level Programmer)，卻往往可能是擔任 Low-level Application 的主力。<br><br>
+
+在 Linux Kernel 中，driver 如果要存取 I/O memory，如 X server 為了效能考量，通常會直接存取 Graphics Devices，那就須在有 CPU 能處理的 virtual address，而這也涉及 virtual memory 中 mapping I/O memory 的議題。Kernel API 中，有個 ioremap 函式：<ul><pre>
+#include &lt;asm/io.h&gt;
+
+void *ioremap(unsigned long phys_addr,
+              unsigned long size);
+void iounmap(void *address);
+</pre></ul>
+而在 user-space 的應用程式如果需要對 physical address 作存取，可以透過 /dev/mem 這個特別的 device：<ul><pre>
+$ ls -l /dev/mem 
+crw-r-----  1 root kmem 1, 1 2005-10-26 17:42 /dev/mem
+</pre></ul>
+不過 /dev/mem 事實上只能針對 non-RAM (I/O memory) address 作處理，透過 Kernel 設定的特殊 flags 來標示可存取的範圍，簡單來說，不會動到 physical RAM address，但這個設計對於 X server 是相當重要的。在 TinyX / FeeDesktop.org Xserver 中，[<a href="http://gitweb.freedesktop.org/?p=xorg/xserver.git;a=blob_plain;f=hw/kdrive/vesa/vm86.c">hw/kdrive/vesa/vm86.c</a>] 處理了這部份的細節，以下是 X server 配置 video memory I/O 的 Vm86Setup 函式實作：<ul><pre>
+Vm86InfoPtr
+Vm86Setup(int mapHoles)
+{
+    int devmem = -1, devzero = -1;
+    void *magicMem, *loMem, *hiMem;
+    void *hole1, *hole2;
+    U32 stack_base, ret_code;
+    Vm86InfoPtr vi = NULL;
+
+    devmem = open("/dev/mem", O_RDWR);
+    if(devmem &lt; 0) {
+	perror("open /dev/mem");
+	goto fail;
+    }
+
+    devzero = open("/dev/zero", O_RDWR);
+    if(devzero &lt; 0) {
+	perror("open /dev/zero");
+	goto fail;
+    }
+
+    magicMem = MAP_FAILED;
+    loMem = MAP_FAILED;
+    hiMem = MAP_FAILED;
+    hole1 = MAP_FAILED;
+    hole2 = MAP_FAILED;
+
+
+    magicMem = mmap((void*)MAGICMEM_BASE, MAGICMEM_SIZE,
+		    PROT_READ | PROT_WRITE | PROT_EXEC,
+		    MAP_PRIVATE | MAP_FIXED, devmem, MAGICMEM_BASE);
+    
+    if(magicMem == MAP_FAILED) {
+	ErrorF("Couldn't map magic memory\n");
+	goto unmapfail;
+    }
+
+    if(mapHoles) {
+        hole1 = mmap((void*)HOLE1_BASE, HOLE1_SIZE,
+                     PROT_READ | PROT_WRITE | PROT_EXEC,
+                     MAP_PRIVATE | MAP_FIXED, devzero, HOLE1_BASE);
+    
+        if(hole1 == MAP_FAILED) {
+            ErrorF("Couldn't map first hole\n");
+            goto unmapfail;
+        }
+    }
+
+    loMem = mmap((void*)LOMEM_BASE, LOMEM_SIZE,
+		 PROT_READ | PROT_WRITE | PROT_EXEC,
+		 MAP_PRIVATE | MAP_FIXED, devzero, LOMEM_BASE);
+    if(loMem == MAP_FAILED) {
+	ErrorF("Couldn't map low memory\n");
+	munmap(magicMem, MAGICMEM_SIZE);
+	goto unmapfail;
+    }
+
+    if(mapHoles) {
+        hole2 = mmap((void*)HOLE2_BASE, HOLE2_SIZE,
+                     PROT_READ | PROT_WRITE | PROT_EXEC,
+                     MAP_PRIVATE | MAP_FIXED, devzero, HOLE2_BASE);
+    
+        if(hole2 == MAP_FAILED) {
+            ErrorF("Couldn't map first hole\n");
+            goto unmapfail;
+        }
+    }
+
+    hiMem = mmap((void*)HIMEM_BASE, HIMEM_SIZE,
+		 PROT_READ | PROT_WRITE | PROT_EXEC,
+		 MAP_SHARED | MAP_FIXED,
+		 devmem, HIMEM_BASE);
+    if(hiMem == MAP_FAILED) {
+	ErrorF("Couldn't map high memory\n");
+	goto unmapfail;
+    }
+
+    vi = xalloc(sizeof(Vm86InfoRec));
+    if (!vi)
+	goto unmapfail;
+
+    vi-&gt;magicMem = magicMem;
+    vi-&gt;hole1 = hole1;
+    vi-&gt;loMem = loMem;
+    vi-&gt;hole2 = hole2;
+    vi-&gt;hiMem = hiMem;
+    vi-&gt;brk = LOMEM_BASE;
+
+    stack_base = Vm86AllocateMemory(vi, STACK_SIZE);
+    if(stack_base == ALLOC_FAIL)
+	goto unmapfail;
+    ret_code = Vm86AllocateMemory(vi, sizeof(retcode_data));
+    if(ret_code == ALLOC_FAIL)
+	goto unmapfail;
+
+    vi-&gt;stack_base = stack_base;
+    vi-&gt;ret_code = ret_code;
+
+    memset(&vi-&gt;vms, 0, sizeof(struct vm86_struct));
+    vi-&gt;vms.flags = 0;
+    vi-&gt;vms.screen_bitmap = 0;
+    vi-&gt;vms.cpu_type = CPU_586;
+    memcpy(&vi-&gt;vms.int_revectored, rev_ints, sizeof(rev_ints));
+
+    iopl(3);
+    
+    if(devmem &gt;= 0)
+	close(devmem);
+    if(devzero &gt;= 0)
+	close(devzero);
+
+    return vi;
+
+unmapfail:
+    if(magicMem != MAP_FAILED) munmap(magicMem, MAGICMEM_SIZE);
+    if(hole1 != MAP_FAILED) munmap(hole1, HOLE1_SIZE);
+    if(loMem != MAP_FAILED) munmap(loMem, LOMEM_SIZE);
+    if(hole2 != MAP_FAILED) munmap(hole2, HOLE2_SIZE);
+    if(hiMem != MAP_FAILED) munmap(hiMem, HIMEM_SIZE);
+fail:
+    if(devmem &gt;= 0)
+	close(devmem);
+    if(devzero &gt;= 0)
+	close(devzero);
+    if(vi)
+	xfree(vi);
+    return NULL;
+}
+</pre></ul>
+在要到 /dev/mem 的 Mapping 後，我們來看 GLIBC 提供的 Memory I/O Mapping 的 API：<ul><pre>
+void * mmap(void *start, size_t length, int prot,
+            int flags, int fd, off_t offset);
+int munmap(void *start, size_t length);
+</pre></ul>
+這兩個函式允許 user-space 的應用程式，也就是探討的 X server 直接存取 device memory，這對於需要高頻寬 I/O 處理的應用程式來說相當重要，因為效能會比直接讀寫 /dev devices 來得快許多。所謂的 VMA (Virtual Memory Area) 就是來描述在同樣的 permission flags 情況下的 process virtual memory 的連續區域，以系統第一個 process，也就是 /sbin/init，來說，我們可以看看其 VMA 配置：
+<pre>
+$ cat /proc/1/maps
+08048000-08050000 r-xp 00000000 03:01 592323     /sbin/init
+08050000-08051000 rw-p 00007000 03:01 592323     /sbin/init
+08051000-08072000 rw-p 08051000 00:00 0          [heap]
+b7dcb000-b7dec000 rw-p b7dcb000 00:00 0 
+b7dec000-b7dee000 r-xp 00000000 03:01 1533       /lib/tls/i686/cmov/libdl-2.3.5.so
+b7dee000-b7df0000 rw-p 00001000 03:01 1533       /lib/tls/i686/cmov/libdl-2.3.5.so
+b7df0000-b7f21000 r-xp 00000000 03:01 1531       /lib/tls/i686/cmov/libc-2.3.5.so
+b7f21000-b7f22000 r--p 00131000 03:01 1531       /lib/tls/i686/cmov/libc-2.3.5.so
+b7f22000-b7f25000 rw-p 00132000 03:01 1531       /lib/tls/i686/cmov/libc-2.3.5.so
+b7f25000-b7f27000 rw-p b7f25000 00:00 0 
+b7f27000-b7f37000 r-xp 00000000 03:01 337350     /lib/libselinux.so.1
+b7f37000-b7f38000 rw-p 00010000 03:01 337350     /lib/libselinux.so.1
+b7f38000-b7f5d000 r-xp 00000000 03:01 337351     /lib/libsepol.so.1
+b7f5d000-b7f5e000 rw-p 00025000 03:01 337351     /lib/libsepol.so.1
+b7f5e000-b7f68000 rw-p b7f5e000 00:00 0 
+b7f75000-b7f76000 rw-p b7f75000 00:00 0 
+b7f76000-b7f8b000 r-xp 00000000 03:01 30973      /lib/ld-2.3.5.so
+b7f8b000-b7f8d000 rw-p 00014000 03:01 30973      /lib/ld-2.3.5.so
+bfb75000-bfb8b000 rw-p bfb75000 00:00 0          [stack]
+ffffe000-fffff000 ---p 00000000 00:00 0          [vdso]
+</pre>
+那麼，執行中的 X server 其 VMA 又是如何呢？我們來看看：
+<pre>
+$ cat /proc/`pgrep X`/maps
+000a0000-000c0000 rwxs 000a0000 00:0b 2432       /dev/mem
+000f0000-00100000 r-xs 000f0000 00:0b 2432       /dev/mem
+08048000-081d6000 r-xp 00000000 03:01 27050      /usr/X11R6/bin/Xorg
+081d6000-08209000 rwxp 0018d000 03:01 27050      /usr/X11R6/bin/Xorg
+08209000-09be8000 rwxp 08209000 00:00 0          [heap]
+   ...
+b3310000-b3510000 rwxs a4102000 00:0b 15299      /dev/dri/card0
+b3510000-b39f0000 rwxs a4302000 00:0b 15299      /dev/dri/card0
+b39f0000-b3bf0000 rwxs a4102000 00:0b 15299      /dev/dri/card0
+b3bf0000-b3bf1000 rwxs a4101000 00:0b 15299      /dev/dri/card0
+b3bf1000-b3cf2000 rwxs a4000000 00:0b 15299      /dev/dri/card0
+b3cf2000-b3cf4000 rwxs f8c35000 00:0b 15299      /dev/dri/card0
+b3cf4000-b7cf4000 rwxs 98000000 00:0b 2432       /dev/mem
+b7cf4000-b7d74000 rwxs 90000000 00:0b 2432       /dev/mem
+bfd7f000-bfd95000 rwxp bfd7f000 00:00 0          [stack]
+ffffe000-fffff000 ---p 00000000 00:00 0          [vdso]
+</pre>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 October 26, 2005 04:30 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1342" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

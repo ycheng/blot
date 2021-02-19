@@ -1,0 +1,294 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 探索 Linux Memory Model (上)</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001460.html" title="快快樂樂用 mimeTeX " />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001462.html" title="M$ Inside 的 ATM 提款機" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001460.html">« 快快樂樂用 mimeTeX </a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001462.html">M$ Inside 的 ATM 提款機 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 28, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">探索 Linux Memory Model (上)</h3>
+
+以下翻譯 IBM 軟體工程師 Vikram Shukla 的文章 [<a href="http://www-128.ibm.com/developerworks/linux/library/l-memmod/">Explore the Linux memory model</a>]，重要的技術術語我保留不翻譯，行文也稍調整，翻譯也主要是閱讀時的筆記，或許不甚流暢。<br>
+<br>
+標題： 探索 Linux Memory Model<br>
+原作： Vikram Shukla (vikshukl@in.ibm.com), Software Engineer, IBM<br>
+繁體中文翻譯： 黃敬群 (Jim Huang / jserv)<br>
+最後更新日期： 24 Jan 2006<br>
+<br>
+理解 Linux Kernel 中的 memory model 是揭開 Linux 複雜設計與實做層層布幕的第一步，本文將給予關於 Linux memory model 的入門等級介紹。<br>
+<br>
+Linux 採用 monolithic 途徑以規範基本操作，或用以實做作業系統服務的系統呼叫的集合，這些包含了執行於 supervisor 模式中若干模組的 process management、cocurrency，以及 memory management。[譯注：相對於 Linux kernel 的 monolithic 途徑，就是 1990 年代相當熱門的 microkernel 設計，以第二代 microkenel 設計的代表 L4 來說，in-kernel 的系統呼叫不過 12 個 (傳統的 kernel 則有兩百以上之譜)，上述的模組則獨立存在，以 Fast IPC 作溝通] 並且。雖然 Linux 基於硬體相容性考量，維護了 segment control unit model [譯注：這是 Intel 80386 保護模式的術語，文後的參考書籍《<a href="http://www.oreilly.com/catalog/understandlk/">Understanding the Linux Kernel, Third Edition</a>]》在這個主題有相當清楚的闡述]，不過在最小層次來說，仍採用這個模式。與 memory management 相關的主要議題有：<ul>
+<li>VMM (Virtual Memory Management) - 對應用程式記憶體需求與實體記憶體的邏輯上分層機制</li>
+<li>Physical memory management</li>
+<li>Kernel virtual memory management / kernel memory allocator - 用以提供記憶體需求與配置的元件，這些需求可能是來自 kernel 或從 user 端。</li>
+<li>Virtual address space management</li>
+<li>Swapping 與 caching</li>
+</ul>
+本文將協助讀者從 memory management 的角度，來理解 Linux kernel 內部的以下行為：<ul>
+<li>segment control unit model - 通論以及 Linux 的行為</li>
+<li>paging model - 通論以及 Linux 的行為</li>
+<li>memory zone 的實際細節</li>
+</ul>
+本文無法詳細探討 Linux kernel 管理記憶體的細節，但文後關於 memory model 與其定址處理的概念將對理解細節有很大的助益，並且儘管本文著重於 x86 硬體架構，不過同樣的概念可以推廣到其他硬體架構。[譯注：IBM developerWorks 其他文章有探討 Linux 在 PowerPC 硬體架構的議題，很值得參考]<br>
+<br>
+<b><u>x86 記憶體架構</u></b><br>
+x86 分成以下三種記憶體定址方式：<ul>
+<li>logical address - 顧名思義，這段 adress 與實體記憶體是邏輯上的關聯 (直接或間接)，通常用在一個 controller [譯注：包含 Linux Device Driver] 要求資訊時</li>
+<li>linear address (或 flat address space [譯注：在 Intel Developer Manual 中後者較常見]) - 以 0 作起點的記憶體區段，後繼的 byte 計數則遞增，如 0, 1, 2, 3, ... 等，直到記憶體區段的終點，這是絕多數非 x86 架構的硬體採用的設計 [譯注：特別是 ARM 與 MIPS 這類的 RISC]。Intel 採用的配置方式則迥異於前，透過 64 kb 長度的 segment 切割記憶體， 伴隨 segment register 指向特定 segment base address，用以表示目前使用中的 segment。在 Intel 32 位元的硬體架構 [譯注：也就是 IA32]，可視為 flat address space，但使用了 segment</li>
+<li>physical address - 實體記憶體 bus 所表示的記憶體範圍 [譯注：特別是在硬體 Block diagram 可見區域]，與前述的 logical address 相較，physical address 的差異在於 memory management unit，該單元是轉換 logical address 到 physical address</li>
+</ul>
+x86 CPU 使用兩個單元來作 logical address 到 physical address 的轉換，分別是 segmented unit 與 paging unit，示意圖如下：<br>
+<center><img src="http://www-128.ibm.com/developerworks/linux/library/l-memmod/fig1a.gif"></center><br>
+接下來，將探討 segment control unit model。<br>
+<br>
+<b><u>Segment control unit model 通論</u></b><br>
+segmentation model 背後的基本想法是以一組 segment 來作記憶體管理，每個 segment 都有專屬的 address space。每個 segment 由以下兩個部份組成：<ul>
+<li>base address - 內含特定實體記憶體位址的 address</li>
+<li>length value - 指定該 segment 的長度</li>
+</ul>
+<br>
+以 segment 劃分的 address 也包含兩個部份： segment selector 與 offset into segment。前者描述了欲使用的 segment，而欲使用的 segment 也內含 base address 與 length value，而後者針對真實的記憶體存取，指定了自 base address 的 offset (偏移量)。對映到實體記憶體，真實的記憶體就是 offset 與 base address 值的和 (sum)，倘若 offset 值超過了 segment 的長度，系統會產生 protection violation。以扼要的文字描述：<ul>
+Segmented Unit 表示為 -&gt; Segment: Offset model
+也可以表示為 -&gt; Segment Identifier: Offset
+</ul>
+每個 segment 是個 16-bit 的欄位，稱為 segment identifier 或 segment selector，x86 硬體有一些可程式化的 register，稱為 segment register，可保存這些 segment seletor。這些 register 是： cs (code segment)、ds (data segment)，以及 ss (stack segment)。每個 segment identifier 識別以 64-bit (8 bytes) segment descriptor 表示的 segment，這些 segment descriptor 儲存於一個 GDT (Global Descriptor Table)，也可能儲存於 LDT (Local Descriptor Table) 中，示意圖如下：<br>
+<center><img src="http://www-128.ibm.com/developerworks/linux/library/l-memmod/fig1b.gif"></a></center><br>
+<br>
+每次 segment seletor 載入到 segment register 時，對應的 segment descriptor 會自記憶體載入到非可程式化的 CPU register。每個 segment descriptor 是 8-bytes 的長度，並在記憶體中以單一 segment 表示，儲存於 LDT 或 GDT 中。The segment descriptor entry contains both a pointer to the first byte in the associated segment represented by the Base field and a 20-bit value (the Limit field) which represents the size of the segment in memory. [譯注：抓不到感覺，保留原文，直接參考下面的圖可以協助理解]<br>
+<br>
+其他欄位包含了特殊的屬性，像是 privilege level 與 segment type (cs 或 ds)，segment type 是以 4-bit 表示的 Type 欄位。<br>
+<br>
+因為我們使用非可程式化的 register，當 logical address 到 linear address 轉換進行時，GDT 或 LDT 不會受到影響，這可加速記憶體轉換的速度。<br>
+<br>
+segment selector 包含以下項目：<ul>
+<li>13-bit index - 識別在 GDT 或 LDT 中對應的 segment descriptor entry</li>
+<li>TI (Table Indicator) flag - 如果 TI flag = 0 表示 segment descriptor 在 GDT，而若是 1，表示 segment descriptor 在 LDT 中</li>
+<li>RPL (request privilege level) - 定義當對應 segment selector 載入於 segment register 時，目前 CPU 的 privilege level</li>
+</ul>
+既然 segment descriptor 的長度是 8 bytes，其在 GDT 或 LDT 的相對 address 可由 segment selector 最前面 13 bits 與 8 的乘積獲得。比方說，如果 GDT 儲存於 address 0x0002000，且 segment selector 的 Index 值為 2，那麼，對應的 segment descriptor 為 (2*8) + 0x0002000 。可儲存於 GDT 的 segment descriptor 的總和為 (2^13 - 1)，也就是 8191 。下圖表示了從 logical address 取得 linear address 的過程：<br>
+<center><img src="http://www-128.ibm.com/developerworks/linux/library/l-memmod/fig1c.gif"></center><br>
+以上就是 Segment control unit model 的一般性介紹 [譯注：看到這裡，想必一定開始頭暈了，建議閱讀《<a href="http://www.oreilly.com/catalog/understandlk/">Understanding the Linux Kernel, Third Edition</a>]》前三章，書中有更詳盡的圖表與描述]，那 Linux 有什麼特別之處呢？<br>
+<br>
+<b><u>Segment control unit in Linux</u></b><br>
+在 Linux 中，前述的模式有了小量的修改。作者已經注意到 Linux 以較為侷限的方式，使用 segmentation model：在 Linux 中，所有 segment register 指向相同範圍的 segment address，換言之，每個 segment register 使用同一組的 linear address，這讓 Linux 得以使用有限數量的 segment descriptor，因此，所有 descriptor 可保持於 GDT。這個模式的優點有兩項：<ul>
+<li>在所有 process 使用相同的 segment register 值 (當分享相同組的 linear address)，Memory management 可更簡單</li>
+<li>達到多數硬體架構可支援的可攜性，有些 RISC 處理器也支援這種侷限的 segmentation [譯注：像是 Sun Sparc]</li>
+</ul>
+下圖展示 Linux 的修改模式，由此可見 segment register 指向一組相同的 address：<br>
+<center><img src="http://www-128.ibm.com/developerworks/linux/library/l-memmod/fig2.gif"></center><br>
+<br>
+<b><u>Segment descriptors</u></b><br>
+Linux 使用以下 segment descriptor：<ul>
+<li>kernel code segment</li>
+<li>kernel data segment</li>
+<li>user code segment</li>
+<li>user data segment</li>
+<li>TSS segment</li>
+<li>預設 LDT segment</li>
+</ul>
+讓我們進一步探討。<br>
+<br>
+在 GDT 中的 kernel code segment descriptor 有以下數值：<ul>
+<li>Base = 0x00000000</li>
+<li>Limit = 0xffffffff (2^32 -1) = 4GB</li>
+<li>G (granularity flag) = 1 表示 pages 中的 segment size</li>
+<li>S = 1 表示正常的 code / data segment</li>
+<li>Type = 0xa 表示可被讀取與執行的 code segment</li>
+<li>DPL value = 0 表示 kernel mode</li>
+</ul>
+與此 segment 相關的 linear address 為 4 GB，S = 1 與 type = 0xa 參考該 code segment，seletor 位於 cs register 中。在 Linux kernel 中，可透過 _KERNEL_CS macro 來存取對應的 segment selector。<br>
+<br>
+對 kernel code segment 來說，kernel data segment descriptor 有相似的數值，除了 file Type 被設定為 2，這表示了該 segment 為 data segment，並且 selector 儲存 ds register。在 Linux kernel 中，可透過 _KERNEL_DS macro 來存取對應的 segment selector。<br>
+<br>
+user code segment 為所有的執行於 user mode 的 process 所分享，在 GDT 中對應的 segment descriptor 有以下的數值：<ul>
+<li>Base = 0x00000000</li>
+<li>Limit = 0xffffffff</li>
+<li>G = 1</li>
+<li>S = 1</li>
+<li>Type = 0xa 表示可被讀取與執行的 code segment</li>
+<li>DPL = 3 表示 user mode</li>
+</ul>
+在 Linux kernel 中，可透過 _USER_CS macro 以存取該 segment selector。在 user data segment descriptor 中，唯一有更動的欄位是 Type，更動為 2，表示為可被讀取與寫入的 data segment，在 Linux kernel 中，可透過 _USER_DS macro 以存取該 segment selector。<br>
+<br>
+除了上述的 segment descriptors，GDT 對於每個建立的 process 還有兩個 segment descriptors： TSS 與 LDT segments。<br>
+<br>
+每個 TSS segment descriptor 指向不同的 process，TSS 保留每個 CPU 硬體的 context information [譯注：最少包含 register 與狀態值]，以便於 context switch 的過程中使用。舉例來說，從 User mode 切換到 Kernel mode 時，x86 CPU 會從 TSS 取得 kernel mode stack 的 address。<br>
+<br>
+每個 process 有其獨立的、對應該 process (decriptor)，並且儲存於 GDT 中的 TSS descriptor，該 descriptor 有以下數值：<ul>
+<li>Base = &tss (對應 process descriptor 的 TSS field 的 address，例如 &tss_struct) - 定義於 Linux kernel 的 schedule.h 檔案中<li>
+<li>Limit = 0xeb (TSS segment 長度為 236 bytes)</li>
+<li>Type = 9 或 11</li>
+<li>DPL = 0. user mode 不會存取 TSS，所以 G flag 是清除的</li>
+</ul>
+所有的 process 分享預設的 LDT segment，一般情況下，LDT segment 包含了空的 segment descriptor。預設的 LDT segment descriptor 儲存於 GDT 中，Linux 所產生的 LDT 有 24 bytes，預設情況下，以下三個 entries 總是有效的 (present)：<ul>
+LDT[0] = null<br>
+LDT[1] = user code segment<br>
+LDT[2] = user data/stack segment descriptor<br>
+</ul>
+<br>
+<b><u>Calculating TASKS</u></b><br>
+為了要計算 GDT 中最大的 permission entries，知悉 NR_TASKS (用以決定 Linux 對於同時執行的 process 數量，在 kernel source 中預設為 512，允許最多 256 對單一 instance 的連線數量) 是必要的。允許在 GDT 中的 entries 總和可用以下計算式決定：<ul>
+GDT 的 entries 數量 = 12 + 2 * NR_TASKS<br>
+在文章前面已經提過，x86 硬體中，GDT 可有的 entries 數量 = 2^13 -1 = 8192
+</ul>
+[譯注： NR_TASKS 這個 macro definition 首次出現於 Linux 的「參考對象」Minix 中，在 Linux kernel 改版時，曾經從 sched.h 移到 tasks.h]<br>
+8192 segment descriptor 之外，Linux 使用六個 segment descriptors, 另外四個用以 APM 功能 (advanced power management features)，還有四個在 GDT 中的保留未使用，因此，在 GDT 中可能的數量為8192 - 14 = 8180 。<br>
+<br>
+在任何時間，在 GDT 中不可能有超過 8180 個 entries，因此：<ul>
+2 * NR_TASKS = 8180<br>
+NR_TASKS = 8180/2 = 4090
+</ul>
+為什麼要 2 * NR_TASKS 呢？因為對每個建立的 process 來說，不只有 TSS descriptor (用以維護 context-switch 的 context) 會被載入，而且 LDT descriptor 也會被載入。<br>
+<br>
+在 x86 的數量限制過去在 2.2 kernel 是個議題，不過自從 2.4 kernel 開始，這個問題消除了，部份是因為 context switching (這讓使用 TSS 成為必然) 與硬體關聯的抽離，並且引入 process switching 所致。<br>
+<br>
+接下來，我們來探討 paging model。<br>
+(待續...)<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 28, 2006 08:30 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>The segment descriptor entry contains both a pointer to the first byte in the associated segment represented by the Base field and a 20-bit value (the Limit field) which represents the size of the segment in memory. </p>
+
+<p>segment descriptor entry 中包含了用以指向 segment 的起始位址的 Base field 與一個長度為 20 bits 用以表示 Segment 在記憶體中大小的欄位.</p>
+
+<p>Note <br />
+不知道翻譯的如何,這部份你可以參考 Understanding The Linux Kernel 2nd. page 53,Figure 2-2 就可以清楚知道<br />
+在其 format 中包含 BASE Field 與長度為 20-bits 的 Limit field</p>
+<span class="comments-post">由 <a href="mailto&#58;wcc&#64;mail2000&#46;com&#46;tw">wcc</a> 發表於</MTIfNonEmpty> February 24, 2006 04:18 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

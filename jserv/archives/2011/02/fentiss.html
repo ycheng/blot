@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: FentISS : 專注於嵌入式系統虛擬化技術的新創公司</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2011/02/_realtime_gnuli.html" title="破除 Realtime GNU/Linux 的迷思" />
+
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2011/02/_libchewing-033.html" title="新酷音專案發布 libchewing-0.3.3 與 scim-chewing-0.3.4" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2011/02/_realtime_gnuli.html">« 破除 Realtime GNU/Linux 的迷思</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+| <a href="http://blog.linux.org.tw/~jserv/archives/2011/02/_libchewing-033.html">新酷音專案發布 libchewing-0.3.3 與 scim-chewing-0.3.4 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February  7, 2011</h2>
+
+<div class="blogbody">
+
+<h3 class="title">FentISS : 專注於嵌入式系統虛擬化技術的新創公司</h3>
+
+在介紹 [<a href="http://www.fentiss.com/">FentISS</a>] 這間年輕的公司前，來看看歷史背景。<br />
+<br />
+2006 年筆者在 [<a href="http://blog.linux.org.tw/~jserv/archives/001513.html">SA-RTL : Stand-Alone RTLinux</a>] 一文提及「在 source tree 中還包含了XtratuM 架構的支援，其中 XtratuM 是相當特別的 nano-kernel / pico-kernel，SA-RTL 與其組合可帶來相當的 virtualization 彈性與效能，並且也可避開 FSMLabs 的 patent。」，當時對應的 [<a href="http://www.xtratum.org/">XtratuM</a>] 是 0.3 版，由西班牙的 València 大學 (校名為 "Universitat Politècnica de València"，簡稱 UPV) 的研究人員開發。2006 年十月，[<a href="http://www.xtratum.org/">XtratuM</a>] 重新改寫，版本號定為 "1.0"，透過對 interrupt 與 timer 的「虛擬化」(正確的說法應該是 HAL)，使 Linux 與另一個特製的 RTOS 得以虛擬地執行。XtratuM 1.0 以 GNU GPL 授權發行。<br />
+<center><img src="http://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/XtratuM_architecture.png/800px-XtratuM_architecture.png" width="800" height="425" /></center>
+<br />
+一如前文 [<a href="http://blog.linux.org.tw/~jserv/archives/2011/02/_realtime_gnuli.html">破除 Realtime GNU/Linux 的迷思</a>] 提到的 "dual kernel" 途徑，[<a href="http://www.xtratum.org/">XtratuM</a>] 本身就是一個小型的 virtualization container，經過修改的 Linux kernel 是其上的一個獨立的執行環境，其他 domain 則運作另一個作業系統，而參考的 RTOS 實做為 [<a href="http://www.e-rtl.org/partikle/">PaRTiKle</a>]，地位等同於 SA-RTL (Stand-Alone RTLinux)，但重新撰寫過。另一個支援 [<a href="http://www.xtratum.org/">XtratuM</a>]  架構的 RTOS 為 [<a href="http://www.rtems.com/">RTEMS</a>]。XtratuM 2.x 再次改寫過，具備現代 Hypervisor 的特徵，不再是單純的 HAL 實做。XtratuM 1.0 與 2.0 僅支援 x86 硬體，而 XtratuM 2.1 則支援 SPARC (v8 指令集)，象徵邁入新的紀元，並廣泛的與其他研究單位合作。<br />
+<br />
+2010 年，由西班牙的 València 大學的研究單位分出新創公司 [<a href="http://www.fentiss.com/">FentISS</a>]，主要的技術仍是 XtratuM，目標就是把多年的學術研究轉為商業應用，根據 [<a href="http://www.fentiss.com/node/about.html">About us</a>]，其業務範疇為：<ul>
+FentISS, S.L. is a company that offers technological solutions specifically designed for real-time embedded and critical systems using virtualisation technologies.
+</ul>
+公司網頁有張示意圖：<br />
+<center><img src="http://www.fentiss.com/images/xtratum2.png" width="500" height="268" /></center><br />
+可清楚見到核心技術就是 XtratuM 這個針對嵌入式系統設計的虛擬化核心 (Para-virtualization)，其上的執行環境有：<ul>
+    <li>XAL: Single thread "C"</li>
+    <li>Linux (需要搭配特定的修改，詳情可參考 [<a href="http://www.fentiss.com/node/40.html">Xtratum 的論文</a>])</li>
+    <li>RTEMS</li>
+    <li>LithOS (ARINC-653 skin: "C" and ADA)</li>
+    <li>ORK (experimental)</li>
+</ul>
+為了使系統分析更為全面，FentISS 也開發了 [<a href="http://www.fentiss.com/node/10.html">Xoncrete</a>] 這個 web-based 的視覺工具，可輕鬆地 modeling。期待 FentISS 這間新創公司能給予我們更豐富的應用型態。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 February  7, 2011 11:26 PM
+
+<br /></span>
+
+</div>
+
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2166" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

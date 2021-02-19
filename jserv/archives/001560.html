@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: PowerWise™ Interface (PWI) 2.0</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001559.html" title="探討 Linux Mobile Phone 發展" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001561.html" title="dlopen 的 _init 與 _fini" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001559.html">« 探討 Linux Mobile Phone 發展</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001561.html">dlopen 的 _init 與 _fini »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 05, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">PowerWise™ Interface (PWI) 2.0</h3>
+
+美國國家半導體 (National Semiconductor，NS) 與 ARM 共同宣佈，PowerWise Interface 2.0 標準已正式制定完畢，相關新聞稿可參考 [<a href="http://www.pwistandard.org/">PWI Standard</a>]。PWI 2.0 規範可 [<a href="http://www.pwistandard.org/pwi/files/PowerWise_Interface_20_Specification_rev_1.pdf">在此取得</a>] (PDF format)，其概念示意下圖：<br>
+<center><img src="http://jserv.sayya.org/misc/pwi-concept.png"></center><br>
+PWI 簡單來說，是種 2-wire 的 serial bus，可將 SoC 與 PMIC 連接。能源的耗損包含 active 與 static 兩方面，透過 PMIC，可使用 DVS、AVS、DBB、或 DTS，以及 ABB 或 ATS 等技巧，來達到進階能源管理。<br>
+<br>
+從上圖 (簡化模型) 可以發現：一個 SoC 伴隨一個 PWI master、一個 PMIC 伴隨一個 PWI slave，以及 2-wire PWI 連結 PWI master 與 slave。PMIC 提供電壓給 SoC，而 votage level 則由 PMIC 決定，並可透過從 PWI master 到 PWI slave 之間的指令傳遞完成調整。這個架構可以擴充為，兩個獨立的 SoC 伴隨兩個 PWI master，允許最多到 16 個 PWI slaves。<br>
+<br>
+新聞稿也提到：<ul>
+NS及ARM將於2006年第二季推出符合PWI 2.0介面標準的內建式功率控制器，這項專利技術可支援ARM的智慧型能源管理員(Intelligent Energy Manager)技術，後者內含ARM Artisan Physical IP、AMBA 3 AXI互連線路以及IEM軟/硬體。NS並將於2006年下半年推出多款符合PWI 2.0介面標準的外置電源管理IC。 
+</ul>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March  5, 2006 02:56 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

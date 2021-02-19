@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 理解 64-bit Programming Model</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001638.html" title="以電腦科學為志業" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001640.html" title="QQ Win32 client 輸入韓文的方法" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001638.html">« 以電腦科學為志業</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001640.html">QQ Win32 client 輸入韓文的方法 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">April 23, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">理解 64-bit Programming Model</h3>
+
+話說去年 zonble 寫了 [<a href="http://osxchat.blogspot.com/2005/03/long-long-long-is-too-long.html">Long Long Long is Too Long</a>]，一開始 mjhsieh 測試 long long (依據 C Standard，至少要有 64 bit 的資料寬度) 的「加強版」，也就是 "long long long"，結果 GCC 很雞婆的抱怨 "too long"，後來大夥竟然認真演繹其中的哲理。不過，邁入 64-bit 的新紀元，的確有很多思維必須轉換，首先我們會遇到的問題就是 Programming Model，IBM alphaWorks 的 [<a href="http://www-128.ibm.com/developerworks/linux/library/l-port64.html">Porting Linux applications to 64-bit systems</a>] 是一篇很好的入門文章。<br>
+<br>
+就 IA32 來說，4G 的記憶體定址就是受限於 32-bit Model，甚至還可能面臨經典的 [<a href="http://en.wikipedia.org/wiki/Year_2038_problem">Year 2038 Problem</a>] 。64-bit Programming Model 到底有什麼優點呢？在提及細節前，先來看個希臘拉丁字首：Exa-(E-)，也就是 2 的 60 次方，在 64-bit 架構下，應用程式可直接存取 16 Exabytes 的 RAM Addressing，而 Linux kernel 到目前為止支援到 64 Gb 的定址，詳情可參考 Wikipedia [<a href="http://en.wikipedia.org/wiki/64-bit">64-bit</a>]。<br>
+<br>
+在 system bus 的 data access 來說，IA32 或類似的架構，其實已經因應 SIMD 的需求，提出 64-bit 或  128-bit 的 register，比方說 MMX、MMX2(ext)、SSE，或者 Wireless MMX。[<a href="http://www-128.ibm.com/developerworks/linux/library/l-port64.html">Porting Linux applications to 64-bit systems</a>] 提到三種 64-bit Programming Model：LP64、LLP64，以及ILP64，對有看台灣新聞的朋友來說，這幾個名稱實在很容易記憶 *笑*。<br>
+<br>
+L 表示 Long、LL 表示 long long，而 I 表示 Integer，LP64 則規範 Long 必須為 64-bit wide，其他 data type 則是較低的 data width，同理 LLP 就是說 long long 必須 64-bit wide。在另一篇文章 [<a href="http://www.unix.org/version2/whatsnew/lp64_wp.html">64-Bit Programming Models: Why LP64?</a>] 則提到為何 UNIX Open Standards 要採用 LP64 Programming Model，而 IBM 的文章則提到移植既有 32-bit 應用程式到 64-bit 架構需要注意的九項議題：<ul>
+<li>Declarations</li>
+<li>Expressions</li>
+<li>Assignments</li>
+<li>Numeric constants</li>
+<li>Endianism</li>
+<li>Type definitions</li>
+<li>Bit shifting</li>
+<li>Formatting strings</li>
+<li>Function parameters</li>
+</ul>
+其中，Assignment 很容易因為強制轉型造成潛在的問題，再來就是 Function parameters，這也可能因為混雜 32/64-bit 表示法而產生非預期的結果。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 April 23, 2006 07:00 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>多謝指引，竟然發現了zonble 之前blog了  本日金句：LongLong Long is Too Long」這篇妙文。我決定來個最佳翻譯徵求懸賞，共襄盛舉:</p>
+
+<p>http://shelandy.blogspot.com/2007/10/gcc.html</p>
+<span class="comments-post">由 <a href="http://shelandy.blogspot.com/">shelandy</a> 發表於</MTIfNonEmpty> October 20, 2007 02:42 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1639" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

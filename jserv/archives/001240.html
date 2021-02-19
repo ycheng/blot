@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Micromonitor 簡介</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001239.html" title="神奇的數字" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001241.html" title="這張相片..." />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001239.html">« 神奇的數字</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001241.html">這張相片... »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">August 15, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Micromonitor 簡介</h3>
+
+服務於 Lucent 的 [<a href="http://www.dtweed.com/circuitcellar/xsuttere.htm">Ed Sutter</a>] 是在 Embedded Systems 與 Firmware 領域響叮噹的大人物，他的大作 [<a href="http://www.cmpbooks.com/product/1038">Embedded Systems Firmware Demystified</a>] 一直是這個領域的經典著作。在 2000 年底，Lucent 同意 Ed Sutter 將他多年處理 firmware 與 boot loader 的通用工具 [<a href="http://www-out.bell-labs.com/project/micromonitor/">MicroMonitor (uMon)</a>] 以 [<a href="http://www-out.bell-labs.com/topic/swdist/licenses/MicroMonitorpubliclicenseFINAL.v1.txt">Lucent Public License</a>] 釋出，可參見新聞稿 [<a href="http://www.linuxdevices.com/news/NS7459449320.html">Lucent releases device boot software as open source</a>]。這本專書就是詳盡的介紹 Firmware 相關技術背景，並且指導如何使用並移植 MicroMonitor。<br>
+<br>
+此外，在 LinuxDevices.com 上 Ed Sutter 最近發表一篇文章 [<a href="http://linuxdevices.com/articles/AT8516113114.html">Introducing Micromonitor -- an open source boot loader/monitor</a>]，介紹到 1.0 Release 新的里程碑中，種種新的設計，除了傳統 boot loader 的基本功能，uMon 還有以下特徵：<ul>
+<li>an extensible flash file system (TFS)</li>
+<li>the ability to create on-board ASCII files</li>
+<li>file-based scripts with conditional branching similar to BASIC</li>
+<li>script-driven startup option</li>
+<li>command line history and editing</li>
+<li>UDP and RS232 based command entry</li>
+<li>versatile configuration management using files</li>
+<li>symbols and shell variables</li>
+<li>symbolic display of variables, stack trace, runtime profiling and memory-based runtime trace</li>
+<li>a gdb server for application loads and post-mortem analysis</li>
+<li>network host supporting ICMP and DHCP/BOOTP as a startup option</li>
+<li>TFTP client/server for network file transfer, Xmodem for serial file transfer</li>
+<li>syslog client</li>
+<li>zlib-based decompression</li>
+<li>password-protected user levels</li>
+<li>large API to hook the application to facilities provided by monitor</li>
+</ul>
+不過如果要入門，可以先跳到 [MicroMonitor's typical usage model] 這節，對於使用過 [<a href="http://sourceforge.net/projects/u-boot">u-Boot</a>] 的朋友應該就很熟悉，而我比較有興趣的是 uMon hook API，總之，MicroMonitor 1.0 真令人驚豔。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 August 15, 2005 10:16 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>好像micromonitor1.0下載不暸啊</p>
+<span class="comments-post">由 <a href="mailto&#58;lonsn&#64;163&#46;com">Lonsn</a> 發表於</MTIfNonEmpty> August 17, 2005 06:21 PM</span>
+</div>
+<div class="comments-body">
+<p>Lonsn: you can get MicroMonitor 1.0 from http://www.bell-labs.com/topic/swdist/ (follow the registration steps)</p>
+<span class="comments-post">由 <a href="mailto&#58;cyt93&#64;cs&#46;ccu&#46;edu&#46;tw">cyt</a> 發表於</MTIfNonEmpty> August 26, 2005 05:31 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

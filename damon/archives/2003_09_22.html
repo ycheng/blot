@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>damon's notepad: September 22, 2003 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~damon/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~damon/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~damon/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~damon/archives/2003_09_21.html" title="September 21, 2003" />
+
+<link rel="next" href="http://blog.linux.org.tw/~damon/archives/2003_09_23.html" title="September 23, 2003" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~damon/" accesskey="1">damon's notepad</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~damon/archives/2003_09_21.html">&laquo; September 21, 2003</a> |
+
+<a href="http://blog.linux.org.tw/~damon/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~damon/archives/2003_09_23.html">September 23, 2003 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">September 22, 2003</h2>
+
+
+<div class="blogbody">
+<a name="000378"></a>
+<h3 class="title">debian重裝筆記</h3>
+
+<p>趁著安裝大會，把機器重整了一次，順便寫一下小筆記好了</p>
+
+<p>安裝系統,一樣用網路安裝,選擇ext3,20g分割成/(400mb) , /var (1g) , /home (1g) , swap (1xx) , /usr (剩下的)<br />
+安裝好woody之後，直接升級到unstable<br />
+/etc/apt/source.list中有提到stable的地方都改成unstable<br />
+apt-get update;apt-get dist-upgrade<br />
+換各kernel,怪異的是2.4.22 for k7的kernel image的apm module無法modprobe，所以換成沒問題的版本<br />
+apt-get install kernel-image-2.4.21-5-k7<br />
+/etc/lilo.conf加入initrd=initrd.img<br />
+cd /;lilo -v -v -v;reboot<br />
+adduser damon audio<br />
+apt-get install x-window-system locales ttf-arphic* xcin xfonts-intl-chinese mozilla-firebird gaim xchat ssh rxvt-ml rcconf xine-ui openoffice.org openoffice.org-l10n-zh-tw openoffice.org-help-zh-tw<br />
+安裝完用rcconf把開機不需要的service全都拿掉<br />
+/etc/init.d/xxxx stop停掉不需要的service<br />
+/etc/apt/source.list把官方的都拿掉改成<br />
+deb http://snapshot.debian.net/archive/2003/08/11/debian unstable main contrib non-free<br />
+日期的部分就試到可以直接跑apt-get install kde的就好，隨便改<br />
+跑完apt-get install kde之後再把/etc/apt/source.list改回來用官方的<br />
+apt-get update;apt-get upgrade升級2003/08/11之後更新的kde相關的東西<br />
+apt-get install kde-i18n-zhtw安裝一下kde中文<br />
+編輯一下平常使用的帳號的.xinitrc<br />
+root跟平常使用的帳號的.bashxxxx檔案，讓目錄跟檔案顏色作用並重新登入<br />
+startx完成<br />
+locales如果沒有產生所要的locale的話就自己手動編輯/etc/locales.gen再重新來吧</p>
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000378.html">11:59 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=378" onclick="OpenComments(this.href); return false">迴響 (631)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

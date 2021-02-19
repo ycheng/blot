@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>timhsu: May 2004 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~timhsu/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~timhsu/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~timhsu/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~timhsu/archives/2004_03.html" title="March 2004" />
+
+<link rel="next" href="http://blog.linux.org.tw/~timhsu/archives/2005_03.html" title="March 2005" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~timhsu/" accesskey="1">timhsu</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~timhsu/archives/2004_03.html">&laquo; March 2004</a> |
+
+<a href="http://blog.linux.org.tw/~timhsu/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~timhsu/archives/2005_03.html">March 2005 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">May 14, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000629"></a>
+<h3 class="title">聊聊 ASUS WL500g</h3>
+
+<p>上個星期從 <a href="http://jouston.no-ip.com/archives/000075.html">jouston blog</a> 看到 ASUS WL500b/g 的消息, 當下就去網站上下載了全部的 <a href="http://taiwan.asus.com.tw/support/download/item.aspx?ModelName=WL-500b&Type=Latest">Soure Code </a>來研究.<br />
+現在我就用這台 WL500g 無線上網中, 感覺還不錯用哩. 根據從原始碼來看, CPU 為 MIPS32/little edian 搭配 Linux Kernel 2.4.20, 根目錄檔案系統(rootfs)採用 Cramfs 並未使用 ramdisk(initrd). Wireless Solution 採用 <a href="http://www.broadcom.com">Broadcom</a> 的晶片.<br />
+MTD partition 分為四層 nvram, bootloader(pmon), kernel, rootfs. 系統參數存放在 nvram, 按住 reset 鍵五秒可恢復出廠預設值. 而 rootfs 只有一份因此沒有 backup firmware 功能, kernel 初始化後會從 flash 直接載入 rootfs.<br />
+使用的軟體還有 Busybox 0.60.0, mini_httpd, pppd/re-pppoe, birdge utils, iptables, GNU zebra 等. 令人訝異的是, 似乎toolschain, web 網頁也完整開放出來.<br />
+儘管已經是個不錯的產品, 我還是龜毛的希望有更好的功能支援, 也許透過 Firemware Upgrade 的方式, 可以私下作些改良,底下是我對此產品的建議:<br />
+1. Proxy support - <br />
+    如果能把 proxy(squid) 功能加入會更好用, 不過可能需要更多的硬體資源.<br />
+2. Samba Server support -<br />
+   雖然有 stupid_ftpd 來讓使用者存取 USB-storage, 但網路芳鄰應該比 FTP 來得容易使用.<br />
+3. Traffic Control (QoS) support -<br />
+   真的, 若有 QoS 就更美啦! 這個功能應該多佔不了多少 flash 空間.<br />
+4. VPN/PPTP support -<br />
+   哈哈哈....別理我.<br />
+說真的, 國內很多公司在做 embedded linux, 但像華碩那樣開放整個 150MB 原始碼的實在很少. 真的該多支持多鼓勵.<br />
+聽說華碩最近有在徵 Embedded 的工程師喔! 或許我該去應徵呢? 呵呵...<br />
+</p>
+
+
+
+<div class="posted">
+	由 timhsu 發表於 <a href="http://blog.linux.org.tw/~timhsu/archives/000629.html">10:36 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=629" onclick="OpenComments(this.href); return false">迴響 (4)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 透過 Intel Pentium4 SSE2 指令集對 MPEG-2 Video 作最佳化 (1)</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001571.html" title="明哲保身之程式設計" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001573.html" title="UNIX 家族簡介" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001571.html">« 明哲保身之程式設計</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001573.html">UNIX 家族簡介 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 11, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">透過 Intel Pentium4 SSE2 指令集對 MPEG-2 Video 作最佳化 (1)</h3>
+
+最近在工作中又複習了 MPEG-2 Video coding 與內部實做，並針對特定硬體平台作效能提昇，寫完技術報告時，心情輕鬆許多，很想大喊："I did it, I did it!"。在工作之餘，我也對 open source codec 產生興趣，恰好對 MPEG-2 實做與效能衝擊的部份有足夠的認知，所以我試著以 Intel Pentium4 SSE2 指令集，來對 MPEG-2 Video coding 作最佳化。<br>
+<br>
+簡單來說，MPEG-2 decoding 有兩大效能瓶頸，一個是 Inverse DCT (idct)，另一個是 MC (Motion Compensation)，在我的 hacking 中，已經初步有了不錯的突破。我挑選 MPlayer 作為 codebase，並且改善了 MC 的效能，可 [<a href="http://jserv.sayya.org/mplayer/mpeg2-motion-comp-sse2.diff">在此取得 patch</a>] (GPL)，同時我也改善了 libmpeg2 多餘的 cpu detection 處理。以下是實測數據：<br>
+(1) Baseline (使用 MPlayer 原本的 mmxext MC)：
+<hr>
+<pre class="code" style="margin: 6px;">
+MPEG-PS file format detected.
+VIDEO:  MPEG2  720x480  (aspect 2)  29.970 fps  2376.0 kbps (297.0 kbyte/s)
+
+BENCHMARKs: VC:  10.785s VO:   3.092s A:   0.595s Sys:  20.772s =   35.244s
+BENCHMARK%: VC: 30.6027% VO:  8.7722% A:  1.6879% Sys: 58.9372% = 100.0000%
+
+ time   seconds   seconds    calls  ms/call  ms/call  name
+ 15.58     12.83    12.83  3013243     0.00     0.00  mmxext_idct
+ 14.70     24.94    12.11   515616     0.02     0.02  MC_put_xy_16_mmxext
+ 12.40     35.15    10.21    56139     0.18     0.18  fast_memcpy
+  6.69     40.66     5.51  1826892     0.00     0.00  slice_intra_DCT
+  6.34     45.88     5.22  1500758     0.00     0.00  MC_put_o_8_mmxext
+  5.44     50.36     4.48  1758006     0.00     0.00  get_non_intra_block
+  3.95     53.61     3.25    30480     0.11     2.16  mpeg2_slice
+  3.28     56.31     2.70  1069690     0.00     0.03  motion_fr_frame_420
+  3.21     58.95     2.64   112816     0.02     0.02  MC_avg_xy_16_mmxext
+  3.14     61.54     2.59  1826892     0.00     0.01  mpeg2_idct_copy_mmxext
+</pre>
+<hr>
+(2) SSE2-optimized-MC (我剛剛的 hacking)：
+<hr>
+<pre class="code" style="margin: 6px;">
+MPEG-PS file format detected.
+VIDEO:  MPEG2  720x480  (aspect 2)  29.970 fps  2376.0 kbps (297.0 kbyte/s)
+
+BENCHMARKs: VC:  10.712s VO:   5.277s A:   0.598s Sys:  17.861s =   34.448s
+BENCHMARK%: VC: 31.0958% VO: 15.3193% A:  1.7352% Sys: 51.8497% = 100.0000%
+
+  %   cumulative   self              self     total
+ time   seconds   seconds    calls  ms/call  ms/call  name
+ 16.32     13.24    13.24  3013243     0.00     0.00  mmxext_idct
+ 12.43     23.33    10.09    56139     0.18     0.18  fast_memcpy
+ 10.67     31.99     8.66   515616     0.02     0.02  MC_put_xy_16_sse2
+  7.16     37.80     5.81  1826892     0.00     0.00  slice_intra_DCT
+  6.85     43.36     5.56  1500758     0.00     0.00  MC_put_o_8_sse2
+  5.73     48.01     4.65  1758006     0.00     0.00  get_non_intra_block
+  4.97     52.04     4.03    30480     0.13     2.10  mpeg2_slice
+  3.27     54.69     2.65  1069690     0.00     0.03  motion_fr_frame_420
+  3.24     57.32     2.63   205987     0.01     0.01  MC_put_x_16_sse2
+  3.11     59.84     2.52  1826892     0.00     0.01  mpeg2_idct_copy_mmxext
+  2.93     62.22     2.38   112816     0.02     0.02  MC_avg_xy_16_sse2
+</pre>
+<hr>
+「數字會說話」，可以發現 MC_xxx 的 motion compensation 運算速度獲得提昇，於是整體的 benchmark 比值也提高，對於播放中的 MPEG-2 影片來說，系統的 idle time 增加，這也意味著對能源的使用可更經濟。<br>
+<br>
+有 Pentium4 或相容機種的朋友，歡迎測試這個 patch。稍後我會試著探討以 SSE2 指令集改善 MPlayer 的 MPEG-2 IDCT 運算。 (按：這是怎麼一回事：我的正職工作就在作 codec，下班後，還是在改善 codec 效能，永遠忙不完)<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March 11, 2006 12:34 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>jserv++</p>
+<span class="comments-post">由 <a href="http://linux.hiweed.com/">Huahua</a> 發表於</MTIfNonEmpty> March 11, 2006 12:39 AM</span>
+</div>
+<div class="comments-body">
+<p>jserv++</p>
+<span class="comments-post">由 <a href="http://spaces.msn.com/strong">strong</a> 發表於</MTIfNonEmpty> March 11, 2006 04:01 PM</span>
+</div>
+<div class="comments-body">
+<p>請問benchmark是怎麼做的呢？</p>
+<span class="comments-post">由 <a href="http://fatcat.ath.cx/tt94/">cat</a> 發表於</MTIfNonEmpty> March 11, 2006 07:03 PM</span>
+</div>
+<div class="comments-body">
+<p>To cat,</p>
+
+<p>使用 mplayer -benchmark 搭配 gprof 即可產生上列的 benchmark 資訊。</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> March 11, 2006 07:24 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1572" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

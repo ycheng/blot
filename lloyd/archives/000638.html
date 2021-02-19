@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>lloyd: 新酷音輸入法</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~lloyd/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~lloyd/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~lloyd/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~lloyd/archives/000578.html" title="kdic 與 kde 剪貼簿" />
+
+<link rel="next" href="http://blog.linux.org.tw/~lloyd/archives/000686.html" title="gcin 輸入法" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~lloyd/" accesskey="1">lloyd</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~lloyd/archives/000578.html">&laquo; kdic 與 kde 剪貼簿</a> |
+
+<a href="http://blog.linux.org.tw/~lloyd/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~lloyd/archives/000686.html">gcin 輸入法 &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">July 07, 2004</h2>
+
+<div class="blogbody">
+
+<h3 class="title">新酷音輸入法</h3>
+
+<p>怎麼又是輸入法? 我也不曉得就是喜歡惡搞它。</p>
+
+<p>新酷音輸入法目前由 jserv 修改自酷音輸入法，並參照 clkao IIIMF-chewing(支援 IIIMF 架構的酷音輸入法) 將 chewing 剝離 xcin 成為獨立的 libchewing。xcin 的部份只留下 xcin-chewing.diff 。</p>
+
+<p>詳細的資訊請參閱<a href="http://jserv.sayya.org/wiki/index.php/Qooing"> Qooing 新酷音輸入法網頁</a></p>
+
+<p>老規矩我不喜歡用 [1234567890] 當成選字習慣。我喜歡用 [asdfghjkl;] 選字。理由很簡單 [asdf..] 在手指的正下方，選字方便。</p>
+
+<p><img alt="qooing-01.png" src="http://blog.linux.org.tw/~lloyd/archives/qooing-01.png" width="650" height="90" border="0" /></p>
+
+<p><img alt="qooing-02.png" src="http://blog.linux.org.tw/~lloyd/archives/qooing-02.png" width="650" height="90" border="0" /></p>
+
+<p>使用的版本為 xcin-cvs 版 [三  7月  7 12:49:42 CST 2004]，及 libchewing-0.2.2，目前這個版本支援 utf8。</p>
+
+<p>本來修改方向針對 libchewing ，修改了 chewingutil.c 的 CountSelKeyNum 有了好結果。回過頭來改 xcin 顯示選字部份，才知道搞錯方向，根本一開始只需要改 xcin_chewing.c 的部份就好了。更動的部份跟舊文 <a href="http://blog.linux.org.tw/~lloyd/archives/000043.html">lloyd 酷音輸入法</a> 完全一樣，可嘆多花了我兩個小時。</p>
+
+<p>PS:較佳的作法應像詞音一樣提供選擇的方式如下</p>
+
+<p>(define bimsphone_default<br />
+        '((N_SELECTION_KEY      9)<br />
+          (SELECTION_KEYS       0)      ; 0: "1234567890", 1: "asdfgjkl;"</p>
+
+<a name="more"></a>
+
+
+<span class="posted">由 lloyd 發表於 July  7, 2004 04:49 AM
+
+<br /></span>
+
+</div>
+
+
+</div>
+</div>
+</body>
+</html>

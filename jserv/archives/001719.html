@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Cairo 1.1.8 的突破</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001718.html" title="老玩意：Linux Counter" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001720.html" title="freestanding" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001718.html">« 老玩意：Linux Counter</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001720.html">freestanding »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">June 15, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Cairo 1.1.8 的突破</h3>
+
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001695.html">實驗性的 Cairo 直式排版</a>] 提過對岸知名的 FreeType / Cairo hacker，sunmoon1997，做了些中文方面的改進，而他目前也成為正式的 committer，所以日後不必再抱怨 [<a href="http://www.cairographics.org/">Cairo</a>] 中文支援不好了。<br>
+<br>
+cairo-1.1.8 已經進 Edgy (Ubuntu development branch)，包含了 sunmoon1997 的成果，而之前 hlb 提到「因為字型 baseline 之類的關係嗎？直線對齊有點歪歪扭扭的」的問題，也修正了，所以用我之前改的 [<a href="http://jserv.sayya.org/misc/cairo-vertical-layout-text.c">範例程式</a>] 原封不動的重新編譯後，執行畫面如下：<br>
+<center><img src="http://jserv.sayya.org/misc/cairo-vertical-layout-text-2.png"></center><br>
+對照原本的呈現效果：<br>
+<center><img src="http://jserv.sayya.org/misc/cairo-vertical-layout-text.png"></center><br>
+cairo-1.1.8 改善頗多，不過，Uming 字體感覺還是有沒完全對齊的小遺憾，晚點來試試看 git 的版本。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 June 15, 2006 12:38 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>嗯！差好多喔！<br />
+還是整齊的好看！！<br />
+呵呵～～<br />
+^^"</p>
+
+<p><br />
+(不懂程式的路人甲)</p>
+<span class="comments-post">由 <a href="http://329.blogspot.com">Sinya</a> 發表於</MTIfNonEmpty> June 15, 2006 04:57 PM</span>
+</div>
+<div class="comments-body">
+<p>To Sinya,</p>
+
+<p>程式原本就是該寫給人用的，任何一個不入流的程式設計師都可寫出機器可讀的程式，但能寫出真正讓人可廣泛接受的程式，如此的程式設計師就相當少。</p>
+
+<p>很高興見妳的留言，未來我可能會試著寫「唐詩三百首伴讀」一類的程式，記得很小的時候，背誦詩詞總是得用很大的精力去交叉對照資料，這過程不僅充滿挫折，閱讀的興趣也因而減損許多。我不懂教育，但我知道，即便是軟體蓬勃發展的今日，同類型的軟體也不多，總覺得很可惜。</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> June 15, 2006 07:34 PM</span>
+</div>
+<div class="comments-body">
+<p>支持写这样的软件，最近正好在背《唐诗三百首》：)</p>
+<span class="comments-post">由 <a href="mailto&#58;shangyunt&#64;gmail&#46;com">yunt</a> 發表於</MTIfNonEmpty> June 15, 2006 08:05 PM</span>
+</div>
+<div class="comments-body">
+<p>Dear jserv,</p>
+
+<p>如果你真有空寫唐詩三百首或其它詩詞的程式,請一定一定要與我分享,好嗎?</p>
+
+<p>雖然我學英語,但我最希望看到的卻是每位炎黃子孫都能熱愛華文,這些寶貴的資產似乎漸漸勢弱...,實在不捨。</p>
+
+<p>我願花錢跟你買,好讓我教更多小朋友。.....(不過,請一定要打折喔!)<br />
+呵呵呵€~~~</p>
+<span class="comments-post">由 <a href="http://329.blogspot.com">Sinya</a> 發表於</MTIfNonEmpty> June 23, 2006 02:49 AM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1719" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

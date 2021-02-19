@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Xynth Window System</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001389.html" title="Blog的迴響" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001391.html" title="Which OS are You?" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001389.html">« Blog的迴響</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001391.html">Which OS are You? »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">December 14, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Xynth Window System</h3>
+
+在 LinuxDevices.com 看到 [<a href="http://www.linuxdevices.com/news/NS4326330478.html">Lightweight windowing system supports embedded Linux</a>] 這則新聞，很興奮的把 [<a href="http://www.xynth.org/">Xynth Window System</a>] 抓下來玩。我用的版本是 xynth-0.7.91，發現 SDL video driver 有 memory allocation 的問題，動手 [<a href="http://jserv.sayya.org/misc/xynth-0.7.91-sdl-server-mem.diff">做了個 patch 修正</a>]，並且改了 shm 管理的方式，應該會在下個釋出版本出現。引用豆神在 [<a href="http://blog.yalin.tw/2005/12/xd-programming-by-pcman.html">XD Programming by PCMan</a>] 提到的這句話：<ul>
+『不能用? 就把程式碼拿來, 改一改, patch一下就好啦~』
+</ul>
+在 X11/SDL 運作 Xynth Window System 的畫面如下：
+<center><img src="http://jserv.sayya.org/misc/xynth-on-sdl.png"></center>
+不過要注意的是，在 SDL video server 運作的情況還不是很理想，我已經發現幾個 null pointer 的現象，可能還要再花點時間追。<br><br>
+
+Xynth 採用典型的 client-server 架構，並且將可攜性列為重要考量，軟體架構圖如下：
+<center><img src="http://www.linuxdevices.com/files/misc/xynth_protocol_diag.gif"></center>
+幾個重要特徵如下：<ul>
+<li>Clients can be configured to use "double buffer rendering" to avoid flicker that could result from direct access to the video memory</li>
+<li>Thread-safe source code, server API, client library, and widget set, for customizability and reliability</li>
+<li>Polling Input device driver structure supports PS2, IMPS2, and USB mice and console keyboards, and supports custom device drivers as plugins</li>
+<li>Output driver system includes drivers for svgalib and Linux frame buffer, and any output driver can be easily used for video memory buffer</li>
+<li>Supports SysV IPC (inter-process communication)</li>
+<li>Minimal set of window management features built-in, to reduce footprint</li>
+</ul>
+授權方式為 GNU GPL，也移植到 SONY PSP 裝置上，很值得關注的計畫。
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 December 14, 2005 01:20 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>www.y-windows.org<br />
+another funny window system.</p>
+<span class="comments-post">由 <a href="mailto&#58;gtkdict&#64;yahoo&#46;com&#46;cn">jacky</a> 發表於</MTIfNonEmpty> December 14, 2005 02:44 PM</span>
+</div>
+<div class="comments-body">
+<p>http://www.y-windows.org/pipermail/y-devel/2005-October/001973.html</p>
+
+<p>I have been working on integrating cairo drawing into Y.  I have cairo<br />
+drawing now, and I added it as a dependancy to the build script (cairo<br />
+version >= 1.0).</p>
+
+<p>you guys can check it out by:</p>
+
+<p>$ tla register-archive http://www.dustinnorlander.com/arch/<br />
+$ tla get dustinn at gmail.com--2005/Y--dustin</p>
+
+<p>I haven't bothered changing all the drawing yet, so it looks pretty<br />
+childish, heh.. I want to start in on the theme engine, so I'll just<br />
+update the drawing routines as i go.</p>
+
+<p>For now the cairo_t is a member of the Painter struct.  And I have<br />
+just made the PixelBuffer and the cairo image buffer share the same<br />
+memory..  I think I will end up doing away with the PixelBuffer stuff<br />
+in faver of using cairo Buffers (The Y Buffer arrangement will remain<br />
+the same just that the PixelBuffer implementation will go away).</p>
+
+<p>http://www.dustinnorlander.com/Y/ywiki/index.php?title=Recent_Changes<br />
+-Dustin</p>
+<span class="comments-post">由 <a href="mailto&#58;gtkdict&#64;yahoo&#46;com&#46;cn">jacky</a> 發表於</MTIfNonEmpty> December 14, 2005 02:46 PM</span>
+</div>
+<div class="comments-body">
+<p>hi jserv<br />
+Xynth 可以直接在linux framebuffer上跑嘛? 我看了下源码 没有发现和FB有关的东西呀...  <br />
+如果可以跑 该怎么做呢?  谢谢..</p>
+<span class="comments-post">由 <a href="mailto&#58;woodysu&#64;163&#46;com">woody</a> 發表於</MTIfNonEmpty> January  9, 2006 05:56 PM</span>
+</div>
+<div class="comments-body">
+<p>To woody,</p>
+
+<p>請參考 src/server/video/fb 目錄，並且文件的確有提到如何配置不同 video server/backend。</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv">jserv</a> 發表於</MTIfNonEmpty> January  9, 2006 07:25 PM</span>
+</div>
+<div class="comments-body">
+<p>我尝试用VPC，结果真的启动了0.80版本带的LINUX ISO文件，SDL和终端(busybox shell)能成功运行了，但开始菜单却一片空白，这个程序应该是在跑vesa目录下的东西吧.</p>
+<span class="comments-post">由 <a href="mailto&#58;easion&#64;gmail&#46;com">easion</a> 發表於</MTIfNonEmpty> February 28, 2006 11:43 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

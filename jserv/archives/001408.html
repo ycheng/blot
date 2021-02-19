@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Tk XIM 修正</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001407.html" title="To which race of Middle Earth do you belong?" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001409.html" title="Chris Lanfear 的 blog" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001407.html">« To which race of Middle Earth do you belong?</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001409.html">Chris Lanfear 的 blog »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 04, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Tk XIM 修正</h3>
+
+一年多前，我試著修正 Tk 8.3 的 XIM 支援，而剛剛試著改 cvs head 的 Tk，初步看起來可以愉快的運作 SCIM (相信 gcin 或其他 XIM server 應該也沒問題才是)。使用方式先 check out cvs 的 tcl 與 tk：<ul><pre>
+cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/tcl login 
+cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/tcl co -P tcl
+cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/tktoolkit login
+cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/tktoolkit co tk
+</pre></ul>
+依序建構 tcl 與 tk，並且使用 [<a href="http://jserv.sayya.org/tcl-i18n/tk-cvs-xim-fixes.diff">tk-cvs-xim-fixes.diff</a>] 這個修正。<br><br>
+用 aMSN 來作測試，畫面如下：<ul>
+<img src="http://jserv.sayya.org/misc/amsn-0.9.5-tk-xim-fixes.png"></ul><br>
+看起來挺不錯的 :-)<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January  4, 2006 03:00 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>原来只改这几行就可以了吗？盼着tk支持中文输入好多年了，我一定要去试试效果。</p>
+<span class="comments-post">由 <a href="http://xyb.8800.org">xyb</a> 發表於</MTIfNonEmpty> January  4, 2006 05:19 PM</span>
+</div>
+<div class="comments-body">
+<p>另外一個問題, 我用了xorg 7.0 and Freetype 2.1.10, 發覺得中文宇體有點怪怪, 某些字像你的capture畫面一樣, "jserv" 會向上Display出來........ 因為2.1.10版本關係 ?</p>
+<span class="comments-post">由 <a href="mailto&#58;hilarycheng____&#64;____yahoo____&#46;com">Hilary</a> 發表於</MTIfNonEmpty> January  5, 2006 03:59 PM</span>
+</div>
+<div class="comments-body">
+<p>這個 patch 還是有一些問題，跟以前 tcl/tk 8.3 的問題差不多<br />
+一樣在轉換focus 時，xim 會失效<br />
+字體中、英文字好像都等寬？<br />
+不過新板的 amsn 在 web cam 上面果然好很多，也可以全速傳檔，看起來真是爽。</p>
+<span class="comments-post">由 <a href="http://blog.twkang.net">whatup</a> 發表於</MTIfNonEmpty> January  5, 2006 11:56 PM</span>
+</div>
+<div class="comments-body">
+<p>哈哈，我在你的好友清單上面看到我自己 XD</p>
+<span class="comments-post">由 <a href="http://blog.yam.com/ystuan/">帝國反抗君 - PowerOp</a> 發表於</MTIfNonEmpty> January  6, 2006 05:11 PM</span>
+</div>
+<div class="comments-body">
+<p>下載完後也修正了之後<br />
+就放著不管嗎<br />
+還是要有其他的動作</p>
+<span class="comments-post">由 <a href="mailto&#58;uranus0206&#64;yahoo&#46;com&#46;tw">vinci</a> 發表於</MTIfNonEmpty> January  7, 2006 02:18 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

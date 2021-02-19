@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>章 1. 概覽</title>
+    <link rel="stylesheet" type="text/css" href="debian.css"/>
+    <meta name="generator" content="DocBook XSL Stylesheets V1.79.1"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="home" href="index.zh-tw.html" title="Debian 維護者指南"/>
+    <link rel="up" href="index.zh-tw.html" title="Debian 維護者指南"/>
+    <link rel="prev" href="pr01.zh-tw.html" title="前言"/>
+    <link rel="next" href="ch02.zh-tw.html" title="章 2. 預備知識"/>
+  </head>
+  <body>
+    <div class="navheader">
+      <table width="100%" summary="Navigation header">
+        <tr>
+          <th colspan="3" align="center">章 1. 概覽</th>
+        </tr>
+        <tr>
+          <td align="left"><a accesskey="p" href="pr01.zh-tw.html"><img src="images/prev.png" alt="前一頁"/></a> </td>
+          <th width="60%" align="center"> </th>
+          <td align="right"> <a accesskey="n" href="ch02.zh-tw.html"><img src="images/next.png" alt="下一頁"/></a></td>
+        </tr>
+      </table>
+      <hr/>
+    </div>
+    <div class="chapter">
+      <div class="titlepage">
+        <div>
+          <div>
+            <h1 class="title"><a id="overview"/>章 1. 概覽</h1>
+          </div>
+        </div>
+      </div>
+      <p>對 <span class="emphasis"><em>package-1.0</em></span><span class="strong"><strong>.tar.gz</strong></span>，一個包含了簡單的、符合 <a class="ulink" href="https://www.gnu.org/prep/standards/">GNU 編碼標準</a> 和 <a class="ulink" href="https://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard">FHS（檔案系統層級規範）</a> 的 C 語言源代碼的程式來說，它在 Debian 下打包工作可以按照下列流程，使用 <span class="strong"><strong>debmake</strong></span> 命令進行。</p>
+      <pre class="screen"> $ tar -xvzf package-1.0.tar.gz
+ $ cd package-1.0
+ $ debmake
+   ... Make manual adjustments of generated configuration files
+ $ debuild</pre>
+      <p>如果跳過了對生成的配置檔案的手工調整流程，則最終生成的二進位制套件將缺少有意義的套件描述資訊，但是仍然能為 <span class="strong"><strong>dpkg</strong></span> 命令所使用，在本地部署環境下正常工作。</p>
+      <div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;">
+        <table border="0" summary="Caution">
+          <tr>
+            <td rowspan="2" align="center" valign="top">
+              <img alt="[注意]" src="images/caution.png"/>
+            </td>
+            <th align="left">注意</th>
+          </tr>
+          <tr>
+            <td align="left" valign="top">
+              <p>這裡的 <span class="strong"><strong>debmake</strong></span> 命令只提供一些不錯的模板檔案。如果生成的套件需要釋出出去供公眾使用的話，這些模板檔案必須手工調整至最佳狀態以遵從 Debian 倉庫的嚴格質量標準。</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <p>如果您在 Debian 打包方面還是個新手的話，此時不要過多在意細節問題，請先確立一個大致流程的印象。</p>
+      <p>如果您曾經接觸過 Debian 打包工作，您會注意到這和 <span class="strong"><strong>dh_make</strong></span> 命令很像。這是因為 <span class="strong"><strong>debmake</strong></span> 命令設計時便旨在替代歷史上由 <span class="strong"><strong>dh_make</strong></span> 命令所提供的功能。<a href="#ftn.idm163" class="footnote" id="idm163"><sup class="footnote">[3]</sup></a></p>
+      <p><span class="strong"><strong>debmake</strong></span> 命令設計提供如下特性與功能：</p>
+      <div class="itemizedlist">
+        <ul class="itemizedlist">
+          <li class="listitem">
+            <p class="simpara">現代的打包風格</p>
+            <div class="itemizedlist">
+              <ul class="itemizedlist">
+                <li class="listitem"><span class="strong"><strong>debian/copyright</strong></span>：符合 <span class="strong"><strong>DEP-5</strong></span></li>
+                <li class="listitem"><span class="strong"><strong>debian/control</strong></span>：<span class="strong"><strong>substvar</strong></span> 支援、<span class="strong"><strong>multiarch</strong></span> 支援、多個二進位制套件、……</li>
+                <li class="listitem"><span class="strong"><strong>debian/rules</strong></span>：<span class="strong"><strong>dh</strong></span> 語法、編譯器強化選項、……</li>
+              </ul>
+            </div>
+          </li>
+          <li class="listitem">
+            <p class="simpara">靈活性</p>
+            <div class="itemizedlist">
+              <ul class="itemizedlist">
+                <li class="listitem">許多選項（<a class="xref" href="ch05.zh-tw.html#boption" title="5.5.1.1. debmake -b">節 5.5.1.1, “debmake -b”</a>、<a class="xref" href="ch06.zh-tw.html" title="章 6. debmake 選項">章 6, <em>debmake 選項</em></a>、<a class="xref" href="apa.zh-tw.html" title="附錄 A. debmake(1) 手冊頁">附錄 A, <em><span class="strong"><strong>debmake</strong></span>(1) 手冊頁</em></a>）</li>
+              </ul>
+            </div>
+          </li>
+          <li class="listitem">
+            <p class="simpara">合理的預設行為</p>
+            <div class="itemizedlist">
+              <ul class="itemizedlist">
+                <li class="listitem">執行過程不中斷，輸出乾淨的結果</li>
+                <li class="listitem">生成多架構支援（multiarch）的套件，除非明確指定了 <span class="strong"><strong>-m</strong></span> 選項。</li>
+                <li class="listitem">生成非原生 Debian 套件，使用“<span class="strong"><strong>3.0 (quilt)</strong></span>”格式，除非明確指定了 <span class="strong"><strong>-n</strong></span> 選項。</li>
+              </ul>
+            </div>
+          </li>
+          <li class="listitem">
+            <p class="simpara">額外的功能</p>
+            <div class="itemizedlist">
+              <ul class="itemizedlist">
+                <li class="listitem">根據當前原始碼對 <span class="strong"><strong>debian/copyright</strong></span> 檔案進行驗證（<a class="xref" href="ch06.zh-tw.html#koption" title="6.4. debmake -k">節 6.4, “debmake -k”</a>）</li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <p><span class="strong"><strong>debmake</strong></span> 命令將大多數重量級工作分派給了其後端套件：<span class="strong"><strong>debhelper</strong></span>、<span class="strong"><strong>dpkg-dev</strong></span>、<span class="strong"><strong>devscripts</strong></span>、<span class="strong"><strong>pbuilder</strong></span>，等等。</p>
+      <div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;">
+        <table border="0" summary="Tip">
+          <tr>
+            <td rowspan="2" align="center" valign="top">
+              <img alt="[提示]" src="images/tip.png"/>
+            </td>
+            <th align="left">提示</th>
+          </tr>
+          <tr>
+            <td align="left" valign="top">
+              <p>請確保將 <span class="strong"><strong>-b</strong></span>、<span class="strong"><strong>-f</strong></span>、<span class="strong"><strong>-l</strong></span> 和 <span class="strong"><strong>-w</strong></span> 選項的引數使用引號合適地保護起來，以避免 shell 環境的干擾。</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;">
+        <table border="0" summary="Tip">
+          <tr>
+            <td rowspan="2" align="center" valign="top">
+              <img alt="[提示]" src="images/tip.png"/>
+            </td>
+            <th align="left">提示</th>
+          </tr>
+          <tr>
+            <td align="left" valign="top">
+              <p>非原生套件是標準的 Debian 套件。</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;">
+        <table border="0" summary="Tip">
+          <tr>
+            <td rowspan="2" align="center" valign="top">
+              <img alt="[提示]" src="images/tip.png"/>
+            </td>
+            <th align="left">提示</th>
+          </tr>
+          <tr>
+            <td align="left" valign="top">
+              <p>本文件中所有套件構建範例的詳細日誌可以由 <a class="xref" href="ch08.zh-tw.html#details" title="8.14. 細節">節 8.14, “細節”</a> 一段給出的操作來取得。</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+        <table border="0" summary="Note">
+          <tr>
+            <td rowspan="2" align="center" valign="top">
+              <img alt="[注意]" src="images/note.png"/>
+            </td>
+            <th align="left">注意</th>
+          </tr>
+          <tr>
+            <td align="left" valign="top">
+              <p>所產生的 <span class="strong"><strong>debian/copyright</strong></span> 檔案，以及 <span class="strong"><strong>-c</strong></span>（<a class="xref" href="ch06.zh-tw.html#coption" title="6.3. debmake -cc">節 6.3, “debmake -cc”</a>）和 <span class="strong"><strong>-k</strong></span>（<a class="xref" href="ch06.zh-tw.html#koption" title="6.4. debmake -k">節 6.4, “debmake -k”</a>）選項的輸出都涉及了對版權和授權資訊的啟發式操作。它們具有侷限性，可能會輸出某些錯誤的結果。</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="footnotes">
+        <br/>
+        <hr/>
+        <div id="ftn.idm163" class="footnote">
+          <p><a href="#idm163" class="simpara"><sup class="simpara">[3] </sup></a>歷史上還存在過 <span class="strong"><strong>deb-make</strong></span> 命令，它在 <span class="strong"><strong>dh_make</strong></span> 之前曾經流行過。當前的 <span class="strong"><strong>debmake</strong></span> 套件的版本從 <span class="strong"><strong>4.0</strong></span> 起始，其目的便是避免和廢棄的 <span class="strong"><strong>debmake</strong></span> 套件的版本產生重疊。舊有的對應套件提供了 <span class="strong"><strong>deb-make</strong></span> 命令。</p>
+        </div>
+      </div>
+    </div>
+    <div class="navfooter">
+      <hr/>
+      <table width="100%" summary="Navigation footer">
+        <tr>
+          <td align="left"><a accesskey="p" href="pr01.zh-tw.html"><img src="images/prev.png" alt="前一頁"/></a> </td>
+          <td align="center"> </td>
+          <td align="right"> <a accesskey="n" href="ch02.zh-tw.html"><img src="images/next.png" alt="下一頁"/></a></td>
+        </tr>
+        <tr>
+          <td align="left" valign="top">前言 </td>
+          <td align="center">
+            <a accesskey="h" href="index.zh-tw.html">
+              <img src="images/home.png" alt="起始頁"/>
+            </a>
+          </td>
+          <td align="right" valign="top"> 章 2. 預備知識</td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

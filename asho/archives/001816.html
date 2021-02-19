@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Asho's Blog: 總算有點了解 sysfs 了</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~asho/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~asho/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~asho/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~asho/archives/001814.html" title="Mozilla 快速鍵" />
+
+<link rel="next" href="http://blog.linux.org.tw/~asho/archives/001824.html" title="rtorrent UTF-8 顯示寬字" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~asho/" accesskey="1">Asho's Blog</a></h1>
+<span class="description">一個喜歡研究的傻小子 :-)</span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~asho/archives/001814.html">&laquo; Mozilla 快速鍵</a> |
+
+<a href="http://blog.linux.org.tw/~asho/">Main</a>
+| <a href="http://blog.linux.org.tw/~asho/archives/001824.html">rtorrent UTF-8 顯示寬字 &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">October 20, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">總算有點了解 sysfs 了</h3>
+
+<p>昨天寫了一整天的 sysfs 的 code，因為我一直想要把這個東西搞清楚。但過程真的滿辛苦的，因為文件並不是很多，所以我一氣之下，決定直接看 sysfs.h, kobject.h, device.h, sysdev.h 來找 sysfs 提供的 API。</p>
+
+<p>我 trace 的程式是 cpufreq，推薦一下這個程式，裡面有完整的 kobject initial、如何套到一個 sys_device 上、ktype的宣告等。裡面也有一些不錯的寫程式技巧，減低了重覆宣告 kyte 的 attribute 和 ops(這些技巧在kernel code中常出現，想必是不錯的撰寫風格)，想了解 sysfs 的話，我想 cpufreq 算是不錯的範例格式。</p>
+
+<p>果然皇天不負苦心人，更清楚了解 kobject, ktype, kset, sub-system, attribute 的用處。<br />
+<ul><br />
+kobject: 最小的 device model unit。單純地宣告一個 kobject 並沒什麼用處，他最神奇的地方是內嵌在 Kernel 的 device 資料結構中，例如 character device(cdev), block device(blkdev)。這些資料結構中都會內嵌一個 kobject，所以，您知道知道做了吧 :-)<br />
+</ul><br />
+<ul><br />
+ktype: kobject 的集合。但它比較偏向收集相同 operation 的 kobject 的一個集合，也就是說它是負責管理這一群 kobjects 的 operation. (show,store)。kobject 會利用它了辨識自已是屬於那一個類型，然後在 /sys 下建立正確的目錄位置。<br />
+</ul><br />
+<ul><br />
+kset: kobject 的集合。這也是一個集合，不同於ktype，它不管理 kobject 的 ops，最重要的是建立上層(sub-system)和下層的(kobject)的關聯性。kobject 也會利用它了辨識自已是屬於那一個類型，然後在 /sys 下建立正確的目錄位置。而 kset 的優先權比較高，kobject 會利用自已的 *kset 找到自已所屬的kset，並把 *ktype 指定成該kset下的ktype，當然，你也是可以搞鬼，設定了kset，但用不同的ktype的operation(...有些code是這樣)。除非沒有定義kset，才會用 ktype 來建立關聯。<br />
+</ul><br />
+<ul><br />
+subsystem:如果說 kset 是管理 kobject 的集合，同理、sussystem 就是管理 kset 的集合。<br />
+</ul><br />
+<ul><br />
+attribute: 建立了 kobject 並成功註冊之後，你會發現出現該 kobj 對應的目錄竟然是空的(這是當然的啦 XD)，要如何產生資訊檔案，就是利用 attribute 這個資料結構。<br />
+    struct attribute {<br />
+	char			*name;       // 以該變數為檔名出現在 kobj 的目錄下<br />
+	struct module 		*owner; // THIS_MODULE<br />
+	mode_t			mode;  //permission, "S_IRUGO" or  "S_IWUSR" or "0660"<br />
+    };<br />
+應該是的出來 attribute 的功用，建立好attribute之後，讀取/寫入該檔案會呼叫 ktype 對應的 operation.<br />
+</ul></p>
+
+<p>至於動態建立 node 並非 sysfs 的工作(still depends on him), 是由 hotplug 接收 kset 中的hotplug ops 來傳送信號並傳送給 udev 來建立 device node的(這又是一篇懸疑小說了)，以後有空再寫。</p>
+
+<a name="more"></a>
+
+
+<span class="posted">Posted by asho at October 20, 2006 10:07 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>Comments</div>
+
+
+
+
+<div class="comments-head">Post a comment</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1816" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">Name:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email Address:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">URL:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+Remember personal info?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">Yes</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">No</label><br style="clear: both;" />
+
+<label for="text">Comments:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;Preview&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;Post&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+</div>
+</div>
+</body>
+</html>

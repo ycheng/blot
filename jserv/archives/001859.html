@@ -1,0 +1,398 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Design Patterns in Qt</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001854.html" title="OSDC.tw 2007 Calls for Papers" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001860.html" title="ZJWord - 類似 MS-Word 的多功能文書處理軟體" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001854.html">« OSDC.tw 2007 Calls for Papers</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001860.html">ZJWord - 類似 MS-Word 的多功能文書處理軟體 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">December 19, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Design Patterns in Qt</h3>
+
+這是我在接近五年前的翻譯短文，因為有網友來信指教，我決定整理一份 web 版本，首次發表於 SayYa BBS 站。<br />
+<hr />
+ Published on The O'Reilly Network (http://www.oreillynet.com/)
+ <a href="http://www.onlamp.com/pub/a/onlamp/2002/01/10/designqt.html">http://www.oreillynet.com/pub/a/onlamp/2002/01/10/designqt.html</a><br /><br />
+<center>Design Patterns in Qt</center><br />
+ by Matthias Kalle Dalheimer, author of <a href="http://www.oreilly.com/catalog/prowqt2/">Programming with Qt, 2nd Edition</a><br />
+ 01/10/2002<br />
+<br />
+ 繁體中文翻譯與修正潤飾：<a href="http://blog.linux.org.tw/jserv/">Jim Huang (黃敬群 / jserv)</a><br />
+ Jan 18, 2002<br />
+<br />
+所謂的 GoF 書《<a href="http://william.cswiz.org/GoF/">Design Patterns</a>》(GoF 
+指由作者群 Erich Gamma、Richard Helm、Ralph Johnson，以及 John Vlissides 等
+「四人幫」) 對軟體工程發展具有相當的影響力，也因此，每個程式設計師都閱讀過這
+本大作，或至少宣稱閱讀過了。在本文，我將會探索在 Qt 程式設計中，Design Patterns 
+是如何應用的。<br />
+<br />
+Design Patterns 是個與語言無關的描述一而再、再而三在程式設計中出現的慣用
+樣式 (Patterns)。其實沒有什麼新東西，Patterns 已經在這幾十年間被採用，但是
+GoF 書則是大力強調如何描述 pattern 的標準化、給予常用的 pattern 命名，以便
+全世界的程式設計師都可以查閱，並且，最後開創讓開發者可以識別新 pattern 與 
+彼此分享的新運動。這些命名已經在開發者間相當的普遍，以致於我們常常可以在雜
+誌看到如「如何以某個程式語言來實作 Observer」這類的專欄 -- 這意味著沒有必要
+額外去解釋 Observer 是一種在 GoF 書中規範的 patterns 的名稱。<br />
+<br />
+先讓我們此時保留 pattern 的議題，轉向去思考完全不一樣的東西：C++ GUI 
+toolkit Qt。Qt 是由挪威的 <a href="http://www.trolltech.com/">Trolltech</a> 公司
+發展，在 Windows 與眾多 Unix 平台上都可運行 (也有 Apple Mac 的版本)。Qt 依循 
+single-source 典範 (paradigm)：一個由 Qt 撰寫的程式碼，可以在任何所支援的平台
+上被編譯與執行，而不需要修改原始程式碼。當然，在現實上，由於編譯器或開發平台
+本身的問題 (例如在 Win32 下需要更改 Make rules)，可能需要小幅度的更改，而且
+如果你想保持與平台無關的特性，也不能直接使用任何原生 (native) 的 API 功能
+呼叫。然而，Qt 仍然是個協助開發展撰寫可移植性 (portable) 軟體的良好工具。
+近年來，Qt 已經因為創造 KDE 這個 Unix 系統下免費而強大的桌面環境，而大獲好評。
+Qt 擁有可擴充的參考文件，而程式設計師的參考手冊與開發資訊可透過我在 O'Reilly 
+出版的書籍《<a href="http://www.oreilly.com/catalog/prowqt2/">Programming with Qt, 2nd Edition</a>》。<br />
+<br />
+實地開發 Qt 程式時，你應該會遵循部份在 GoF 書中描述的 patterns，即使程式碼
+看起來可能與書中所示的不同。在這裡，我們將探討在 Qt 程式碼中常見的兩個 
+Patterns 並試圖找出對應於 GoF 書中的 Patterns。<br />
+<br />
+Qt 擁有獨特的 signal & slot 概念，這是一個允許以軟體元件 (component) 為基礎
+程式設計的系統：軟體元件可以定義可以在某些狀況下發出 (emit) 的 signal 以及
+伴隨定義的參數，同時，軟體元件可以定義如同正常 C++ method、但卻由前置處理器
+所偽裝的 slot。signal 與 slot 在執行時期可以藉由 <a href="http://doc.trolltech.com/4.0/qobject.html#connect">QObject::connect()</a> 來作聯繫，而這 QObject 正是 Qt 的中樞。<br />
+<br />
+讓我們看看這個小範例。典型的情況是提供一個 Push Button (像是 "OK" 這樣的
+標示) 等待按鍵以結束這個對話框 (dialog)。經過查閱 Qt 參考文件後，我們可以
+發現有 class QPushButton 與一個在被按下時會觸發的 clicked() signal。同時，
+class QDialog 擁有一個關閉對話框的 accept() / reject() slot。
+為了讓這兩者產生關聯，可以使用底下的程式碼：<pre class="code" style="margin: 6px;">
+  QObject::connect( myPushButton,
+                    SIGNAL( clicked() ),
+                    myDialog,
+                    SLOT( accept() ) );
+</pre>
+這意味著，當 push button 被按下時 (因此觸發 clicked() signal)，對話框的
+slot accept() 就會被呼叫 (對話框因而被關閉)，至於這動作是如何發生的，在
+Qt 文件裡詳細的描述過，不在本篇文章討論的範圍。<br />
+<br />
+現在，我們回到 patterns 的討論議題上，在 GoF 書上描述一個稱作 Mediator*
+的物件行為模式 (object-behavioral pattern) 如下：<ul class="code" style="margin: 6px;">
+定義可將一群物件互動方式封裝起來的物件。因為物件彼此不直接相互指涉，
+所以耦合性低，容易逐一變更互動關係。<br />
+<br >
+  * 譯注：mediator 在中文的意思就是調停者、居中斡旋者
+</ul>
+這邊使用的例子正與 GoF 書中舉的 GUI 系統的對話框一樣，在書中介紹的 mediator 
+物件負責指揮協調在對話框中的一群物件，像是按鈕、選單、文字輸入欄，
+之間的互動，避免相互指涉；這群物件只認得 mediator，因此可降低互連數目。
+這正是我們在 Qt 所具有的特徵：
+<a href="http://doc.trolltech.com/4.0/qobject.html">QObject class</a> 扮演著
+任何需要協調物件的仲裁者。在 GoF Mediator pattern 也引入 Colleagues class，
+當 Colleague 物件想與其他 Colleague 通訊時，得透過 Mediator 來間接進行，
+而在 Qt 中，這些可以是直接或間接繼承於 QObject 的 class，並且因此獲有 
+signal/slot 機制。<br />
+<br />
+需要留意的是，GoF Mediator pattern 假設每個 Colleague 類別都知道他的 Mediator 
+物件，但這對 Qt 來說並非必要的，因此，Qt 能夠提供耦合性更低的途徑。當然，
+在 Qt 裡也是可以遵循原本 Mediator pattern，只需要透過建立特殊的 Mediator 
+class -- 在其 constructor 中設定所有 Qt connection (譯註：此乃 Qt 程式設計之
+術語，表示兩個物件之間低耦合的鍵結行為，為避免用詞混淆，這裡保留原文) 並且在 
+destructor 中把 Colleague 的 connection 取消。<br />
+<br />
+[譯注] 簡單的互動圖用來說明以上行為：<br />
+<center><img src="http://people.debian.org.tw/~jserv/dp-in-qt-1.png" /></center><br />
+signal/slot 機制也是另一個 GoF pattern 的例證，Observer pattern，描述如下：<ul class="code" style="margin: 6px;">
+定義一對多的物件依存關係，讓物件狀態一有變動，就自動通知其他相依物件
+，以作對應的更新動作。
+</ul>
+我們可以考慮如此的狀況：每個 Qt signal 可能被多個 slot 所連結 (也可能是全部
+都沒有)，而每個 slot 也可能被許多 signal 所連結，所以，我們實際上擁有一個多
+對多的相依性存在，but one that is much easier to maintain that typical 
+many-to-many-dependencies that involve direct invocations. (不知道要如何表
+達這種感覺，所以保留原文)<br />
+<br />
+就剛剛的範例來說，咱們再度回顧對話框。按下 OK button 的動作常常不只是關閉
+對話框，而且還會依據對話欄內變更值，作應用程式狀態的更新 (但是 Cancel button
+就只有關閉對話框的動作)。也有可能直接在對話框內作更新 (典型的例子是在使用者 
+自訂的 slot)，有時候我們比較偏好讓應用程式自己更新，以避免暴露過多關於對話框
+的內部資料結構。(換句話說，這意味著對話框的結構必須暴露與開放給應用程式，
+這種是需要取捨 [譯註：考慮便利性與物件封裝性]) 更新的過程可在使用者定義的 slot 中
+完成，這裡，我們姑且稱為 updateState()，然後我們會參照 push button 的 
+clicked() signal (譯註：當然我們忽略底層視窗系統是如何轉送視窗與滑鼠事件，
+總之，我們可假設 Qt 會自動將底層事件觸發時，會分類並遞送 clicked() "signal" 表示
+如此的事件) 來建立以下兩個 connection：<pre class="code" style="margin: 6px;">
+  QObject::connect( myPushButton,
+                    SIGNAL( clicked() ),
+                    myDialog,
+                    SLOT( accept() ) );
+
+  QObject::connect( myPushButton,
+                    SIGNAL( clicked() ),
+                    myApplication,
+                    SLOT( updateState() ) );
+</pre>
+於是，這邊就有兩個物件：對話框物件與應用程式物件，這兩者都在觀察 (observing) 
+button 的按擊。<br />
+<br />
+[譯注] 上述的模型可以表示如下圖：<br />
+<center><img src="http://people.debian.org.tw/~jserv/dp-in-qt-2.png" /></center><br />
+同樣的，你將可以在 Qt 程式設計內發現 GoF patterns，如 Singleton、Iterator、
+Command，以及 Flyweight。<br />
+[譯註] 這篇文章是很好的出發點，若讀者覺得意猶未竟，可參閱 Bruce Perens' Open Source Series 出版的
+經典著作《An Introduction to Design Patterns in C++ with Qt 4》，探討最新的 Qt 4.x 核心設計中，
+涵蓋多少典型的 Design Patterns，同時該書也有一份 wiki [<a href="http://cartan.cas.suffolk.edu/moin/OopDocbookWiki">OopDocbookWiki</a>]。<br />
+<br />
+To conclude, the Design Patterns described in the GoF book also apply to Qt 
+programming, which should not be surprising, given that Qt follows good 
+software engineering practice--sometimes with an unusual syntax.<br />
+<br />
+Matthias Kalle Dalheimer works as an independent author, translator and 
+software consultant in Northern Germany, where he lives in a tiny village 
+with his wife and son.<br />
+<hr>
+O'Reilly & Associates will soon release (January 2001) Programming with Qt,
+2nd Edition.<br />
+<br />                                                             
+oreillynet.com Copyright  2000 O'Reilly & Associates, Inc.<br />
+<hr />
+短文至此，也讓我想到翻譯前幾天，曾寫下以下札記：<ul class="code" style="margin: 6px;">
+ 標題  [閒聊]Patterns in Qt?<br />
+ 時間  Tue Jan 15 05:45:33 2002<br />
+<br />
+凌晨三點起床，看著熟睡的女友，意外瞥見床頭擺著許久沒閱讀的《Patterns in Java》，
+隨手翻閱 Proxy pattern 章節，思索相關的 Access Proxy、Broker、Facade、
+Remote Proxy、Virtual Proxy，以及 Decorator 等 Design Patterns。而，
+連上 SayYa BBS 看看有什麼新文章時，看到 Qt 版，又讓我聯想：
+是否有專門討論 Qt Framework 裡頭 Design Patterns 的資料呢？<br />
+<br />
+<b>Patterns in Qt?!</b><br />
+<br />
+讓我有點失望，剛剛利用 Google 找 "Qt" "Design Patterns" 等關鍵字，沒有
+太大的收穫，但是，仔細想想：Qt Framework 本身就是集合多種 Patterns 的良好
+示範。Qt 發展之際，恰好就是 Java 大行其道時，由 Java 帶來的許多特徵，給予
+軟體工程界不小的震撼，Distributed Computing 更是在此時具有完備的基礎建設，
+於是乎，從蛻變的 Microsoft COM/DCOM、OMG CORBA、J2EE 陣營的 Enterprise 
+JavaBeans、... 就這樣交叉發展著，也激盪出 Linux Desktop component 的發展。<br />
+<br />
+既然找不到直接相關的資料，那我試著從當今 Component Model 的發展看 Qt，
+以及討論 Design Patterns 的議題，歡迎各位先進指教！(未完，隨時歡迎回覆本文補充)<br />
+<br />
+Component Model 產生的原因，是現代軟體越來越復雜，因此對元件的重用性
+要求也越來越高。開始人們要求是靜態地利用已有的 Component，後來逐漸對
+動態應用提出需求。為了在系統中對動態使用和管理 Component，
+以及在 Components 之間進行資料處理交換，人們開始定義一些 Component 之間的
+使用標準，資料交換方式和通訊協定，並把這樣的結構稱為 Component Model 或 
+Component Framework。在概念上提出這樣的結構，已經很遙遠了，在實際應用中，
+則是 Microsoft 在 Windows 上利用 DDE 實現的 OLE，並以此發展出來的 COM/DCOM。
+早先的應用，主要是在 MS Office 之間傳輸資料和處理，但現在已經擴展到 Windows 裡
+的各方面。<br />
+<br />
+當然，在 UNIX 上，很早就有所謂的 X Window Widget set，也早就有以 Motif 為基礎
+的 CDE，但是，除了 Motif 與 CDE 並非 Open Source 軟體，最令人詬病的是，CDE 是
+個相當「落後」的環境，應用程式之間的通訊，局限於 CDE 自己的桌面 Panel 與應用程式間，
+無法發揮 IPC/RPC 的能力，更別說上要能抽象的延伸到 component 層面了。<br />
+<br />                                        
+KDE/Qt 的發展，帶給之前 UNIX 界沒有 Component Model 概念的突破。KDE 2.0 後，
+採用兩層結構來實現 Component Model：KParts 和 DCOP。<br />
+<br />
+不同於 COM 獨立於 DCOM 可自成一套規格，KDE2 奠基於底層分散式環境 DCOP 之上，
+原本 KDE 打算用 CORBA 來實現 IPC/RPC，但是 CORBA 過於笨重，對於 KDE 規劃要把 
+local 與 remote 的 component 都建立於同一個 communication layer 上，實在成效
+不彰，於是 KDE Team 決定另起爐灶，建立自己底層的通訊機制，也就是 DCOP。
+相較於另一個 Desktop environemnt，GNOME 依賴分散式環境標準的 CORBA/mico，KDE 擁有
+更完善的 Component 管理與定義機制。<br />
+<br />
+所以，我在想，是否能夠放眼 KDE Component Model，
+透析裡頭 Qt 的 Design Patterns 呢？快天亮了，但我仍陷入思索的深淵。<br />
+<br />
+群 於台南住所<br />
+</ul>
+補充：<ul class="code" style="margin: 6px;">
+KDevelop 的 Design Framework 屬於變形的 MVC model："document-viewer-controller"。
+當 process 被建立時，"it creates a document and a viewer object and connects the 
+two such that changes to the document are automagically communciated to 
+the viewer via Qt style slot/signal connections. "<br />
+<br />              
+所以，透過以上機制的施行，要在 "Document" 物件與 Viewer 裡頭置入 scenegraph 
+(也就是 model) 就再自然不過了。
+</ul>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 December 19, 2006 10:48 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>http://cartan.cas.suffolk.edu/moin/OopDocbookWiki<br />
+An Introduction to Design Patterns in C++ with Qt 4<br />
+这本应该是讲得比较详细了。听说大陆的清华大学出版社已经组织翻译了。</p>
+<span class="comments-post">由 <a href="http://www.qiliang.net">Cavendish Qi</a> 發表於</MTIfNonEmpty> December 19, 2006 08:46 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1859" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Visual BASIC 9.x 與 duck typing</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001464.html" title="通訊地址" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001466.html" title="農曆新年" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001464.html">« 通訊地址</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001466.html">農曆新年 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 29, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Visual BASIC 9.x 與 duck typing</h3>
+
+Visual BASIC 與 Delphi 是少數我在 Win32 喜歡的開發環境，小時候曾經用這兩套開發過中型的 GIS (地理資訊系統)，不過主要的程式碼還是用 Delphi 寫的，VB 充其量是拿來拉 UI 與作簡單的測試工具，那樣的記憶一直停留在腦海 (從上個世紀到本世紀)，直到閱讀這篇由一位 MVP 撰寫的 blog [<a href="http://blog.joycode.com/saucer/archive/2006/01/25/70841.aspx">VB的日益動態化</a>]，徹底改變我對 Visual BASIC 的看法。<br><br>
+VB 9 引入 Dynamic Interface 與 Dynamic Identifiers 的概念，這部份的介紹可參考 MSDN [<a href="http://msdn.microsoft.com/vbasic/future/default.aspx?pull=/library/en-us/dnvs05/html/vb9overview.asp">Overview of Visual Basic 9.0</a>] 中 [<a href="http://msdn.microsoft.com/vbasic/future/default.aspx?pull=/library/en-us/dnvs05/html/vb9overview.asp#vb9overview_topic12">Dynamic Interfaces (or Strong "Duck Typing")</a>] 與 [<a href="http://msdn.microsoft.com/vbasic/future/default.aspx?pull=/library/en-us/dnvs05/html/vb9overview.asp#vb9overview_topic13">Dynamic Identifiers</a>] 兩個子項目。當然，這些技術都不算新了，早在 Smalltalk 的時代，就有完整的實做，那為何 Dynamic interface 又稱為 Strong "Duck Typing" 呢？首先來看 Wikipedia 對於 [<a href="http://en.wikipedia.org/wiki/Duck_typing">Duck Typing</a>] 的解釋：<ul class="code" style="margin: 6px;">
+In computer science, duck typing is a term for the dynamic type system typical of some programming languages, such as with Smalltalk, where the variable value itself determines what it can do. It also implies that as long as an object implements a certain interface, it is interchangeable with any other object that implements the same interface, no matter whether the two have a related inheritance hierarchy.<br><br>
+
+The name combines two metaphors, both to make a serious point, and to make a joke. Initially used in the context of dynamic typing by Dave Thomas in the Ruby community, its premise is that if it walks like a duck, and talks like a duck, then it might as well be a duck. One can also say that the language ducks the issue of typing.
+</ul>
+電腦科學就是這麼有趣，總是用些生動的比喻來描述這些概念。Ruby community 的 Dave Thomas 將動態語言中，物件特徵的描述用以下的話語作比喻：<ul class="code" style="margin: 6px;">
+if it walks like a duck, and talks like a duck, then it might as well be a duck.
+</ul>
+這裡的 it 當然是表示 object，如果走起路來像鴨子，叫起來也像是鴨子，那麼一定是隻鴨子，saucer 的 blog [<a href="http://blog.joycode.com/saucer/archive/2006/01/25/70841.aspx">VB的日益動態化</a>] 舉了很好的例子，這裡就不贅述了。而 Dave Thomas 的比喻，讓我不直覺想起 Edgar Allan Poe 在《創作哲學》的詩句：<ul class="code" style="margin: 6px;">
+照在牠身上的燈光把牠的陰影投射在地板；<br>
+而我的靈魂，會從那團在地板上漂浮的陰暗<br>
+被擢升嗎 -- 永不復返！
+</ul>
+這是對烏鴉的象徵，不過拿來作 duck - Object 的描述，似乎也是不錯的輔助資訊。物件導向總有高度的抽象意味，true polymorphism 的實踐，萬物 (object) 在可見度褪化為虛幻的陰影，一旦具體的形貌被抹除，Object 得以自由的變化，詩人的靈魂與鴨子的生命，在某種觀點來說，是一致的，卻又在不同軀殼有了獨特的行為...<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 29, 2006 05:34 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

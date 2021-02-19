@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 健素糖與物件導向設計</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001592.html" title="〈PORTING UNIX TO THE 386〉十五週年" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001594.html" title="算命" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001592.html">« 〈PORTING UNIX TO THE 386〉十五週年</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001594.html">算命 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 25, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">健素糖與物件導向設計</h3>
+
+又是奇怪的標題。<br>
+<br>
+下午散步返家後，閱讀了 Etude 的文章，覺得很有意思，引用如下：<ul class="code" style="margin: 6px;">
+ 作者  Etude (o/~)<br>
+ 標題  OOOO                                                              <br>
+ 時間  Sun Mar 19 17:26:37 2006                                          <br>
+─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ <br>
+想學習如何寫出超爛的 OO 程式的，可以去 trace Apache derby 的程式碼: <a href="http://db.apache.org/derby/">http://db.apache.org/derby/                                    </a>，
+這個 relational database implementation 把 OOOO (註) design pattern 發揮到極至。                                                       <br>
+<br>
+幾十萬行的 java 程式碼裡到處充斥著各種職權劃分不清的 XXXXFactory、XXXXController、XXXXManager... 想建立、使用任何一個物件都麻煩得要死。<br>
+<br>
+明明使用了 OO 卻仍然在執行期用字串拙劣地操作物件的生成和型別判斷。自己發明新的 database jargon 卻不說清楚它的邏輯和實作意義。XXXX class 的註解不寫在 XXXX.java 裡，卻散見於各種直接間接、或遠或近相關的其他 YYYY.java 裡。<br>
+<br>
+相比起來，<a href="http://www.cs.waikato.ac.nz/~ml/weka/index.html">Weka</a> 的程式碼真是既簡單又優雅。<br>
+<br>
+derby 的文件也沒什麼鳥用。我為了深入了解這些程式碼以進行修改的工程，跑去他們 forum 東找西找，找到之前也有人希望有文件解說 derby 的架構。結果居然有個人回說: 他喜歡把程式本身當成程式的說明與軟體的 spec, 於
+是 derby 不需要有另外的文件來說明架構與實作細節。另外還有人提到：<ul>
+Derby 實作是很好的 design pattern 練習。
+</ul>
+XXXX class 的註解不寫在 XXXX.java 裡，卻散見於各種直接間接、或遠或近真是笑死人，這種大便碼是要怎樣當成自己的註解？他還以為他寫出來的程式和 Martin Fowler、Kent Beck 等人一樣好。<br>
+<br>
+(註) <a href="http://www.oreilly.com.tw/column_sleepless.php?id=j016">Obsessive-Object-Orientation Obliquity</a>
+</ul>
+這讓我想起小時候吃的健素糖，外觀很類似M＆M巧克力，Object-Oriented 就像糖衣，可以適度包裝軟體，所以，對我這個不明究理的人來說，含入口中的健素糖與M＆M巧克力都給我一種幸福的甜蜜滋味，不過呢，過一段時間後，富含酵素的健素糖就產生很特別的味道。蔡學鏞在 [<a href="http://www.oreilly.com.tw/column_sleepless.php?id=j016">Obsessive-Object-Orientation Obliquity</a>] 一文提到的 OOO 就是濫用物件導向的一種「病症」，健素糖本來就是一系列酵素的萃取物，而糖果似乎都該是甜的，為了 OO 而 OO、為了糖果而加糖，的確是有問題的行徑，雖然適度操作可帶來正面的成效。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March 25, 2006 03:30 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>雖然蔡學鏞說swing完全沒有OOOO的問題，我是每天摸索swing的人，我認為swing是沒有設計上得問題，但是實作上很有問題，萬惡的EDT就是如此。<br />
+設計絕對不是萬能的，尤其是OO，對我來說，每次查swing的程式，總是一堆Factory, 一堆繼承才找的到。</p>
+<span class="comments-post">由 <a href="mailto&#58;jesuismj&#64;gmail&#46;com">M</a> 發表於</MTIfNonEmpty> March 27, 2006 10:06 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

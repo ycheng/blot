@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: 演講：Implement Checkpointing for Android (FreedomHEC)</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2012/05/_arduino_mosut.html" title="演講：打造類似 Arduino 的開發環境 (MOSUT)" />
+
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2012/05/post_287.html" title="軟體創作達人暑期成長營與新酷音輸入法改進項目" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2012/05/_arduino_mosut.html">« 演講：打造類似 Arduino 的開發環境 (MOSUT)</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+| <a href="http://blog.linux.org.tw/~jserv/archives/2012/05/post_287.html">軟體創作達人暑期成長營與新酷音輸入法改進項目 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">May 30, 2012</h2>
+
+<div class="blogbody">
+
+<h3 class="title">演講：Implement Checkpointing for Android (FreedomHEC)</h3>
+
+本月份，睽違多年未舉辦的 [<a href="http://taipei.freedomhec.org/">FreedomHEC</a>] 即將再次登場。[<a href="http://0xlab.org/">0xlab</a>] 的 kito 與我將會此盛會發表新的開發成果。Freedom 硬體工程師研討會 (Freedom Hardware Engineer Conference, FreedomHEC) 是由國內 Open Source 開發人員與國外 Linux Kernel 社群開發者所合作籌畫的有關 Open Source 系統的硬體研討會。從中您將了解到讓硬體相容於開放原始碼的 Linux 作業系統有多容易。<br />
+<br />
+透過 [<a href="http://taipei.freedomhec.org/">FreedomHEC</a>]，硬體廠商可與國內外的 Linux 專家進行交流，從而協助其以非常低的成本開發出 Linux 驅動程式，讓硬體廠商可以主宰自己硬體的命運, 將硬體銷售到 Linux 市場；並且，國內廠商的 Linux 工程師亦可以藉此機會與國際 Linux 資深 Kernel 開發者交流，學習如何參與 Linux Kernel 社群，同時也可讓台灣廠商在 Linux Kernel 社群的協助下，順利開發出驅動程式並整合至上游 Linux 系統中，使台灣的產品得到即時的 Linux 支援。<br />
+<br />
+[<a href="http://taipei.freedomhec.org/">FreedomHEC</a>] Taipei 2012 將於 6/12 (二) 至 6/13 (三) 在國科會科技大樓舉行，歷屆的 FreedomHEC Taipei 皆邀請來自世界各地的 Linux Kernel 開發者分享技術開發心得與經驗，同時介紹 Linux Kernel 現況以及如何與 Linux Kernel 社群合作。今年 FreedomHEC Taipei 2012 比較特別的主題是 Matthew Garrett 會談到 UEFI Secure Boot 對開源碼作業系統的重大影響，來自日本 Renesas 公司的 Hisao Munakata 則會介紹 Linux Foundation 所提出，由 NEC、Sony、Panasonic、Qualcomm、Toshiba、Renesas 及 Samsung 等大廠所支持，對消費者電子產業有相當影響的 Long Term Support Initiative (LTSI) 計畫，LTSI 計畫維護一個可提供長期支援修正的 Linux Kernel 版本。<br />
+<br />
+kito 與我會討論 "Implement Checkpointing for Android to speed up boot time and
+development process" 這個題材，我們的著眼點為，將 cluster 系統行之有年的 checkpoint 技術移植到 Android 裝置中，這樣一來，不僅能縮減開機時間，還能作到在產品出貨後 (試產與樣品階段)，全面地追蹤技術問題。此舉對於 Android 開發的優點有：<ul>
+  <li>Restart/resume to stored snapshot for faster device boot time</li>
+  <li>Better product field trial experience due to regular snapshot</li>
+  <li>Deploy problematic snapshot for engineering analysis and debugging transparently</li>
+  <li>Q&A stress test purpose</li>
+</ul>
+在這個議程中，我們將探討如何調整現有的 checkpoint 實作，並針對 Android 系統的特性，提出完全 userspace 的新機制，涵蓋 Binder IPC, Ashmem, Logger 等一系列的支援，此外，我們的實作也採取有彈性的授權模式，屆時將在 Android 4.0 平台作技術展示與公佈開發細節，期待您的指教，謝謝！<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 May 30, 2012  3:06 PM
+
+<br /></span>
+
+</div>
+
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2209" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

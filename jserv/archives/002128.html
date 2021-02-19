@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 2010 年免費課程：親手打造 ARM 平台的 Boot Loader</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002127.html" title="2010 年免費課程：以 GDB 重新學習 C 語言程式設計" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002129.html" title="2010 年免費課程：X Window System 全面進攻" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002127.html">« 2010 年免費課程：以 GDB 重新學習 C 語言程式設計</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002129.html">2010 年免費課程：X Window System 全面進攻 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">December 31, 2009</h2>
+
+<div class="blogbody">
+
+<h3 class="title">2010 年免費課程：親手打造 ARM 平台的 Boot Loader</h3>
+
+今年很榮幸能將 [<a href="http://blog.linux.org.tw/~jserv/archives/002117.html">探索嵌入式 ARM 平台與 SoC</a>] (Part I / II) 議程告一段落，試圖以淺顯又直觀的方式，去探討 ARM 硬體特性與原理，佐以筆者開發的 [<a href="http://blog.linux.org.tw/~jserv/archives/002082.html">CuRT</a>] 小型即時多工作業系統，作為探索架構與軟體驗證的對象，當時已探討 ARM 架構、ARM SoC 平台、關鍵概念 (工作模式、暫存器組、系統狀態、指令集、例外處理等等)，並以執行於 ARM SoC 的 CuRT，探討硬體啟動程序與 ARM 原理。2010 年會再接再厲，推出另一個姊妹議程：「親手打造 ARM 平台的 Boot Loader」，顧名思義，就是能打造微小但完整的 boot loader，從而探討箇中關鍵技術。<br />
+<br />
+筆者選定由 [<a href="http://0xlab.org/">0xlab</a>] 所維護的 [<a href="http://gitorious.org/0xlab-bootloader">Qi boot loader</a>] 作為基礎，在六月份的 FreedomHEC Taipei 議程中，筆者也共同發表 [<a href="http://blog.linux.org.tw/~jserv/archives/002108.html">Qi - Lightweight Boot Loader Applied in Mobile and Embedded Devices</a>]，當時探討的是設計哲學，如今筆者將要從 ARM 平台與 SoC 的角度切入，探索「親手打造」的高掌握度。議程使用的硬體是 [<a href="http://beagleboard.org/">Beagleboard</a>]，這是一塊基於 TI OMAP353x 平台的開發板，物超所值且背後有廣大開放社群資源，[<a href="http://0xlab.org/">0xlab</a>] 的開發者很快就將 [<a href="http://gitorious.org/0xlab-bootloader">Qi boot loader</a>] 移植到 Beagleboard 上，並提供 ARM Cortex A8 的 OpenOCD 支援，如此「從零到有」又相對率直的歷程，很值得探索，這也是筆者準備此議程的想法。<br />
+<br />
+[<a href="http://blog.linux.org.tw/~jserv/archives/002117.html">探索嵌入式 ARM 平台與 SoC</a>] 目標是全面性的探討 ARM 硬體特性與原理，關於實做層面，會依賴 QEMU 來驗證，而「親手打造 ARM 平台的 Boot Loader」則在實體機器上作開發，不過筆者也會提供 QEMU 系統模擬的方式作為輔助使用。預計探討的題材有：<ul>
+  <li>ARM Bootcamp -- Stepping stone, Low-level init</li>
+  <li>ARMv7 (Cortex A8) 工作模式的設定</li>
+  <li>OMAP3 的週邊，如 i2c, serial, clock</li>
+  <li>檔案系統實做，支援 boot from SD</li>
+</ul>
+雖然 ARM 嵌入式平台早已充斥於我們的日常生活，舉凡手機、導航系統等電子產品，但探討其原理架構乃至於實務的課程，往往有如英文諺語 "an arm and a leg" 背後的意思一般，所費不貲。筆者就嘗試整理過去幾年開發的心得，以一系列免費分享，帶來些改變的機會。期待您的指教，也期望能有善心人士能夠協調場地的租借使用事宜，只要小弟行有餘力，就會持續分享下去，謝謝！<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 December 31, 2009 06:09 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>12/31發這篇,別有意義</p>
+<span class="comments-post">由 <a href="mailto&#58;waylingII&#64;gmail&#46;com">wayling</a> 發表於</MTIfNonEmpty> January  4, 2010 06:11 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2128" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Asho's Blog: January 2004 Archives</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~asho/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~asho/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~asho/" title="Home" />
+
+<link rel="next" href="http://blog.linux.org.tw/~asho/archives/2004_02.html" title="February 2004" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~asho/" accesskey="1">Asho's Blog</a></h1>
+<span class="description">一個喜歡研究的傻小子 :-)</span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~asho/">Main</a>
+| <a href="http://blog.linux.org.tw/~asho/archives/2004_02.html">February 2004 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">January 12, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000566"></a>
+<h3 class="title">YA...成功使用 kernel-2.6</h3>
+
+<p>今天 Debian Unstable 又新增 kernel-2.6.0-2 了，先前安裝好之後會有問題是因為預設啟動 ACPI 的功能。</p>
+
+<p>由於我的主機板是：Aopen AX45-Max，用 ACPI 會出現一堆鳥問題，Disable 之後就完全正常了...</p>
+
+<p>另外一台的 XP333 因為要用 ACPI 才會正常，所以我沒注意到這件事情，剩下來的就是 Tyan 2466-4m 那一塊板子還沒有測試...</p>
+
+<p>Cool....Blog 一篇來慶祝一下吧</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000566.html">11:57 AM</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 11, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000565"></a>
+<h3 class="title">nv_drv.o || nvidia_drv.o</h3>
+
+<p>昨天在使用 nvidia 官方 driver 播放影片的時候，只要是大流量(>1500k) 的影片，用 MPlayer 會稍微頓一下下。</p>
+
+<p>本來以為是外掛 artsd 的關係，改用 oss 依然不解，最後把 nvidia 官方 driver 移除，改用 XFree86-4.2.1 內附的 nv_drv.o，果然變順了，畫面變得比較穩定，有一點點柔和，失去了銳利的感覺，但這對我來說還滿舒服的。</p>
+
+<p>但有一個更棘手的事情沒辦法解決，就是 Sid 的 XFree86-4.2.1 的 nv 卻無法提供 DualHead，應該是 Bug，所以無法使用雙螢幕...sighed...難過阿，可憐的 NVS200 無用武之處。</p>
+
+<p>nv_drv.o 如果使用了滑鼠加速的功能，會造成指標畫面出錯，請在設定檔中加入</p>
+
+<p>Option  "HWCursor"      "off"</p>
+
+<p>重新開啟 X-Win 之後，指標就會正常了。</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000565.html">04:13 PM</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 08, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000562"></a>
+<h3 class="title">Kernel 2.6 in Debian</h3>
+
+<p>今天 Debian Unstable 已經納入 kernel-2.6.0 了，目前安裝在 XP333(我另外一台 K7) 那一台上，patch Nvidia & Vmware，運作速度相當滿意。</p>
+
+<p>尤其是 vmware 在開關機的時候速度快了許多。</p>
+
+<p>反觀我的工作機 SeXyDebian，拷貝檔案的時候，CPU Load Average 平均在 10 以上，想當然爾是電腦慢了許多。所以又裝回了 kernel-2.4.22-asho。</p>
+
+<p>唉...工作機子還是以穩定為主吧...:-)</p>
+
+<p>menu.lst(grub)</p>
+
+<p>title           Debian GNU/Linux, kernel 2.6.0-1-686 <br />
+root            (hd0,1)<br />
+kernel          /vmlinuz-2.6.0-1-686 root=/dev/hda1 ramdisk=8192 ro <br />
+initrd          /initrd.img-2.6.0-1-686<br />
+savedefault<br />
+boot</p>
+
+<p>Patches:<br />
+Nvidia ：http://www.minion.de/nvidia.html<br />
+Vmware：http://ftp.cvut.cz/vmware/vmware-any-any-update43.tar.gz</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000562.html">08:30 PM</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">January 07, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000560"></a>
+<h3 class="title">第一篇</h3>
+
+<p>這是我的第一篇使用 blog，感謝 AceLan 大大幫忙建立，未來陸續增加 Debian 相關訊息...:-D</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000560.html">03:41 PM</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

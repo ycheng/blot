@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: COINS 編譯器架構</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002065.html" title="《The Art of Debugging》第一章開放下載" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002067.html" title="Qtopia 再度更名為 &quot;Qt Extended&quot;" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002065.html">« 《The Art of Debugging》第一章開放下載</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002067.html">Qtopia 再度更名為 "Qt Extended" »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">September 13, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">COINS 編譯器架構</h3>
+
+[<a href="http://www.coins-project.org/international/">COINS</a>] 編譯器架構是由日本文教省資助的研究計畫 (2000-2004)，目標是建構可用於研究、教育，與商業應用的編譯器系統架構，支援兩階段的 IR (intermediate representation)：<ul>
+  <li>HIR: High-level Intermediate Representation</li>
+  <li>LIR: Low-level Intermediate Representation</li>
+</ul>
+整個系統可示意如下圖：<br />
+<center><img src="http://jserv.sayya.org/compiler/coins-sys.jpg" width="800" height="396" /></center><br />
+此編譯系統由以下元件組成：<ul>
+  <li>parser : 轉換原始程式碼為 HIR</li>
+  <li>control flow / data flow analyzers</li>
+  <li>optimizers</li>
+  <li>parallelizers</li>
+  <li>HIR 轉 LIR</li>
+  <li>IR Handler (HIR manager, LIR manager, symbol manager)</li>
+  <li>TMD (target machine descriptions)</li>
+  <li>依據 TMD 的 backend</li>
+  <li>編譯過程的視覺化呈現</li>
+</ul>
+COINS 內部完全以 Java 語言實做，軟體授權為 ASL (Apache Software License) 2.0。架構圖如下：<br />
+<center><img src="http://jserv.sayya.org/compiler/coins-arch.jpg" width="544" height="418" /></center><br />
+以高度模組化著稱的 COINS，允許加入不同硬體平台的支援，並實做 SSA (Static Single Assignment) 與 SIMD 優化的編譯技術，同時支援 OpenMP 平行運算處理，也能透過 CoVis 這個視覺化工具，來分析原始程式碼、HIR/LIR，與 CFG (control flow graph) 的關聯，運作的快照如下：<br />
+<center><img src="http://www.coins-project.org/international/COINSdoc.en/infra/covis.jpg" width="631" height="511" /></center><br />
+截至目前為止，最新的釋出版本為 1.4.4.1 (Jun 23, 2008)，下載並解開後，可嘗試內建的範例程式： (需安裝 Java Runtime Environment)<pre class="code" style="margin: 6px;">
+jserv@venux:/tmp/coins-1.4.4.1-en$ java -cp classes coins.driver.Driver \
+     -I./lang/c/include/samples \
+     -coins:target=x86 -coins:assembler=as \
+     ./test/c/TestBuna/hello.c
+jserv@venux:/tmp/coins-1.4.4.1-en$ ./a.out 
+Hello World
+</pre>
+當追蹤編譯過程時，只要再追加以下編譯選項：<pre class="code" style="margin: 6px;">
+     -coins:trace=HIR.1/LIR.1/Sym.1
+</pre>
+COINS 專案由日本諸多研究人員開發，並有豐富的 [<a href="http://www.coins-project.org/international/paper.html">著作發表</a>]，來自 Hosei University, The University of Electro-Communications, Tokyo Institute of Technology, Mitsubishi Research Institute, Inc. 等單位，計畫主持人為 Ikuo Nakata 教授。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 September 13, 2008 07:05 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>第一张图下方的LIR全称有点问题，与上方的HIR一样了。</p>
+<span class="comments-post">由 <a href="mailto&#58;linxiao&#46;li&#64;gmail&#46;com">leal</a> 發表於</MTIfNonEmpty> September 13, 2008 11:08 PM</span>
+</div>
+<div class="comments-body">
+<p>抱歉，是第二张图。</p>
+<span class="comments-post">由 <a href="mailto&#58;linxiao&#46;li&#64;gmail&#46;com">leal</a> 發表於</MTIfNonEmpty> September 13, 2008 11:10 PM</span>
+</div>
+<div class="comments-body">
+<p>用java寫的compiler，來編譯C語言，真有意思。</p>
+<span class="comments-post">由 <a href="http://magicdesign.blogspot.com/">魔法設計師</a> 發表於</MTIfNonEmpty> September 13, 2008 11:32 PM</span>
+</div>
+<div class="comments-body">
+<p>jserv大大真是涉猎广泛啊！<br />
+顺便弱弱问问：CoVis 是个什么东东? 类似si?</p>
+<span class="comments-post">由 <a href="mailto&#58;zuohuiwang&#64;hotmail&#46;com">bshawk</a> 發表於</MTIfNonEmpty> September 17, 2008 01:59 PM</span>
+</div>
+<div class="comments-body">
+<p>MSR 也有一個類似的專案, Codename: Phoenix, 也可以玩看看, 不過不是 Open Source.</p>
+<span class="comments-post">由 <a href="http:///blog/?author=19">Kuon</a> 發表於</MTIfNonEmpty> October  5, 2008 09:34 AM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2066" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

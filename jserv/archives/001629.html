@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 初探 B# embedded virtual machine</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001628.html" title="Google 研究員談數學之美" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001630.html" title="GCC-XML：GCC 的 XML 輸出" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001628.html">« Google 研究員談數學之美</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001630.html">GCC-XML：GCC 的 XML 輸出 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">April 20, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">初探 B# embedded virtual machine</h3>
+
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001591.html">B#：作為嵌入式系統的輕量級程式語言</a>] 提到的 B# Programming Language，其設計者 DeepObjectKnowledge 公司在 Embedded.com 刊載的文章 [<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=185302940">B# - A programming language for small footprint embedded systems applications: Part 2</a>]，將重點置於 B# embedded virtual machine (B#EVM)。簡單來說，B#EVM 的系統架構如下圖：<br>
+<center><img src="https://i.cmpnet.com/embedded/insights/2006/03/BSharpFig1.jpg"></center><br>
+這篇文章提到了 Memory Manager、Stack Machine，以及 Multi-Thread Kernel。<br>
+<br>
+之前的 blog 提到：「B# 並非 C# 的簡化，其語言規範還考慮到絕大多數 ISO/IEC standard 的硬體架構的應用，提供了 Device Registers 與 Interrupt Handlers 等語法上的支援，這些如果要在 C 語言層面實現的話，就得像 Linux kernel 一般依賴 GNU Extensions，並佐以一系列的 macro 與 programming manner。所以，B# 的提出就是希望一勞永逸地 (至少有限度的) 解決這種問題，設計 Device driver 不免會有 HAL (Hardware Abstract Layer)，無論哪個作業系統，基本上都會採用 Object-based 的思維 。」B#EVM 基於這個思維方式，展現以下的 memory model：<br>
+<center><img src="https://i.cmpnet.com/embedded/insights/2006/03/BSharpFig2.jpg"></center><br>
+這裡節錄幾個設計的重點：<ul>
+<li>T o efficiently allocate this space and to diminish fragmentation, the memory manager of the B#EVM uses a hybrid of static and dynamic allocations.</li>
+<li>The code memory space of the B#EVM consists of those subsystems that actually execute the application. These systems provide the B# language with the low-level support to access device registers, create threads, and handle interrupts. </li>
+<li>To help satisfy the bounded time constraints of embedded systems, a byte map is also used to manage the allocation, deallocation and search for free blocks. The main advantage of this approach is its relative simplicity and efficiency in finding the first free block of N consecutive free blocks.</li>
+<li>
+Each partition has a byte map and each byte map is implemented as a linked list. Because the linked list has a maximum fixed length, the search for available memory is also deterministic. </li>
+<li>B#EVM is a stack-machine interpreter that executes virtual code generated by the B# assembler. Values are pushed onto the stack, operations take values from the stack, and the results are pushed back where they are available for future calculations.</li>
+<li>Although a single-thread application may contain several namespaces and classes, only one class contains the main entry method and implicitly becomes the main thread. In a multi-thread application, each object (instance of a class) with its own block of code may potentially become a thread (i.e. an active object) and therefore, requires a stack for saving its own context. Any object that does not become a thread shares the stack of the thread to which it belongs.</li>
+<li>Other virtual machines, such as the Sun JVM and Microsoft IL, have polluted their instruction sets with instructions that embed their information type.
+</li>
+<li>The operand stack of B#EVM represents all values as 32-bit elements, regardless of their type. Therefore, to convert from one type to another is quite simply a question of “tagging” the stack element with a particular type.No descriptors are required since the type is set when the value or the reference is allocated on the stack. To store this information, an additional stack within the B#EVM maintains the type information of the corresponding elements in the operand (runtime) stack. In this way, we eliminate the cost of wrappers (in terms of space, access, and allocation time) and avoid the definition of an hybrid type system that requires a clear distinction between value types (bool, char, int, uint, and float) and reference types (ioregs, arrays, strings, and delegates). Another important reason for maintaining type information in this way is to reduce the size of the instruction set.</li>
+<li>Seven instructions are required where only one instruction is required in B# since arithmetic operations are all promoted to 32 bits. Also, the type conversion instructions that are required before doing any arithmetic calculations are reduced since the add instruction in B#EVM is done within the instruction while checking and promoting (if necessary) the operand types. Although there is additional overhead, the instruction set and the generated code size are reduced.</li>
+</ul>
+B# Programming Language toolset 已經提供下載。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 April 20, 2006 05:07 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

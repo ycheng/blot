@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>chuany: July 2004 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~chuany/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~chuany/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~chuany/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~chuany/archives/2004_05.html" title="May 2004" />
+
+<link rel="next" href="http://blog.linux.org.tw/~chuany/archives/2004_08.html" title="August 2004" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~chuany/" accesskey="1">chuany</a></h1>
+<span class="description">:wq chuany</span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~chuany/archives/2004_05.html">&laquo; May 2004</a> |
+
+<a href="http://blog.linux.org.tw/~chuany/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~chuany/archives/2004_08.html">August 2004 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+<!--
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/">
+<rdf:Description
+    rdf:about="http://blog.linux.org.tw/~chuany/archives/2004_07.html#000637"
+    trackback:ping="http://mt.debian.org.tw/mt-tb.cgi/396"
+    dc:title="Postfix with SpamAssassin"
+    dc:identifier="http://blog.linux.org.tw/~chuany/archives/2004_07.html#000637"
+    dc:subject="大便"
+    dc:description="紀錄一下如何在 Debian 上設定基本的 SpamAssassin 搭配 Postfix. 首先要先有一個已經在運做中的 Postfix , 可以參考此篇完成安裝與使用: http://moto.debian.org.tw/viewtopic.php?t=2111&amp;highlight=postfix+amavis 執行 apt-get install spamassassin 修改 /etc/default/spamassassin 將 ENABLED=0 修改成 ENABLED=1 修改 /etc/postfix/master.cf 將 smtp inet n - n - - smtpd 修改成 smtp inet n - n - -..."
+    dc:creator="chuany"
+    dc:date="2004-07-02T16:51:53+08:00" />
+</rdf:RDF>
+-->
+
+
+<h2 class="date">July 02, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000637"></a>
+<h3 class="title">Postfix with SpamAssassin</h3>
+
+<p>紀錄一下如何在 Debian 上設定基本的 SpamAssassin 搭配 Postfix.</p>
+
+<p>首先要先有一個已經在運做中的 Postfix , 可以參考此篇完成安裝與使用:<br />
+http://moto.debian.org.tw/viewtopic.php?t=2111&highlight=postfix+amavis</p>
+
+<p>執行 apt-get install spamassassin</p>
+
+<p>修改 /etc/default/spamassassin<br />
+將 ENABLED=0 修改成 ENABLED=1</p>
+
+<p>修改 /etc/postfix/master.cf<br />
+將 smtp  inet  n  -  n  -  -  smtpd 修改成 smtp  inet  n  -  n  -  -  smtpd -o content_filter=spamfilter:</p>
+
+<p>並於 Interfaces to non-Postfix software 區段中加入以下內容<br />
+spamfilter unix -       n       n       -       -       pipe flags=Rq user=postfixfilter argv=/usr/bin/postfixfilter -f ${sender} -- ${recipient}</p>
+
+<p>將 /etc/postfix/master.cf 存檔離開.</p>
+
+<p>建立一個檔案 /usr/bin/postfixfilter, 內容如下:<br />
+#!/bin/bash<br />
+/usr/bin/spamc | /usr/sbin/sendmail -i "$@"<br />
+exit $?</p>
+
+<p>存檔離開後, 執行以下內容:<br />
+# groupadd postfixfilter<br />
+# useradd -g postfixfilter -m postfixfilter -s /bin/false<br />
+# chmod +x /usr/bin/postfixfilter<br />
+# chown postfixfilter:postfixfilter /usr/bin/postfixfilter</p>
+
+<p>啟動 SpamAssassin 與 Postfix<br />
+# /etc/init.d/spamassassin start<br />
+# /etc/init.d/postfix restart</p>
+
+<p>關於 SpamAssassin 的 local.cf 可參考此篇內容<br />
+http://scw.homeip.net/article/wakka.php?wakka=SpamAssassinInstallation</p>
+
+
+
+<div class="posted">
+	由 chuany 發表於 <a href="http://blog.linux.org.tw/~chuany/archives/2004_07.html#000637">04:51 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=637" onclick="OpenComments(this.href); return false">迴響 (968)</a>
+	
+		| <a href="http://mt.debian.org.tw/mt-tb.cgi?__mode=view&amp;entry_id=637" onclick="OpenTrackback(this.href); return false">引用</a>
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

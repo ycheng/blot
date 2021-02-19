@@ -1,0 +1,214 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 鑽孔機的科學原理 : Reuleaux triangle</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001448.html" title="那個大霧的時代 : 成大共產黨案" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001450.html" title="Nagle's algorithm 與 PCManX" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001448.html">« 那個大霧的時代 : 成大共產黨案</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001450.html">Nagle's algorithm 與 PCManX »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 23, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">鑽孔機的科學原理 : Reuleaux triangle</h3>
+
+在台北內湖工作的我，時常可見捷運工程趕工的情況，許多以前沒見過的機械，也紛紛現身。鑽孔機的變化，是讓我比較有興趣的，普通的鑽孔機可鑽出圓孔，像是下圖：<br>
+<center><img src="http://kmoddl.library.cornell.edu/tutorials/02/fig1.gif"></center>
+但是基於捷運線路銜接的需要，有許多正四邊形的鑽孔，並且在刀刃的設計，也有其特別處，如圖：<br>
+<center><img src="http://kmoddl.library.cornell.edu/tutorials/02/animkvurbis.gif"></center><br>
+可對應到鑽孔機運作，我們可以發現刀刃切割 (移動) 的範圍，就是所期待正四邊形的形狀，將旋轉的過程分解，可得到下圖：<br>
+<center><img src="http://upload.wikimedia.org/wikipedia/commons/b/b9/ReuleauxTriangleRotate.png"></center><br>
+用餐的時候回憶起高中曾研習過相似的議題，剛剛醒來才找到資料，這鑽孔設計的科學原理就是 Reuleaux triangle。在探討 Reuleaux triangle 前，需要參考 [<a href="http://en.wikipedia.org/wiki/Curve_of_constant_width">Curve of constant width</a>]，也就是由等寬弧線構成的幾何，Reuleaux triangle 是其中的特例。先建構正三角形，邊長為 r，以各頂點為圓心作圓：<br>
+<center><img src="http://kmoddl.library.cornell.edu/tutorials/02/fig2.gif"></center><br>
+如此可得覆蓋正三角形區域的範圍：<br>
+<center><img src="http://mathworld.wolfram.com/images/eps-gif/ReuleauxCircles_700.gif"></center><br>
+十九世紀的德國工程師 Franz Reuleaux 廣泛的應用這個幾何原理，作機械應用，並也以 Reuleaux 命名。考慮以下機械設計：<br>
+<center><img src="http://mathworld.wolfram.com/images/gifs/reuleaux.gif"></center><br>
+Reuleaux 在這個矩形範圍內旋轉，也可以發現，事實上移動的範圍是圓邊的矩形，該圓邊又是橢圓軌跡的一部分：<br>
+<center><img src="http://mathworld.wolfram.com/images/eps-gif/ReuleauxEnvelope_700.gif"></center><br>
+給定外圍矩形的頂點座標是 (+/- 1, +/- 1)，可得橢圓方程式：<ul>
+x = 1 - cos(Beta) - sqrt(3) * sin(Beta)<br>
+y = 1 - sin(Beta) - sqrt(3) * cos(Beta)
+</ul>
+Beta 的範圍落於 PI/6 與 PI/3 之間：<br>
+<center><img src="http://mathworld.wolfram.com/images/eps-gif/ReuleauxEnvelopeCorner_700.gif"></center><br>
+又由笛卡爾方程式，得知 Reuleaux triangle 涵蓋面積為 2 * sqrt(3) + PI/6 - 3，計算值為 0.9877003907<br>
+中心的移動軌跡不見得是圓形，如果改以橢圓軌跡，可得到更大的涵蓋：<br>
+<center><img src="http://mathworld.wolfram.com/images/eps-gif/ReuleauxCentroidEllipse_601.gif"></center><br>
+Paul Kunkel 提供了 Java applet 作為模擬，可參考 [<a href="http://whistleralley.com/reuleaux/reuleaux.htm">Reuleaux Triangle</a>]，而他也探討一系列變形的 Reuleaux triangle 可能性。<br><br>
+
+除了機械應用，真實環境下，英鎊的硬幣就是 [<a href="http://en.wikipedia.org/wiki/Curve_of_constant_width">Curve of constant width</a>] 有趣的例子：<br>
+<center><img src="http://kmoddl.library.cornell.edu/tutorials/02/fig4.gif"></center><br>
+<center><img src="http://upload.wikimedia.org/wikipedia/en/3/3d/50POLDBRITANNIA.jpg"></center><br>
+推廣到五邊 (Twenty Pence) 與七邊 (Fifty Pence) 的 Reuleaux polygon (2n + 1)。<br><br>
+參考資料：<ul>
+<li>Wikipedia - [<a href="http://en.wikipedia.org/wiki/Reuleaux_triangle">Reuleaux triangle</a>]</li>
+<li>Daina Taimina & David W. Henderson - [<a href="http://kmoddl.library.cornell.edu/tutorials/02/">Reuleaux Triangle</a>]</li>
+<li>Whistler Alley Mathematics - [<a href="http://whistleralley.com/ellipse/ellipse.htm">The Sliding Triangle</a>]</li>
+<li>mathworld - [<a href="http://mathworld.wolfram.com/ReuleauxTriangle.html">Reuleaux Triangle</a>]</li>
+</ul><br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 23, 2006 02:10 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>我怎麼完全沒印象，可能我沒讀過高中吧<br />
+哈哈，哈..哈..哈....<br />
+</p>
+<span class="comments-post">由 <a href="http://yukuan.blogspot.com">Yukuan</a> 發表於</MTIfNonEmpty> January 23, 2006 03:48 AM</span>
+</div>
+<div class="comments-body">
+<p>還有轉子引擎喔：<br />
+http://zh.wikipedia.org/wiki/%E8%BD%AC%E5%AD%90%E5%8F%91%E5%8A%A8%E6%9C%BA</p>
+<span class="comments-post">由 <a href="mailto&#58;barabbas&#64;gmail&#46;com">b6s</a> 發表於</MTIfNonEmpty> January 23, 2006 02:04 PM</span>
+</div>
+<div class="comments-body">
+<p>真的是好神奇啊!!<br />
+高中沒教這個吧 = =<br />
+數學都看不懂 >&lt;</p>
+<span class="comments-post">由 <a href="http://pcman.sayya.org/">PCMan</a> 發表於</MTIfNonEmpty> January 24, 2006 04:48 PM</span>
+</div>
+<div class="comments-body">
+<p><br />
+真有趣 ! <br />
+"數學是科學之母" 一點都沒錯 ~<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;jumbler&#64;gmail&#46;com">jumbler</a> 發表於</MTIfNonEmpty> January 26, 2006 08:29 AM</span>
+</div>
+<div class="comments-body">
+<p>我宜家初中<br />
+但係老師有時會講吓課外嘢<br />
+講左呢個<br />
+不過唔係好明</p>
+<span class="comments-post">由 <a href="mailto&#58;reyes_iverson&#64;yahoo&#46;com&#46;hk">villa</a> 發表於</MTIfNonEmpty> May 24, 2006 07:55 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

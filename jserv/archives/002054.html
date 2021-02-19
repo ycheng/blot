@@ -1,0 +1,1223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Who Call Me (更新版)</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002053.html" title="在 vim 凸顯 Gtk+ 特有語法" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002055.html" title="建立 Gtk+/WebKit 的 API 文件以加速開發流程" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002053.html">« 在 vim 凸顯 Gtk+ 特有語法</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002055.html">建立 Gtk+/WebKit 的 API 文件以加速開發流程 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">July 30, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Who Call Me (更新版)</h3>
+
+兩週前在亞洲大學講 [<a href="http://blog.linux.org.tw/~jserv/archives/002043.html">快快樂樂學 GNU Debugger (gdb) Part I + II</a>] 時，與一位同業的工程師談到，不透過 gdb 而能自我建立 backtrace，也就是在必要時建立函式呼叫的階層資訊，當時即提到 TimHsu 兄四年前的作品 [<a href="http://info.sayya.org/~timhsu/research/whocallme.html">Who Call Me</a>]，實在是極好的參考資訊。可惜，TimHsu 兄文中所使用的工具與 API 稍微過時，所以，取得他的同意下，筆者將該文改寫並更新，本文以 GNU/Linux 在 IA32 平台的運作為主。<br />
+<br />
+<div style="text-align: center;">
+  <big style="font-weight: bold;">Who Call Me?</big><br />
+  <br />
+原作：徐千洋 (TimHsu) 於 March 30, 2004<br />
+改作：Jim Huang (jserv) 於 July 30, 2008<br />
+</div>
+<hr />
+誰呼叫我？使用過 gdb 對 core 檔作 bt (backtrace) 嗎？所謂 backtrace 是用來回溯檢查函式呼叫的關聯性, 以便得知執行時期有哪個函式呼叫的動作，尢其是在許多錯綜複雜的龐大程式碼中，backtrace 是相當有用的 debug 技巧，而這個題目則是用來討論如何在程式執行中作 backtrace。<br />
+<br />
+在實作這個技術前，有兩個關鍵點要先解決：<ul>
+  <li>如何取得此 function 返回位址</li>
+  <li>如何依據返回位址查知函式名稱</li>
+</ul>
+關於第一點, 須先了解堆疊 (stack) 和函式呼叫的處理關係。堆疊是一個後進先出 (LIFO, Last-In-First-Out) 的資料結構，當呼叫某個函式時，相關的暫存器 (register) 就會被存入堆疊。而當函式返回時，便會從堆疊裡取出返回位址，以便回到原來呼叫的下一個指令繼續執行。以 x86 暫存器組來說，其中 EIP 是 Instruction Pointer 之意，用以指出 CPU 將要執行指令的位址；ESP 暫存器則是用來指向目前堆疊的位址。<br />
+<br />
+我們先寫個小程式來觀察： (test.c)<br />
+<table border="0" cellpadding="1" cellspacing="2">
+<tr>
+  <td><pre class="code">1
+2
+3
+4
+5
+6
+7
+8</pre></td>
+
+  <td width="100%"><pre class="code" id="codemain"><span class="keyword">void</span> test()
+{
+}
+
+<span class="keyword">int</span> main()
+{
+	test();
+}</pre></td>
+</tr>
+</table>
+透過 gdb 分析其執行行為：<pre class="code" style="margin: 6px;">
+jserv@venux:~/whocallme$ gcc -o test test.c
+jserv@venux:~/whocallme$ gdb ./test
+GNU gdb 6.8-debian
+Copyright (C) 2008 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later 
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "i486-linux-gnu"...
+(gdb) b test
+Breakpoint 1 at 0x8048397
+(gdb) r
+Starting program: /home/jserv/whocallme/test 
+
+Breakpoint 1, 0x08048397 in test ()
+Current language:  auto; currently asm
+(gdb) info reg
+eax            0xbff05fb4	-1074765900
+ecx            0xbff05f30	-1074766032
+edx            0x1	1
+ebx            0xb7fceff4	-1208160268
+esp            0xbff05f08	0xbff05f08
+<b><font color="red">ebp            0xbff05f08	0xbff05f08</font></b>
+esi            0x80483d0	134513616
+edi            0x80482e0	134513376
+eip            0x8048397	0x8048397 &lt;test+3&gt;
+eflags         0x282	[ SF IF ]
+cs             0x73	115
+ss             0x7b	123
+ds             0x7b	123
+es             0x7b	123
+fs             0x0	0
+gs             0x33	51
+(gdb) disas test
+Dump of assembler code for function test:
+0x08048394 &lt;test+0&gt;:	push   %ebp
+0x08048395 &lt;test+1&gt;:	mov    %esp,%ebp
+0x08048397 &lt;test+3&gt;:	pop    %ebp
+0x08048398 &lt;test+4&gt;:	ret    
+End of assembler dump.
+(gdb)
+</pre>
+由上可見，ebp 暫存器值為 0xbff05f08，也就是原來的堆疊位址。以 IA32 來說，函式呼叫 (對應機械指令為 "call") 的過程，CPU 會將返回位址存入堆疊，因此可從 ebp 暫存器的位址裡面，找到我們需要的返回位址。繼續透過 gdb 觀察：<pre class="code" style="margin: 6px;">
+(gdb) p/x *0xbff05f08
+$1 = 0xbff05f18
+</pre>
+別忘了，一進入此函式時，機械指令 "push $ebp" 已被執行 (詳見 test 函式反組譯的結果，也就是位址 0x08048394)，因此堆疊位址已被減 4，故，若要取得正確的值，需要再將位址加回 4，才可，也就是：<pre class="code" style="margin: 6px;">
+(gdb) p/x *(0xbff05f08+4)
+$2 = <b><font color="red">0x80483af</font></b>
+</pre>
+此值應該就是 test() 正確的返回位址，繼續透過 gdb 檢查看看：<pre class="code" style="margin: 6px;">
+(gdb) disas main
+Dump of assembler code for function main:
+0x08048399 &lt;main+0&gt;:	lea    0x4(%esp),%ecx
+0x0804839d &lt;main+4&gt;:	and    $0xfffffff0,%esp
+0x080483a0 &lt;main+7&gt;:	pushl  -0x4(%ecx)
+0x080483a3 &lt;main+10&gt;:	push   %ebp
+0x080483a4 &lt;main+11&gt;:	mov    %esp,%ebp
+0x080483a6 &lt;main+13&gt;:	push   %ecx
+0x080483a7 &lt;main+14&gt;:	sub    $0x4,%esp
+0x080483aa &lt;main+17&gt;:	call   0x8048394 &lt;test&gt;
+<b><font color="red">0x080483af</font></b> &lt;main+22&gt;:	add    $0x4,%esp
+0x080483b2 &lt;main+25&gt;:	pop    %ecx
+0x080483b3 &lt;main+26&gt;:	pop    %ebp
+0x080483b4 &lt;main+27&gt;:	lea    -0x4(%ecx),%esp
+0x080483b7 &lt;main+30&gt;:	ret    
+End of assembler dump.
+(gdb)
+</pre>
+果然在 "call &lt;test&gt;" 完後的下個指令，位址就是位於 0x80483af，這也就是 test() 返回位址。接下來，我們將前述的程式，透過 inline assembly 印出一些有用的訊息： (test-1.c)<br />
+<table border="0" cellpadding="1" cellspacing="2">
+<tr>
+  <td><pre class="code">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13</pre></td>
+
+  <td width="100%"><pre class="code" id="codemain"><span class="keyword">#include</span> &lt;stdio.h>
+<span class="keyword">void</span> test()
+{
+	<span class="keyword">unsigned</span> <span class="keyword">int</span> *stack;
+	<span class="keyword">asm</span> (<span class="literal">"movl %%ebp, %0\n"</span>
+	     : <span class="literal">"=g"</span>(stack));
+	printf(<span class="literal">"Return address = 0x%x\n"</span>, *(stack+1));
+}
+
+<span class="keyword">int</span> main()
+{
+	test();
+}</pre></td>
+</tr>
+</table>
+編譯並執行：<pre class="code" style="margin: 6px;">
+jserv@venux:~/whocallme$ gcc -o test-1 test-1.c
+jserv@venux:~/whocallme$ ./test-1 
+Return address = <b><font color="red">0x80483fd</font></b>
+</pre>
+再次，透過 gdb 來驗證 test() 函式的返回位址與機械指令 "call" 的關聯：<pre class="code" style="margin: 6px;">
+$ gdb ./test-1
+(gdb) disas main
+Dump of assembler code for function main:
+0x080483e7 &lt;main+0&gt;:	lea    0x4(%esp),%ecx
+0x080483eb &lt;main+4&gt;:	and    $0xfffffff0,%esp
+0x080483ee &lt;main+7&gt;:	pushl  -0x4(%ecx)
+0x080483f1 &lt;main+10&gt;:	push   %ebp
+0x080483f2 &lt;main+11&gt;:	mov    %esp,%ebp
+0x080483f4 &lt;main+13&gt;:	push   %ecx
+0x080483f5 &lt;main+14&gt;:	sub    $0x4,%esp
+0x080483f8 &lt;main+17&gt;:	call   0x80483c4 &lt;test&gt;
+<b><font color="red">0x080483fd</font></b> &lt;main+22&gt;:	add    $0x4,%esp
+0x08048400 &lt;main+25&gt;:	pop    %ecx
+0x08048401 &lt;main+26&gt;:	pop    %ebp
+0x08048402 &lt;main+27&gt;:	lea    -0x4(%ecx),%esp
+0x08048405 &lt;main+30&gt;:	ret    
+End of assembler dump.
+(gdb)
+</pre>
+果然如此，所以我們已對本文一開始提出「如何取得此 function 返回位址」的問題，有了初步的解答，再來，就要思索，該如何依據記憶體位址，查知所處的函式名稱。<br />
+<br />
+我們可透過 GNU binutils 的 objdump 工具程式分析 ELF 執行檔的重要資訊，首先觀察執行檔的符號表：<pre class="code" style="margin: 6px;">
+jserv@venux:~/whocallme$ objdump -t ./test-1 | awk '{print $1" "$3" "$6}'|grep "F"
+08048340 F __do_global_dtors_aux
+080483a0 F frame_dummy
+080484e8 O __FRAME_END__
+08048480 F __do_global_ctors_aux
+08048410 F __libc_csu_fini
+08048310 F _start
+080484ac F _fini
+08048420 F __libc_csu_init
+<b><font color="red">080483c4 F test</font></b>
+0804847a F .hidden
+080483e7 F main
+08048298 F _init
+</pre>
+既然 "objdump -t" 可印出程式的函式名稱和記憶體位址，不就是我們預期的動作嗎？所以，我們將重心擺在該工具程式背後的原理。objdump 是利用 BFD Library (Binary File Descriptor Library) 來實作的，底下的小程式也利用 BFD Library 來讀取符號表 (bfd.c)。注意：在 Debian/Ubuntu 下，需安裝套件 "binutils-dev"，方可編譯。<br />
+<table border="0" cellpadding="1" cellspacing="2">
+<tr>
+  <td><pre class="code">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65</pre></td>
+
+  <td width="100%"><pre class="code" id="codemain"><span class="keyword">#include</span> &lt;stdio.h><span class="keyword">
+#include</span> &lt;bfd.h>
+
+<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])
+{
+	bfd *abfd;
+	<span class="keyword">long</span> storage_needed;  
+	asymbol **symbol_table;
+	<span class="keyword">long</span> number_of_symbols;
+	<span class="keyword">long</span> i;
+	<span class="keyword">char</span> **matching;
+	sec_ptr section;
+	<span class="keyword">char</span> *symbol_name; 
+	<span class="keyword">long</span> symbol_offset, section_vma, symbol_address;
+
+	<span class="keyword">if</span> (argc &lt; 2)
+		<span class="keyword">return</span> 0;
+	printf(<span class="literal">"Open %s\n"</span>, argv[1]);
+	bfd_init();
+	abfd = bfd_openr(argv[1],NULL);
+	<span class="keyword">if</span> (abfd == (bfd *) 0) {
+		bfd_perror(<span class="literal">"bfd_openr"</span>);
+		<span class="keyword">return</span> -1; 
+	}
+	<span class="keyword">if</span> (!bfd_check_format_matches(abfd, bfd_object, &amp;matching)) {
+		<span class="keyword">return</span> -1;
+	}      
+	<span class="keyword">if</span> (!(bfd_get_file_flags (abfd) &amp; HAS_SYMS)) {
+		printf(<span class="literal">"ERROR flag!\n"</span>);
+		<span class="keyword">return</span> -1;
+	}
+	<span class="comment">/* 取得符號表大小 */</span>
+	storage_needed = bfd_get_symtab_upper_bound(abfd);
+	<span class="keyword">if</span> (storage_needed &lt; 0)
+		<span class="keyword">return</span> -1;
+	symbol_table = (asymbol **) xmalloc(storage_needed);
+	<span class="comment">/* 將符號表讀進所配置的記憶體裡(symbol_table), 並傳回符號表個數 */</span>
+	number_of_symbols = bfd_canonicalize_symtab(abfd, symbol_table);
+	<span class="keyword">if</span> (number_of_symbols &lt; 0)
+		<span class="keyword">return</span> -1;
+	<span class="keyword">for</span> (i = 0; i &lt; number_of_symbols; i++) {
+		<span class="comment">/* 檢查此符號是否為函式 */</span>
+		<span class="keyword">if</span> (symbol_table[i]->flags &amp; (BSF_FUNCTION|BSF_GLOBAL))	{
+			<span class="comment">/* 反查此函式所處的區段(section) 及
+			                   區段位址(section_vma) */</span>
+			section = symbol_table[i]->section;
+			section_vma = bfd_get_section_vma(abfd, section);
+			<span class="comment">/* 取得此函式的名稱(symbol_name)、
+			               偏移位址(symbol_offset) */</span>
+			symbol_name = symbol_table[i]->name;
+			symbol_offset = symbol_table[i]->value;
+			<span class="comment">/* 將此函式的偏移位址加上區段位址，則為此函式在執行時
+			   的記憶體位址(symbol_address */</span>
+			symbol_address = section_vma + symbol_offset;
+			<span class="comment">/* 檢查此函式是否處在程式本文區段 */</span>
+			<span class="keyword">if</span> (section->flags &amp; SEC_CODE)
+				printf(<span class="literal">"&lt;%s> 0x%x 0x%x 0x%x\n"</span>,
+				         symbol_name,  
+				               section_vma,  
+				                    symbol_offset,
+				                         symbol_address);
+		}
+	}
+	bfd_close(abfd);
+}</pre></td>
+</tr>
+</table>
+編譯並執行：<pre class="code" style="margin: 6px;">
+jserv@venux:~/whocallme$ gcc -o bfd bfd.c -lbfd
+jserv@venux:~/whocallme$ ./bfd test-1
+Open test-1
+&lt;__do_global_dtors_aux&gt; 0x8048310 0x30 0x8048340
+&lt;frame_dummy&gt; 0x8048310 0x90 0x80483a0
+&lt;__do_global_ctors_aux&gt; 0x8048310 0x170 0x8048480
+&lt;__libc_csu_fini&gt; 0x8048310 0x100 0x8048410
+&lt;_start&gt; 0x8048310 0x0 0x8048310
+&lt;_fini&gt; 0x80484ac 0x0 0x80484ac
+&lt;__libc_csu_init&gt; 0x8048310 0x110 0x8048420
+&lt;test&gt; 0x8048310 0xb4 <b><font color="red">0x80483c4</font></b>
+&lt;__i686.get_pc_thunk.bx&gt; 0x8048310 0x16a 0x804847a
+&lt;main&gt; 0x8048310 0xd7 0x80483e7
+&lt;_init&gt; 0x8048298 0x0 0x8048298
+</pre>
+觀察由 objdump 工具程式與我們撰寫的小程式 bfd，對於 test() 函式的位址，有著相同的輸出，也就是 0x80483c4。現在, 我們依照函式名稱及記憶體位址作對照表，即可立即查詢.，不過這其中仍有個小問題，就是，雖然知道個別函式的起始位址，但並不知道函式的結束位址，也不知道各函式程式內容的大小。要解決這個小問題，就必須在建立對照表時，先作排序，將位址越高的函式排在越後面，並將下一個函式的起始位址當作結束位址。於是筆者建立於前面的 bfd.c 程式，提出新的工具程式 (bfd_dumpfun.c)<br />
+<table border="0" cellpadding="1" cellspacing="2">
+<tr>
+  <td><pre class="code">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109</pre></td>
+
+  <td width="100%"><pre class="code" id="codemain"><span class="comment">/* bfd_dumpfun.c (GPL)
+ *
+ * Usage: ./bfd_dumpfun [binary]
+ * Note: Dump functions infomation of ELF-binary with BFD Library.
+ *     
+ * by TimHsu(timhsu@info.sayya.org) 2004/03/31
+ * Modified by Jim Huang &lt;jserv.tw@gmail.com>, 2008/07/22
+ *   - Bump bfd APIs and build fixes.
+ */</span>
+<span class="keyword">
+#include</span> &lt;stdio.h><span class="keyword">
+#include</span> &lt;stdlib.h><span class="keyword">
+#include</span> &lt;string.h><span class="keyword">
+#include</span> &lt;bfd.h>
+
+<span class="keyword">typedef</span> <span class="keyword">struct</span> function_table FUN_TABLE;
+
+<span class="comment">/* 宣告一個包含函式名稱和位址的結構 */</span>
+<span class="keyword">struct</span> function_table {
+	<span class="keyword">char</span> name[80];
+	<span class="keyword">unsigned</span> <span class="keyword">long</span> addr;
+};
+
+<span class="keyword">static</span> FUN_TABLE *fun_table;
+<span class="keyword">static</span> <span class="keyword">int</span> table_count = 0;   <span class="comment">/* 函式個數 */</span>
+
+<span class="keyword">static</span> <span class="keyword">int</span> compare_function(<span class="keyword">const</span> <span class="keyword">void</span> *a, <span class="keyword">const</span> <span class="keyword">void</span> *b)
+{
+	FUN_TABLE *aa = (FUN_TABLE *) a, *bb = (FUN_TABLE *) b;
+	<span class="keyword">if</span> (aa->addr > bb->addr)
+		<span class="keyword">return</span> 1;
+	<span class="keyword">else</span> <span class="keyword">if</span> (aa->addr &lt; bb->addr)
+		<span class="keyword">return</span> -1;
+	<span class="keyword">return</span> 0;  
+}
+
+<span class="comment">/* 增加一個函式資料至對照表 */</span>
+<span class="keyword">static</span> <span class="keyword">void</span> add_function_table(<span class="keyword">char</span> *name, <span class="keyword">unsigned</span> <span class="keyword">long</span> address)
+{
+	strncpy(fun_table[table_count].name, name, 80);
+	fun_table[table_count].addr = address;
+	table_count++;  
+}
+
+<span class="keyword">static</span> <span class="keyword">void</span> dump_function_table(<span class="keyword">void</span>)
+{
+	<span class="keyword">int</span> i;
+	<span class="keyword">for</span> (i = 0; i &lt; table_count; i++) {
+		printf(<span class="literal">"%-30s 0x%x\n"</span>,
+		       fun_table[i].name, fun_table[i].addr);
+	}
+}
+
+<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])
+{
+	bfd *abfd;
+	asection *text;
+	<span class="keyword">long</span> storage_needed;
+	asymbol **symbol_table;
+	<span class="keyword">long</span> number_of_symbols;
+	<span class="keyword">long</span> i;
+	<span class="keyword">char</span> **matching;
+	sec_ptr section;
+	<span class="keyword">char</span> *symbol_name;
+	<span class="keyword">long</span> symbol_offset, section_vma, symbol_address;
+
+	<span class="keyword">if</span> (argc &lt; 2) 
+		<span class="keyword">return</span> 0;
+	printf(<span class="literal">"Open %s\n"</span>, argv[1]);
+	bfd_init();
+	abfd = bfd_openr(argv[1],NULL);
+	<span class="keyword">if</span> (abfd == (bfd *) 0) {
+		bfd_perror(<span class="literal">"bfd_openr"</span>);
+		<span class="keyword">return</span> -1;
+	}
+	<span class="keyword">if</span> (!bfd_check_format_matches(abfd, bfd_object, &amp;matching)) {
+		<span class="keyword">return</span> -1;
+	}      
+	<span class="keyword">if</span> (!(bfd_get_file_flags (abfd) &amp; HAS_SYMS)) {
+		printf(<span class="literal">"ERROR flag!\n"</span>);
+		<span class="keyword">return</span> -1;
+	}
+	<span class="keyword">if</span> ((storage_needed = bfd_get_symtab_upper_bound(abfd)) &lt; 0)
+		<span class="keyword">return</span> -1;
+	symbol_table = (asymbol **) xmalloc(storage_needed);
+	number_of_symbols = bfd_canonicalize_symtab(abfd, symbol_table);
+	<span class="keyword">if</span> (number_of_symbols &lt; 0)
+		<span class="keyword">return</span> -1;
+	fun_table = (FUN_TABLE **)malloc(<span class="keyword">sizeof</span>(FUN_TABLE)*number_of_symbols);
+	bzero(fun_table, <span class="keyword">sizeof</span>(FUN_TABLE)*number_of_symbols);
+
+	<span class="keyword">for</span> (i = 0; i &lt; number_of_symbols; i++) {
+		<span class="keyword">if</span> (symbol_table[i]->flags &amp; (BSF_FUNCTION|BSF_GLOBAL)) {
+			section = symbol_table[i]->section;
+			section_vma = bfd_get_section_vma(abfd, section);
+			symbol_name = symbol_table[i]->name;
+			symbol_offset = symbol_table[i]->value;
+			symbol_address = section_vma + symbol_offset;
+			<span class="keyword">if</span> (section->flags &amp; SEC_CODE) {
+				add_function_table(symbol_name,
+				                   symbol_address);
+			}
+		}
+	}
+	bfd_close(abfd);
+	<span class="comment">/* 將函式對照表作排序 */</span>
+	qsort(fun_table, table_count, <span class="keyword">sizeof</span>(FUN_TABLE), compare_function);
+	dump_function_table();
+}</pre></td>
+</tr>
+</table>
+編譯並執行：<pre class="code" style="margin: 6px;">
+jserv@venux:~/whocallme$ gcc -o bfd_dumpfun bfd_dumpfun.c -lbfd
+jserv@venux:~/whocallme$ ./bfd_dumpfun ./test-1
+Open ./test-1
+_init                          0x8048298
+_start                         0x8048310
+__do_global_dtors_aux          0x8048340
+frame_dummy                    0x80483a0
+test                           0x80483c4
+main                           0x80483e7
+__libc_csu_fini                0x8048410
+__libc_csu_init                0x8048420
+__i686.get_pc_thunk.bx         0x804847a
+__do_global_ctors_aux          0x8048480
+_fini                          0x80484ac
+</pre>
+現在，我們已將技術的關鍵點都處理好，為能實用化，最好是作成函式庫，得以日後隨時呼叫。我們的函式庫包含兩部份： whocallme.[ch]，首先是標頭檔部份： (whocallme.h)<br />
+<table border="0" cellpadding="1" cellspacing="2">
+<tr>
+  <td><pre class="code">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15</pre></td>
+
+  <td width="100%"><pre class="code" id="codemain"><span class="keyword">#include</span> &lt;stdio.h>
+<span class="keyword">
+#define</span>	FUNCTION_NAME_MAXLEN		80
+<span class="keyword">
+#define</span> who_call_me() \
+	<span class="keyword">do</span> { \
+        	<span class="keyword">unsigned</span> <span class="keyword">int</span> *stack; \
+		<span class="keyword">asm</span> (<span class="literal">"movl %%ebp, %0\n"</span>  \
+		     : <span class="literal">"=g"</span>(stack));  \
+		fprintf(stderr, \
+			<span class="literal">"&lt;whocallme>: function &lt;%s> call me &lt;%s>!\n"</span>, \
+			find_function_by_addr(*(stack+1)), who_am_i()); \
+	} <span class="keyword">while</span>(0)
+
+<span class="keyword">extern</span> <span class="keyword">int</span> init_function_table(<span class="keyword">char</span> *);</pre></td>
+</tr>
+</table>
+留意到巨集定義中的自訂函式 who_am_i()，目的自然就是取得執行中的函式名稱，整個實做如下： (whocallme.c)<br />
+<table border="0" cellpadding="1" cellspacing="2">
+<tr>
+  <td><pre class="code">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135</pre></td>
+
+  <td width="100%"><pre class="code" id="codemain"><span class="comment">/* whocallme.c (GPL)
+ *
+ * A runtime backtrace of function. 
+ * 
+ * by Timhsu(timhsu@chroot.org) 2004/03/31
+ * Modified by Jim Huang &lt;jserv.tw@gmail.com>, 2008/07/22
+ *   - Bump bfd APIs.
+ *   - Eliminate compiler errors.
+ */</span>
+<span class="keyword">
+#include</span> &lt;stdio.h><span class="keyword">
+#include</span> &lt;stdlib.h><span class="keyword">
+#include</span> &lt;string.h><span class="keyword">
+#include</span> &lt;bfd.h><span class="keyword">
+#include</span> <span class="literal">"whocallme.h"</span>
+
+<span class="comment">/* forward declarations */</span>
+<span class="keyword">char</span> *find_function_by_addr(<span class="keyword">unsigned</span> <span class="keyword">long</span> addr);
+
+<span class="keyword">typedef</span> <span class="keyword">struct</span> function_table FUN_TABLE;
+<span class="comment">/* 宣告一個包含函式名稱和位址的結構 */</span>
+<span class="keyword">struct</span> function_table {
+	<span class="keyword">char</span> name[FUNCTION_NAME_MAXLEN];
+  	<span class="keyword">unsigned</span> <span class="keyword">long</span> addr;
+};
+
+<span class="keyword">static</span> FUN_TABLE *fun_table;
+<span class="keyword">static</span> <span class="keyword">int</span> table_count = 0;	<span class="comment">/* 函式個數 */</span>
+
+<span class="keyword">static</span> <span class="keyword">int</span> compare_function(<span class="keyword">const</span> <span class="keyword">void</span> *a, <span class="keyword">const</span> <span class="keyword">void</span> *b)
+{
+        FUN_TABLE *aa = (FUN_TABLE *) a;
+        FUN_TABLE *bb = (FUN_TABLE *) b;
+	<span class="keyword">if</span> (aa->addr > bb->addr)
+		<span class="keyword">return</span> 1;
+	<span class="keyword">else</span> <span class="keyword">if</span> (aa->addr &lt; bb->addr)
+		<span class="keyword">return</span> -1;
+	<span class="keyword">return</span> 0;
+}
+
+<span class="comment">/* 增加一個函式資料至對照表 */</span>
+<span class="keyword">static</span> <span class="keyword">void</span> add_function_table(<span class="keyword">char</span> *name, <span class="keyword">unsigned</span> <span class="keyword">long</span> address)
+{
+	strncpy(fun_table[table_count].name, name, FUNCTION_NAME_MAXLEN);
+	fun_table[table_count].addr = address;
+	table_count++;
+}
+
+<span class="comment">/* 取得目前正在執行的函式名稱 */</span>
+<span class="keyword">char</span> * who_am_i(<span class="keyword">void</span>)
+{
+        <span class="keyword">unsigned</span> <span class="keyword">long</span> *stack;   \
+	<span class="keyword">asm</span> (<span class="literal">"movl %%ebp, %0\n"</span>  \
+		: <span class="literal">"=g"</span>(stack));         
+	<span class="keyword">return</span> find_function_by_addr(*(stack + 1));
+}
+
+<span class="comment">/* 依照位址取得函式名稱 */</span>
+<span class="keyword">char</span> *find_function_by_addr(<span class="keyword">unsigned</span> <span class="keyword">long</span> addr)
+{
+	<span class="keyword">int</span> i;
+	<span class="keyword">for</span> (i = 0; i &lt; table_count; i++) {
+		<span class="keyword">if</span> (addr > fun_table[i].addr) {
+			<span class="keyword">if</span> (addr &lt; fun_table[i + 1].addr)
+				<span class="keyword">return</span> fun_table[i].name;
+		}
+	}
+	<span class="keyword">return</span> NULL;
+}
+
+<span class="comment">/* 初始化函式對照表 */</span>
+<span class="keyword">int</span> init_function_table(<span class="keyword">char</span> *file)
+{
+	bfd *abfd;
+	<span class="keyword">long</span> storage_needed;
+	asymbol **symbol_table;
+	<span class="keyword">long</span> number_of_symbols;
+	<span class="keyword">long</span> i;
+	<span class="keyword">char</span> **matching;
+	sec_ptr section;
+	<span class="keyword">char</span> *symbol_name;
+	<span class="keyword">long</span> symbol_offset, section_vma, symbol_address;
+
+	bfd_init();
+	abfd = bfd_openr(file, NULL);
+	<span class="keyword">if</span> (abfd == (bfd *) 0) {
+		bfd_perror(<span class="literal">"bfd_openr"</span>);
+		<span class="keyword">return</span> -1;
+	}
+	<span class="keyword">if</span> (!bfd_check_format_matches(abfd, bfd_object, &amp;matching)) {
+		<span class="keyword">return</span> -1;
+	}	
+	<span class="keyword">if</span> (!(bfd_get_file_flags (abfd) &amp; HAS_SYMS)) {
+		printf(<span class="literal">"ERROR flag!\n"</span>);
+		<span class="keyword">return</span> -1;
+	}
+	<span class="comment">/* 取得符號表大小 */</span>
+	storage_needed = bfd_get_symtab_upper_bound(abfd);
+	<span class="keyword">if</span> (storage_needed &lt; 0)
+		<span class="keyword">return</span> -1;
+	symbol_table = (asymbol **) malloc(storage_needed);
+	<span class="comment">/* 將符號表讀進所配置的記憶體裡(symbol_table), 並傳回符號表個數 */</span>
+	number_of_symbols = bfd_canonicalize_symtab(abfd, symbol_table);
+	<span class="keyword">if</span> (number_of_symbols &lt; 0)
+		<span class="keyword">return</span> -1;
+	<span class="comment">/* 配置空間給函式對照表 */</span>
+	fun_table = (FUN_TABLE *) malloc(<span class="keyword">sizeof</span>(FUN_TABLE) * number_of_symbols);
+	bzero(fun_table, <span class="keyword">sizeof</span>(FUN_TABLE)*number_of_symbols);
+
+	<span class="keyword">for</span> (i = 0; i &lt; number_of_symbols; i++) {
+		<span class="comment">/* 檢查此符號是否為函式 */</span>
+		<span class="keyword">if</span> (symbol_table[i]->flags &amp; (BSF_FUNCTION|BSF_GLOBAL)) {
+			<span class="comment">/* 反查此函式所處的區段(section) 及區段位址(section_vma)*/ */</span>
+			section = symbol_table[i]->section;
+			section_vma = bfd_get_section_vma(abfd, section);
+			<span class="comment">/* 取得此函式的名稱(symbol_name), 偏移位址(symbol_offset) */</span>
+			symbol_name = (<span class="keyword">char</span> *) symbol_table[i]->name;
+			symbol_offset = symbol_table[i]->value;
+			<span class="comment">/* 將此函式的偏移位址加上區段位址，則為此函式
+			 * 在執行時的記憶體位址 (symbol_address) */</span>
+			symbol_address = section_vma + symbol_offset;
+			<span class="comment">/* 檢查此函式是否處在程式本文區段 */</span>
+			<span class="keyword">if</span> (section->flags &amp; SEC_CODE) {
+				<span class="comment">/* 將此函式名稱和位址加入至對照表 */</span>
+			add_function_table(symbol_name, 
+						   symbol_address);
+			}
+		}
+	}
+	free(symbol_table);
+	bfd_close(abfd);
+	<span class="comment">/* 將函式對照表作排序 */</span>
+	qsort(fun_table, table_count, <span class="keyword">sizeof</span>(FUN_TABLE), compare_function);
+	<span class="keyword">return</span> 0;
+}</pre></td>
+
+</tr>
+</table>
+建構此函式庫方式如下：<pre class="code" style="margin: 6px;">
+jserv@venux:~/whocallme$ gcc -c whocallme.c
+jserv@venux:~/whocallme$ ar -q libwhocallme.a whocallme.o
+</pre>
+寫個簡短的測試程式，看看執行的效果： (test-2.c)<br />
+<table border="0" cellpadding="1" cellspacing="2">
+<tr>
+  <td><pre class="code">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27</pre></td>
+
+  <td width="100%"><pre class="code" id="codemain"><span class="keyword">#include</span> <span class="literal">"whocallme.h"</span>
+
+<span class="keyword">void</span> test()
+{
+	who_call_me(); 
+}
+<span class="keyword">void</span> test_a()
+{
+	test_b();
+	test_c();
+}
+<span class="keyword">void</span> test_b()
+{
+	test();
+}
+<span class="keyword">void</span> test_c()
+{
+	who_call_me(); 
+}
+<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])
+{
+	init_function_table(argv[0]);
+	test();
+	test_a();      
+	test_b();
+	test_c();
+}</pre></td>
+</tr>
+</table>
+編譯並執行：<pre class="code" style="margin: 6px;">
+jserv@venux:~/whocallme$ gcc -o test-2 test-2.c -lbfd -L. -lwhocallme
+jserv@venux:~/whocallme$ ./test-2
+<whocallme>: function &lt;main&gt; call me &lt;test&gt;!
+<whocallme>: function &lt;test_b&gt; call me &lt;test&gt;!
+<whocallme>: function &lt;test_a&gt; call me &lt;test_c&gt;!
+<whocallme>: function &lt;test_b&gt; call me &lt;test&gt;!
+<whocallme>: function &lt;main&gt; call me &lt;test_c&gt;!
+</pre>
+下載本文的範例程式： [<a href="http://jserv.sayya.org/debugger/whocallme.tar.bz2">whocallme.tar.bz2</a>]<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 July 30, 2008 02:28 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>如在此使用GCC builtin function: __builtin_return_address與__builtin_frame_address，或可少掉很多architecture-dependent dirty work<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;ijsung&#64;gmail&#46;com">I-Jui Sung</a> 發表於</MTIfNonEmpty> July 30, 2008 03:01 PM</span>
+</div>
+<div class="comments-body">
+<p>發生 segfault 的時候怎樣取得 backtrace 呢?</p>
+<span class="comments-post">由 <a href="mailto&#58;dearvoid&#64;gmail&#46;com">jwang</a> 發表於</MTIfNonEmpty> July 30, 2008 05:42 PM</span>
+</div>
+<div class="comments-body">
+<p>@ijsung,<br />
+很好的建議，感謝提醒</p>
+
+<p>@jwang,<br />
+將 backtrace 的實做加入 SIGSEGV 的 signal handler 即可</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> July 30, 2008 05:49 PM</span>
+</div>
+<div class="comments-body">
+<p>為什麼要用 do while(0) 去把 marco 包著呢?<br />
+一直看不明白</p>
+<span class="comments-post">由 <a href="mailto&#58;wd&#46;acgrs&#64;gmail&#46;com">3322</a> 發表於</MTIfNonEmpty> July 31, 2008 03:38 AM</span>
+</div>
+<div class="comments-body">
+<p>@3322,<br />
+因為考量區域變數 unsigned int *stack; 不該展開後，在同一個 scope 相互污染，再來，這是避免 dangling-else 的慣用技巧</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> July 31, 2008 04:17 AM</span>
+</div>
+<div class="comments-body">
+<p>很有用的工具。<br />
+請問可以列出完整的 backtrace，而不是只有上一層嗎？</p>
+<span class="comments-post">由 <a href="mailto&#58;vincent0629&#64;gmail&#46;com">Vincent</a> 發表於</MTIfNonEmpty> July 31, 2008 11:25 AM</span>
+</div>
+<div class="comments-body">
+<p>@Vincent,<br />
+依序將 stack frame 往上移動即可，當然，可用遞迴的技巧</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> July 31, 2008 11:41 AM</span>
+</div>
+<div class="comments-body">
+<p>若是用 gnu C Lib的話有包好的:<br />
+http://www.gnu.org/software/libc/manual/html_node/Backtraces.html#Backtraces<br />
+搭配"-rdynamic"可印出function name.(沒有的話只能得到address)</p>
+<span class="comments-post">由 <a href="mailto&#58;bingrong&#46;liu&#64;gmail&#46;com">lbr</a> 發表於</MTIfNonEmpty> August  6, 2008 02:25 PM</span>
+</div>
+<div class="comments-body">
+<p>改了一點小東東<br />
+利用 -finstrument-functions和 whocallme 的symbal table lookup 來印出  caller 和calle name ..:P</p>
+
+<p>http://cmchao.pixnet.net/blog/post/21519972/</p>
+<span class="comments-post">由 <a href="mailto&#58;cmchao&#64;gmail&#46;com">cmchao</a> 發表於</MTIfNonEmpty> August 25, 2008 10:16 AM</span>
+</div>
+<div class="comments-body">
+<p>上面取得返回位址不用這麼麻煩還要 inline asm 吧.<br />
+這樣就好了:<br />
+#include <br />
+void<br />
+test()<br />
+{<br />
+    unsigned int *stack;</p>
+
+<p>    printf("Return address = %p\n", (&stack)[2]);<br />
+}</p>
+
+<p>int<br />
+main()<br />
+{<br />
+    test();<br />
+}<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;slash&#64;ms32&#46;url&#46;com&#46;tw">吳俊緯</a> 發表於</MTIfNonEmpty> September 30, 2008 03:14 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2054" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

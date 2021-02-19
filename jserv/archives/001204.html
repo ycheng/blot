@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 刺激的 Ubuntu Breezy</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001203.html" title="VLC Player with UPnP support" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001205.html" title="GCJ 與 GNU Classpath 的整合" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001203.html">« VLC Player with UPnP support</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001205.html">GCJ 與 GNU Classpath 的整合 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">July 14, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">刺激的 Ubuntu Breezy</h3>
+
+我為何喜歡用 Debian 與 Ubuntu 呢？除了嚴謹的設計哲學外，大概就是充滿刺激，比方說 Ubuntu Breezy 就會把發展中的 Xorg 打包，而之前提過 [<a href="http://blog.linux.org.tw/~jserv/archives/001198.html">Xorg 邁入 7.0 新紀元</a>]，裡面有個很重要的特徵就是高度模組化，這點在 Breezy 已經落實了，所以早上 apt-get dist-upgrade 後才發現 Xorg 缺乏 modules，於是趕緊安裝欠缺的模組：<pre class="code" style="margin: 6px;">
+# apt-get install \
+  xserver-xorg-core \
+  xserver-xorg-input-kbd \
+  xserver-xorg-driver-ati \
+  xserver-xorg-input-mouse
+</pre>
+這個變動來自 6.8.2-35，引述 changelog - xorg (6.8.2-35) breezy; urgency=low<ul>
+  <li>The 'largest Binary line in the west' release.
+    + ... in which our hero rationalises server-xorg.</li>
+  <li>Break out Xfixes, Xdamage and Xcomposite modules to external packages.  No additional Build-Depends introduced.</li>
+  <li>Break out xcursorgen to an external package, drop Build-Depends on libxcursor-dev.</li>
+  <li>Break out cursors (from xcursorgen, installed to xlibs-data) to an external package.</li>
+  <li>Stop trying to be clever and force autodetect_* settings to true on reconfigure, as this is completely broken.</li>
+  <li>Remove sh3, sh4 and netbsd-i386 from the xserver-xorg packaging.</li>
+  <li>Break xserver-xorg out into xserver-xorg-core (core server and modules, no drivers), and:</li>
+  <li>Display drivers: xserver-xorg-driver-apm, xserver-xorg-driver-ark, xserver-xorg-driver-ati, xserver-xorg-driver-chips, xserver-xorg-driver-cirrus, xserver-xorg-driver-cyrix, xserver-xorg-driver-dummy, xserver-xorg-driver-fbdev, xserver-xorg-driver-glide, xserver-xorg-driver-glint, xserver-xorg-driver-i128, xserver-xorg-driver-i740, xserver-xorg-driver-i810, xserver-xorg-driver-imstt, xserver-xorg-driver-mga, xserver-xorg-driver-neomagic,
+      xserver-xorg-driver-newport, xserver-xorg-driver-nsc, xserver-xorg-driver-nv, xserver-xorg-driver-rendition, xserver-xorg-driver-s3, xserver-xorg-driver-s3virge, xserver-xorg-driver-savage, xserver-xorg-driver-siliconmotion, xserver-xorg-driver-sis, xserver-xorg-driver-sunbw2, xserver-xorg-driver-suncg14, xserver-xorg-driver-suncg3, xserver-xorg-driver-suncg6, xserver-xorg-driver-sunffb, xserver-xorg-driver-sunleo, xserver-xorg-driver-suntcx, xserver-xorg-driver-tdfx, xserver-xorg-driver-tga,
+      xserver-xorg-driver-trident, xserver-xorg-driver-tseng, xserver-xorg-driver-vesa, xserver-xorg-driver-vga, xserver-xorg-driver-via, and xserver-xorg-driver-vmware.
+    + Input drivers: xserver-xorg-input-acecad, xserver-xorg-input-aiptek, xserver-xorg-input-calcomp, xserver-xorg-input-citron, xserver-xorg-input-digitaledge, xserver-xorg-input-dmc,
+      xserver-xorg-input-dynapro, xserver-xorg-input-elographics, xserver-xorg-input-fpit, xserver-xorg-input-hyperpen, xserver-xorg-input-kbd, xserver-xorg-input-magellan,
+      xserver-xorg-input-microtouch, xserver-xorg-input-mouse, xserver-xorg-input-mutouch, xserver-xorg-input-palmax, xserver-xorg-input-penmount, xserver-xorg-input-spaceorb,
+      xserver-xorg-input-summa, xserver-xorg-input-tek4957, xserver-xorg-input-void, and xserver-xorg-input-wacom.</li>
+  <li>Configuration is still in the xserver-xorg package, but this will change in the future (when we all have flying cars).</li>
+</ul>
+所以呢，現在的劃分可以更乾淨且便利了，dpkg-reconfigure xserver-xorg 也不再出現沒有必要的選擇。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 July 14, 2005 10:33 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

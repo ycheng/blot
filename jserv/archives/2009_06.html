@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: June 2009 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2009_05.html" title="May 2009" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2009_07.html" title="July 2009" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/2009_05.html">« May 2009</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/2009_07.html">July 2009 »</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">June 13, 2009</h2>
+
+
+<div class="blogbody">
+<a name="002109"></a>
+<h3 class="title">快速展現 Linux 的 multitouch 技術</h3>
+
+<center><img src="http://www.linuxdevices.com/files/misc/enac_multitouch_demo.jpg" width="420" height="270" /></center><br />
+法國的 [<a href="http://www.lii-enac.fr/en/">ENAC</a>] 進行一個針對 Linux 平台上的 multi-touch 的技術展示，硬體的配置為：<ul>
+  <li>Broadcom 5974, Stantum, NTrig or DiamondTouch surface</li>
+</ul>
+軟體方面，除了需要上述硬體的 driver 與 firmware 之外，則是 Linux kernel 2.6.30 與 compiz + dbus plugin，不過這個展示沒用到 [<a href="http://blog.linux.org.tw/~jserv/archives/001643.html">MPX：Multi-Pointer X Server </a>] 的技術，所以 Xorg + compiz 只是單純處理 3D 顯示效果。輸入的部份值得關注，因為這類 multi-touch 裝置，在 Linux kernel 下，會將其對應為 /dev/input/eventX，而此展示則撰寫若干小程式，監視數值變化並透過 dbus，告知 compiz 做出對應的反應，像是 water, zooming, rotate 等等。以 compiz 的「水波紋」效果來說，只要下達以下指令即可：<ul class="code" style="margin: 6px;">
+dbus-send --type=method_call --dest=org.freedesktop.compiz /org/freedesktop/compiz/water/allscreens/point org.freedesktop.compiz.activate string:'root' int32:`xwininfo -root | grep id: | awk '{ print $4 }'` string:'amplitude' double:1 string:'x' int32:$1 string:'y' int32:$2
+</ul>
+重點就是兩組以上的 (x, y) 輸入，詳情可參考 ENAC 的網頁 [<a href="http://www.lii-enac.fr/en/projects/shareit/linux.html">Linux native multitouch support</a>]。展示的影片可參考以下：
+<object width="425" height="344"><param name="movie" value="http://www.youtube.com/v/DTeUbx_nnM4&color1=0xb1b1b1&color2=0xcfcfcf&hl=fr&feature=player_embedded&fs=1"></param><param name="allowFullScreen" value="true"></param><param name="allowScriptAccess" value="always"></param><embed src="http://www.youtube.com/v/DTeUbx_nnM4&color1=0xb1b1b1&color2=0xcfcfcf&hl=fr&feature=player_embedded&fs=1" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="425" height="344"></embed></object>
+<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002109.html">01:35 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2109" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">June 11, 2009</h2>
+
+
+<div class="blogbody">
+<a name="002108"></a>
+<h3 class="title">「Qi - Lightweight Boot Loader Applied in Mobile and Embedded Devices」簡報上線</h3>
+
+這兩日，應 FreedomHEC Taipei 籌辦單位之邀，Matt 與我代表 <a href="http://0xlab.org/">0xlab</a>，在 [<a href="http://freedomhectaipei.pbworks.com/">FreedomHEC Taipei</a>] 分享 "Qi - Lightweight Boot Loader Applied in Mobile and Embedded Devices" 議程，其簡報已上線，請參考以下：
+<div style="width:425px;text-align:left" id="__ss_1566484"><a style="font:14px Helvetica,Arial,Sans-serif;display:block;margin:12px 0 3px 0;text-decoration:underline;" href="http://www.slideshare.net/jserv/qi-lightweight-boot-loader-applied-in-mobile-and-embedded-devices?type=presentation" title="Qi -- Lightweight Boot Loader Applied in Mobile and Embedded Devices">Qi -- Lightweight Boot Loader Applied in Mobile and Embedded Devices</a><object style="margin:0px" width="425" height="355"><param name="movie" value="http://static.slidesharecdn.com/swf/ssplayer2.swf?doc=qi-090611024517-phpapp02&stripped_title=qi-lightweight-boot-loader-applied-in-mobile-and-embedded-devices" /><param name="allowFullScreen" value="true"/><param name="allowScriptAccess" value="always"/><embed src="http://static.slidesharecdn.com/swf/ssplayer2.swf?doc=qi-090611024517-phpapp02&stripped_title=qi-lightweight-boot-loader-applied-in-mobile-and-embedded-devices" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="425" height="355"></embed></object><div style="font-size:11px;font-family:tahoma,arial;height:26px;padding-top:2px;">View more <a style="text-decoration:underline;" href="http://www.slideshare.net/">Microsoft Word documents</a> from <a style="text-decoration:underline;" href="http://www.slideshare.net/jserv">Jim Huang</a>.</div></div>
+Qi 最主要的思維就是 KISS (Keep It Simple and Stupid)，我們思索移動式裝置中，boot loader 肩負的責任越來越沈重，而需求也相當多元，以至於無可避免陷入難以維護的處境。於是乎，LAB (Linux As Bootloader) 的概念在 2003 年即提出，不過實務上卻歷經許多實做，才有機會在消費性電子產品獲得可靠的應用。本議程就分享 Qi 背後設計的想法、開發哲學，也探討 <a href="http://0xlab.org/">0xlab</a> 對於透過自由軟體創造更大價值的概念，感謝前來指教的朋友，也期待日後的交流。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002108.html">11:50 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2108" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+
+</body>
+</html>

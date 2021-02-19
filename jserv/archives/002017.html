@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Unihan (漢統輸入系統) 也採開源發展</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002016.html" title="非同步 Xlib 處理機制" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002018.html" title="「親手打造開放原始程式碼的機器人」簡報上線" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002016.html">« 非同步 Xlib 處理機制</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002018.html">「親手打造開放原始程式碼的機器人」簡報上線 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">April 24, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Unihan (漢統輸入系統) 也採開源發展</h3>
+
+<center><img src="http://jserv.sayya.org/tmp/unihan.jpg" width="75" height="67" /></center><br />
+事實上不是新聞，早在半年前，大陸 [<a href="http://www.sw-linux.com.cn/">新華科技</a>] 即將用於該公司華鐳 RAYS LX - Linux 桌面作業系統的 [<a href="http://www.sw-linux.com/en/scripts/main/viewitem.php?itemid=2158511108981584&showid=products&catid=platforms">Unihan2 中文輸入法系統</a>]，公佈其大部分原始程式碼，授權條款為 GNU LGPL，並架設於 Google Code 的 [<a href="http://code.google.com/p/unihan/">Unihan</a>] 專案上，維護者就是知名的 Debian 開發者 [<a href="http://spacehunt.info/">Roger So</a>]。<br />
+<br />
+我與 Roger So 有一面之緣，時間是 2004 年，當時正思考 [<a href="http://www.openi18n.org/subgroups/im/IIIMF/">IIIMF</a>] 與 SCIM 設計並著手改善輸入法設計的我，得知 [<a href="http://www.openi18n.org/">openi18n</a>] 主席 Hideki Hiura、XIM/IIIMF 架構設計者，來台與本地的開發者作面對面交流，自然很歡欣地前往。先跟 Hideki Hiura 身旁同行的開發者聊到當時 Debian 對於多個 IIIMF 套件打包維護的問題，我提到：<ul class="code" style="margin: 6px;">
+「幾天前發信給 Debian mainatainer, Roger So, 但是他沒有回覆訊息，也不知道 Debian 現在的處理態度如何。」
+</ul>
+沒想到，那位開發者竟回覆道：<ul class="code" style="margin: 6px;">
+「我就是 Roger So」
+</ul>
+可想而知，有眼不識泰山的我，是有多麼震撼，也因此得知頗多第一手的資訊。過去，推動 IIIMF 最積極的兩家公司是 Sun Microsystems (Hideki Hiura 的老東家) 與新華科技 (Roger So 擔任該公司 CTO 一職)，Unihan2 (漢統) 即後者最知名的、以 IIIMF 為基礎的中文輸入法平台，內含紫光拼音、智能 ABC、五筆等十三種輸入法，允許使用者添加刪除輸入法模組，並作簡繁轉換輸入，其大略的系統示意圖如下：<br />
+<center><img src="http://jserv.sayya.org/tmp/sunwah-arch.jpg" width="389" height="391" /></center><br />
+IIIMF 主要分成兩部份：<ul>
+  <li>IIIMSF (IIIM Server Framework) - 提供與平台無關的 LE (Language Engine) 讓 client 存取必要的輸入法處理的服務，透過其 LEIF (LE Interface) 讓程式開發者得以專注於輸入法的邏輯流程處理，而不需擔憂平台設計</li>
+  <li>IIIMCF (IIIM Client Framework) - 與平台接軌之處，可接上 X11 XIM, Java, Emacs, Gtk+, Qt, 等等執行環境</li>
+</ul>
+不過，IIIMF 基本上還只是框架，若要發展為傳統中文輸入法的模樣，有頗多地方需要改進，所以 Unihan 首先藉由 IIIMSF 發展若干 LE，有表格導向、需要特別詞庫猜字選詞，也有手寫辨識引擎等等。再來，因為許多輸入法需要與使用者保持互動，不免要有特製的 UI，在 IIIMCF 中引入 xaux 來輔助 X11 的顯示，Unihan 也提供 Gtk+/GNOME 平台的支援。<br />
+<br />
+Roger So 在 Unihan 中，把原本複雜的 IIIMF 包裝成較為容易開發的模式，可參照以 Doxygen 產生的 [<a href="http://people.openrays.org/~rogerso/unihan/dox/unihan__im_8h.html">C++ API 文件</a>] 與範例輸入法：[<a href="http://people.openrays.org/~rogerso/unihan/unihan-sample-2.5.tar.bz2">unihan-sample-2.5.tar.bz2</a>]。這個簡化的模型中，系統架構如下圖：<br />
+<center><img src="http://jserv.sayya.org/i18n/unihan-arch.png" width="250" height="307" /></center><br />
+doc/api.txt 則是簡要的描述，基本上掌握輸入法的 state machine，即可快速開發輸入法的邏輯處理，詳情可參照範例的 src/sample.cpp。關於 Unihan 的資源，除了 Google Code 的專案網頁外，可在新華科技的 [<a href="http://forum.openrays.org/thread-htm-fid-40.html">漢統Unihan 論壇</a>] 找到一些討論，此外，就少見蹤跡，大概跟過去 closed-source 模式有關。<br />
+<br />
+值得注意的是，Unihan 作者 Roger So 的 blog 文章 [<a href="http://spacehunt.info/2008/01/25/input-method-api-now-nearly-standardised-on-linux">Input Method API Now (nearly) Standardised on Linux</a>] 提及在今年一月份，由中、日、韓等國政府資助的 [<a href="http://www.neaoss.org/">Northeast Asia OSS Promotion Forum</a>] (NEAOSS) 的 IMSWG (輸入法標準工作小組) 會議中，蘇哲 (SCIM) 與 Hideki Hiura (IIIMF/XIM) 出席共同制定下一代的輸入法架構，可望讓現有 UNIX 的輸入法架構分歧更加收斂，目前呼聲頗高的 [<a href="http://code.google.com/p/imbus/">IMBus</a>] 標榜 "The next generation input method framework for Linux"，很可能成為彙整包含 Unicon 在內的輸入法開發資源，期待種種開放原始碼的系統，得以有新的發展。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 April 24, 2008 03:46 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>哇，竟然被 jserv 大大發現了，寫得還比我詳盡呢 XD</p>
+
+<p>jserv 大過獎了，其實我很懶，這幾個月來一直都沒有碰過 Unihan……</p>
+<span class="comments-post">由 <a href="mailto&#58;roger&#46;so&#64;gmail&#46;com">spacehunt</a> 發表於</MTIfNonEmpty> April 25, 2008 10:38 AM</span>
+</div>
+<div class="comments-body">
+<p>@spacehunt</p>
+
+<p>wow! Roger So 耶，感謝留言，我一直對 IM framework 有高度興趣，儘管現在還沒有頭緒。</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> April 25, 2008 09:25 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2017" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

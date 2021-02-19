@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jesse's Holodeck: November 2003 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jesse/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jesse/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~jesse/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jesse/archives/2003_09.html" title="September 2003" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jesse/archives/2003_12.html" title="December 2003" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jesse/" accesskey="1">Jesse's Holodeck</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jesse/archives/2003_09.html">&laquo; September 2003</a> |
+
+<a href="http://blog.linux.org.tw/~jesse/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jesse/archives/2003_12.html">December 2003 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+<!--
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/">
+<rdf:Description
+    rdf:about="http://blog.linux.org.tw/~jesse/archives/2003_11.html#000506"
+    trackback:ping="http://mt.debian.org.tw/mt-tb.cgi/327"
+    dc:title="no more spam!"
+    dc:identifier="http://blog.linux.org.tw/~jesse/archives/2003_11.html#000506"
+    dc:subject="network"
+    dc:description="看到 chuany 兄的 blog 中一篇『擋廣告信利器』, 心血來潮, 也來分享一下這幾天在玩的小玩意兒。..."
+    dc:creator="jesse"
+    dc:date="2003-11-14T11:38:31+08:00" />
+</rdf:RDF>
+-->
+
+
+<h2 class="date">November 14, 2003</h2>
+
+
+<div class="blogbody">
+<a name="000506"></a>
+<h3 class="title">no more spam!</h3>
+
+<p>看到 <a href="http://blog.linux.org.tw/~chuany/">chuany</a> 
+兄的 blog 中一篇『<a href="http://blog.linux.org.tw/~chuany/archives/2003_11.html#000462">擋廣告信利器</a>』, 心血來潮, 也來分享一下這幾天在玩的小玩意兒。<br />
+</p>
+
+<p>忍受廣告信的折磨已經好一陣子了, 這兩天利用一些時間研究了一下 <a href="http://www.spamassassin.org/index.html">SpamAssassin</a>, 發現原來它可以和 <a href="http://www.amavis.org/">AMaViS</a> 及 <a href="http://clamav.elektrapro.com/">ClamAV</a> 搭配, 過濾病毒信和廣告信。</p>
+
+<p>這三個在 <acronym title="一種 Linux Distribution"><a href="http://www.debian.org/">Debian</a></acronym> 
+unstable 中都可以找到, 所以只要直接<br />
+<div class="code">apt-get install amavisd-new spamassassin clamav</div><br />
+就可以把程式裝起來了。你可能還會想裝 clamav-freshclam 這個套件:<br />
+<div class="code">apt-get install clamav-freshclam</div><br />
+它會定時連上 server 更新 ClamAV 的病毒碼。我用的是 postfix, 如果要和 sendmail 搭配的話, 還有個相關套件 amavisd-new-milter。</p>
+
+<p>再來就是設定了, 在網路上找了一番, 發現這個相當不錯的 <a href="http://lawmonkey.org/anti-spam.html">HOWTO</a>。這一篇是在 OpenBSD 上實作, 但其實在 linux 是大同小異的。先修改 /etc/amavis/amavisd.conf , 檔案中有相當完整的說明, 不過它預設是不做 spam check 的, 記得要把這個功能打開來。</p>
+
+<p>參考那篇 HOWTO 設定 /etc/spamassassin/local.cf, 不過因為語系的關係, 請參考<a href="http://ccca.nctu.edu.tw/~hlb/tavi/PostfixSpamAssassin">這裡</a>的設定修改一下。</p>
+
+<p>最後, 修改 postfix 的 main.cf 和 master.cf, 就搞定囉!</p>
+
+<p>試用了兩三天, SpamAssassin 的部份還是要依實際狀況調整一下, 以免擋到不該擋的信件。Bayes 看起來是個蠻不錯的特色, 這兩天除了到處找 spam 來教 SA, 也把誤擋的信拿來當教材, 告訴它這些不是 spam。過一陣子看看我的 SA 會不會變聰明一點... :D</p>
+
+
+
+<div class="posted">
+	由 jesse 發表於 <a href="http://blog.linux.org.tw/~jesse/archives/000506.html">11:38 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-comments.cgi?entry_id=506" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+		| <a href="http://mt.debian.org.tw/mt-tb.cgi?__mode=view&amp;entry_id=506" onclick="OpenTrackback(this.href); return false">引用</a>
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">November 03, 2003</h2>
+
+
+<div class="blogbody">
+<a name="000459"></a>
+<h3 class="title">非洲蓳</h3>
+
+<p>兩盆非洲蓳, 一盆被熱死, 一盆奄奄一息.... 受不了今年夏天的酷熱, 我將它們移來公司吹冷氣時已經來不及了.... 看著枯掉的那一盆, 心裡好像少了什麼...</p>
+
+
+
+
+<div class="posted">
+	由 jesse 發表於 <a href="http://blog.linux.org.tw/~jesse/archives/000459.html">03:27 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-comments.cgi?entry_id=459" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000458"></a>
+<h3 class="title">提不起勁</h3>
+
+<p>好像每隔一陣子就會這樣, 明知道一堆事得做, 而且沒什麼時間了, 可就是對什麼都提不起勁....<br />
+要振作點啊! 沒有那麼多的時間可以給我浪費的!</p>
+
+
+
+
+<div class="posted">
+	由 jesse 發表於 <a href="http://blog.linux.org.tw/~jesse/archives/000458.html">03:16 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-comments.cgi?entry_id=458" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: September 2010 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2010_08.html" title="August 2010" />
+
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2010_10.html" title="October 2010" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2010_08.html">« August 2010</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+| <a href="http://blog.linux.org.tw/~jserv/archives/2010_10.html">October 2010 »</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+
+
+<h2 class="date">September 21, 2010</h2>
+
+
+<div class="blogbody">
+<a name="002160"></a>
+<h3 class="title">手寫版酷音輸入法雛型</h3>
+
+今天胸口非常不舒服，刺痛的感覺讓我連走動都有問題，候診的時候，差點昏過去，不過當時隱約覺得，該把中文輸入法繼續開發下去，畢竟，寫遺書，還是該用自己開發的輸入法，這樣遺憾會少一些，我想。<br />
+<br />
+在今年的 COSCUP 與 ICOS 議程結束後，跟一些朋友又談到中文輸入法，若以 13 年前的 CXWin (為交大李欣叡對 XFree86 的一個 patch，使得可在 X Window 下顯示中文字型，這是當時 FreeBSD 與 GNU/Linux 中文資訊化的基礎建設，因為沒完整的 locale 支援，當時不時得動用繁瑣的轉碼處理) 視為 10% 的完整度，而現有多元的 Linux 發行套件，幾乎可說都達到了 90%，連過去較缺乏多國語文支援的 OpenBSD，也有完整的中文輸出輸入機制。不單單是桌面，移動裝置的變化更讓人讚嘆，至少在我接手開發新酷音輸入法時，還沒能想像才過幾年，就能在 Nokia N900 這樣輕巧卻功能強大的手機上，透過熟悉的 [<a href="http://chewing.csie.net/">新酷音輸入法</a>] 來操作，這點 Jouston 已經多次展示，比方說 [<a href="http://jouston.blogspot.com/2010/04/nokia-n900-alphafirstfan.html">Nokia N900: 新酷音輸入法Alpha版移植成功</a>]，就不贅述。那麼，下一步呢？<br />
+<br />
+套用 gugod 的說法：「90% 的 code 寫完時，表示還有 90%  的工作待完成」，對新酷音
+輸入法來說，更是如此，不僅得加強對現有視窗環境或終端機的功能開發外，精準度與可用性更是當今課題。之前曾在 [<a href="http://orzlab.blogspot.com/2007/06/chrasis.html">從 Chrasis 談手寫辨識引擎在移動裝置的機會</a>] 一文談到簡單可行的方案：<ul>
+「何不直接辨識注音符號，然後導入新酷音輸入法引擎去作猜字處理？」
+</ul>
+當時最大的技術問題就是，沒有好用 (兼具效能與 API 銜接) 的手寫輸入辨識引擎/函式庫，這也是 Palatis 開發 [<a href="http://chrasis.blogspot.com/">Chrasis</a>] 的動機。現在，[<a href="http://www.tegaki.org/">Tegaki Project</a>] 給予我們新的機會，一個完整且易於擴充的 open source 手寫辨識系統，提供跨平台的中、日文辨識基礎，配套的工具程式也很完整，授權採用 GNU GPL。而對於新酷音來說，在走入移動裝置時，就需要一個易於書寫且容易讓輸入法引擎 (也就是 "Language Engine" 或 "IM Engine") 處理的設計。現有的 smartphone，比方說 Android 與 iPhone，都提供了全螢幕書寫的機制，只要適度與 framework 打交道，就能走訪 state machine，透過對 [<a href="http://www.tegaki.org/">Tegaki Project</a>] 作些 dirty hack，現在的雛型介面大致如下：<br />
+<center><img src="http://jserv.sayya.org/misc/chewing-writing.png" width="578" height="345" /></center><br />
+雖然單獨要辨識一個注音符號，幾乎沒有技術困難，但要符合人性化的操作，應當要提供連續書寫的設計，至少能讓一個單字的注音符號，得以用原本慣用的筆觸來組合，進而作辨識的動作，這也反映到上圖中，「酷」這個字的注音符號「ㄎㄨˋ」，是連續筆順 (1-2-3-4-5)。一旦從手寫辨識引擎取得「ㄎㄨˋ」輸入序列後，將其轉換成 libchewing 可接受的原始排列 "dj4" 並輸出候選字詞，同理，下一個輸入「一ㄣ」時，libchewing 內部的狀態也跟著改變，而 Python 前端則忠實反應候選字詞的顯示即可。依據初步計算，這樣的「組合式」注音符號序列，至少該有 1409 個，才能確保 libchewing 與新酷音詞庫，得以正常的擷取並挑選合適字詞，如此一來，跟韓文輸入法倒是有幾分相似。顯然，現有的作法有很大的調整空間，應當先行調整 [<a href="http://www.tegaki.org/">Tegaki Project</a>] 的演算法，允許有限度的辨識這類注音符號的組合方案。<br />
+<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2010/09/post_282.html"> 9:16 PM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2160" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<h2 class="date">September 20, 2010</h2>
+
+
+<div class="blogbody">
+<a name="002159"></a>
+<h3 class="title">演講：文 C 雕龍 -- 經典 C 程式設計典範賞析</h3>
+
+今年五月份，有幸能到元智大學演講，雖然 [<a href="http://blog.linux.org.tw/~jserv/archives/2010/05/_gdb_c_2.html">以 GDB 重新學習 C 語言程式設計</a>] 這個題目有點瑣碎，整整兩個多小時都在 GNU Debugger 打轉，但該校學生的熱情，實在令我感動。本月底，小弟將再次給予分享，題目暫定為「文 C 雕龍 -- 經典 C 程式設計典範賞析」，相關的議程資訊可參考 [<a href="http://cse.tw/991class/">2010 Fall CSE.TW資訊課程</a>]。<br />
+<br />
+中國南朝時期的《文心雕龍》，是中國首部精於文學評論的專書，貫串全書的兩大重點為：反對不切實用的浮靡文風，以及講求實用的落實文風。作者劉勰試圖將全部的書，都當成文學書來分析，極為廣泛，不僅當時是「發前人所未發」，即便今天，也值得我們參考。受到《文心雕龍》的啟發，小弟則對若干經典C 程式設計典範，作簡要的賞析，亦追求前述的兩大重點，對應到軟體領域，就是消除冗餘、疊床架物的繁瑣設計，並務求良好的系統介面與彈性。 <br />
+<br />
+提綱仿效《文心雕龍》體裁，估計有以下：<ul>
+    <li>總論 -- 「文之樞紐」，回顧理論基礎</li>
+    <li>文體論 -- 探究「文體」，也就是程式設計的思維與表現</li>
+    <li>創作論 -- 創作過程、作家風格、文質關係、寫作技巧</li>
+    <li>批評論 -- 從不同角度對過去提出批評，並對批評方法作探討</li>
+    <li>總序 -- 說明了自己的創作目的和部署意圖</li>
+</ul>
+至於程式碼取材，估計來自 Linux Kernel, 4.4 BSD / FreeBSD, QEMU 等知名專案的一部分經典設計，也希望會後，能讓與會者逐步走向這美妙的 open source 世界。參考資訊：<ul>
+    <li>《A Quarter Century of UNIX》 </li>
+    <li>《Lions' Commentary on UNIX 6th Edition, with Source Code》 </li>
+    <li>[<a href="http://blog.linux.org.tw/~jserv/archives/002096.html">我所知道的 C 語言</a>]</li>
+</ul>
+以下摘錄課程資訊：<ul>
+  <li>時間：2010/09/28 18:30-21:00</li>
+  <li>地點：元智大學一館 R1401A</li>
+  <li>報名連結: <a href="http://registrano.com/events/36f937">http://registrano.com/events/36f937</a></li>
+</ul>
+期待您的指教，謝謝！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2010/09/_c_--_c.html">10:03 PM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2159" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+
+</body>
+</html>

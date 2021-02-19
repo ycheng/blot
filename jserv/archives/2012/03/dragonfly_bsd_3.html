@@ -1,0 +1,250 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: DragonFly BSD 3.x 現身</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2012/02/improve_android.html" title="&quot;Improve Android System Component Performance&quot; 簡報上線" />
+
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2012/03/android_dalvik.html" title="演講：Android Dalvik VM 探險" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2012/02/improve_android.html">« "Improve Android System Component Performance" 簡報上線</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+| <a href="http://blog.linux.org.tw/~jserv/archives/2012/03/android_dalvik.html">演講：Android Dalvik VM 探險 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March  2, 2012</h2>
+
+<div class="blogbody">
+
+<h3 class="title">DragonFly BSD 3.x 現身</h3>
+
+這其實已非新聞，不過既然中文介紹不多，這裡不妨簡要探討 [<a
+href="http://www.dragonflybsd.org/">DragonFly BSD</a>] 3.0 的推出。<br />
+<br />
+DragonFly 專案創始人 Matthew Dillon 曾是 FreeBSD SMPng 項目的核心開發者，
+同時也大幅改善包含虛擬記憶體管理與 VFS 等項目。由於 FreeBSD 5.x 的多執行緒系
+統初期有很多問題，而 FreeBSD 4.11 後僅提供安全性修正，卻不再推出 4.x 系列版本
+，致使 Matthew Dillon 在 2003 年七月宣佈將在 FreeBSD 4.8-STABLE 的基礎推出一個
+嶄新的 BSD 系統，專注於 x86/x86_64 平台的 SMP 與伺服器系統效能，這就是
+DragonFly BSD 專案，其開發者來自 FreeBSD 團隊，雙方不定期也交換分享開發成果。
+<br />
+<br />
+DragonFly BSD 在設計上引入 "hybrid kernel" 的概念，也就是融合傳統 BSD 或 Linux
+一類追求效能的 monolithic kernel，以及 CMU Mach 一類將系統服務搬出到核心之外以
+求高度模組化的 microkernel 這兩者的優點。由於 DragonFly BSD 開發者曾長期浸淫於
+VFS 的開發，在借鏡了 microkernel 的 message passing 設計後，決定建立 device I/O
+與 VFS 之間的 messaging capability 系統，這使得核心很多部份得以搬到 user-space，
+某種角度來看，DragonFly BSD 的子系統看起來很像 CMU Mach microkernel，優點在於，
+可用獨立 userspace 實現，來取代混雜在一起的大量核心程式碼，使得核心更精簡、更
+容易追蹤除錯，而被允許在 user-space 執行的系統程式碼帶來的額外的好處就是，系統將
+更加穩定，也就是說，即使 user-space driver 崩潰或者面臨重大的問題時，核心也不會
+因此會崩潰。不只如此，連同系統呼叫也逐漸切割到 user-space，透過 message 的封裝來
+實現。DragonFly BSD 走的是務實路線，除了概念引入創新研究外 (microkernel 雖然不是
+新概念，但是勇敢的在BSD 引入，卻還能兼顧高效能與彈性，就非 [<a href="http://www.mklinux.org/">mklinux</a>] 一類專案可比擬)，目前 DragonFly 最值得關注的項目是 Matthew Dillon 新設計的 HAMMERFS
+檔案系統，預期要提供 ZFS (Solaris/FreeBSD) 或 Btrfs (Linux) 相仿的特徵，目前的實做
+有以下：<ul>
+    <li>configurable file system history</li>
+    <li>snapshots</li>
+    <li>checksumming</li>
+    <li>data deduplication</li>
+</ul>
+而從 2010 年開始，HAMMER 2 被提出作為高效能的實做，詳情可見 [<a
+href="http://leaf.dragonflybsd.org/mailarchive/users/2012-02/msg00020.html">DESIGN document for HAMMER2</a>]，可預見的是，DragonFly BSD 3.x 將會相當值得期待。<br />
+<br />
+DragonFly BSD 3.0 主要的幾項重大修改，依據 [<a
+href="http://www.dragonflybsd.org/release30/">Release Note</a>] 提到：<ul>
+    <li><a
+href="http://www.osnews.com/story/25334/DragonFly_BSD_MP_Performance_Significantly_Improved">效能大幅改善的 SMP 系統</a>，並成為預設的組態</li>
+    <li>HAMMER 檔案系統的效能提昇</li>
+    <li>藉由提供 tcplay 工具，來支援 TrueCrypt 相容的磁碟加密</li>
+    <li>一系列的 POSIX.1-2008 相容性支援</li>
+</ul>
+另外，也值得關注的訊息是 [<a href="http://www.minix3.org/">MINIX</a>] 3.2.0 的
+ [<a href="http://wiki.minix3.org/en/MinixReleases">正式推出</a>]，這是一個大
+幅功能改善的版本，在 MINIX microkernel 的基礎上，引入了許多 NetBSD 的程式碼，
+諸如 NetBSD C Library 與一系列的系統工具，連同 NetBSD bootloader 也納入了，這
+使得眾多的 UNIX-like 程式得以更容易移植到 MINIX 上。此外，MINIX 3.2.0 正式支援
+ELF 執行檔案格式並成為預設，同時提供了支援非同步、多工的 VFS server，FUSE 也被
+實現出來。這意味著，MINIX 3.x 已走出老派 UNIX 的限制，要迎向嶄新作業系統與銜接
+廣大開放原始碼世界。<br />
+<br />
+在一週內，DragonFly BSD 與 MINIX 都推出革命性的 3.x 新版，兩者也在身上流著 BSD 與
+microkernel 的血液，而這兩個專案也都採用 GIT 作為版本控制系統，同樣都以開放的
+姿態，勇敢提出創新的設計，並在實務上持續耕耘。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March  2, 2012 11:44 PM
+
+<br /></span>
+
+</div>
+
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2200" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>chuany: August 2003 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~chuany/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~chuany/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~chuany/" title="Home" />
+
+<link rel="next" href="http://blog.linux.org.tw/~chuany/archives/2003_11.html" title="November 2003" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~chuany/" accesskey="1">chuany</a></h1>
+<span class="description">:wq chuany</span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~chuany/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~chuany/archives/2003_11.html">November 2003 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">August 28, 2003</h2>
+
+
+<div class="blogbody">
+<a name="000079"></a>
+<h3 class="title">e2label</h3>
+
+<p>在 RedHat 中, 常會在修改 /etc/fstab 後, 忘了把 Disk Label 改正確, 所以每次重開機後, 都無法 mount 到正確的磁區.</p>
+
+<p>所以, 以後一定要記得, 做以下的動作, 再不然, 就是把 /etc/fstab 裡填上 /dev/hda? , 免得又無法正常開機了.</p>
+
+<p>e2label /dev/hda? /new_label_name</p>
+
+
+
+<div class="posted">
+	由 chuany 發表於 <a href="http://blog.linux.org.tw/~chuany/archives/2003_08.html#000079">06:13 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=79" onclick="OpenComments(this.href); return false">迴響 (96)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000078"></a>
+<h3 class="title">分享終端機資訊</h3>
+
+<p>想要把在 Terminal 輸入的資訊 Share 給使用者看, 該怎麼做呢?</p>
+
+<p>從 GWN 裡, 學到了使用以下的指令, 來分享 Terminal Session 給其他使用者看.</p>
+
+<p>主控端:<br />
+mkfifo demo; script -f demo</p>
+
+<p>使用者端:<br />
+cat demo</p>
+
+<p>然後, 在主控端就給他開始打字吧! 是不是很好玩呢?</p>
+
+<p>這個作法可以應用在為客戶做 Services 時, 請客戶在彼端看我們操作的步驟, 突然有個想法, 如果把 cat demo 這一段寫程 java code, 是不是可以透過 web 端來看, 也就讓客戶會更方便囉! 真是讚!</p>
+
+
+
+<div class="posted">
+	由 chuany 發表於 <a href="http://blog.linux.org.tw/~chuany/archives/2003_08.html#000078">06:09 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=78" onclick="OpenComments(this.href); return false">迴響 (61)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">August 27, 2003</h2>
+
+
+<div class="blogbody">
+<a name="000077"></a>
+<h3 class="title">在Debian下更改TimeZone </h3>
+
+<p>如果不小心在設定 TimeZone 時, 選擇了使用 UTC, 我該怎麼改回使用 LocalTime 呢?</p>
+
+<p>這個應該算是一個很基本的東西, 但是還是紀錄下來與大家分享.</p>
+
+<p>每次安裝 Debian, 都是 Enter Enter 一直按下去, 因為永遠相信 Debian Maintainer 選的預設值, 都是最好的也最沒有問題的, 哪知每次在選 TimeZone 時, 總是會記住要選 No, 改成使用 LocalTime 的設定, 好死不死, 就是過太爽了, 也給他 Enter 按下去.</p>
+
+<p>裝完後, 知道有個 tzsetup 可以改 TimeZone 的區域, 但是就是忘了在哪可以改基本系統時間設定. 幸運的, 在 /etc/init.d 下看到了 hwclock.sh 與 hwclockfirst.sh, 再按 script 內容, 看到了 /etc/default/rcS 這個檔案, 給他 vim 一下, 終於找到了!</p>
+
+<p>把 UTC = yes, 改成 UTC  = no, 就好囉.</p>
+
+<p>重開機後, 記得把原來在 BIOS 的時間改正確到我們當地的時間, 因為這個時間在重開機時, script 還會再去把系統時間再寫到 BIOS 裡喔!<br />
+</p>
+
+
+
+<div class="posted">
+	由 chuany 發表於 <a href="http://blog.linux.org.tw/~chuany/archives/2003_08.html#000077">06:43 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=77" onclick="OpenComments(this.href); return false">迴響 (75)</a>
+	
+	
+</div>
+
+</div>
+
+<!--
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/">
+<rdf:Description
+    rdf:about="http://blog.linux.org.tw/~chuany/archives/2003_08.html#000056"
+    trackback:ping="http://mt.debian.org.tw/mt-tb.cgi/18"
+    dc:title="GNU/Linux Debian 十歲生日快樂"
+    dc:identifier="http://blog.linux.org.tw/~chuany/archives/2003_08.html#000056"
+    dc:subject="心情"
+    dc:description="GNU/Linux Debian 十歲生日了! 在還沒有接觸Debian之前，玩過許多 Linux Dists，有Slackware丶SuSE丶RedHat丶與Turbolinux，當然還有BSD系列的FreeBSD囉，每一套Opensource OS，都有許多不一樣的優點，當然也有很多讓使用者/管理者，感到不是很便利的地方，直到Pahud帶領我進入Debian的世界後(註1)，一切都變了！！！ 怎麼個變法呢? 1.寫個script每天random執行apt-get -s upgrade，將最新套件升級資訊email給自己。 2.每天不定時apt-cache search看看Debian的套件世界裡有哪些好玩的寶可以裝看看. 3.不用再定時收看各大Security網站最新消息，只要一有問題，apt-get upgrade就讓伺服器保持在最佳狀態，可以把原來處理tarball或RPM dependency的時間，好好的用在有用的地方. 光是以上三點，就讓生活在中華民國在台灣的小小小系統管理員，也就是在下我，可以逍遙又自在的做自己想做的事. 無意間，就在太閒的情況下，發現了有一位大大叫Moto，他開了一家叫摩托學園的店，然後還寫了一篇大作叫&apos;Debian無痛起步法&apos;，讓身為凡夫俗子的我，不禁涕淚到久久不能自己，真是造福了像我這種在荒島上飢渴萬分的人兒啊！ 接著，又在傳說中的摩托學園討論區，遇到許多身懷絕技的大大們，有chihchun、jesse、asho等等，讓小弟覺得真的是太幸福了！ 回過頭來，Debian十週歲，祝福祂生日快樂，也祝福各位在Debian路上的朋友們玩的開心愉快，在這裡許下一個小小的心願，希望世界也可以像GNU/Linux Debian一樣的World Peace. 註1-Pahud目前為GOT台灣區CEO，意思是：他跳槽了。..."
+    dc:creator="chuany"
+    dc:date="2003-08-16T02:00:54+08:00" />
+</rdf:RDF>
+-->
+
+
+<h2 class="date">August 16, 2003</h2>
+
+
+<div class="blogbody">
+<a name="000056"></a>
+<h3 class="title">GNU/Linux Debian 十歲生日快樂</h3>
+
+<p>GNU/Linux Debian 十歲生日了!</p>
+
+<p>在還沒有接觸Debian之前，玩過許多 Linux Dists，有<a href="http://slackware.com">Slackware</a>丶<a href="http://www.suse.com">SuSE</a>丶<a href="http://redhat.com">RedHat</a>丶與<a href="http://www.turbolinux.com">Turbolinux</a>，當然還有BSD系列的<a href="http://freebsd.org/">FreeBSD</a>囉，每一套Opensource OS，都有許多不一樣的優點，當然也有很多讓使用者/管理者，感到不是很便利的地方，直到<a href="http://pahud.net/profile.php?mode=viewprofile&u=2">Pahud</a>帶領我進入Debian的世界後<i>(註1)</i>，一切都變了！！！</p>
+
+<p>怎麼個變法呢?</p>
+
+<p>1.寫個script每天random執行apt-get -s upgrade，將最新套件升級資訊email給自己。<br />
+2.每天不定時apt-cache search看看Debian的套件世界裡有哪些好玩的寶可以裝看看.<br />
+3.不用再定時收看各大Security網站最新消息，只要一有問題，apt-get upgrade就讓伺服器保持在最佳狀態，可以把原來處理tarball或RPM dependency的時間，好好的用在有用的地方.</p>
+
+<p>光是以上三點，就讓生活在中華民國在台灣的小小小系統管理員，也就是在下我，可以逍遙又自在的做自己想做的事.</p>
+
+<p>無意間，就在太閒的情況下，發現了有一位大大叫<a href="http://blog.linux.org.tw/~moto/">Moto</a>，他開了一家叫<a href="http://motoweb.chuany.net">摩托學園</a>的店，然後還寫了一篇大作叫'Debian無痛起步法'，讓身為凡夫俗子的我，不禁涕淚到久久不能自己，真是造福了像我這種在荒島上飢渴萬分的人兒啊！</p>
+
+<p>接著，又在傳說中的<a href="http://moto.chuany.net">摩托學園討論區</a>，遇到許多身懷絕技的大大們，有<a href="http://kalug.linux.org.tw/~chihchun/">chihchun</a>、<a href="http://blog.linux.org.tw/~jesse/">jesse</a>、<a href="http://moto.debian.org.tw/profile.php?mode=viewprofile&u=9">asho</a>等等，讓小弟覺得真的是太幸福了！</p>
+
+<p>回過頭來，Debian十週歲，祝福祂生日快樂，也祝福各位在Debian路上的朋友們玩的開心愉快，在這裡許下一個小小的心願，希望世界也可以像<b>GNU/Linux Debian</b>一樣的<b>World Peace</b>.</p>
+
+<p>註1-Pahud目前為<a href="http://www.gentoo.org.tw">GOT</a>台灣區CEO，意思是：他跳槽了。</p>
+
+
+
+<div class="posted">
+	由 chuany 發表於 <a href="http://blog.linux.org.tw/~chuany/archives/2003_08.html#000056">02:00 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=56" onclick="OpenComments(this.href); return false">迴響 (84)</a>
+	
+		| <a href="http://mt.debian.org.tw/mt-tb.cgi?__mode=view&amp;entry_id=56" onclick="OpenTrackback(this.href); return false">引用</a>
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

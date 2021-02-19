@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 不再囉唆：NetBSD 簡化 BSD 授權條款</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002041.html" title="取得 GNU/Linux 行程的執行檔路徑" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002043.html" title="「快快樂樂學 GNU Debugger (gdb) Part I + II」簡報上線" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002041.html">« 取得 GNU/Linux 行程的執行檔路徑</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002043.html">「快快樂樂學 GNU Debugger (gdb) Part I + II」簡報上線 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">July 04, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">不再囉唆：NetBSD 簡化 BSD 授權條款</h3>
+
+儘管絕大多數的開發者都知曉 BSD 授權條款較為寬鬆，沒有 GNU GPL 本質上 "copyleft" 的「病毒式」感染性，但實務應用仍有值得推敲之處。NetBSD 基金會近日甚至宣佈，進一步簡化其使用多年的 BSD 授權條款，相較於繁瑣的 GNU GPLv3，NetBSD 此舉可說追趕 FreeBSD 與 OpenBSD，樹立 BSD 授權的「自由派」訴求。<br />
+<br />
+BSD License 為 "Berkeley Software Distribution license" 的縮寫，顧名思義，源於加州柏克萊大學的 BSD 一系列的軟體，最早的著作權人為 Regents of the University of California'（加州大學董事會)，BSD 授權條款本身相當清楚，最初的版本有四個條款，也就是規範被授權人的條件限制，如下：<ul>
+  <li>Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.</li>
+  <li>Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.</li>
+  <li>All advertising materials mentioning features or use of this software must display the following acknowledgement: This product includes software developed by the University of California, Berkeley and its contributors.</li>
+  <li>Neither the name of the University nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.</li>
+</ul>
+相較於冗長的 GNU GPL，上述四個條款相當清晰，簡單來說就是：<ul>
+  <li>規範以原始程式碼形式的再散播，需保有同樣的授權聲明</li>
+  <li>要求二進位可執行形式的再散播，需在檔案或所屬的媒介中，附上授權、免責條款等資訊</li>
+  <li>軟體本身應提供如廣告般的機制，附帶提及告知研發軟體的加州大學</li>
+  <li>未獲得許可前，禁止以原作者或加州大學之名，行衍生軟體之背書、推廣、促銷等行為</li>
+</ul>
+至於授權條款被提出的時空背景，很值得思量。最早的 UNIX 緣起於 1970 年代的 Bell Labs，1974 年起，UNIX 被安裝至加州柏克萊大學的 PDP-11 電腦上，引來研究人員的高度興趣，並提供若干功能的補強與修正。1977 年，柏克萊大學的研究生 Bill Joy 整理這些師生的貢獻、彙整新的程式等，存放到磁帶上，作為 first Berkeley Software Distribution (1BSD) 發行，當然，這裡的 "Distribution" 意義非常明確，就是將磁帶經過人工搬移、複製存取的動作。BSD 見證了 Bill Joy 那個時代 hacker 的風采，至 3BSD 時，已是大幅重寫而具備嶄新作業系統的特徵，諸如虛擬記憶體。儘管「青出於藍而勝於藍」，但 BSD 源自 AT&T UNIX 的事實卻無法抹滅，甚至在 4BSD 後的版本不能依據慣例發佈為 "5BSD"，而以 4.1BSD, 4.2BSD, 4.3BSD 這樣於後方加入小數點與版號的方式發佈，而非原本依據發佈版次 (1st, 2nd, 3rd, 4th) 的模式，就是為避免與 AT&T 的 UNIX System V 混淆而生侵權議題。<br />
+<br />
+隨著 BSD 的成熟，人們意識到摻雜 AT&T UNIX 的程式碼，意味著高價的授權 (AT&T License) 與使用上的限制，沒辦法透過當時開始發展的網路 (Ethernet) 作廣泛的散播，是此，在許多貢獻者的投入下，1989 年六月，Networking Release 1 (Net/1) 誕生了，不需 AT&T 授權也使用，當時一個劃時代的變革就是將上述四個條款的 BSD 授權聲明含入，只要在這個新的遊戲規則下，都可自由再發佈。而我們也可從這原始的四項被授權人的條件限制中，看出對於原始程式與二進位執行檔的散播形式 (需保有授權與免責聲明)、於程式本體提及 Net/1 研發背後的加州大學、禁止以貢獻者或加州大學之名，行衍生軟體之背書、推廣、促銷等行為，意思就是為這嶄新的系統，制定得以自由使用的規則。而到了 1991 年六月，Net/2 已幾近全新的作業系統，不含 AT&T 的程式碼，而 Net/2 在 Intel 80386 硬體架構的移植，由 William Jolitz 負責下進行，也被稱為 386BSD，後來，由握有 System V 版權、Unix 商標的 UNIX Systems Laboratories (USL，為 AT&T 附屬子公司) 對 Net/2 在 80386 硬體的封閉專屬 BSD/OS 背後研發的 Berkeley Software Design (BSDi) 公司，提出法律訴訟，延宕了多年，直到 1994 年一月份才落幕，並引來 BSD 原始程式碼重整的動作，顯然，對系出同門的 386BSD 來說，不免也受到影響，而無法在法律爭端休止前，作自由的開發與使用。<br />
+<br />
+也因此，386BSD 無疑是短命的作業系統，但卻奠定 NetBSD 與 FreeBSD 的基礎，同時，這兩個專案也繼承 BSD 授權條款，作為發行的規則，而，BSD 授權也因其簡單明確，帶來廣泛的成功，許多非加州大學開發的軟體也紛紛採用這個授權，將著作歸屬人的加州大學，改為自己從屬的單位，就透過網路或等價媒介作廣泛散播。不過，GNU/FSF 發現 BSD 授權的問題，導致無法與 GNU GPL 保持相容，從而將原本四個條款的 BSD 授權之中的一項，稱為 [<a href="http://www.gnu.org/philosophy/license-list.html#OriginalBSD">obnoxious BSD advertising clause</a>]，也就是上述的第三條：<ul class="code" style="margin: 6px;">
+"All advertising materials mentioning features or use of this software must display the following acknowledgement: This product includes software developed by the University of California, Berkeley and its contributors."
+</ul>
+英文 "obnoxious" 一詞即「令人不舒服」的意思， 我們可見到，當貢獻者數量劇增時，這樣帶有廣告性聲明貢獻者的條款，會使得軟體的檔案變得很冗長，再者，也是最重要的，這與不允許增加額外限制 (強制性廣告本質上就是新的限制) 的 GNU GPL 設計相牴觸，所以，也無法與 GNU GPL 授權條款所相容，帶來諸多遺憾，詳細描述見 [<a href="http://www.gnu.org/philosophy/bsd.html">The BSD License Problem</a>]。經過 Richard Stallman 等人的呼籲和陳情，加州柏克萊分校於 1999 年，做出正式回應，刪去原始 BSD 授權條款的第三條「廣告條款」，是此，原本的授權許可被稱為 "old-BSD" 或 "4-clause BSD"，而相對新的 BSD 授權條款自然就稱為 "new-BSD"、"revised-BSD"，或者 "3-clause BSD" 授權了，關於這樣的 BSD 授權樣本，可參見 Open Source Initiative (OSI) 的 [<a href="http://www.opensource.org/licenses/bsd-license.php">The BSD License:Licensing</a>]。<br />
+<br />
+在 2008 年六月上旬，我們可看到自由的 BSD 家族，採用的 BSD 授權條款如下：<ul>
+  <li>NetBSD 仍使用原始的 BSD 授權條款 (4-clause)</li>
+  <li>FreeBSD 使用兩句版授權條款 (2-clause)，另行於末尾添加非 FreeBSD 基金會的貢獻者列表</li>
+  <li>DragonFlyBSD 使用 3-clause/new- BSD 授權條款，與 FreeBSD 4 分家前同</li>
+  <li>OpenBSD 對所有添加的軟體，採用 Internet Systems Consortium, Inc 的版權條款，就其功能 來說，也就是 2-clause BSD 授權</li>
+</ul>
+這裡的 2-clause BSD license 是將「未獲得許可前，禁止以原作者或加州大學之名，行衍生軟體之背書、推廣、促銷等行為」這一條也刪去：(old-BSD 的第四條、new-BSD 的第三條)<ul class="code" style="margin: 6px;">
+"Neither the name of the University nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission."
+</ul>
+如此一來，2-clause BSD license 幾乎等價於 MIT X license，現由 FreeBSD 與 OpenBSD 所導入。而，在六月 20 日，NetBSD 基金會主席 Alistair Crooks 宣佈道 [<a href="http://mail-index.netbsd.org/netbsd-announce/2008/06/20/msg000030.html">The NetBSD Foundation Moves to a Two Clause BSD License</a>]，宣示 NetBSD 建議的授權條款，也將改用 2-clause BSD 授權許可，同時，在聲明中也提及現有軟體的授權變遷狀況。我們可見，Alistair Crooks 提到更改授權的考量點：<ul>
+  <li>we have seen organisations and people concerned about the old clause 3 (the advertising clause) in the license, to the extent where NetBSD code could not be used in commercial products; the new license means that these concerns are no longer valid</li>
+  <li>UCB moved some time ago to remove clause 3 from the code contributed to UCB; this change mirrors that one</li>
+  <li>we have seen some instances where clause 3 was ignored by groups and organisations</li>
+  <li>the members of the NetBSD Foundation (i.e. its developers) no longer considered clause 4 (the "endorsement" clause) to be useful in today's software world</li>
+</ul>
+所以，從善如流，不再囉唆！NetBSD 簡化 BSD 授權條款的動作，幾乎意味著 BSD 世界的授權一致性，剩下 DragonFly BSD 採用 3-clause BSD license。不過，需要留意的是，其他採用 BSD-style 的 free / open source software，並未立即更新，比方說我們可在 gslin 的 [<a href="http://blog.gslin.org/archives/2007/01/13/1001/">BSD 4-clause license 的問題</a>] 一文，見到相當有名的 GPL-incompatible 案例：[<a gref="http://www.openssl.org/source/license.html">OpenSSL License</a>]，與新 Gentoo/FreeBSD 裡頭 libkvm 的授權相容性議題。<br />
+<br />
+大環境來看，現在 copyleft 的代表為 GNU GPLv3，而自由派 (也稱為 copycenter) 的代表幾乎就是 2-clause BSD license，兩者的分野就更鮮明了。另外，[<a href="http://www.feyrer.de/NetBSD/bx/blosxom.cgi/nb_20080624_0006.html">hubertf</a>] 提到 GPL 與 BSDL 改版的字數比較圖，頗有意思：<br />
+<center><img src="http://chart.apis.google.com/chart?cht=bvg&chdl=BSD|GPL&chdlp=r&chbh=30,5,15&chco=ff0000,0000ff&chs=400x200&chd=t:310.0,271.0,241.0|2063.0,2968.0,5644.0&chds=0,6000&chtt=Words&chxt=r&chxr=0,0,6000" /></center><br />
+GNU GPL 就好像法律條文，冗長令人生懼，但捍衛自由，又不得不如此；BSD License 則像女人的迷你裙，越短越受歡迎。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 July  4, 2008 11:53 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>突然想到我們老師對迷你裙的見解：<br />
+『迷你裙要遮著重點，但是要愈短愈好』</p>
+<span class="comments-post">由 <a href="mailto&#58;yurenju&#64;gmail&#46;com">yurenju</a> 發表於</MTIfNonEmpty> July  4, 2008 04:14 PM</span>
+</div>
+<div class="comments-body">
+<p>真是好厲害，另我獲益良多，獲益良多！ (Y)</p>
+<span class="comments-post">由 <a href="mailto&#58;ftmk20082&#64;gmail&#46;com">Florence</a> 發表於</MTIfNonEmpty> July  6, 2008 07:08 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2042" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: August 2011 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2011_07.html" title="July 2011" />
+
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2011_09.html" title="September 2011" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2011_07.html">« July 2011</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+| <a href="http://blog.linux.org.tw/~jserv/archives/2011_09.html">September 2011 »</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+
+
+<h2 class="date">August 30, 2011</h2>
+
+
+<div class="blogbody">
+<a name="002181"></a>
+<h3 class="title">避開 PTRACE_TRACME 反追蹤技巧</h3>
+
+在前文 [<a href="http://blog.linux.org.tw/~jserv/archives/2010/08/ptrace_sigtrap.html">ptrace / SIGTRAP / int3 的關聯</a>] 提到藉由檢查 ptrace(PTRACE_TRACEME, ...) 的技巧，確認該 process 是否被 GDB 所追蹤，而做出必要的回應。不過，這不表示就沒轍，事實上，還是能透過 gdb 來追蹤。<br />
+<br />
+先來看看之前的範例程式碼：<br />
+<script src="http://pastebin.com/embed_js.php?i=UpeZ34pP"></script>
+嘗試編譯並使用 gdb：<pre class="code" style="margin: 6px;">
+$ gcc -o ptraceme{,.c} && gdb ptraceme
+GNU gdb (Ubuntu/Linaro 7.3-0ubuntu2) 7.3-2011.08
+...
+(gdb) r
+Starting program: /tmp/ptraceme 
+No, I don't want to serve you.
+</pre>
+由於執行到無窮迴圈，我們只好按下 Ctrl-C 結束：<pre class="code" style="margin: 6px;">
+^C
+Program received signal SIGINT, Interrupt.
+0x08048451 in main ()
+</pre>
+讓我們來觀察反組譯的程式碼：(筆者的環境是 x86 32-bit) <pre class="code" style="margin: 6px;">
+   0x0804843c &lt;+40&gt;:	call   0x8048350 &lt;ptrace@plt&gt;
+   0x08048441 &lt;+45&gt;:	test   %eax,%eax
+   0x08048443 &lt;+47&gt;:	jns    0x8048453 &lt;main+63&gt;
+   0x08048445 &lt;+49&gt;:	movl   $0x8048540,(%esp)
+   0x0804844c &lt;+56&gt;:	call   0x8048320 &lt;puts@plt&gt;
+=&gt; 0x08048451 &lt;+61&gt;:	jmp    0x8048451 &lt;main+61&gt;
+</pre>
+顯然 "jmp 0x8048451" 就是目前的無窮迴圈，但我們往上可見 call ptrace 這個調用 ptrace 系統呼叫的動作，接下來一行就是關鍵：<pre class="code" style="margin: 6px;">
+   0x0804843c &lt;+40&gt;: call   0x8048350 &lt;ptrace@plt&gt;
+   0x08048441 &lt;+45&gt;: test   %eax,%eax
+</pre>
+使用 test 指令來查對 ptrace() 系統呼叫的傳回值 (置於 %eax 暫存器)，那也意味著，如果我們能在此設定中斷點，並且強制更改 %eax 內含值，就可跳過此反追蹤技巧。咱們來試試看：<pre class="code" style="margin: 6px;">
+(gdb) b *0x08048441
+Breakpoint 1 at 0x8048441
+(gdb) r
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+Starting program: /tmp/ptraceme 
+
+Breakpoint 1, 0x08048441 in main ()
+</pre>
+如我們預期，停在 test 指令那邊，這時設定 %eax 暫存器並繼續執行：<pre class="code" style="margin: 6px;">
+(gdb) set $eax=0
+(gdb) c
+Continuing.
+Yes, real routines go here
+[Inferior 1 (process 13899) exited normally]
+</pre>
+終於見到 "Yes, real routines go here" 字樣，而且該 process 也正常執行完畢。我們可編撰以下的 GDB script，來自動化上述操作，原理就是檢查 ptrace 系統呼叫的參數與修改回傳值。建立檔案 "gdb-ptrace" 如下：<pre class="code" style="margin: 6px;">
+set $ptrace_bpnum = 0
+
+define ptrace-hook
+    catch syscall ptrace
+    commands
+        if ($ebx == 0)
+	    set $eax = 0
+            continue
+        end
+    end
+    set $ptrace_bpnum = $bpnum
+end
+
+define ptrace-unhook
+    if ($ptrace_bpnum != 0)
+        delete $ptrace_bpnum
+        set $ptrace_bpnum = 0
+    end
+end
+</pre>
+我們定義兩個自訂指令： ptrace-hook 與 ptrace-unhook，前者的技巧在於 "catch syscall ptrace"，這時要求 GDB 檢查參數。離開 GDB 後，載入該 GDB script 並重新執行 ptraceme 執行檔：<pre class="code" style="margin: 6px;">
+$ gdb -x gdb-ptrace ptraceme
+GNU gdb (Ubuntu/Linaro 7.3-0ubuntu2) 7.3-2011.08
+...
+</pre>
+鍵入自訂指令並執行：<pre class="code" style="margin: 6px;">
+(gdb) ptrace-hook 
+Catchpoint 1 (syscall 'ptrace' [26])
+(gdb) r
+Starting program: /tmp/ptraceme 
+
+Catchpoint 1 (call to syscall 'ptrace'), 0x001110c2 in ?? ()
+   from /lib/ld-linux.so.2
+
+Catchpoint 1 (returned from syscall 'ptrace'), 0x001110c2 in ?? ()
+   from /lib/ld-linux.so.2
+Yes, real routines go here
+[Inferior 1 (process 13973) exited normally]
+</pre>
+由上可見，Catchpoint 1 就是 syscall 'ptrace'，我們順利的攔截並改變程式執行流程。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2011/08/_ptrace_tracme.html">11:25 PM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2181" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<h2 class="date">August 29, 2011</h2>
+
+
+<div class="blogbody">
+<a name="002180"></a>
+<h3 class="title">「開放原始碼作為新事業: 台灣本土經驗談」簡報上線</h3>
+
+<center><img src="http://0xlab.org/~jserv/coscup-2011-keynote.jpg" width="383" height="330" /></center><br />
+本月適逢台灣區開放源碼界的盛會 [<a href="http://coscup.org/">COSCUP</a>]，除了過去分享 [<a href="http://0xlab.org/">0xlab</a>] 這一年來的 [<a href="http://jserv.blogspot.com/2011/08/0xlab.html">開發進度</a>] 外，今年嘗試調整演講的型態，以「開放原始碼作為新事業: 台灣本土經驗談」為題作 keynote 分享，簡報已上線，請參考: [<a href="http://0xlab.org/~jserv/0xlab-experience-2011.pdf">0xlab-experience-2011.pdf</a>]<br />
+<center><div style="width:425px" id="__ss_9067278"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/jserv/coscup-2011" title="開放原始碼作為新事業: 台灣本土經驗談 (COSCUP 2011)" target="_blank">開放原始碼作為新事業: 台灣本土經驗談 (COSCUP 2011)</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/9067278" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/jserv" target="_blank">Jim Huang</a> </div> </div></center>
+一開始先分享 [<a href="http://0xlab.org/">0xlab</a>] 成立時的背景，為了搭 Google Android 的順風車，著實付出頗多代價，特別對我們這些對 open source 有著天真憧憬的人來說。中間則是以一位系統開發者的角度，看 Android 特有的生態系統 (ecosystem) 有了哪些本質上的轉變，而我們則以與其他團隊或知名開放原始碼專案合作的方式，試著去找到一個切入點：專注於 Android 系統層面的軟體品質。過程中，也以開放原始碼的形式，釋出了若干專案，可參考 [<a href="http://0xlab.org/technology.html">0xlab::Technologies</a>]。另外也分享了一個小插曲，當出國在 ARM 的長官前面忐忑不安地作簡報，腦袋真是一片空白，只好在終端機前面敲 "git log | grep 0xlab"，說明 Android 已正式收錄多項來自我們的貢獻，沒想到竟然意外成功地拿到合約。<br />
+<br />
+最近發生很多事，因而習得一些法務與會計的觀念。只要真心去克服問題，終究還是能解決的，也要感謝客戶長久以來給我們的支持。不過長久以來的壓力與挫折，竟然使得自己在面對台下一千人的 keynote speech 時，不小心沒控制情緒，就哽咽起來、語無倫次，實在很抱歉。感謝您的蒞臨指教，也歡迎交流。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/2011/08/post_284.html"> 1:39 PM</a>
+	
+	| <a href="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi?entry_id=2180" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+
+</body>
+</html>

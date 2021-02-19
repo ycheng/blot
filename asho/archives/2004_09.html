@@ -1,0 +1,431 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Asho's Blog: September 2004 Archives</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~asho/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~asho/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~asho/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~asho/archives/2004_08.html" title="August 2004" />
+
+<link rel="next" href="http://blog.linux.org.tw/~asho/archives/2004_10.html" title="October 2004" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~asho/" accesskey="1">Asho's Blog</a></h1>
+<span class="description">一個喜歡研究的傻小子 :-)</span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~asho/archives/2004_08.html">&laquo; August 2004</a> |
+
+<a href="http://blog.linux.org.tw/~asho/">Main</a>
+| <a href="http://blog.linux.org.tw/~asho/archives/2004_10.html">October 2004 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">September 30, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000675"></a>
+<h3 class="title">Burning DVD in Debian</h3>
+
+<p>I bought a NU dual 8x DVD-RW in recent. The driver was connected with a usb2ide cable to my tyan2466 and the host USB bus is NEC chip.</p>
+
+<p>Please install the dvd+rw-tools and cdrtools. We need the growisofs in dvd+rw-tools and mkisofs from cdrtools. CDrecord is the optional tool unless you follow the /usr/share/doc/cdrecord/README.DVD.Debian and patch it.</p>
+
+<p>Burn the DVD+R or DVD+RW at once:<br />
+growisofs -Z /dev/cdrecord -J -r iso-dir(cdrecord is the device node link to your physical DVD-RW)</p>
+
+<p>Burn the DVD+R with pre-mastered iso:<br />
+mkisofs -r -J -o iso iso-dir (the mkisofs in Debian has an unofficial icon-patch and that is different to the original.)<br />
+growisofs -Z /dev/cdrecord=iso</p>
+
+<p>Append datas to the DVD+R:<br />
+growisofs -M /dev/cdrecord=iso2</p>
+
+<p><br />
+Looking for good GUI?<br />
+hmm...actually the gui isn't my favorite but I can suggest K3b or XCD-Roast to enjoy the easy burning. :-)</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000675.html">08:02 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=675" onclick="OpenComments(this.href); return false">Comments (2267)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">September 12, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000665"></a>
+<h3 class="title">ide-tcq</h3>
+
+<p>tagged command queue</p>
+
+<p>使用過 SCSI 裝置的朋友一定知道 SCSI 的好處在於多工，因為 SCSI 都有 TCQ 的支援，TCQ擁有指令的最佳化，每一個裝置送到 controller 上的信號會被 SCSI 卡重組好後再送給 CPU 處理，所以 CPU 處理的都是 循序的資料。</p>
+
+<p>在 20G 硬碟為主流的年代，IBM有出過一款擁有 command queue的硬碟，但因為價格跟controller不支援的關係退去市場。</p>
+
+<p>在 Linux-2.5/2.6.6 (below) 的版本有實作 ide-tcq，支援 ide 硬碟，但很可惜的是效能不明險和bug的問題，造成 2.6.7 就拿掉了，轉而繼續發展 SATA 的 NCQ(native command queue)。</p>
+
+<p>NCQ 在 SATAll or 2.0(SATA ll增加 NCQ，SATA 2.0 把頻寬加大到 3Gbit/s) 才加入的，必須要 controller ， 硬碟，和 OS 都支援才可以。</p>
+
+<p>目前支援的 controller 在<a href="http://blog.linux.org.tw/~asho/archives/000663.html">Linux: SATA Status Support</a>有說明了，kernel部份還都是 beta階段(還沒成為主流，沒關係)</p>
+
+<p>硬碟部份也是很少的(一定要原生型 SATA，如果硬碟上有一顆 Marvall 的轉接晶片就不會支援 NCQ，因為不是原生型)<br />
+seagate:7200.7 的 SATA 硬碟似乎只有 200G 的才有支援 NCQ，或是未來的 梭魚 8<br />
+WD:只有萬轉 74G (NT$8000，還算不貴)那一顆才有，36G or 其他的都沒有<br />
+Maxtor:只有新版的 MaxLine lll 才支援<br />
+Hitachi:in the future...</p>
+
+<p>看來 NCQ普及的時候，PCI-E 也已經普及了，希望雙CPU的高階主機板已經把 PCI-X 改成 PCI-E 了，這樣版子可以做小一點，短一點，CASE才好挑...:-)</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000665.html">01:19 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=665" onclick="OpenComments(this.href); return false">Comments (1011)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">September 11, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000664"></a>
+<h3 class="title">搞定了 kernel-2.6 對 ide 硬碟的問題</h3>
+
+<p>先前將小黑換成 kernel-2.6發現偵測不到ide硬碟，因為我是用SCSI硬碟，外掛amd74xx這個模組。</p>
+
+<p>但換了那個版本的 kernel 都不行，今晚看了 <a href="http://www.codemonkey.org.uk/docs/post-halloween-2.6.txt">post-halloween-2.6</a>才知道，原來ide 的晶片最好是compile in kernel，另外讀取 module可能會有 kernel oops...(就跟小黑的情況一樣)，抓了 2.6.8.1+ck7的patch重新compile之後，總算抓到了ide硬碟了耶!!!</p>
+
+<p>真的要好好看一下 post-halloween 才能弄懂 2.6的差別</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000664.html">11:55 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=664" onclick="OpenComments(this.href); return false">Comments (1036)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">September 10, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000663"></a>
+<h3 class="title">Linux: SATA Status Support</h3>
+
+<p><a href="http://kerneltrap.org/node/view/1787">Linux SATA Support</a></p>
+
+<p>Intel ICH5, ICH5-R, ICH6<br />
+------------------------<br />
+Summary: No TCQ. Looks like a PATA controller, but with a few added,<br />
+non-standard SATA port controls. Hardware does not support hotplug.<br />
+"Coldplug" support is potentially feasible.</p>
+
+<p>libata driver status: Production, but see issue #2, #3.<br />
+Recently work on issue #2 has improved the state of that issue.</p>
+
+<p>drivers/ide driver status: Production, but see issue #1, #2.</p>
+
+<p><br />
+Issue #1: Depending on BIOS settings, IDE driver may lock up computer<br />
+when probing drives.</p>
+
+<p>Issue #2: Excessive interrupts are seen in some configurations.</p>
+
+<p>Issue #3: "Enhanced mode" or "SATA-only mode" may need to be set in BIOS.</p>
+
+<p></p>
+
+<p>AHCI (Intel ICH6-R/ICH6-M currently)<br />
+------------------------------------<br />
+Summary: Per-device queues, full SATA control including hotplug<br />
+and PM.</p>
+
+<p>libata driver status: "looks like ICH5" support available in ata_piix.<br />
+Preliminary driver with full AHCI support now exists, and is being<br />
+integrated into libata mainline.</p>
+
+<p>Note1:  AHCI specification is completely open.</p>
+
+<p>Note2:  To ease integration, AHCI on ICH6 will be deployed inside the<br />
+ata_piix driver.</p>
+
+<p>Note3:  SiS has AHCI on its roadmap.  Hopefully others will follow.</p>
+
+<p><br />
+Promise TX2/TX4/SX4<br />
+-------------------<br />
+Summary: Per-host queues on all controllers. Full SATA control<br />
+including hotplug and PM on all but one controller (SX4).</p>
+
+<p>libata TX2/TX4 driver status: Production, but see issue #5.</p>
+
+<p>libata SX4 driver status: Production, but see issue #6.</p>
+
+<p><br />
+Issue #5: Some boards appear to have PATA as well as SATA ports. PATA<br />
+is not currently supported, and no plans have yet been made to rectify<br />
+this. Ideally drivers/ide would drive PATA, but if they are the same<br />
+PCI device, that would not be feasible.</p>
+
+<p>Issue #6: The SX4 hardware is not fully utilized by the Linux kernel<br />
+driver.  The SX4 hardware includes an on-board DIMM and hardware XOR<br />
+offload.  Using the on-board DIMM as cache, and issuing each RAID<br />
+transaction once (instead of once for each disk), will result in<br />
+increased performance, but the driver doesn't do that yet.  SX4 hardware<br />
+is very "RAID friendly", particularly RAID1/5.  Users may wish to use<br />
+the Promise driver to fully utilize the hardware.</p>
+
+<p><br />
+Silicon Image 3112/3114<br />
+-----------------------<br />
+Summary: No TCQ. Looks like a PATA controller, but with full SATA<br />
+control including hotplug and PM.</p>
+
+<p>libata driver status: Beta.</p>
+
+<p>drivers/ide driver status: Beta?</p>
+
+<p><br />
+Silicon Image 3124<br />
+------------------<br />
+Soon, hopefully.  Silicon Image has made documentation and sample<br />
+hardware available to me (jgarzik) for development.  Some code exists<br />
+internally.</p>
+
+<p><br />
+Broadcom/ServerWorks/Apple<br />
+--------------------------<br />
+Summary: Huge per-device queues, full SATA control including hotplug<br />
+and PM for the "Frodo4" and "Frodo8" boards.  Apple K2 SATA, which also<br />
+uses this chipset, has all the feature of Frodo4/8 save the host DMA<br />
+queueing feature ("QDMA").  QDMA supports legacy TCQ, but not NCQ.</p>
+
+<p>libata driver status: Beta, but no QDMA support yet.</p>
+
+<p><br />
+VIA<br />
+---<br />
+Summary: No TCQ. Looks like a PATA controller, but with full SATA<br />
+control including hotplug and PM.</p>
+
+<p>libata driver status: Beta.</p>
+
+<p><br />
+NVIDIA<br />
+------<br />
+Summary: No TCQ. Looks like a PATA controller, but with full SATA<br />
+control including hotplug and PM.</p>
+
+<p>libata driver status: Beta.</p>
+
+<p><br />
+SiS 180<br />
+-------<br />
+Summary: No TCQ. Looks like a PATA controller, but with full SATA<br />
+control including hotplug and PM.</p>
+
+<p>libata driver status: Beta</p>
+
+<p><br />
+Vitesse 7174 / Intel 31244<br />
+--------------------------<br />
+Summary: NCQ and 64-bit DAC support possible, but not implemented.<br />
+Looks like a PATA controller, but with full SATA control including<br />
+hotplug and PM.</p>
+
+<p>libata driver status: Beta</p>
+
+<p><br />
+Marvell 88SX50[48]x<br />
+-------------------<br />
+Summary:  Similar to ServerWorks "frodo":  per-device queues, supports<br />
+legacy TCQ but not NCQ (I think??), full SATA control including hotplug<br />
+and PM.</p>
+
+<p>libata driver status: in progress</p>
+
+<p><br />
+HighPoint (HPT)<br />
+---------------<br />
+I've had no contact with the company.  Someone poke them, and get<br />
+them to get me a card and docs :)</p>
+
+<p>libata driver status:  no driver planned at this point.</p>
+
+<p><br />
+ADMA (including Pacific Digital Talon SATA)<br />
+-------------------------------------------<br />
+Summary:  No control over SATA phy at all (no hotplug/PM).  Has<br />
+per-device hardware queues, and supports legacy TCQ.</p>
+
+<p>Docs are public (yay!)</p>
+
+<p>libata driver status:  none, but hopefully soon</p>
+
+<p><br />
+3ware SATA RAID<br />
+---------------<br />
+Not suited for libata architecture.  Separate SCSI driver exists.</p>
+
+<p></p>
+
+<p>------- 我是分格線<br />
+看來要等 SATA ll 或是 2.0 普及之後，才會有完整的 NCQ 支援，目前多工上還是 SCSI 比較好</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000663.html">10:44 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=663" onclick="OpenComments(this.href); return false">Comments (1094)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="000662"></a>
+<h3 class="title">SKYPE</h3>
+
+<p>好用的VOIP軟體，昨晚跟 jesse 大大玩了一下，音質很贊耶，想必未來一定會成為風潮的，以後要開會都直接線上聊天就可以了。</p>
+
+<p>要去買 mic 回來玩摟</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000662.html">10:37 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=662" onclick="OpenComments(this.href); return false">Comments (1137)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">September 08, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000660"></a>
+<h3 class="title">[閒聊]gtk1.2 的字型設定 in UTF8</h3>
+
+<p>之前在 utf8 的環境下設定 .gtkrc 必須使用</p>
+
+<p>iso10646-1</p>
+
+<p>結尾的字體，最近升級sid了 XFree86之後，gtk1.2的程式就出現問題了，把以前的 big5+iso8859-1的字體設定回來之後，xmms,sylpheed的畫面就變正常了。</p>
+
+<p>不知道是不是 DEBIAN 的XFree86 有 tune 什麼東西？<br />
+</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000660.html">02:03 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=660" onclick="OpenComments(this.href); return false">Comments (625)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">September 07, 2004</h2>
+
+
+<div class="blogbody">
+<a name="000659"></a>
+<h3 class="title">TODO</h3>
+
+<p>1:gcin-0.2.8 update<br />
+2:gtranscode<br />
+    - 送 gtk2 的 patch 給作者，並提及接下 gtranscode 的維護<br />
+    - 增加字幕檔的影片壓縮<br />
+3:commit qref</p>
+
+<p>----<br />
+要念的書：<br />
+1:gtk1/gtk2 的 doc<br />
+2:o'reilly: C++ 設計與藝術<br />
+3:K.R. 的 C 程式設計<br />
+4:advanced Linux Programming<br />
+5:linux programming base on kernel-2.4<br />
+6:O'reilly: LDAP<br />
+</p>
+
+
+
+<div class="posted">
+	Posted by asho at <a href="http://blog.linux.org.tw/~asho/archives/000659.html">11:37 PM</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

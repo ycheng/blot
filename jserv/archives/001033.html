@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: OSGI 與 Eclipse3 的關聯性</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001032.html" title="起飛中的 Debian 中文社群" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001034.html" title="Free Software Foundation 徵才資訊" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001032.html">« 起飛中的 Debian 中文社群</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001034.html">Free Software Foundation 徵才資訊 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 10, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">OSGI 與 Eclipse3 的關聯性</h3>
+
+<p>之前 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001029.html">Eclipse 3.0.1 倩影</a>] 提到我在 Kaffe.org mailing-list 成功使用 Kaffe 1.1.5pre 運作 Eclipse 3.0.1，而如果您留意的話，啟動 eclipse 的 script 施加了這個參數： "-Dosgi.locking=none"，這個 locking 的問題主要是目前 GNU Classpath 為基礎的 Free Java runtime 的支援度考量。</p>
+
+<p>比較有趣的是，那 osgi 又是什麼呢？Yipsilon 的 blog [<a href="http://blog.csdn.net/yipsilon/archive/2005/03/09/315984.aspx">OSGI與Eclipse3</a>] 給我們一個完整的答案，首先引述 OSGi 的介紹：<ul><br />
+OSGi是Open Service Gateway Initiative的簡稱，該組織建立于1999年，是一個非贏利機構，旨在建立一個開放的服務規范，為通過網絡向設備提供服務建立開放的標准。<br />
+</ul><br />
+而 IBM Eclipse 團隊為何要採納 OSGi 的規範呢？再度引述：<ul><br />
+有很多人問Eclipse為什麼要兼容OSGI規范而不是其他的規范呢?<br />
+在Eclipse 被捐贈出來以前，Eclipse由OTI來開發，其目標是開發一個嵌入式Java軟件的開發平台。互聯網上現在仍然由很多的連接指向 Visual Age Micro Edition (VAME). 這也是SWT被構思的一個原因，他們想將SWT使用在嵌入式設備中的用戶界面。這種淵源關系解釋了當時為什麼選擇OSGI規范。<br /><br />
+另外一個原因是除了OSGI沒有其他的規范。OSGI規范在輕量級服務架構應用方面被廣泛的支持。而且OSGI被好多電信業的知名公司和一些其他行業的知名公司所支持。他們需要使用OSGI來同Sun的J2ME來抗衡。<br />
+</ul></p>
+
+<p>這下終於搞懂了 :-)</p>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March 10, 2005 11:19 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

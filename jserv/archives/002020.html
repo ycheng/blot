@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: QGtkStyle : 讓 Qt 應用程式模擬 GtK+ 的外觀</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002019.html" title="演講：我愛 Git - 有效使用分散式版本控制系統" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002021.html" title="演講：尋幽訪勝話系統--以 Linux 探索軟硬體整合設計" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002019.html">« 演講：我愛 Git - 有效使用分散式版本控制系統</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002021.html">演講：尋幽訪勝話系統--以 Linux 探索軟硬體整合設計 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">May 16, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">QGtkStyle : 讓 Qt 應用程式模擬 GtK+ 的外觀</h3>
+
+當我們使用 GNOME 或 [<a href="http://lxde.sourceforge.net/">LXDE</a>] 這一類以 Gtk+ 開發的桌面系統時，免不了會需要使用某些重量級 Qt/KDE 應用程式，如 Skype，稍早還做了 [<a href="http://blog.linux.org.tw/~jserv/archives/001986.html">援助 Qt4 style 小記</a>] 的嘗試。現在，Trolltech 的工程師完成了初步的實做，提出 [<a href="http://labs.trolltech.com/page/Projects/Styles/GtkStyle">QGtkStyle</a>]，透過 Qt Style plugin，可動態在 Qt 4.4 的應用程式中，模擬 Gtk+ 的外觀，所謂「一圖勝千文」，咱們看看呈現的效果： (click to enlarge)<br />
+<center><a href="http://people.debian.org.tw/~jserv/qgtkstyle.png"><img src="http://people.debian.org.tw/~jserv/qgtkstyle-small.jpg" width="480" height="390" /></a></center><br />
+由圖可見，最上層的 Skype 雖然非自由軟體，但透過 Qt 4.4 加上 [<a href="http://labs.trolltech.com/page/Projects/Styles/GtkStyle">QGtkStyle</a>] 即可有 Gtk+ 的外觀效果，包含按鈕與捲軸都是如此，與下方的 Firefox 瀏覽器的 native Gtk+ 效果就非常一致，比起過去分歧的 Gtk+ vs. Qt 視覺呈現，協調許多。<br />
+<br />
+程式碼可透過 SVN 取得，以 GNU GPLv2 授權釋出。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 May 16, 2008 04:08 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>這真是太振奮人心了，我想要這個想好幾年了<br />
+之前自己試著寫結果失敗，沒想到真的有人做了！<br />
+真是太感動了，這個實作效果近乎完美啊！！<br />
+外觀不一致的問題，終於要獲得解決了<br />
+現在就只要等 app 逐漸都移植到 Qt4 就行了<br />
+Perfect!</p>
+<span class="comments-post">由 <a href="http://pcman.sayya.org/">PCMan</a> 發表於</MTIfNonEmpty> May 16, 2008 11:13 PM</span>
+</div>
+<div class="comments-body">
+<p>請問 QFileDialog 可否也使用 GtkFileChooserDialog 呢？</p>
+
+<p>只知道 Qt3 的 Opera 9.50b2 在 Gnome 下是使用 GtkFileChooserDialog 的</p>
+<span class="comments-post">由 <a href="mailto&#58;jhuangjiahua&#64;gmail&#46;com">華華</a> 發表於</MTIfNonEmpty> May 18, 2008 05:50 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2020" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

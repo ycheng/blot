@@ -1,0 +1,615 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: 透過 LLVM 打造 Brainfuck JIT compiler</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2011/03/from_source_to.html" title="演講：from Source to Binary -- How GNU Toolchain Works" />
+
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2011/04/build_programmi_1.html" title="「Build Programming Language Runtime by LLVM」簡報上線" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2011/03/from_source_to.html">« 演講：from Source to Binary -- How GNU Toolchain Works</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+| <a href="http://blog.linux.org.tw/~jserv/archives/2011/04/build_programmi_1.html">「Build Programming Language Runtime by LLVM」簡報上線 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">April  5, 2011</h2>
+
+<div class="blogbody">
+
+<h3 class="title">透過 LLVM 打造 Brainfuck JIT compiler</h3>
+
+本文是補充今年在 [<a href="http://osdc.tw/">OSDC.tw</a>] 演講〈Build Programming Language Runtime with LLVM〉的實做部份，並且透過逐步使用 [<a href="http://llvm.org/">LLVM</a>] 的方式，分析 LLVM 的應用途徑。<br />
+<br />
+首先，回顧 Chris Lattner 與 Vikram Adve 在 2004 年提出經典論文 [<a href="http://llvm.org/pubs/2004-01-30-CGO-LLVM.html">LLVM: A Compilation Framework for Lifelong Program Analysis & Transformation</a>] 的結論，LLVM 是如何進行多階段的優化呢？<ul>
+    <li>編譯時期優化：語言前端 (如 llvm-gcc 與 clang) 將原始程式碼轉為 <a href="http://llvm.org/pubs/2003-10-01-LLVA.html">LLVA (Low-level Virtual Instruction Set Architecture)</a>，這是一個 RISC 形式的虛擬指令集，儘管是低層次的表示法，但允許保留部份高階資訊，本身甚至考慮到 OOPL 的需求</li>
+    <li>連結時期 (Link-Time) 優化：顧名思義，將若干 object code 進行 relocation 等一系列複雜的操作，成為執行檔或者動態函式庫。傳統來說，這階段應該是目的硬體架構的 native code，但 LLVM 提供其特有的 bitcode，又因為上一個階段保留了若干高階資訊，所以可進行 LTO (Link-Time Optimization)</li>
+    <li>執行時期 (Runtime) 優化：對進階的編譯的系統來說，產生可執行的程式檔 (廣義包含可透過 VM/interpreter 執行的 P-code) 並非最終的階段，因為我們仍可透過執行時期產生的 profile 資訊，繼續作優化，也就是所謂的 FDO (Feedback-Directed Optimization)。在 LLVM 中，這部份可以是直接執行生成的執行檔，或者是執行 bitcode，而這兩者都與 CFG (Call-Flow Graph) 與 (動態) 型態資訊有關，這允許施行更激進的優化演算法</li>
+  <li>Offline 優化：在實務上，要對整個程式作執行時期的完整 FDO，可能太耗費資源，甚至在標的環境中也不允許生成 / 分析龐大的 profile 資訊，那該怎麼辦呢？系統可先將 profile 資訊保存起來，然後再適合的時機才 offline 取出，進行優化的程序。這種方式跟 LTO 有點相似，不過後者並沒有 profile 資訊，而前者則具備，因此可更精確，而且也不需要變更編譯程式的流程</li>
+</ul>
+本文實驗的環境為 Ubuntu Linux 11.04 (natty) x86 32-bit，系統安裝了 LLVM 2.8 與對應版本的 [<a href="http://clang.llvm.org/">clang</a>]，目標設定為，透過 LLVM 重寫之前的實驗 [<a href="http://blog.linux.org.tw/~jserv/archives/002119.html">打造 Brainfuck 的 JIT compiler</a>]，關於 Brainfuck 語言及相關資訊，已在前文解釋，不贅述。具體來說，以下是本文的探討方向：<ul>
+    <li>觀察 LLVM IR (中間表示式)</li>
+    <li>觀察 LLVM 宣稱的「多階段優化」，並且使用相關工具</li>
+    <li>使用 libLLVM API 來打造 Brainfuck JIT compiler</li>
+</ul>
+Brainfuck 語言雖然僅有八道指令 (instructions)，但其中兩項就是進行 I/O 動作，對應於 C 語言則是：<ul>
+    <li>'.' -&gt; putchar()</li>
+    <li>',' -&gt; getchar()</li>
+</ul>
+我們先寫一個簡單的 C 語言測試程式，呼叫到 putchar() 函式： (test-output.c)
+<pre class="code" id="codemain"><span class="keyword">#include</span> &lt;stdio.h>
+<span class="keyword">int</span> main() {
+    putchar(<span class="literal">'J'</span>);
+    <span class="keyword">return</span> 0;
+}</pre>
+假設 $PATH 已正確指定 LLVM 與 clang 的路徑，先編譯 LLVM 的 bitcode 來觀察：<pre class="code" id="codemain">
+$ clang -emit-llvm test-output.c -c -o test-output.bc
+</pre>
+我們也可驗證生成的 test-output.bc 檔案：<pre>
+$ file test-output.bc
+test-output.bc: LLVM bitcode
+</pre>
+的確是貨真價實的 LLVM bitcode，而 LLVM 也提供了一個特製的 interpreter，在設計之初，即考量到 JIT compiler 的整合，簡單的執行方式如下：<pre>
+$ lli test-output.bc
+J
+</pre>
+正如預期，透過呼叫系統 libc 的 putchar() 函式，輸出了 'J' 字元。而 LLVM IR 就是整個 LLVM 設計的關鍵，我們當然不容忽略，來觀察反組譯的結果：<pre class="code" id="codemain">
+$ llvm-dis &lt; test-output.bc
+</pre>
+這時候應該會見到如下的輸出：(省略 target 描述)<pre class="code" id="codemain">
+define i32 @main() nounwind {
+  %1 = alloca i32, align 4
+  store i32 0, i32* %1
+  %2 = call i32 @putchar(i32 74)
+  ret i32 0
+}
+
+declare i32 @putchar(i32)
+</pre>
+LLVA / LLVM IR 的組合語言非常高階，我們可對照之前的 C 語言程式碼，會發現有顯然的對應，初步觀察如下：<ul>
+    <li>C 語言的 int 型態被 clang 語言前端轉為 "i32"</li>
+    <li>main() 與 putchar() 前冠以 '@' 符號，表示函式呼叫</li>
+    <li>'J' 字元在 ASCII 的序號為 74，此數值被帶入 putchar() 函式，也就是 putchar('J')</li>
+    <li>LLVM IR 本身是 register based 的操作，load-store 架構</li>
+</ul>
+驗證觀察最好的方式，就是實地寫程式。官方手冊 [<a href="http://llvm.org/docs/LangRef.html">LLVM Language Reference Manual </a>] 有非常詳盡的說明，那我們先來延伸上面的 LLVM 組合語言輸出，嘗試作以下修改：<ul>
+    <li>將 putchar('J') 改為 puts("Hello, World!")</li>
+    <li>縮減 unwind 一類屬性 (attribute) 的使用，這與例外處理機制有關，但並非本文的重點，略過</li>
+</ul>
+建立一個名為 hello.ll 的檔案，其內容為：<pre class="code" id="codemain">
+@str = internal constant [14 x i8] c"Hello, World\00"
+define i32 @main() {
+  call i32 @puts(i8* getelementptr ([14 x i8]* @str, i32 0, i32 0))
+  ret i32 0
+}
+
+declare i32 @puts(i8*)
+</pre>
+C-style 字串 "Hello, World!" 長度為 14 bytes，單位型態為 char，也就是對應於 LLVM 的 "i8"。值得注意的是，"getelementptr" 這道指令的使用方式。由於 putchar() 與 puts() 兩個函式最大的差異，就在於後者接受的參數為 const char * 型態指標，我們就得先透過 getelementptr 這道指令，取出保存常數 (即 "Hello, World!" 字串) 的位址。組譯並執行看看：<pre>
+$ llvm-as hello.ll
+$ lli hello.bc
+Hello, World!
+</pre>
+如我們預期，正確的顯示字串 "Hello, World!"。此外，LLVM 編譯器系統的特色就是提供豐富的優化與便利的擴充，可使用 opt 工具來對 LLVM bitcode 作複雜的優化與分析：<pre>
+$ opt --help
+OVERVIEW: llvm .bc -> .bc modular optimizer and analysis printer
+...
+</pre>
+參考的使用方式：<pre>
+$ opt -std-compile-opts test-output.bc test-output-opt.bc
+$ wc -c test-output.bc test-output-opt.bc 
+484 test-output.bc
+472 test-output-opt.bc
+</pre>
+顯然經由 opt 優化的 bitcode，其空間使用已被調整，詳情可參考 [<a href="http://llvm.org/cmds/opt.html" />opt - LLVM optimizer</a>]。<br />
+<br />
+Brainfuck 語言最大的貢獻，就是證明符合 Turing complete 的程式語言，可藉由極少的指令來實現 (不過比 Brainfuck 更「精簡」的語言也存在，如 Whitespace)。對於如此洗練的語言，我們的策略就是將 Brainfuck 語意 / 指令集先轉為 LLVM IR，然後透過 LLVM 豐富的機制來作 code generation 與 optimization。本文的重點就是讓讀者體驗到，「外包」(outsource) JIT compiler 的高度便利。<br />
+<br />
+為了符合這個策略，我們得先把 Brainfuck 轉成 LLVM IR，最簡單的方式，就是作字串處理，也就是「窮人 JIT compiler」，可參考 [<a href="http://0xlab.org/~jserv/llvm/bfc.c">bfc.c</a>]，以下是重點程式碼：
+<pre class="code" id="codemain"><span class="keyword">#define</span> GEN( ...) \
+    <span class="keyword">do</span> { \
+        fprintf(fp, __VA_ARGS__); \
+    } <span class="keyword">while</span> (0)
+
+<span class="comment">/* emit file the header */</span>
+<span class="keyword">static</span> <span class="keyword">void</span> emit_header(FILE *fp)
+{
+    <span class="comment">// first, define @op_out which corresponds to output
+</span>    GEN(<span class="literal">"define internal void @op_out(i64 %%val) nounwind\n"</span>
+        <span class="literal">"{\n"</span>
+        <span class="literal">"entry:\n"</span>
+        <span class="literal">"    %%conv = trunc i64 %%val to i32\n"</span>
+        <span class="literal">"    %%call = tail call i32 @putchar ( i32 %%conv ) nounwind\n"</span>
+        <span class="literal">"    ret void\n"</span>
+        <span class="literal">"}\n\n"</span>
+        <span class="literal">"declare i32 @putchar(i32) nounwind\n\n"</span>);
+    <span class="comment">// next, define @op_in which corresponds to input
+</span>    GEN(<span class="literal">"define internal i64 @op_in() nounwind\n"</span>
+        <span class="literal">"{\n"</span>
+        <span class="literal">"entry:\n"</span>
+        <span class="literal">"    %%call = tail call i32 @getchar() nounwind\n"</span>
+        <span class="literal">"    %%conv = sext i32 %%call to i64\n"</span>
+        <span class="literal">"    ret i64 %%conv\n"</span>
+        <span class="literal">"}\n\n"</span>
+        <span class="literal">"declare i32 @getchar() nounwind\n\n"</span>);
+    <span class="comment">// now, define the actual program body
+</span>    GEN(<span class="literal">"define void @program() nounwind\n"</span>
+        <span class="literal">"{\n"</span>
+        <span class="literal">"entry:\n"</span>);
+    <span class="comment">// allocate the index stack slot...
+</span>    GEN(<span class="literal">"    %%index = alloca i64, align 8\n"</span>);
+    <span class="comment">// and stack space for the registers
+</span>    GEN(<span class="literal">"    %%registers = alloca [%d x i64], align 8\n"</span>, REG_COUNT);
+    <span class="comment">// set the initial index to 0
+</span>    GEN(<span class="literal">"    store i64 0, i64* %%index\n"</span>);
+    <span class="comment">// get a pointer to the first element of the registers
+</span>    GEN(<span class="literal">"    %%regroot = getelementptr [%d x i64]* %%registers, i64 0, i64 0\n"</span>, REG_COUNT);
+    <span class="comment">// clear all the registers
+</span>    GEN(<span class="literal">"    %%ptrconv = bitcast i64* %%regroot to i8*\n"</span>);
+    GEN(<span class="literal">"    call void @llvm.memset.i64(i8* %%ptrconv, i8 0, i64 %d, i32 8)\n"</span>, REG_COUNT * 8);
+}
+
+<span class="comment">/* an add is any arithmetic, so a sequence of +s and -s */</span>
+<span class="keyword">static</span> <span class="keyword">void</span> emit_add(FILE *fp, <span class="keyword">long</span> amount)
+{
+    <span class="keyword">int</span> opID = rv++;
+    <span class="keyword">if</span> (amount == 0) <span class="comment">// if we're not actually modifying, short-circuit
+</span>        <span class="keyword">return</span>;
+    <span class="comment">// load the index...
+</span>    GEN(<span class="literal">"    %%idx%d = load i64* %%index\n"</span>, opID);
+    <span class="comment">// load the actual register...
+</span>    GEN(<span class="literal">"    %%ptr%d = getelementptr i64* %%regroot, i64 %%idx%d\n"</span>, opID, opID);
+    GEN(<span class="literal">"    %%tmp%d = load i64* %%ptr%d\n"</span>, opID, opID);
+    <span class="comment">// perform the arithmetic...
+</span>    GEN(<span class="literal">"    %%add%d = add i64 %%tmp%d, %ld\n"</span>, opID, opID, amount);
+    <span class="comment">// and store.
+</span>    GEN(<span class="literal">"    store i64 %%add%d, i64* %%ptr%d\n"</span>, opID, opID);
+}
+<span class="comment">/* this generic function does operation emission, all fairly obvious */</span>
+<span class="keyword">static</span> <span class="keyword">void</span> emit(FILE *out, BF_State *state, <span class="keyword">char</span> lastChar, <span class="keyword">long</span> amount)
+{
+    <span class="keyword">switch</span> (*state) {
+        <span class="keyword">case</span> BF_STATE_ARITHMETIC:
+            emit_add(out, amount);
+            *state = BF_STATE_NONE;
+            <span class="keyword">break</span>;
+        ...
+}
+
+<span class="comment">/* real compiler - read in as brainfuck, compile to out as LLVM IR */</span>
+<span class="keyword">static</span> <span class="keyword">void</span> bfp(FILE *in, FILE *out)
+{
+    <span class="keyword">long</span> amount = 0;
+    BF_State state = BF_STATE_NONE;
+    <span class="comment">// emit the header
+</span>    emit_header(out);
+    <span class="comment">// loop through everything
+</span>    <span class="keyword">while</span> (!feof(in)) {
+        <span class="comment">// basically, a finite state machine
+</span>        <span class="keyword">char</span> ch;
+        fread(&amp;ch, 1, 1, in);
+        <span class="comment">/* Do arithmetic */</span>
+        <span class="keyword">if</span> (state == BF_STATE_ARITHMETIC) {
+            <span class="comment">// if it is a + or -, adjust the working value
+</span>            <span class="keyword">if</span> (ch == <span class="literal">'+'</span>)
+                amount++;
+            <span class="keyword">else</span> <span class="keyword">if</span> (ch == <span class="literal">'-'</span>)
+                amount--;
+            <span class="keyword">else</span> {
+                <span class="comment">/* emit the instruction, push it back to be read next loop */</span>
+                emit(out, &amp;state, ch, amount);
+                ungetc(ch, in);
+                amount = 0;
+            }
+        }
+        ...
+}
+
+<span class="keyword">int</span> main()
+{
+    <span class="comment">/* open up llvm-as | opt -std-compile-opts | lli as a pipe
+     * so that we pipe everything to the LLVM toolchain */</span>
+    FILE *asOut;
+    asOut = popen(<span class="literal">"llvm-as | opt -std-compile-opts | lli"</span>, <span class="literal">"w"</span>);
+    <span class="comment">/* run on stdin */</span>
+    bfp(stdin, asOut);
+    <span class="comment">/* tidy up */</span>
+    pclose(asOut);
+    <span class="keyword">return</span> 0;
+}</pre>
+編譯並執行：<pre>
+$ clang -o bfc bfc.c
+$ ./bfc &lt; hello.bf 
+Hello World!
+</pre>
+初步驗證我們的想法，當然這段程式碼用 Ruby 一類的語言撰寫，可能更合適些，但至少先掌握 LLVM IR 的表現，有助於日後改進 Brainfuck JIT compiler 的設計。LLVM IR 以 SSA (Static Single Assignment) form 為主軸，也就是說，除了 Brainfuck 程式的流程控制外，我們的重心會在 SSA form 的 Phi node，可參照 LLVM 官方的文件 [<a href="http://llvm.org/docs/tutorial/">LLVM Tutorial</a>]。<br />
+<br />
+以下是透過呼叫 LLVM API 來實現 Brainfuck JIT compiler 的執行引擎實做，且包含 Optimizer： [<a href="http://0xlab.org/~jserv/llvm/bf-llvm.cpp">bf-llvm.cpp</a>]
+<pre class="code" id="codemain"><span class="comment">/*
+ * Sample Brainfuck JIT compiler using LLVM 2.8
+ */</span><span class="keyword">
+#include</span> &lt;stack><span class="keyword">
+#include</span> &lt;fstream><span class="keyword">
+#include</span> &lt;iostream>
+<span class="keyword">
+#include</span> &lt;llvm/Module.h><span class="keyword">
+#include</span> &lt;llvm/Function.h><span class="keyword">
+#include</span> &lt;llvm/PassManager.h><span class="keyword">
+
+#include</span> &lt;llvm/CallingConv.h><span class="keyword">
+#include</span> &lt;llvm/Analysis/Verifier.h><span class="keyword">
+#include</span> &lt;llvm/Support/IRBuilder.h><span class="keyword">
+#include</span> &lt;llvm/ExecutionEngine/ExecutionEngine.h><span class="keyword">
+#include</span> &lt;llvm/Target/TargetData.h><span class="keyword">
+#include</span> &lt;llvm/LinkAllPasses.h><span class="keyword">
+#include</span> &lt;llvm/ExecutionEngine/JIT.h><span class="keyword">
+#include</span> &lt;llvm/Target/TargetSelect.h><span class="keyword">
+#include</span> &lt;llvm/LLVMContext.h>
+<span class="keyword">using</span> <span class="keyword">namespace</span> llvm;
+
+<span class="keyword">struct</span> bfLoopInfo {
+  Value* beforeValue;
+  PHINode* startValue;
+  Value* endValue;
+  Value* afterValue;
+  BasicBlock* beforeBlock;
+  BasicBlock* startBlock;
+  BasicBlock* endBlock;
+  BasicBlock* afterBlock;
+};
+Function* makeFunc(Module* module, <span class="keyword">const</span> <span class="keyword">char</span>* source, <span class="keyword">int</span> tapeSize = 400)
+{
+  <span class="comment">// Some useful types and constants
+</span>  <span class="keyword">const</span> Type* voidType = Type::getVoidTy(getGlobalContext());
+  <span class="keyword">const</span> IntegerType* cellType = IntegerType::get(getGlobalContext(), 8);
+  <span class="keyword">const</span> IntegerType* indexType = IntegerType::get(getGlobalContext(), 32);
+  <span class="keyword">const</span> PointerType* tapeType = PointerType::get(cellType, 0);
+  Value* zero = ConstantInt::get(cellType, 0);
+  Value* one = ConstantInt::get(cellType, 1);
+  Value* minOne = ConstantInt::get(cellType, -1);
+&nbsp;
+  <span class="comment">// declare i32 @getchar()
+</span>  Function* getchar = cast&lt;Function>(
+     module->getOrInsertFunction(<span class="literal">"getchar"</span>, cellType, NULL));
+  getchar->setCallingConv(CallingConv::C);
+
+  <span class="comment">// declare i32 @putchar(i32)
+</span>  Function* putchar = cast&lt;Function>(
+     module->getOrInsertFunction(<span class="literal">"putchar"</span>, voidType, cellType, NULL));
+  putchar->setCallingConv(CallingConv::C);
+
+  <span class="comment">// Contruct void main(char* tape)
+</span>  Function* main = cast&lt;Function>(
+     module->getOrInsertFunction(<span class="literal">"main"</span>, voidType, NULL));
+  main->setCallingConv(CallingConv::C);
+  BasicBlock* block = BasicBlock::Create(getGlobalContext(), <span class="literal">"code"</span>, main);
+  std::stack&lt;bfLoopInfo> loops;
+  IRBuilder&lt;> codeIR(block);
+  Value* head = codeIR.CreateAlloca(cellType, ConstantInt::get(indexType, tapeSize));
+  Value* it = head;
+  <span class="keyword">for</span> (<span class="keyword">int</span> i = 0; i &lt; tapeSize; i++) {
+    codeIR.CreateStore(zero, it);
+    it = codeIR.CreateGEP(it, one);
+  }
+  <span class="keyword">while</span>(*source) {
+    IRBuilder&lt;> builder(block);
+    <span class="keyword">switch</span>(*source++) {
+      <span class="keyword">case</span> <span class="literal">'>'</span>: head = builder.CreateGEP(head, one); <span class="keyword">break</span>;
+      <span class="keyword">case</span> <span class="literal">'&lt;'</span>: head = builder.CreateGEP(head, minOne); <span class="keyword">break</span>;
+      <span class="keyword">case</span> <span class="literal">'+'</span>: {
+        Value* headValue = builder.CreateLoad(head);
+        Value* result = builder.CreateAdd(headValue, one);
+        builder.CreateStore(result, head);
+        <span class="keyword">break</span>;
+      }
+      <span class="keyword">case</span> <span class="literal">'-'</span>: {
+        Value* headValue = builder.CreateLoad(head);
+        Value* result = builder.CreateSub(headValue, one);
+        builder.CreateStore(result, head);
+        <span class="keyword">break</span>;
+      }
+      <span class="keyword">case</span> <span class="literal">'.'</span>: {
+        Value* output = builder.CreateLoad(head);
+        builder.CreateCall(putchar, output);
+        <span class="keyword">break</span>;
+      }
+      <span class="keyword">case</span> <span class="literal">','</span>: {
+        Value* input = builder.CreateCall(getchar);
+        builder.CreateStore(input, head);
+        <span class="keyword">break</span>;
+      }
+      <span class="keyword">case</span> <span class="literal">'['</span>: {
+        <span class="comment">// Construct loop info
+</span>        bfLoopInfo loop;
+        loop.beforeBlock = block;
+        loop.startBlock = BasicBlock::Create(getGlobalContext(), <span class="literal">""</span>, main);
+        loop.afterBlock = BasicBlock::Create(getGlobalContext(), <span class="literal">""</span>, main);
+        loop.beforeValue = head;
+
+        <span class="comment">// Create branching instructions
+</span>        Value* headValue = builder.CreateLoad(head);
+        Value* condition = builder.CreateIsNotNull(headValue);
+        builder.CreateCondBr(condition, loop.startBlock, loop.afterBlock);
+
+        <span class="comment">// Create a phi node
+</span>        IRBuilder&lt;> sbuilder(loop.startBlock);
+        loop.startValue = sbuilder.CreatePHI(tapeType);
+        loop.startValue->addIncoming(loop.beforeValue, loop.beforeBlock);
+
+        <span class="comment">// Push the loop
+</span>        loops.push(loop);
+        block = loop.startBlock;
+        head = loop.startValue;
+        <span class="keyword">break</span>;
+      }
+      <span class="keyword">case</span> <span class="literal">']'</span>: {
+        <span class="comment">// Retrieve the loop info
+</span>        bfLoopInfo loop = loops.top(); loops.pop();
+        loop.endValue = head;
+        loop.endBlock = block;
+
+        <span class="comment">// Create a conditional branch
+</span>        Value* headValue = builder.CreateLoad(head);
+        Value* condition = builder.CreateIsNotNull(headValue);
+        builder.CreateCondBr(condition, loop.startBlock, loop.afterBlock);
+        <span class="comment">// Augement loops phi node
+</span>        loop.startValue->addIncoming(loop.endValue, loop.endBlock);
+
+        <span class="comment">// Switch to the after block
+</span>        block = loop.afterBlock;
+
+        <span class="comment">// Create a phi node
+</span>        IRBuilder&lt;> abuilder(block);
+        PHINode* headPhi = abuilder.CreatePHI(tapeType);
+        headPhi->addIncoming(loop.beforeValue, loop.beforeBlock);
+        headPhi->addIncoming(loop.endValue, loop.endBlock);
+        head = headPhi;
+        <span class="keyword">break</span>;
+      }
+      <span class="keyword">default</span>:
+        <span class="keyword">break</span>;
+    }
+  }
+
+  <span class="comment">// Close the function
+</span>  IRBuilder&lt;> builder(block);
+  builder.CreateRetVoid();
+  <span class="keyword">return</span> main;
+}
+
+<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])
+{
+  <span class="keyword">if</span> (argc &lt; 2) {
+    std::cerr &lt;&lt; <span class="literal">"Usage: "</span> &lt;&lt; argv[0] &lt;&lt; <span class="literal">" bf_file"</span> &lt;&lt; std::endl;
+    <span class="keyword">return</span> -1;
+  }
+  std::ifstream sourceFile(argv[1]);
+  std::string line, source;
+  <span class="keyword">while</span> (getline(sourceFile, line)) source += line;
+
+  <span class="comment">// Setup a module and engine for JIT-ing
+</span>  std::string error;
+  InitializeNativeTarget();
+  Module* module = <span class="keyword">new</span> Module(<span class="literal">"bfcode"</span>, getGlobalContext());
+  ExecutionEngine *engine = EngineBuilder(module)
+    .setErrorStr(&amp;error)
+    .setOptLevel(CodeGenOpt::Aggressive)
+    .create();
+  <span class="keyword">if</span> (!engine) {
+    std::cout &lt;&lt; <span class="literal">"No engine created: "</span> &lt;&lt; error &lt;&lt; std::endl;
+    <span class="keyword">return</span> -1;
+  }
+
+  <span class="comment">// Compile the Brainfuck to IR
+</span>  std::cout &lt;&lt; <span class="literal">"Parsing..."</span> &lt;&lt; std::flush;
+  Function* func = makeFunc(module, source.c_str());
+  std::cout &lt;&lt; <span class="literal">" done"</span> &lt;&lt; std::endl;
+&nbsp;<span class="keyword">
+#<span class="keyword">if</span></span> 1
+  <span class="comment">// Run optimization passes
+</span>  std::cout &lt;&lt; <span class="literal">"Optimizing..."</span> &lt;&lt; std::flush;
+  FunctionPassManager pm(module);
+  pm.add(<span class="keyword">new</span> TargetData(*(engine->getTargetData())));
+  pm.add(createVerifierPass());
+&nbsp;
+  <span class="comment">// Process
+</span>  pm.run(*func);
+  std::cout &lt;&lt; <span class="literal">"done"</span> &lt;&lt; std::endl;<span class="keyword">
+#endif</span>
+
+  <span class="comment">// Compile
+</span>  std::cout &lt;&lt; <span class="literal">"Compiling..."</span> &lt;&lt; std::flush;
+  <span class="keyword">void</span> (*bf)() = (<span class="keyword">void</span> (*)()) engine->getPointerToFunction(func);
+  std::cout &lt;&lt; <span class="literal">" done"</span> &lt;&lt; std::endl;
+
+  <span class="comment">// and run!
+</span>  bf();
+  <span class="keyword">return</span> 0;
+}</pre>
+在 LLVM CodeGen 後，我們設定了 OptLevel 為 CodeGenOpt::Aggressive 等級，這樣在 optimization pass 時，會 Just-In-Time 產生特定的機械碼。編譯並執行驗證：<pre>
+$ clang++ bf-llvm.cpp \
+          `llvm-config --cppflags --ldflags --libs core jit native all` \
+          -o bf-llvm
+$ ./bf-llvm hello.bf 
+Parsing... done
+Optimizing...done
+Compiling... done
+Hello World!
+</pre>
+充分準備後，關於 JIT 與 CodeGen 的議題，都交給 LLVM 去處理即可。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 April  5, 2011 11:34 PM
+
+<br /></span>
+
+</div>
+
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2170" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

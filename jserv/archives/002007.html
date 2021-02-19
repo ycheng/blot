@@ -1,0 +1,234 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 從 Ditz 談針對分散式版本控制的 Issue Tracker</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002006.html" title="透過 WINE 玩 Hello Kitty 世界盃足球賽遊戲" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002008.html" title="對自己好一些：談技術手冊閱讀" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002006.html">« 透過 WINE 玩 Hello Kitty 世界盃足球賽遊戲</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002008.html">對自己好一些：談技術手冊閱讀 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">April 10, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">從 Ditz 談針對分散式版本控制的 Issue Tracker</h3>
+
+兩年多前提過的 [<a href="http://blog.linux.org.tw/~jserv/archives/001387.html">Trac 整合性開發環境</a>]，現在已在許多實驗室、公司專案開發等地見到廣泛的使用，原因無他，一套系統可涵蓋 Wiki + issue tracking + SVN 的整合，安裝與操作都很簡單，又有許多 plugin 可用，自然會流行。包含我在內，不少人將 [<a href="http://trac.edgewall.org/">trac</a>] 也裝於自己的電腦 (laptop) 中，搭配 svk 一類的分散式版本控制系統，就可隨時隨地追蹤專案進度 (internal / external)、作基本的個人知識管理 (KM)，或者查核待作事項等等。那為何又要接觸 [<a href="http://ditz.rubyforge.org/">Ditz</a>] 這套 issue tracker 呢？<br />
+<br />
+使用一個工具前，若缺乏必要的背景知識，那也是枉然，所以先來反思分散式版本控制系統。trac 背後端採用 Subversion，雖較 CVS 有著巨大的進步，不過本質上還是集中式管理的版本控制系統。正如之前文章 [<a href="http://orzlab.blogspot.com/2007/05/svk.html">SVK 與嵌入式系統開發</a>] 與 [<a href="http://blog.linux.org.tw/~jserv/archives/001251.html">在 Linux kernel 外應用 GIT，兼談分散式版本控制系統</a>] 所提及，現在開發的模式在無形中已經逐漸轉變，最顯著的領域大概是伺服器應用端與嵌入式系統開發，我們常見到過去都是研發人員封閉開發的環境，在自由軟體蓬勃發展的影響，竟以「追趕上游自由軟體發展」為重要指導原則，這裡的「上游」就是 "upstream" 一詞，也就是說源頭的自由軟體專案，比方說 Linux Kernel, MySQL, GNU Toolchain 等等，正如稍早提過的概念：<ul class="code" style="margin: 6px;">
+蓬勃發展的計畫如 Linux kernel，隨時都引入新的技術與硬體支援，我們當然該緊密跟上這些脈動，但開發產品不是兒戲，往往得先挑選一個堪用的軟硬體設計，然後依據功能需求，進行調整與改寫，這是我們相當清楚的。但過去的問題就是，這樣的軟體設計往往無法再銜接到日新月異的社群發展，也就難以跟新的開發版本銜接，於是乎，我們得認真的思考分散式版本控制系統 (Distributed Version Control System)，對過去集中式的系統做了反撲。
+</ul>
+儘管我們有 [<a href="http://git.or.cz/">git</a>], [<a href="http://www.darcs.net/>darcs</a>], [<a href="http://www.selenic.com/mercurial/">mercurial</a>], [<a href="http://bazaar-vcs.org/">Bazaar</a>] 等一系列發展活躍且強大的分散式版本控制工具，但我們如今面臨新的考驗：本質上的差異，使得 issue tracking 也需改變想法。過去我們建立開發分支 (branch) 往往是基於某種特徵或實驗性設計，由一組人馬以現有的 codebase 為基礎，設立一個獨立的環境，日後有需要則可合併 (merge) 回去，而開發標籤 (tag) 則是標注某些特定的版本，作細部的調整或客製化等等，但在分散式版本控制系統的概念中，建立分支是理所當然的事情，基本上，任何人在自己的電腦取得一份副本 (clone) 時，就是一個「分支」了，隨時可從 upstream 取得、參照修改、進行本地端修改合併等操作。設計層面來看，這類分散式版本控制系統都伴隨一套數學上不會重複的 hash，讓個別修改得以追蹤，以前要解釋這個概念實在不容易，但還好有了火紅的 "Web 2.0" 名詞後，就可把 CVS/Subversion 一類看作如同 "Web 1.0" 那樣持續性、單調性、集中的開發模式，而 git 一類則如同 "Web 2.0" 般，允許全球各地的開發者共同追蹤管理專案，是分散性、社群導向的模式，所以，有人就說：<ul class="code" style="margin: 6px;">
+"It's real strength is that Git is a social source control system."
+</ul>
+於是，剛剛提到的 hash，或者說 "changeset"，在概念上就有了全新的意義，因為變異性提高了，不能以過去集中的開發模式來思考，如此一來，衝擊在哪？是的，就在 issue tracking。過去 issue tracking 會綁定某個 milestone，細部則是若干 changeset 或 revision number (如 Subversion)，但，這對 git 一類的分散式版本控制系統來說，意義不是很大，畢竟我們現在操作的對象是「整個 tree」，也就是專案從開始進行到現在的歷程，首先在尺度上就有落差。無論工具提供哪些操作，基本上我們只要懂 "pull", "push", "merge" 等動作的對應即可，貌似過去的 Subversion 這類 "VCS 1.0" (VCS 乃是 "Version Control System" 的縮寫) 都可做到，那麼考量到 git 一類 "VCS 2.0" 又有何影響呢？重點就是分散式開發所引來的不確定性、社群模式，很可能前一次合併 (pull + merge) 還是順利運作的系統，下次就連編譯都會失敗了，這樣，更別談什麼軟體品質控管，所以這是一種「混沌」(choas) 嗎？某個角度來說是，但其背後的蜜糖才是吸引我們的地方：<ul  class="code" style="margin: 6px;">
+「自由軟體是活的，生生不息的演化」
+</ul>
+只要適度操作，我們可在自己的 git tree 中創造獨有的變化或新功能設計，在保有完整開發歷程的狀態下，合併任何重大的合理變更，假以時日，還可 "push" 到 upstream，並透過開發社群作合理的 merge。所以，在這個模式下，我們思考的是「一整個 tree」，其中的細節則是若干 hash/chageset 如何「變遷」，這也是核心的議題。當然，回頭看 issue tracking，還是能訂定 milestone，但落實面就要改變手法。換言之，我們需要把過去單一維度的 issue tracking 觀念捨棄，現在這些 issue 是會跟著 "tree" 變動 / 移動的，在分散式版本控制系統的維度來說，瞬間就提高許多，尤其越大的專案越顯著。[<a href="http://ditz.rubyforge.org/">Ditz</a>] 的提出，就是試圖針對這個本質的落差，實做出專門打造的 issue tracker，以下是官方網頁的簡介：<ul  class="code" style="margin: 6px;">
+Ditz is a simple, light-weight distributed issue tracker designed to work with distributed version control systems like darcs and git. Ditz maintains an issue database file on disk, written in a line-based and human-editable format. This file is kept under version control, alongside project code. Changes in issue state is handled by version control like code change: included as part of a commit, merged with changes from other developers, conflict-resolved in the standard manner, etc. 
+</ul>
+現在的發展仍很陽春，但概念上就是將「分散式」、「社群開發模式」的本質予以彰顯，目前是命令列方式來操作，初期已有的 "proof-of-concept" 呈現如下圖：<br />
+<center><img src="http://ditz.rubyforge.org/ss1.png" width="642" height="410" /></center><br />
+<center><img src="http://ditz.rubyforge.org/ss3.png" width="642" height="410" /></center><br />
+除了命令列外，Ditz 還支援 HTML 輸出，示範的網站可參考 [<a href="http://ditz.rubyforge.org/ditz/">ditz Issue Tracker</a>]。<br />
+<br />
+可想見，未來版本控制系統與專案開發走向更全面的分散式之後，issue tracking 會是相當重要的考量。試想，upstream 原本就有若干 "tree"，彼此對 changeset 做了高度的互動，而在我們自己的 "tree" 也有特定的變動，這樣一來，「此 issue 非彼 issue」則是稀疏平常的事情，甚至我們難以用單一版本數字來界定 issue 的「起源」，特別是考量到發展 "tree" 之間的「繼承」或「移轉」特性，這個議題越加複雜，Ditz 是個出發點，有太多值得思量之處。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 April 10, 2008 01:49 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>分布式的scm还处于战国阶段。。。<br />
+一般小团队或企业应用，还是可以选择svn<br />
+在适当的时机，可以尝试git或者你介绍的这个。</p>
+<span class="comments-post">由 <a href="http://www.fwolf.com/blog">Fwolf</a> 發表於</MTIfNonEmpty> April 10, 2008 06:15 PM</span>
+</div>
+<div class="comments-body">
+<p>老大你防垃圾评论的机制真是又搞又高！</p>
+<span class="comments-post">由 <a href="http://www.fwolf.com/blog">Fwolf</a> 發表於</MTIfNonEmpty> April 10, 2008 06:16 PM</span>
+</div>
+<div class="comments-body">
+<p>「此 issue 非彼 issue」的問題真的很麻煩，我們公司現在使用Bazaar作版本控制，Trac為Issue Tracker，本來用hash code來追蹤是最為準確的方法，但太長太難記，所以還是用回版本號碼。</p>
+
+<p>但Bazaar的版本號碼會隨merge的方法不同而改變，有同事的方法不妥當，令某計劃的rev70到90被改寫了，當中沒有什麼重要的issue，所以問題不大，只是我要花很長的時間去解釋到底發生了什麼事，及應該怎樣去解決……<br />
+</p>
+<span class="comments-post">由 <a href="http://benlaux.blogspot.com">Ben Lau</a> 發表於</MTIfNonEmpty> April 10, 2008 08:40 PM</span>
+</div>
+<div class="comments-body">
+<p>為了更方便地使用Ditz，我寫了一個叫做Ditz Commander的圖像介面程式，讓修改issue等工作可以以更簡單的方法達成：</p>
+
+<p>http://benlaux.blogspot.com/2008/10/ditz-commander.html</p>
+<span class="comments-post">由 <a href="http://benlaux.blogspot.com">Ben Lau</a> 發表於</MTIfNonEmpty> January  1, 2009 06:05 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2007" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

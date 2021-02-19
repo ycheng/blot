@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: QNX Neutrino 重裝上陣</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001925.html" title="即將到來的 COSCUP 2007 與快快樂樂系列演講" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001927.html" title="開放原始碼的 SunPinYin 引擎" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001925.html">« 即將到來的 COSCUP 2007 與快快樂樂系列演講</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001927.html">開放原始碼的 SunPinYin 引擎 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">September 25, 2007</h2>
+
+<div class="blogbody">
+
+<h3 class="title">QNX Neutrino 重裝上陣</h3>
+
+九月中旬，RTOS 界的大消息就是擁有二十年 Embedded Realtime System 開發歷史的 [<a href="http://www.qnx.com/">QNX</a>] 公司，宣佈開放存取其 [<a href="http://www.qnx.com/products/neutrino_rtos/">QNX Neutrino</a>] microkernel RTOS 的原始程式碼，以加速相關的軟硬體整合及系統程式開發，不過，[<a href="http://www.qnx.com/">QNX</a>] 公司也坦承宣告此舉並非 open source，概念上未獲得 OSI approved (令人聯想起 blog 提過的「<a href="http://blog.linux.org.tw/~jserv/archives/001829.html">Microsoft WinCE 6 的 100% shared source</a>」)。<br />
+<br />
+具體來說，開放存取的 [<a href="http://www.qnx.com/products/neutrino_rtos/">QNX Neutrino</a>] 原始程式碼採用 [<a href="http://www.qnx.com/company/hsm/">QNX hybrid software model</a>] 模式來與社群共同維護，有四種 [<a href="http://www.qnx.com/legal/licensing/index.html">授權選擇</a>]：<ul>
+<li>Commercial developers</li>
+<li>Partners (no cost)</li>
+<li>Non commercial developers</li>
+<li>Open source</li>
+</ul>
+其 community website 稱為 [<a href="http://community.qnx.com/">Foundry27</a>]，詳細的運作模式與考量點，可參考 [<a href="http://osnews.com/story.php/18596/QNX-Opens-Neutrino-Source-Code-Interview-QNX-CEO/">QNX CEO 的訪談</a>] 與 LinuxDevices.com 的文章 [<a href="http://www.linuxdevices.com/news/NS7804156737.html">QNX frees Neutrino microkernel source</a>]，對岸的刀槍 Blue 則給予很生動的描述「<a href="http://www.thinknext.net/archives/2013">Neutrino  要見光</a>]。<br />
+<br />
+QNX 作為世界知名的一流 RTOS 廠商，如今面對強敵環伺，採取類似 Sun Microsystems 的 [<a href="http://www.opensolaris.org/">OpenSolaris</a>] 途徑，有計劃的導入 open source development model，這個擁有二十年技術的公司，不也作此改變？同時，我們也見到二十一世界的嵌入式廠商重設了 Embedded Operating System 財產價值的定義，釐清了「服務」的意義，並確立「加值」與徹底的「透明化」。<br />
+<br />
+謝謝你們，QNX 與 Sun Microsystems！<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 September 25, 2007 02:36 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>"100% shared source" 對于MicroSoft來說just a joke。 感謝Open Share!</p>
+<span class="comments-post">由 <a href="http://blog.sina.com.tw/mycar/article.php?pbgid=47156&entryid=573989">FireFoxy</a> 發表於</MTIfNonEmpty> October  6, 2007 09:02 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1926" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: GCC 的 nested function 與 trampoline</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2010/07/post_281.html" title="爸，我想寫軟體程式" />
+
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2010/08/ptrace_sigtrap.html" title="ptrace / SIGTRAP / int3 的關聯" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2010/07/post_281.html">« 爸，我想寫軟體程式</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+| <a href="http://blog.linux.org.tw/~jserv/archives/2010/08/ptrace_sigtrap.html">ptrace / SIGTRAP / int3 的關聯 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">July 29, 2010</h2>
+
+<div class="blogbody">
+
+<h3 class="title">GCC 的 nested function 與 trampoline</h3>
+
+GCC 提供特有的 C 語言 extension，允許像 Pascal 一般，定義 nested function，詳情可參考 GCC 手冊 [<a href="http://gcc.gnu.org/onlinedocs/gcc/Nested-Functions.html">Nested Functions</a>]，注意，由於程式語言設計的一致性考量，此機制不在 GNU C++ 支援。nested function 的形式很明顯，就是在定義於另一個函式內部的函式，以下引用 GCC 手冊的範例：<br />
+<script src="http://pastebin.com/embed_js.php?i=qYqgF44B"></script>
+由上可見，函式 bar() 的程式碼實做中有個 nested functon -- accss()，後者可存取到前者的變數 offset，符合 lexical scoping 的規範。乍看 nested function 只是一種語法上的 syntax sugar？非也，事實上，可在 nested funtion 的 scope 外，將其位址傳遞給其他函式來呼叫。我們可以撰寫以下的程式碼： (nested.c)<br />
+<script src="http://pastebin.com/embed_js.php?i=N6kdKC4t"></script>
+嘗試編譯並執行：<pre class="code" style="margin: 6px;">
+$ gcc -g -o nested{,.c} && ./nested
+447
+427
+447
+</pre>
+筆者定義了一個名為 f 的函式，其返回值是一個指向 nested function -- nested 的位址，需要留意到，這裡的 nested 函式實做，相當於每次執行時，都動態產生一個實體。於是，一旦搭配 typedef，就可用 "func_t g = f(0x1ab)" 這類的語法，去從 f 函式「合成」一個新函式 g，而呼叫 g(20) 的輸出，就是 427 (即 0x1ab 的十進位表示) + 20 = 447。同理，寫成 "f(f(400)(27))(20)"，可理解為，先產生函式 "(*f(400))(int)"，再用數值 27 帶入，這時得到一個數值 400 + 27，之後再帶入函式 f 中，得到「合成」的函式，再將數值 20 帶入，這時候就是 400 + 27 + 20。<br />
+<br />
+由上可見，引入 nested function 後，讓我們進行 C 語言程式開發時，有了形式上的轉變，這表示可實現 closure in C 一類的高階技巧。可是，函式 nested 既然存在於函式 f 中，到底如何在執行時期取得位址？又，這個動態「生成」的函式，顯然有獨立的 context，否則上述一連串的函式呼叫組合，會使運算結果不同。<br />
+<br />
+筆者的環境是 Ubuntu Linux 10.10 (pre-release) 32-bit + lenovo X200 + gcc-4.5.0，咱們用 GDB 來觀察剛剛的 nested.c：<pre class="code" style="margin: 6px;">
+$ gdb ./nested 
+GNU gdb (GDB) 7.1-ubuntu
+...
+(gdb) b main
+Breakpoint 1 at 0x8048484: file nested.c, line 13.
+(gdb) r
+Starting program: /home/jserv/tmp/nested 
+
+Breakpoint 1, main () at nested.c:13
+13			func_t g = f(0x1ab);
+</pre>
+將中斷點設定在 main() 函式後，很快就看到取得 nested function 位址並「合成」新函式的操作，我們先印列該位址並將機械碼寫到檔案，以利後續分析：<pre class="code" style="margin: 6px;">
+(gdb) n
+14			printf("%d\n", (*g)(20));
+(gdb) print g
+$1 = (func_t) 0xbfffec40
+(gdb) dump memory out.bin 0xbfffec40 0xbfffec4a
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 31464] will be killed.
+
+Quit anyway? (y or n) y
+</pre>
+我們從位址 0xbfffec40 寫入長度為 0xa，也就是 10 bytes 的機械碼到檔案 out.bin，那直接反組譯看看：<pre class="code" style="margin: 6px;">
+$ objdump -m i386 -b binary -D out.bin
+...
+Disassembly of section .data:
+
+00000000 &lt;.data&gt;:
+   0:	b9 3c ec ff bf       	mov    $0xbfffec3c,%ecx
+   5:	e9 ca 97 04 48       	jmp    0x480497d4
+</pre>
+等等，這跟我們預期的函式實做有很大的差異，看起來不像是對應的機械碼，至少對應於 "return (arg + nested_arg)" 的加法指令才是。這段程式碼到底作什麼？依據 GCC 手冊 [<a href="http://gcc.gnu.org/onlinedocs/gccint/Trampolines.html">Trampolines for Nested Functions</a>]：<ul class="code" style="margin: 6px;">
+"A trampoline is a small piece of code that is created at run time when the address of a nested function is taken. It normally resides on the stack, in the stack frame of the containing function. These macros tell GCC how to generate code to allocate and initialize a trampoline."
+</ul>
+也就是說，前面這兩道指令，就是用以實現 trampoline 技巧的機械碼，存在於 stack 中。翻閱 GCC 文件，會見到以下文字：<ul class="code" style="margin: 6px;">
+"On CISC machines such as the m68k, this requires two instructions, a move immediate and a jump. Then the two addresses exist in the trampoline as word-long immediate operands."
+</ul>
+在 IA32 上，就是 mov + jmp 這兩道指令，那麼作用呢？繼續看下去：<ul class="code" style="margin: 6px;">
+"The code generated to initialize the trampoline must store the variable parts--the static chain value and the function address--into the immediate operands of the instructions. On a CISC machine, this is simply a matter of copying each address to a memory reference at the proper offset from the start of the trampoline."
+</ul>
+讓我們思考看看，為什麼要如此規劃？在 IA32 上，考慮到前面程式列表的函式 f，若這樣一個函式要向外部函式傳遞其 nested function (可視為「子函式」) 的 function pointer，GCC 無法直接傳遞該子函式的實際進入點位址，是考慮到 trampoline 位於 stack 中，這表示你無法傳回一個 trampoline ，並期望可在稍候使用。試想如此的狀況：當 nested function 一旦返回到前一 frame，只要呼叫任何其它的函式，都有破壞 trampoline 和 local variable 內容的可能性。而，當 trampoline 被更深層的 frame 呼叫時，%ecx (應當指向「父函式」的 stack frame) 可能已被過程中其他操作所修改，因而需透過 trampoline 來還原 %ecx 的內含值。基於上述考量，GCC 對於 C 語言的 nested function 支援，得引入 trampoline 技術。<br />
+<br />
+有了這些背景知識後，繼續研究對位址 0xbfffec40 的反組譯結果：(之所以要先寫入檔案，再用 objdump 反組譯，也是考量到這段程式碼是動態生成的，GDB 欠缺該 stack 的資訊)<pre class="code" style="margin: 6px;">
+   0:	b9 3c ec ff bf       	mov    $0xbfffec3c,%ecx
+   5:	e9 ca 97 04 48       	jmp    0x480497d4
+</pre>
+對應到記憶體的布局，就類似以下的示意圖：<pre class="code" style="margin: 6px;">
+|        | 
++--------+
+| local  | &lt;- mov ???, %ecx   (欲放入 %ecx 的值)
++--------+
+| local  |
++--------+
+| local  |
++--------+
+|  ...   |
+.        .
++--------+    ---------------------------\
+| mov    | &lt;- mov $0xbfffec3c, %ecx      |
++        +                               |
+|  0x3c  |                               |
++        +                               |
+|  0xec  |                               |
++        +                               |
+|  0xff  |                               |
++        +                      (trampoline 實做)
+|  0xbf  |                               |
++--------+                               |
+| jmp    | &lt;- jmp 0x480497d4             |
++        +                               |
+|  0xca  |                               |
++        +                               |
+|  0x97  |                               |
++        +                               |
+|  0x04  |                               |
++        +                               |
+|  0x48  |                               |
++--------+    ---------------------------/
+.  ...   .
+|  ...   | &lt;- %ebp
++--------+
+</pre>
+為了驗證這個想法，筆者做了一個小實驗，嘗試從 nested function 去複製 trampoline，進而生成新的 function，這就有幾分 closure 的意味，請參考以下程式碼： (closure.c)<br />
+<script src="http://pastebin.com/embed_js.php?i=GgKxSVna"></script>
+首先，筆者在結構體 trampoline_code 中，定義 trampoline code 的呈現，而在函式 create_closure() 中寫入 mov ecx 與 jmp 的 IA32 opcode，接著逐一帶入參數去驗證。<br />
+<br />
+另外，GCC 的 nested function 還允許使用 goto 敘述，也就是說，若「父函式」定義一個 label，那麼「子函式」(也就是 nested function) 就能透過 goto，跳躍到從「父函式」所繼承來的 label，需要留意到，一旦使用 goto，nested function 將立刻返回到「父函式」。以下引用 GCC 手冊的範例：<br />
+<script src="http://pastebin.com/embed_js.php?i=1Yb44b16"></script>
+想必看倌仍意猶未竟，不妨參考 Vidar Hokstad 的文章 [<a href="http://www.hokstad.com/how-to-implement-closures.html">How to implement closures</a>]，同樣也採用 C 語言搭配 nested function 的技巧，額外還提到 thunk 的技術，用以實現 closure。<br />
+<br />
+後記，感謝 Thinker 指正若干觀念錯誤，已修正於本文，特此感謝。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 July 29, 2010  5:54 PM
+
+<br /></span>
+
+</div>
+
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2154" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

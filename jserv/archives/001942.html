@@ -1,0 +1,292 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 在 Debian Sarge 上運作 NetBSD</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001941.html" title="「 Linux 走入電信通訊領域 -- OpenMoko 帶來的新革命」簡報上線" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001943.html" title="別了，台北" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001941.html">« 「 Linux 走入電信通訊領域 -- OpenMoko 帶來的新革命」簡報上線</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001943.html">別了，台北 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">December 23, 2007</h2>
+
+<div class="blogbody">
+
+<h3 class="title">在 Debian Sarge 上運作 NetBSD</h3>
+
+在 2003 年的 BSDcon 上，筑波大學的 Hideki Eiraku 發表論文 [<a href="http://www.usenix.org/publications/library/proceedings/bsdcon03/tech/eiraku/eiraku_html/index.html">Running BSD Kernels as User Processes by Partial Emulation and Rewriting of Machine Instructions</a>]，以相當巧妙的方式實做了 x86 上精簡的虛擬機器，手法除了仿效 UML (User-Mode Linux) 的 syscall redirection 外，還以編譯時期的 machine instruction rewriting 途徑達到此系統模擬的效果，隨後此成果以 GNU GPLv2 發表，即 [<a href="http://lilyvm.sourceforge.net/">LilyVM</a>]，支援 Linux 與 NetBSD 作為 host，以及 Linux / FreeBSD / NetBSD 作為 guest OS。<br />
+<br />
+在 Debian GNU/Linux 3.1 (Sarge) / IA32 的測試，大部分功能可運作，測試環境：<pre class="code" style="margin: 6px;">
+$ uname -a
+Linux people 2.6.12-vs2.0 #1 SMP Tue Aug 30 10:44:14 CST 2005 i686 GNU/Linux
+</pre>
+啟動 NetBSD 1.6.1：
+<pre class="code" style="margin: 6px;">
+$ ./start-netbsd
+startkernel
+Copyright (c) 1996, 1997, 1998, 1999, 2000, 2001, 2002
+    The NetBSD Foundation, Inc.  All rights reserved.
+Copyright (c) 1982, 1986, 1989, 1991, 1993
+    The Regents of the University of California.  All rights reserved.
+
+NetBSD 1.6.1 (a.PROF) #38: Wed Dec  8 14:04:39 JST 2004
+
+cpu0: Intel Pentium 4 (686-class), 2793.37 MHz
+cpu0: L2 cache 1 MB 64b/line 8-way
+cpu0: features 201d<FPU,DE,PSE,TSC>
+cpu0: features 201d<PGE>
+total memory = 65148 KB
+avail memory = 58628 KB
+using 839 buffers containing 3356 KB of memory
+mainbus0 (root)
+isa0 at mainbus0
+com0 at isa0 port 0x3f8-0x3ff irq 4: ns8250 or ns16450, no fifo
+com0: console
+#00000010##A021E337##A040CFE0##00000000#FPE
+npx0 at isa0 port 0xf0-0xff: using exception 16
+biomask ffef netmask ffef ttymask ffef
+md0: using 192 MB image file
+Profiling kernel, textsize=1323040 [a0100000..a0243020]
+boot device: <unknown>
+root on md0a dumps on md0b
+root file system type: ffs
+No SYSEMU patch.
+Sun Dec 23 11:42:55 UTC 2007
+Starting file system checks:
+/dev/rmd0a: file system is clean; not checking
+Setting tty flags.
+Setting sysctl variables:
+Starting network.
+Hostname: user-level-netbsd
+NIS domainname: localdomain
+IPv6 mode: host
+Configuring network interfaces: vmn0.
+add net default: gateway 10.255.255.255
+Adding interface aliases:
+Building databases...
+kvm_mkdb: machdep.booted_kernel: sysctl() failed with No such file or directory:
+ No such file or directory
+Starting syslogd.
+Checking for core dump...
+savecore: /dev/wd0a: Device not configured
+Dec 23 11:42:58 user-level-netbsd savecore: /dev/wd0a: Device not configured
+Mounting all filesystems...
+Clearing /tmp.
+Creating a.out runtime link editor directory cache.
+Checking quotas: done.
+/etc/rc: WARNING: No swap space configured!
+Starting virecover.
+starting local daemons:.
+Updating motd.
+Starting inetd.
+Starting cron.
+Sun Dec 23 11:43:00 UTC 2007
+
+NetBSD/i386 (user-level-netbsd) (console)
+
+login:
+</pre>
+登入後關閉系統：<pre class="code" style="margin: 6px;">
+login: root
+Last login: Sun Dec 23 11:40:39 2007 on console
+Dec 23 11:43:07 user-level-netbsd login: ROOT LOGIN (root) ON console
+Dec 23 11:43:07 user-level-netbsd login: ROOT LOGIN (root) ON console
+Copyright (c) 1996, 1997, 1998, 1999, 2000, 2001, 2002
+        The NetBSD Foundation, Inc.  All rights reserved.
+Copyright (c) 1980, 1983, 1986, 1988, 1990, 1991, 1993, 1994
+        The Regents of the University of California.  All rights reserved.
+
+NetBSD 1.6.1 (a.PROF) #38: Wed Dec 8 14:04:39 JST 2004
+
+Welcome to NetBSD!
+
+You have new mail.
+Terminal type is vt100.
+We recommend creating a non-root account and using su(1) for root access.
+user-level-netbsd# poweroff
+Dec 23 11:43:15 user-level-netbsd poweroff: powered off by root
+Dec 23 11:43:15 user-level-netbsd syslogd: Exiting on signal 15
+Dec 23 11:43:15 user-level-netbsd syslogd: Exiting on signal 15
+syncing disks... done
+
+The operating system has halted.
+Please press any key to reboot.
+
+rebooting...
+</pre>
+注意：[<a href="http://lilyvm.sourceforge.net/">LilyVM</a>] 的 wiki [<a href="http://lilyvm.sourceforge.net/wiki.en/index?Bugs">Bugs</a>] 記載了現有實做上的限制。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 December 23, 2007 08:03 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1942" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

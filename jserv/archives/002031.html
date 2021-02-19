@@ -1,0 +1,344 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 開機見 Hello World</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002030.html" title="窺探 .bss section" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002032.html" title="操作 X 的 Cut and Paste Buffer" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002030.html">« 窺探 .bss section</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002032.html">操作 X 的 Cut and Paste Buffer »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">June 20, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">開機見 Hello World</h3>
+
+幾周前，c9s 寫了篇文章 [<a href="http://c9s.blogspot.com/2008/06/linux-gnu-as-1.html">如何在 Linux 下使用 GNU AS 撰寫組合語言(1)</a>]，找筆者協助檢閱，簡單扼要地提及 ELF 執行檔主體、GNU Assembler 語法，最後以 80486 以後 (含) 引入的 cpuid 指令作範例，是不錯的入門文章。閱讀時，也想到之前提過 [<a href="http://blog.linux.org.tw/~jserv/archives/001966.html">電子書《使用開源軟件-自己動手寫操作系統》免費下載</a>]，這份來自對岸高手 [<a href="http://solrex.cn/">solrex</a>] 的電子書籍，於是，筆者也提供一個具體而微的組合語言範例，使其置入 floppy / hard-disk 的 boot sector 中，能如同 boot loader 一般，當系統啟動時，就被載入執行。<br />
+<br />
+當然，這裡還是用筆者最愛的 "Hello World" 程式，用組合語言來實現如下：
+<pre class="code" id="codemain" style="margin: 6px;">.text
+.globl start
+.code16
+
+start:
+	movb $0xE, %ah 	<span class="comment"># write character in text mode for int 10h
+</span>	movb $<span class="literal">'H'</span>, %al 	<span class="comment"># write 'H', 'e', 'l', 'l', 'o'
+</span>	<span class="keyword">int</span> $0x10
+	movb $<span class="literal">'e'</span>, %al
+	<span class="keyword">int</span> $0x10
+	movb $<span class="literal">'l'</span>, %al
+	<span class="keyword">int</span> $0x10
+	... 省略 ...
+</span>	ret
+
+<span class="comment"># Fill NOP instruction (opcde = 0x90) till base offset 0x1FE.
+</span>.org 0x1FE, 0x90
+
+<span class="comment"># This indicates boot disk
+</span>boot_flag: .word 0xAA55</pre>
+在 x86 開機的情境中，x86 CPU 會先執行位址 0xFFFF0 的程式，這就是 BIOS ROM 的進入點，一旦完畢後 (事實上，本世紀的 x86 BIOS 已複雜到難以用一句話描述行為，包含 Windows 95 與 GNU/Linux 等完整的作業系統，都可燒入至 BIOS ROM 之中，藉此提供快速啟動作業系統的某些服務之用)，執行權會試著交棒給 boot loader 或作業系統。BIOS 的設計會依設定的順序，查驗各別開機磁碟裝置 (如 floppy, hard disk, CD-ROM 等等) 的起始單元，並載入其內容的 512 bytes 至記憶體位址 0x0000:7c00，從而跳躍到該位址並執行，也就將控制權從 BIOS ROM 移轉到 boot loader 或作業系統主體，詳情可參閱 [<a href="http://www.cs.nctu.edu.tw/~huangmc/works/web/Boot_x86/Boot_x86.html">X86 開機流程小記</a>] 與 [<a href="http://blog.linux.org.tw/~jserv/archives/001714.html">Linux/x86 開機流程：自 MBR 到 init</a>]。<br />
+<br />
+就 hard-disk 來說，其起始單元特稱 MBR (Master Boot Record)，表示物理表示的 cylinder 0, head 0, sector 1，而 BIOS 的設計對於此空間的內容，需額外檢查最後兩 bytes 是否為 0x55 與 0xAA，才可判定有效，進而執行上述開機動作，否則繼續搜尋下個裝置。這段期間，x86 CPU 處於 16 bit Real mode，所以筆者提供的組合語言程式宣告了 ".code16"，告知 GNU Assembler 組譯出 16 bit 的機械碼，而上述的程式碼列表中，最後一行正是 0xAA55 (litten endian)。至於中間的程式碼，就不是特別重要，只是在呼叫 BIOS 中斷 int 10h 前，設定了 %ah 的值為 0xE，表示在文字模式下寫入字元，"Hello World!" 即是在此處理。中間的部份，補了 NOP 指令，以便讓末端的 0x55 與 0xAA 字元得以填入 BIOS 讀出的 512 bytes 尾端。<br />
+<br />
+咱們看如何編譯這個小程式，並給定其正確的參數，先補個 Makefile 如下：<pre class="code" id="codemain" style="margin: 6px;">
+AS = as
+LD = ld
+OBJCOPY = objcopy
+
+.S.o:
+	$(AS) -a $< -o $*.o > $*.map
+
+all: disk.img
+
+disk.img: boot.out
+	$(OBJCOPY) -O binary -j .text $< $@
+
+boot.out: boot.o
+	${LD} -r -Ttext 0x7c00 -e _start -s -o boot.out boot.o
+
+clean:
+	rm -f disk.img boot.out boot.o boot.map
+</pre>
+編譯過程如下：<pre class="code" id="codemain" style="margin: 6px;">
+$ make clean all
+rm -f desk.img boot.out boot.o boot.map
+as -a boot.S -o boot.o > boot.map
+ld -r -Ttext 0x7c00 -e _start -s -o boot.out boot.o
+objcopy -O binary -j .text boot.out disk.img
+</pre>
+注意到剛剛提及，BIOS 在控制權移轉時，會「載入各別開機磁碟裝置起始內容的 512 bytes 至記憶體位址 0x0000:7c00」，所以，在 GNU linker (ld) 的選項中，筆者特別讓組合語言的進入點 _start 對齊 .text 區域，也就是位址 0x7c00。最後，呼叫 objcopy 轉換目標程式碼為二進位格式，填入 boot sector 可接受的格式，這時可透過 qemu 來模擬開機的過程：<pre class="code" id="codemain" style="margin: 6px;">
+$ qemu -hda disk.img
+</pre>
+其模擬的畫面大致如下：<br />
+<center><img src="http://jserv.sayya.org/helloworld/pix/hello-boot.png" width="735" height="526" /></center><br />
+可見到系統畫面停留在我們給定的 "Hello World" 文字輸出。另外，在建構的過程中，筆者要求 GNU Assembler 也輸出 boot.map，也就是 "GAS LISTING"，其第一頁的最後幾行如下：
+<pre class="code" id="codemain" style="margin: 6px;">
+  25 0026 B06C                  movb $'l', %al
+  26 0028 CD10                  int $0x10
+  27 002a B064                  movb $'d', %al
+  28 002c CD10                  int $0x10
+  29 002e C3                    ret
+  30                    
+  31                    # Fill NOP instruction (opcde = 0x90) till base offset 0x1FE.
+  32 002f 90909090      .org 0x1FE, 0x90
+  32      90909090 
+  32      90909090 
+  32      90909090 
+  32      90909090 
+  33                    
+  34                    # This indicates boot disk
+  35 01fe 55AA          boot_flag: .word 0xAA55
+</pre>
+由上述表示可見，十六進位的 1FE + 2 bytes (作為識別用的 0x55 與 0xAA)，就等於十進位的 512 bytes，透過假指令，中間填補的 NOP 指令。<br />
+<br />
+於是，這個「開機見 Hello World」的組合語言 boot sector 程式就完成了，包含 boot.S 與 Makefile 可自 [<a href="http://jserv.sayya.org/helloworld/hello-boot.tar.bz2">hello-boot.tar.bz2</a>] 取得。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 June 20, 2008 02:55 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>不好意思，能否請教一個低檔次的問題...</p>
+
+<p>philippe asm # qemu -hda disk.img<br />
+qemu: could not open disk image disk.img</p>
+
+<p>Qemu-0.9.1, 在 Gentoo 下執行. 謝謝 ^^</p>
+<span class="comments-post">由 <a href="mailto&#58;ljm&#64;ljm&#46;idv&#46;tw">ljmid</a> 發表於</MTIfNonEmpty> June 20, 2008 05:10 PM</span>
+</div>
+<div class="comments-body">
+<p>@ljmid,</p>
+
+<p>感謝回報，請試著執行以下指令，看是否為以下輸出：<br />
+$ od disk.img | head<br />
+0000000 007264 044260 010315 062660 010315 066260 010315 066260<br />
+0000020 010315 067660 010315 020260 010315 053660 010315 067660<br />
+0000040 010315 071260 010315 066260 010315 062260 010315 110303<br />
+0000060 110220 110220 110220 110220 110220 110220 110220 110220<br />
+*<br />
+0000760 110220 110220 110220 110220 110220 110220 110220 125125<br />
+0001000</p>
+
+<p>若非，可能是建構過程出問題</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> June 20, 2008 10:11 PM</span>
+</div>
+<div class="comments-body">
+<p>Hi jserv,</p>
+
+<p>To prevent keyin error, I just downloaded your tar.bz2 and typed make.  Failed ... I wonder if there's something wrong with Gentoo or there's compatibility problem...</p>
+
+<p>philippe hello-boot # hexdump disk.img <br />
+0000000 0eb4 48b0 10cd 65b0 10cd 6cb0 10cd 6cb0<br />
+0000010 10cd 6fb0 10cd 20b0 10cd 57b0 10cd 6fb0<br />
+0000020 10cd 72b0 10cd 6cb0 10cd 64b0 10cd 90c3<br />
+0000030 9090 9090 9090 9090 9090 9090 9090 9090<br />
+*<br />
+00001f0 9090 9090 9090 9090 9090 9090 9090 aa55<br />
+0000200</p>
+
+<p>Thanks ... I'll trace it.<br />
+Just for your reference:<br />
+philippe hello-boot # ls -l<br />
+total 24<br />
+-rw-r--r-- 1 ljm  ljm   266 Jun 20 02:54 Makefile<br />
+-rw-r--r-- 1 ljm  ljm   564 Jun 20 02:30 boot.S<br />
+-rw-r--r-- 1 root root 1555 Jun 23 09:36 boot.map<br />
+-rw-r--r-- 1 root root 1002 Jun 23 09:36 boot.o<br />
+-rw-r--r-- 1 root root  976 Jun 23 09:36 boot.out<br />
+-rw-r--r-- 1 root root  512 Jun 23 09:36 disk.img<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;ljm&#64;ljm&#46;idv&#46;tw">ljmid</a> 發表於</MTIfNonEmpty> June 23, 2008 09:42 AM</span>
+</div>
+<div class="comments-body">
+<p>@ljmid,</p>
+
+<p>Your generated image looks fine.  Could you check qemu as well?  Trying to invoke with other x86 system emulator would be a good idea to clarify.</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> June 23, 2008 12:33 PM</span>
+</div>
+<div class="comments-body">
+<p>hello-boot.tar.bz2 不能下載?</p>
+<span class="comments-post">由 <a href="mailto&#58;linux&#46;i686&#64;gmail&#46;com">tank</a> 發表於</MTIfNonEmpty> July  1, 2008 02:38 PM</span>
+</div>
+<div class="comments-body">
+<p>Hi Jserv,<br />
+很有趣，下載 qemu for Win32 來執行同一個 disk.img 沒問題。只有 Gentoo 下的不能跑而已... 晚點來試試 redhat hmm...</p>
+<span class="comments-post">由 <a href="mailto&#58;ljm&#64;ljm&#46;idv&#46;tw">ljmid</a> 發表於</MTIfNonEmpty> July 15, 2008 12:17 PM</span>
+</div>
+<div class="comments-body">
+<p>jserv大您好:</p>
+
+<p>小弟最近在研究booting跟虛擬機器,所以才會找到您這篇文章,<br />
+小弟有個疑問就是如果我是用 -kernel 指定kernel給他並附-initrd 的話,那qemu是會跟host 機器取得memory 後將kernel的前512byte 丟到0x7c00的位置去執行嗎?我看kernel的 head.S _start 也是指到這個位置,關於這一段流程(qemu跟host取的記憶體區塊到run initrd)有沒有什麼資料可以參考或是我可以從qemu的哪個地方開始看起呢?第一次發問如果有不得體的地方請多多見諒</p>
+<span class="comments-post">由 <a href="mailto&#58;nickgogo&#64;gmail&#46;com">nickgogo</a> 發表於</MTIfNonEmpty> June 17, 2009 11:22 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2031" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

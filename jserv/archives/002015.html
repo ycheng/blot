@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 演講：親手打造開放原始程式碼的機器人</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002014.html" title="KDE 的 MS-Windows 平台移植" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002016.html" title="非同步 Xlib 處理機制" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002014.html">« KDE 的 MS-Windows 平台移植</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002016.html">非同步 Xlib 處理機制 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">April 21, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">演講：親手打造開放原始程式碼的機器人</h3>
+
+稍早提過本月底舉辦的 [<a href="http://blog.linux.org.tw/~jserv/archives/002013.html">OpenTech Summit Taiwan 2008</a>]，應大會之邀，我將會在最後一日 (Apr 29) 於元智大學的議程中，給予主題為 "Build Your Own Open Source Robot" 的演講，中文標題是「親手打造開放原始碼的機器人」。此處「親手打造」一詞對技術人來說，得以付諸實現的感動，遠遠超過千言萬語，在 [<a href="http://blog.linux.org.tw/~jserv/archives/000978.html">衣帶漸寬終不悔</a>] 一文就曾提過我對《親手打造網際網路四大服務》的感動。<br />
+<br />
+以往，我們都認為從無到有開發一整套機器人，必定是國外大學如 CMU, Stanford, MIT 一類各方面資源極為豐富的環境，才有機會這麼作，反過來說，平凡我者，只能買個零售玩具來過過癮罷了。樂高公司推出的 [<a href="http://mindstorms.lego.com/">mindstorms NXT</a>] 本質上仍是玩具，但其允許 DIY 打造機器人的獨特體驗，讓許多玩家雀躍不已，而隨著硬體普及化與低價化，打造機器人已非奢侈或遙不可及之事，而這也是我將要分享的經驗。當硬體獲得突破性的變化，紛紛依循標準化的模式發展，那軟體就成為新的障礙，先不論設計人形機器人需要多少卓越的演算法，在開發之初，我們可能連一個機械手臂如何控制都毫無概念，遑論憑藉著一股傻勁去建構完整的系統。試看，[<a href="http://jakarta.apache.org/">Apache Jakarta</a>] 不就是為 Java server-side computing 走入普及，奠定優秀的基礎嗎？若無這些基礎建設與相關的開放資源，動輒千萬金的開銷，一般人實在不可能奢想。同樣的，open source 在 (普及/平價) 機器人的領域就相當重要，最低的限度來說，至少我們需要透過 open source 的實做，去理解、研究、修改機器人的自動控制的細節，有了這些根基，才有機會去引入創新。<br />
+<br />
+愛因斯坦曾說：「真理就是在實踐面前站得住腳的東西」(Truth is what stands the test of experience.)，而訴諸 open source 的途徑，則是踏在可層層累積的實踐中，探求真理的方案，我同樣相信，普及科學亦大有可為，正如他的另一句話：「
+不必努力去做一個成功者，盡力去成為一個有價值者」(Try not to become a man of success, but rather try to become a man of value.)，價值的追尋有很多方式，重點是你如何探究。去年曾花了一些時間，體驗一個 Robot 加上整個系統軟體的設計，並在 COSCUP 2007 研討會分享 [<a href="http://blog.linux.org.tw/~jserv/archives/001936.html">快快樂樂設計嵌入式即時作業系統</a>] 議程分享經驗，儘管獲得一個具體而微的系統，但這無疑只是個出發點，我們早已知曉機器人會是個有趣的玩意，而技術問題也慢慢消弭中，真正的問題是，機器人設計是否能走出專業的殿堂外，得以允許一般人也能用不同的思維，去創造獨特的價值呢？這也是本次分享想指出的關鍵，所以，在建構機器人之初，所有的硬體元件都該有對應的 open source 軟體控制實做，最終，會在兼顧運算量與功耗的平台上，透過自由軟體對這樣的機器人系統，注入新的生命。<br />
+<br />
+關於地理交通資訊可參考 wiki [<a href="http://wiki.openpattern.org/index.php/OpenTechSummitTaiwan2008_Map">OpenTechSummitTaiwan2008 Map</a>]，我的議程時間是 Apr 29 (週二) 的上午 11:15 - 12:15。以上，歡迎指教，謝謝！<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 April 21, 2008 01:37 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>Hi Jserv!我其實是yzu畢業的學生~<br />
+但是我剛才看到你要去的消息~<br />
+我超想去聽你的這篇研講<br />
+不知還有辦法可以去聽嗎!?<br />
+如果可以,那就是太棒了:p</p>
+<span class="comments-post">由 <a href="mailto&#58;powermonkey3&#64;gmail&#46;com">Daniel</a> 發表於</MTIfNonEmpty> April 28, 2008 02:12 AM</span>
+</div>
+<div class="comments-body">
+<p>@Daniel</p>
+
+<p>您可現場報名，直接前往 YZU 即可，謝謝！</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> April 28, 2008 11:09 AM</span>
+</div>
+<div class="comments-body">
+<p>我已報好了:p<br />
+但是明天去應該只能去聽您這場了(正如我所願!)<br />
+期待您明天有趣的演講.</p>
+<span class="comments-post">由 <a href="mailto&#58;powermonkey3&#64;gmail&#46;com">Daniel</a> 發表於</MTIfNonEmpty> April 29, 2008 12:27 AM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2015" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

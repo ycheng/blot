@@ -1,0 +1,284 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Jserv's blog: 避開 PTRACE_TRACME 反追蹤技巧</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2011/08/post_284.html" title="「開放原始碼作為新事業: 台灣本土經驗談」簡報上線" />
+
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2011/09/post_285.html" title="致歉：網站資料佚失" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+
+<a href="http://blog.linux.org.tw/~jserv/archives/2011/08/post_284.html">« 「開放原始碼作為新事業: 台灣本土經驗談」簡報上線</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+
+| <a href="http://blog.linux.org.tw/~jserv/archives/2011/09/post_285.html">致歉：網站資料佚失 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">August 30, 2011</h2>
+
+<div class="blogbody">
+
+<h3 class="title">避開 PTRACE_TRACME 反追蹤技巧</h3>
+
+在前文 [<a href="http://blog.linux.org.tw/~jserv/archives/2010/08/ptrace_sigtrap.html">ptrace / SIGTRAP / int3 的關聯</a>] 提到藉由檢查 ptrace(PTRACE_TRACEME, ...) 的技巧，確認該 process 是否被 GDB 所追蹤，而做出必要的回應。不過，這不表示就沒轍，事實上，還是能透過 gdb 來追蹤。<br />
+<br />
+先來看看之前的範例程式碼：<br />
+<script src="http://pastebin.com/embed_js.php?i=UpeZ34pP"></script>
+嘗試編譯並使用 gdb：<pre class="code" style="margin: 6px;">
+$ gcc -o ptraceme{,.c} && gdb ptraceme
+GNU gdb (Ubuntu/Linaro 7.3-0ubuntu2) 7.3-2011.08
+...
+(gdb) r
+Starting program: /tmp/ptraceme 
+No, I don't want to serve you.
+</pre>
+由於執行到無窮迴圈，我們只好按下 Ctrl-C 結束：<pre class="code" style="margin: 6px;">
+^C
+Program received signal SIGINT, Interrupt.
+0x08048451 in main ()
+</pre>
+讓我們來觀察反組譯的程式碼：(筆者的環境是 x86 32-bit) <pre class="code" style="margin: 6px;">
+   0x0804843c &lt;+40&gt;:	call   0x8048350 &lt;ptrace@plt&gt;
+   0x08048441 &lt;+45&gt;:	test   %eax,%eax
+   0x08048443 &lt;+47&gt;:	jns    0x8048453 &lt;main+63&gt;
+   0x08048445 &lt;+49&gt;:	movl   $0x8048540,(%esp)
+   0x0804844c &lt;+56&gt;:	call   0x8048320 &lt;puts@plt&gt;
+=&gt; 0x08048451 &lt;+61&gt;:	jmp    0x8048451 &lt;main+61&gt;
+</pre>
+顯然 "jmp 0x8048451" 就是目前的無窮迴圈，但我們往上可見 call ptrace 這個調用 ptrace 系統呼叫的動作，接下來一行就是關鍵：<pre class="code" style="margin: 6px;">
+   0x0804843c &lt;+40&gt;: call   0x8048350 &lt;ptrace@plt&gt;
+   0x08048441 &lt;+45&gt;: test   %eax,%eax
+</pre>
+使用 test 指令來查對 ptrace() 系統呼叫的傳回值 (置於 %eax 暫存器)，那也意味著，如果我們能在此設定中斷點，並且強制更改 %eax 內含值，就可跳過此反追蹤技巧。咱們來試試看：<pre class="code" style="margin: 6px;">
+(gdb) b *0x08048441
+Breakpoint 1 at 0x8048441
+(gdb) r
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+Starting program: /tmp/ptraceme 
+
+Breakpoint 1, 0x08048441 in main ()
+</pre>
+如我們預期，停在 test 指令那邊，這時設定 %eax 暫存器並繼續執行：<pre class="code" style="margin: 6px;">
+(gdb) set $eax=0
+(gdb) c
+Continuing.
+Yes, real routines go here
+[Inferior 1 (process 13899) exited normally]
+</pre>
+終於見到 "Yes, real routines go here" 字樣，而且該 process 也正常執行完畢。我們可編撰以下的 GDB script，來自動化上述操作，原理就是檢查 ptrace 系統呼叫的參數與修改回傳值。建立檔案 "gdb-ptrace" 如下：<pre class="code" style="margin: 6px;">
+set $ptrace_bpnum = 0
+
+define ptrace-hook
+    catch syscall ptrace
+    commands
+        if ($ebx == 0)
+	    set $eax = 0
+            continue
+        end
+    end
+    set $ptrace_bpnum = $bpnum
+end
+
+define ptrace-unhook
+    if ($ptrace_bpnum != 0)
+        delete $ptrace_bpnum
+        set $ptrace_bpnum = 0
+    end
+end
+</pre>
+我們定義兩個自訂指令： ptrace-hook 與 ptrace-unhook，前者的技巧在於 "catch syscall ptrace"，這時要求 GDB 檢查參數。離開 GDB 後，載入該 GDB script 並重新執行 ptraceme 執行檔：<pre class="code" style="margin: 6px;">
+$ gdb -x gdb-ptrace ptraceme
+GNU gdb (Ubuntu/Linaro 7.3-0ubuntu2) 7.3-2011.08
+...
+</pre>
+鍵入自訂指令並執行：<pre class="code" style="margin: 6px;">
+(gdb) ptrace-hook 
+Catchpoint 1 (syscall 'ptrace' [26])
+(gdb) r
+Starting program: /tmp/ptraceme 
+
+Catchpoint 1 (call to syscall 'ptrace'), 0x001110c2 in ?? ()
+   from /lib/ld-linux.so.2
+
+Catchpoint 1 (returned from syscall 'ptrace'), 0x001110c2 in ?? ()
+   from /lib/ld-linux.so.2
+Yes, real routines go here
+[Inferior 1 (process 13973) exited normally]
+</pre>
+由上可見，Catchpoint 1 就是 syscall 'ptrace'，我們順利的攔截並改變程式執行流程。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 August 30, 2011 11:25 PM
+
+<br /></span>
+
+</div>
+
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://blog.linux.org.tw/cgi-bin/movabletype/mt-comments.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2181" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

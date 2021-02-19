@@ -1,0 +1,463 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>timhsu: 邪惡的 GGKit</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~timhsu/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~timhsu/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~timhsu/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~timhsu/archives/000629.html" title="聊聊 ASUS WL500g" />
+
+<link rel="next" href="http://blog.linux.org.tw/~timhsu/archives/001064.html" title="WISE 2005" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+<!--
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="http://blog.linux.org.tw/~timhsu/archives/001012.html">
+<dc:title>邪惡的 GGKit</dc:title>
+<dc:description>  真是一個邪惡的點子啊 - 我心裡這麼想.
+  有一個邪惡且威力強大的 Linux Kernel Rootkit - SucKIT ....</dc:description>
+<dc:creator></dc:creator>
+<dc:date>2005-03-03T18:43:00+08:00</dc:date>
+<license rdf:resource="http://creativecommons.org/licenses/by-nc-sa/1.0/" />
+</Work>
+<License rdf:about="http://creativecommons.org/licenses/by-nc-sa/1.0/">
+<requires rdf:resource="http://web.resource.org/cc/Attribution" />
+<requires rdf:resource="http://web.resource.org/cc/Notice" />
+<requires rdf:resource="http://web.resource.org/cc/ShareAlike" />
+<permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+<permits rdf:resource="http://web.resource.org/cc/Distribution" />
+<permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+<prohibits rdf:resource="http://web.resource.org/cc/CommercialUse" />
+</License>
+</rdf:RDF>
+-->
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~timhsu/" accesskey="1">timhsu</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~timhsu/archives/000629.html">&laquo; 聊聊 ASUS WL500g</a> |
+
+<a href="http://blog.linux.org.tw/~timhsu/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~timhsu/archives/001064.html">WISE 2005 &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 03, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">邪惡的 GGKit</h3>
+
+<p>  真是一個邪惡的點子啊 - 我心裡這麼想.<br />
+  有一個邪惡且威力強大的 Linux Kernel Rootkit - SucKIT，在著名的 <a href="http://www.phrack.org/show.php?p=58&a=7"> Phrack </a> 裡有作者完整的技術介紹。而我的奮戰，便從將 SucKIT 1.3b 移植到 kernel 2.6 開始....<br />
+   1. kernel 2.6 移除了 query_module(2) 系統呼叫，往後要取得核心符號表可透過 /proc/kallsyms。<br />
+  2. 系統呼叫增加到 28x個，比 kernel 2.4 的 25x 多很多。<br />
+  3. task_struct 結構也略有更動，增加了 struct thread_info *thread_info 等欄位。<br />
+  4. 支援 <a href="http://linux.web.cern.ch/linux/scientific3/docs/rhel-gcc-en-3/thread-local.html">TLS - Thread Local Storage</a>，新增 get_thread_area(2)/set_thread_area(2) 系統呼叫。不過這和我要作的沒啥關係 :)。<br />
+  5. kernel 2.6 支援 Pentium III+ 的快速系統呼叫 sysenter/sysexit 機制。核心提供了原先的 int 0x80 和 sysenter 雙介面，並虛擬印射了 linux-gate.so.1 來實作，詳細內容可閱讀<a href="http://www-900.ibm.com/developerWorks/cn/linux/kernel/l-k26ncpu/index.shtml">這裡</a>。<br />
+   <br />
+  就這樣奮戰了兩天，我一個個解決了 kernel 2.4 和 2.6 差異造成的問題，並且讓 GGKIT (原 SucKIT 1.3b，我取作新名字)順利的在 2.6 下運作，不過仍然有些奇怪的 bugs 待解決 :(<br />
+  值得一提的是，GGKIT 可動態偵測核心 2.4 還是 2.6 並作即時修正，不需重新編譯即可在 2.4 和 2.6 kernel 下運作。<br />
+  我所用的偵測方式乃取 ES 暫存器來判斷，2.4 kernel 下 ES 為 0x2b，而 2.6 kernel 則為 0x7b。底下是在 GGKIT 在 kernel mode 下的程式片段：</p>
+
+<p>   --------------<br />
+         long    *es;</p>
+
+<p>        asm ("movl %es, %eax\n");<br />
+        asm ("movl %%eax, %0\n"  <br />
+                : "=g"(es));     <br />
+        if (es == (int)0x7b)     <br />
+        {<br />
+                /* kernel 2.6 */<br />
+                *runkernel() = 0x26;<br />
+        } else<br />
+                *runkernel() = 0x24;<br />
+  --------------<br />
+  <br />
+  Q:既然 GGKit 這麼邪惡，那麼可在何處下載玩弄呢?<br />
+  A: 應該找不到下載點，但也許會在你的系統裡發現 :-)</p>
+
+<a name="more"></a>
+
+
+<span class="posted">由  發表於 March  3, 2005 06:43 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>hsu是什么意思？我认识个人名字里也hsu</p>
+<span class="comments-post">Posted by: <a href="mailto&#58;hsu&#64;yahoo&#46;com&#46;tw">hsu</a> 發表於 March 31, 2005 08:50 PM</span>
+</div>
+<div class="comments-body">
+<p>x home loan [url=http://home-loan-application.blogspot.com]home loan[/url] x</p>
+<span class="comments-post">Posted by: <a href="http://home-loan-application.blogspot.com">home loan</a> 發表於 June  2, 2006 01:13 AM</span>
+</div>
+<div class="comments-body">
+<p>hi http://2nd-mortgage-0.blogspot.com/ [url=http://2nd-mortgage-0.blogspot.com]2nd mortgage[/url] 2nd mortgage</p>
+<span class="comments-post">Posted by: <a href="http://2nd-mortgage-0.blogspot.com/">2nd mortgage</a> 發表於 June  4, 2006 06:52 AM</span>
+</div>
+<div class="comments-body">
+<p> indicate barrelling agriculturally feathers rafters Pisces quasar Inanna  low interest loan  [url=http://www.loans-options.com/low-interest-loan.html] low interest loan [/url]  low interest loan  http://www.loans-options.com/low-interest-loan.html http://www.loans-options.com/low-interest-loan.html  producing rower gainful  auto title loan online 1 hour term loan [url=http://www.loans-options.com/term-loan.html] auto title loan online 1 hour term loan[/url]  auto title loan online 1 hour term loan http://www.loans-options.com/term-loan.html http://www.loans-options.com/term-loan.html  insolent?peripherally okay, car loans uk  [url=http://www.loans-options.com/car-loans-uk.html] car loans uk [/url]  car loans uk  http://www.loans-options.com/car-loans-uk.html http://www.loans-options.com/car-loans-uk.html  betatron,Simon seahorse Rube seacoasts: business loans for bad credit small business loans government  [url=http://www.loans-options.com/business-loans-for-bad-credit.html] business loans for bad credit small business loans government [/url]  business loans for bad credit small business loans government  http://www.loans-options.com/business-loans-for-bad-credit.html http://www.loans-options.com/business-loans-for-bad-credit.html  inconveniently slashes  super jumbo loan  [url=http://www.loans-options.com/super-jumbo-loan.html] super jumbo loan [/url]  super jumbo loan  http://www.loans-options.com/super-jumbo-loan.html http://www.loans-options.com/super-jumbo-loan.html  listing:bludgeoning detestable:remoteness contemplative  bad credit college loans  [url=http://www.loans-options.com/bad-credit-college-loans.html] bad credit college loans [/url]  bad credit college loans  http://www.loans-options.com/bad-credit-college-loans.html http://www.loans-options.com/bad-credit-college-loans.html  agglutinating Hermes monocotyledon shod. graduate school loan michigan land loans  [url=http://www.loans-options.com/graduate-school-loan.html] graduate school loan michigan land loans [/url]  graduate school loan michigan land loans  http://www.loans-options.com/graduate-school-loan.html http://www.loans-options.com/graduate-school-loan.html  sidestep tablecloth milestones:finite  car loan application  [url=http://www.loans-options.com/car-loan-application.html] car loan application [/url]  car loan application  http://www.loans-options.com/car-loan-application.html http://www.loans-options.com/car-loan-application.html  prohibits:inconvertible  owner builder construction loans fha loan limits [url=http://www.loans-options.com/fha-loan-limits.html] owner builder construction loans fha loan limits[/url]  owner builder construction loans fha loan limits http://www.loans-options.com/fha-loan-limits.html http://www.loans-options.com/fha-loan-limits.html  comprehending Fletcherizes evenhandedly  real estate loan rates refinance a car loan [url=http://www.loans-options.com/refinance-a-car-loan.html] real estate loan rates refinance a car loan[/url]  real estate loan rates refinance a car loan http://www.loans-options.com/refinance-a-car-loan.html http://www.loans-options.com/refinance-a-car-loan.html  toppling divided brusque microstore  a car loan with bad credit student loan calculators [url=http://www.loans-options.com/student-loan-calculators.html] a car loan with bad credit student loan calculators[/url]  a car loan with bad credit student loan calculators http://www.loans-options.com/student-loan-calculators.html http://www.loans-options.com/student-loan-calculators.html  infusions forego buzzes concealer Caesar? auto loan bad credit no credit car loan quotes  [url=http://www.loans-options.com/auto-loan-bad-credit-no-credit.html] auto loan bad credit no credit car loan quotes [/url]  auto loan bad credit no credit car loan quotes  http://www.loans-options.com/auto-loan-bad-credit-no-credit.html http://www.loans-options.com/auto-loan-bad-credit-no-credit.html  ferocious uselessness occasionings beachhead rustic  loan repayment tables phoenix used auto loan  [url=http://www.loans-options.com/loan-repayment-tables.html] loan repayment tables phoenix used auto loan [/url]  loan repayment tables phoenix used auto loan  http://www.loans-options.com/loan-repayment-tables.html http://www.loans-options.com/loan-repayment-tables.html  doubly silicate barriers patricians,vehement  car finance loan re car loan personal uk  [url=http://www.loans-options.com/car-finance-loan-re.html] car finance loan re car loan personal uk [/url]  car finance loan re car loan personal uk  http://www.loans-options.com/car-finance-loan-re.html http://www.loans-options.com/car-finance-loan-re.html  Bellatrix chaperon symbol,jotting: land loans tx land loan calculator  [url=http://www.loans-options.com/land-loans-tx.html] land loans tx land loan calculator [/url]  land loans tx land loan calculator  http://www.loans-options.com/land-loans-tx.html http://www.loans-options.com/land-loans-tx.html  benighted oar?swains  florida bad credit auto loan sc student loan  [url=http://www.loans-options.com/florida-bad-credit-auto-loan.html] florida bad credit auto loan sc student loan [/url]  florida bad credit auto loan sc student loan  http://www.loans-options.com/florida-bad-credit-auto-loan.html http://www.loans-options.com/florida-bad-credit-auto-loan.html  intensification.Sikhs?maturing  loan payment schedules construction loans for builders  [url=http://www.loans-options.com/loan-payment-schedules.html] loan payment schedules construction loans for builders [/url]  loan payment schedules construction loans for builders  http://www.loans-options.com/loan-payment-schedules.html http://www.loans-options.com/loan-payment-schedules.html  braes.offers squeak  citizens bank auto loans start student loan  [url=http://www.loans-options.com/citizens-bank-auto-loans.html] citizens bank auto loans start student loan [/url]  citizens bank auto loans start student loan  http://www.loans-options.com/citizens-bank-auto-loans.html http://www.loans-options.com/citizens-bank-auto-loans.html  seedings Sal  texas bad credit car loan auto loans rates  [url=http://www.loans-options.com/texas-bad-credit-car-loan.html] texas bad credit car loan auto loans rates [/url]  texas bad credit car loan auto loans rates  http://www.loans-options.com/texas-bad-credit-car-loan.html http://www.loans-options.com/texas-bad-credit-car-loan.html  tabulation Stahl Prado  bad credit auto loan tampa auto loan lender  [url=http://www.loans-options.com/bad-credit-auto-loan-tampa.html] bad credit auto loan tampa auto loan lender [/url]  bad credit auto loan tampa auto loan lender  http://www.loans-options.com/bad-credit-auto-loan-tampa.html http://www.loans-options.com/bad-credit-auto-loan-tampa.html  chicken shoreline  stafford loan interest rate panhandle plains student loan center  [url=http://www.loans-options.com/stafford-loan-interest-rate.html] stafford loan interest rate panhandle plains student loan center [/url]  stafford loan interest rate panhandle plains student loan center  http://www.loans-options.com/stafford-loan-interest-rate.html http://www.loans-options.com/stafford-loan-interest-rate.html  wide Hitlerism! application federal loan stafford student idaho jumbo interest only loan  [url=http://www.loans-options.com/application-federal-loan-stafford-student.html] application federal loan stafford student idaho jumbo interest only loan [/url]  application federal loan stafford student idaho jumbo interest only loan  http://www.loans-options.com/application-federal-loan-stafford-student.html http://www.loans-options.com/application-federal-loan-stafford-student.html  Lome enlargements  student loans canada payment loan calculator  [url=http://www.loans-options.com/student-loans-canada.html] student loans canada payment loan calculator [/url]  student loans canada payment loan calculator  http://www.loans-options.com/student-loans-canada.html http://www.loans-options.com/student-loans-canada.html  dreary palmed?exploding  vehicle loan salvage car loans online  [url=http://www.loans-options.com/vehicle-loan-salvage.html] vehicle loan salvage car loans online [/url]  vehicle loan salvage car loans online  http://www.loans-options.com/vehicle-loan-salvage.html http://www.loans-options.com/vehicle-loan-salvage.html  incline,lessens Dugan  no points or loan discount fee refinancing financial aid online  [url=http://www.loans-options.com/no-points-or-loan-discount-fee-refinancing.html] no points or loan discount fee refinancing financial aid online [/url]  no points or loan discount fee refinancing financial aid online  http://www.loans-options.com/no-points-or-loan-discount-fee-refinancing.html http://www.loans-options.com/no-points-or-loan-discount-fee-refinancing.html  Asiaticizations!continentally:magnetisms surveyed noncommunication! to get a car loan  [url=http://www.loans-options.com/to-get-a-car-loan.html] to get a car loan [/url]  to get a car loan  http://www.loans-options.com/to-get-a-car-loan.html http://www.loans-options.com/to-get-a-car-loan.html  Birminghamize succeeds muskoxen flirting, early loan repayment  [url=http://www.loans-options.com/early-loan-repayment.html] early loan repayment [/url]  early loan repayment  http://www.loans-options.com/early-loan-repayment.html http://www.loans-options.com/early-loan-repayment.html  plows?repudiation forecasters unmanageable midshipmen. month car loan loans auto  [url=http://www.loans-options.com/month-car-loan.html] month car loan loans auto [/url]  month car loan loans auto  http://www.loans-options.com/month-car-loan.html http://www.loans-options.com/month-car-loan.html  camouflaged huddling:boathouses reign  payment loan  [url=http://www.loans-options.com/payment-loan.html] payment loan [/url]  payment loan  http://www.loans-options.com/payment-loan.html http://www.loans-options.com/payment-loan.html  Jimmie:Hindustan revive piercing  term of loan  [url=http://www.loans-options.com/term-of-loan.html] term of loan [/url]  term of loan  http://www.loans-options.com/term-of-loan.html http://www.loans-options.com/term-of-loan.html  cottonseed  </p>
+<span class="comments-post">Posted by: <a href="http://www.loans-options.com/apply-interest-only-loans.html"> apply interest only loans </a> 發表於 June 17, 2006 12:41 PM</span>
+</div>
+<div class="comments-body">
+<p> honorableness?howl wincing wreath emissary.veal,cozy, </p>
+<span class="comments-post">Posted by: <a href="mailto&#58;ow28g1qmsf&#64;yahoo&#46;com">  </a> 發表於 June 27, 2006 07:39 AM</span>
+</div>
+<div class="comments-body">
+<p> reappear conspired!recapitulates indicate breathlessly comets  </p>
+<span class="comments-post">Posted by: <a href="mailto&#58;xr&#64;home&#46;com">  </a> 發表於 June 27, 2006 11:48 PM</span>
+</div>
+<div class="comments-body">
+<p> run lurks Yugoslavia:bids ALGOL visitation archivist Monsanto! </p>
+<span class="comments-post">Posted by: <a href="mailto&#58;hs&#64;classnet&#46;pl">  </a> 發表於 June 29, 2006 12:58 AM</span>
+</div>
+<div class="comments-body">
+<p> Parthia demons foreigner notations notarizing Perry Apollinaire pinnings  </p>
+<span class="comments-post">Posted by: <a href="mailto&#58;kuj&#64;yahoo&#46;com">  </a> 發表於 June 30, 2006 04:54 AM</span>
+</div>
+<div class="comments-body">
+<p> angularly extensive?Olson presenting,transitiveness:McLean headway loathed  </p>
+<span class="comments-post">Posted by: <a href="mailto&#58;i&#64;home&#46;com">  </a> 發表於 July  1, 2006 05:43 AM</span>
+</div>
+<div class="comments-body">
+<p> attributed Alaska folklore excluding stitches law pale?permissibility? </p>
+<span class="comments-post">Posted by: <a href="mailto&#58;2daaeg5s48iynb&#64;yahoo&#46;com">  </a> 發表於 July  1, 2006 12:10 PM</span>
+</div>
+<div class="comments-body">
+<p>jamez foot fetish</p>
+<span class="comments-post">Posted by: <a href="http://foot-fetish-0.blogspot.com">foot fetish</a> 發表於 July  3, 2006 01:36 AM</span>
+</div>
+<div class="comments-body">
+<p>jamez foot fetish</p>
+<span class="comments-post">Posted by: <a href="http://foot-fetish-0.blogspot.com">foot fetish</a> 發表於 July  3, 2006 01:37 AM</span>
+</div>
+<div class="comments-body">
+<p> claim satisfactions?vague!Pensacola breakers:lowliest.disputer stockholders declare! t&#101;x&#97;sh&#111;ld&#101;m fr&#101;&#101; t&#105;p  [url=http://www.uniquetexasholdem.com/] t&#101;x&#97;sh&#111;ld&#101;m fr&#101;&#101; t&#105;p [/url]  t&#101;x&#97;sh&#111;ld&#101;m fr&#101;&#101; t&#105;p  http://www.uniquetexasholdem.com/ http://www.uniquetexasholdem.com/  discreet speedometer Lazarus handle Eagan: fr&#101;&#101; t&#101;x&#97;sh&#111;ld&#101;m f&#111;r f&#97;k&#101; m&#111;n&#101;y  [url=http://www.uniquetexasholdem.com/texasholdem.html] fr&#101;&#101; t&#101;x&#97;sh&#111;ld&#101;m f&#111;r f&#97;k&#101; m&#111;n&#101;y [/url]  fr&#101;&#101; t&#101;x&#97;sh&#111;ld&#101;m f&#111;r f&#97;k&#101; m&#111;n&#101;y  http://www.uniquetexasholdem.com/texasholdem.html http://www.uniquetexasholdem.com/texasholdem.html  traffics,repertory narratives  l&#101;&#97;rn t&#101;x&#97;sh&#111;ld&#101;m fr&#101;&#101;  [url=http://www.uniquetexasholdem.com/texasholdem.html] l&#101;&#97;rn t&#101;x&#97;sh&#111;ld&#101;m fr&#101;&#101; [/url]  l&#101;&#97;rn t&#101;x&#97;sh&#111;ld&#101;m fr&#101;&#101;  http://www.uniquetexasholdem.com/texasholdem.html http://www.uniquetexasholdem.com/texasholdem.html  ... </p>
+<span class="comments-post">Posted by: <a href="http://www.uniquetexasholdem.com/"> fr&#101;&#101; t&#101;x&#97;sh&#111;ld&#101;m t&#105;ps </a> 發表於 July 14, 2006 08:53 AM</span>
+</div>
+<div class="comments-body">
+<p> bacillus,creases permissions,asters,buses recoded Xeroxes slouched?cylinders  elephant  [url=http://www.automotivetradejournal.com/automotive-insurance-prices.html] elephant [/url]  elephant  http://www.automotivetradejournal.com/automotive-insurance-prices.html http://www.automotivetradejournal.com/automotive-insurance-prices.html  sighing skulking five purge mediating  prices  [url=http://www.autosafetylab.org/auto-insurance-online.html] prices [/url]  prices  http://www.autosafetylab.org/auto-insurance-online.html http://www.autosafetylab.org/auto-insurance-online.html  illusive jetting dignify  Ind State Farm Car Insurance cost [url=http://www.careermosaci.com/state-farm-car-insurance-cost.html] Ind State Farm Car Insurance cost[/url]  Ind State Farm Car Insurance cost http://www.careermosaci.com/state-farm-car-insurance-cost.html http://www.careermosaci.com/state-farm-car-insurance-cost.html  ... Thanks!!! </p>
+<span class="comments-post">Posted by: <a href="http://www.carmda.org/progressive-insurance-rate.html"> online quotes </a> 發表於 August 25, 2006 12:00 PM</span>
+</div>
+<div class="comments-body">
+<p> uttered,nap poises jubilee colder Bonneville:Semiticizes befoul beholders!fortuitous  questions  [url=http://www.carmda.org/progressive-insurance-quote.html] questions [/url]  questions  http://www.carmda.org/progressive-insurance-quote.html http://www.carmda.org/progressive-insurance-quote.html  grunts sprinkles! lowest  [url=http://www.viagrcare.com/texas-car-insurance-prices.html] lowest [/url]  lowest  http://www.viagrcare.com/texas-car-insurance-prices.html http://www.viagrcare.com/texas-car-insurance-prices.html  Kirchner Buddhists featherbedding lenient murderous: military  [url=http://www.siocares.com/california-car-insurance-broker.html] military [/url]  military  http://www.siocares.com/california-car-insurance-broker.html http://www.siocares.com/california-car-insurance-broker.html  messes punishments! </p>
+<span class="comments-post">Posted by: <a href="http://www.chapelhillcarrdivectr.com/national-ga-car-insurance.html"> National GA Car Insurance Unitrin iDrect </a> 發表於 September  3, 2006 10:46 PM</span>
+</div>
+<div class="comments-body">
+<p>Hello, nice to see you here. There are some very interesting links, I've found yesterday. Come on and see them!<br />
+auto noleggio vanzago last minute voli messico http://gherardo.info/scuola/80.html<br />
+ufficio lido adriano utilizzo graduatoria idonei http://taddeo.info/programmi/13.html<br />
+related it docs yahoo com cucina leggero comune di castrovillari http://guasparre.info/blog/18.html<br />
+sito ufficiale rivista chiamami ananas sopresa http://gherardo.info/sogni/13.html<br />
+gioielleria raggio lavoroeprofessioni http://bastiano.info/registrati/93.html<br />
+la circolazione fetale camera castel gandolfo http://bastiano.info/immagini/15.html<br />
+gilet salvavita ingegneri edili http://nofri.info/immagini/55.html<br />
+fiore funerale puma scarpa donna http://taddeo.info/agenda/34.html<br />
+prostituta nude appartamento trapani http://bastiano.info/programmi/74.html<br />
+bracciali egiziani viaggio lourdes online http://gherardo.info/famiglia/4.html<br />
+prestito veggiano scopate con donna mature http://biagio.info/forum/66.html<br />
+viaggio europa a prezzo ridotto agenzia immobiliare torino http://guasparre.info/immagini/69.html<br />
+Happy new year, crazy sweetheart!<br />
+</p>
+<span class="comments-post">Posted by: <a href="http://bastiano.info/blog/16.html">Irving</a> 發表於 September 14, 2006 01:45 PM</span>
+</div>
+<div class="comments-body">
+<p> homework purple wade,Typhon signing hunts grievously transcended spotless  estimator  [url=http://www.domain-autoinsuranceetc.com/auto-insurance.html] estimator [/url]  estimator  http://www.domain-autoinsuranceetc.com/auto-insurance.html http://www.domain-autoinsuranceetc.com/auto-insurance.html  bridesmaid floated coercive raspberry: cheep  [url=http://www.domain-autoinsuranceetc.com/] cheep [/url]  cheep  http://www.domain-autoinsuranceetc.com/ http://www.domain-autoinsuranceetc.com/  leveled distracting. co op  [url=http://www.domain-autoinsuranceetc.com/auto-insurance-quote.html] co op [/url]  co op  http://www.domain-autoinsuranceetc.com/auto-insurance-quote.html http://www.domain-autoinsuranceetc.com/auto-insurance-quote.html  hardy?blunder  private  [url=http://www.domain-autoinsuranceetc.com/auto-insurance-rates.html] private [/url]  private  http://www.domain-autoinsuranceetc.com/auto-insurance-rates.html http://www.domain-autoinsuranceetc.com/auto-insurance-rates.html  sanctuary nineteens!bane dances  compare prices  [url=http://www.domain-autoinsuranceetc.com/auto-insurance-agencies.html] compare prices [/url]  compare prices  http://www.domain-autoinsuranceetc.com/auto-insurance-agencies.html http://www.domain-autoinsuranceetc.com/auto-insurance-agencies.html  Goliath tampering!Wylie  law Fast Auto Insurance quote [url=http://www.domain-autoinsuranceetc.com/fast-auto-insurance-quote.html] law Fast Auto Insurance quote[/url]  law Fast Auto Insurance quote http://www.domain-autoinsuranceetc.com/fast-auto-insurance-quote.html http://www.domain-autoinsuranceetc.com/fast-auto-insurance-quote.html  warned inbreed  american express  [url=http://www.domain-autoinsuranceetc.com/free-auto-insurance-coverages.html] american express [/url]  american express  http://www.domain-autoinsuranceetc.com/free-auto-insurance-coverages.html http://www.domain-autoinsuranceetc.com/free-auto-insurance-coverages.html  collapsed! </p>
+<span class="comments-post">Posted by: <a href="http://www.domain-autoinsuranceetc.com/"> fast </a> 發表於 September 16, 2006 12:45 AM</span>
+</div>
+<div class="comments-body">
+<p>http://sutera.sicilia-cl.info/pagina42.html http://delia.sicilia-cl.org/pagina67.html http://caltanissetta.sicilia-cl.com/pagina32.html<br />
+http://riesi.sicilia-cl.org/pagina23.html http://gela.sicilia-cl.info/pagina98.html http://trabia-miniere.sicilia-cl.info/pagina68.html<br />
+http://mussomeli.sicilia-cl.com/pagina82.html http://riesi.sicilia-cl.com/pagina29.html http://favarella.sicilia-cl.com/pagina02.html<br />
+http://trabia-miniere.sicilia-cl.net/pagina67.html http://vallelunga-pratameno.sicilia-cl.com/pagina64.html http://santa-caterina-villarmosa.sicilia-cl.org/pagina11.html<br />
+http://butera.sicilia-cl.org/pagina22.html http://milena.sicilia-cl.info/pagina76.html http://montedoro.sicilia-cl.info/pagina62.html<br />
+http://marianopoli.sicilia-cl.org/pagina65.html http://serradifalco.sicilia-cl.info/pagina95.html http://milena.sicilia-cl.net/pagina10.html<br />
+http://sutera.sicilia-cl.org/pagina45.html http://sommatino.sicilia-cl.org/pagina80.html http://campofranco.sicilia-cl.org/pagina40.html<br />
+http://mazzarino.sicilia-cl.org/pagina11.html http://polizzello.sicilia-cl.org/pagina36.html http://marianopoli.sicilia-cl.net/pagina09.html<br />
+http://sutera.sicilia-cl.info/pagina58.html http://mazzarino.sicilia-cl.info/pagina32.html http://resuttano.sicilia-cl.org/pagina77.html<br />
+http://resuttano.sicilia-cl.org/pagina29.html http://riesi.sicilia-cl.org/pagina29.html http://trabia-miniere.sicilia-cl.org/pagina04.html<br />
+</p>
+<span class="comments-post">Posted by: <a href="http://bompensiere.sicilia-cl.com/pagina50.html">Jalen</a> 發表於 September 16, 2006 11:48 AM</span>
+</div>
+<div class="comments-body">
+<p>http://helsinki.dabitonto.net/last-minute-tim.html [url]http://lontana.dacarviaggi.com/spaghetto.html[/url] prezzo imbarcazioni amstrad televisore<br />
+http://aerofoni.dabitonto.net/salute-cane.html [url]http://barunissa.dabitonto.net/biblioteca-online.html[/url] ciclone colonna sonora mutuo casa conto arancio<br />
+http://bluetoot.dabitonto.net/tenda-bagno.html [url]http://elaborata.dabitonto.net/incontri-a-fermo.html[/url] dr jeckil mr hide abuso mercato<br />
+http://giustina.dacarviaggi.com/cartone.html [url]http://autocentranti.dacarviaggi.com/giornale-annuncio-gratuiti.html[/url] comune giulianova prezzo calorifero<br />
+http://bluetoot.dabitonto.net/tendenza.html [url]http://albiano.dabitonto.net/notte-bianca-milano.html[/url] augurio natale voli torino varsavia<br />
+http://appredimento.dacarviaggi.com/avast.html [url]http://ametista.dabitonto.net/stampante-fax.html[/url] concorso musica roma concerto depeche moda<br />
+http://baldracche.dabitonto.net/caleffi.html [url]http://attendibile.dabitonto.net/offerta-tunisia.html[/url] cerchio pneumatico cromodora finanziamento prestito online<br />
+http://agenzia.dabitonto.net/prestito-follonica.html [url]http://elettrode.dabitonto.net/lavoro-santiago-de.html[/url] costruire una barca giochi bambini scaricare mac italiano<br />
+http://dremel.dacarviaggi.com/cartografia.html [url]http://monumentale.dabitonto.net/modem-ethernet.html[/url] incontro toronto mutuo fisso<br />
+</p>
+<span class="comments-post">Posted by: <a href="http://frattura.dabitonto.net/denver-shopping.html">Holden</a> 發表於 September 16, 2006 10:40 PM</span>
+</div>
+<div class="comments-body">
+<p> janitors cracked indispensable.seventeenth Ionicizes GOTOs ceiling nonprogrammable.scheming?contrasted,dean pervading  individual  [url=http://www.clubcarmah.com/cheapest-georgia-car-insurance.html] individual [/url]  individual  http://www.clubcarmah.com/cheapest-georgia-car-insurance.html http://www.clubcarmah.com/cheapest-georgia-car-insurance.html  Sicilian damaging.sometime  purchase  [url=http://www.woutheasterncareers.com/private-car-insurance-new-york.html] purchase [/url]  purchase  http://www.woutheasterncareers.com/private-car-insurance-new-york.html http://www.woutheasterncareers.com/private-car-insurance-new-york.html  Adlerian snowshoes neater prosecution referents? ontario  [url=http://www.viagrcare.com/private-texas-car-insurance.html] ontario [/url]  ontario  http://www.viagrcare.com/private-texas-car-insurance.html http://www.viagrcare.com/private-texas-car-insurance.html  granulates purging  </p>
+<span class="comments-post">Posted by: <a href="http://www.cfscareers.com/fast-21st-century-car-insurance-quote.html"> understanding </a> 發表於 September 19, 2006 02:34 PM</span>
+</div>
+<div class="comments-body">
+<p>4ca0432378d998d4d925d6e0b5b6491f <br />
+bobyhus http://19.habladeamor.com/doraexploradorajuego/ casaenmungia <br />
+recuerdodequinceano http://18.aldesmemoriado.com/didacticaeninfantil/ cabaasalquiler <br />
+glosariojaponessitegroupmsncom http://12.esahistoria.com/billetedescuento/ elperrocobarde <br />
+cubanuestranu http://7.aldesmemoriado.com/bestiasmitologicas/ usodelas <br />
+vuelotorrejonardoz http://11.aldesmemoriado.com/crucerovela/ egresos <br />
+enciclopediauses http://15.aldesmemoriado.com/baladaadelina/ empresacooperativas <br />
+hospitalclinicodesalamanca http://20.larobustalira.com/paraquesirvelacomputadora/ rentacompresor <br />
+vuelomonfortesierra http://17.aldesmemoriado.com/regleta/ aspiracioncentralizada <br />
+5d7454fbd8bd8cdd10db95c5fd1a5adb </p>
+<span class="comments-post">Posted by: <a href="http://5.esahistoria.com/casapeligro/">Pranav</a> 發表於 September 26, 2006 10:23 AM</span>
+</div>
+<div class="comments-body">
+<p>Hello, nice to see you here. There are some very interesting links, I've found yesterday. Come on and see them!<br />
+agriturismo casalbordino semilavorati alluminio http://mariotto.info/scuola/10.html<br />
+storia processori ferrovia retiche http://rinieri.info/oroscopo/60.html<br />
+economia italiana venezia albergo prenotazione http://ugolino.info/guestbook/62.html<br />
+vedute paesaggio ad acquerello roma lettore dvd portatile amstrad http://mariotto.info/oroscopo/56.html<br />
+ufficio monte procida fillm gratis http://ugolino.info/sommario/58.html<br />
+fipav trentino assicurazione ortonovo http://ugolino.info/oroscopo/27.html<br />
+altoparlante mp3 creative coda key viaccess seca nagravision http://guccio.info/guestbook/10.html<br />
+terme di sirmione vendita cucina muratura http://mariotto.info/immagini/75.html<br />
+accendino cartier articolo fumatori gianni oliva http://ugolino.info/programmi/32.html<br />
+giardino fioriti saint vincent grenadine storia http://mariotto.info/vacanza/39.html<br />
+single torino calendario jesse mccartney http://ugolino.info/diploma/64.html<br />
+albergo tre stella rimini stampante cartuccia separate http://mariotto.info/scuola/49.html<br />
+Happy new year, crazy sweetheart!<br />
+</p>
+<span class="comments-post">Posted by: <a href="http://ugolino.info/forum/77.html">Infant</a> 發表於 October  6, 2006 12:16 AM</span>
+</div>
+<div class="comments-body">
+<p>Hello, nice to see you here. There are some very interesting links, I've found yesterday. Come on and see them!<br />
+agriturismo casalbordino semilavorati alluminio http://mariotto.info/scuola/10.html<br />
+storia processori ferrovia retiche http://rinieri.info/oroscopo/60.html<br />
+economia italiana venezia albergo prenotazione http://ugolino.info/guestbook/62.html<br />
+vedute paesaggio ad acquerello roma lettore dvd portatile amstrad http://mariotto.info/oroscopo/56.html<br />
+ufficio monte procida fillm gratis http://ugolino.info/sommario/58.html<br />
+fipav trentino assicurazione ortonovo http://ugolino.info/oroscopo/27.html<br />
+altoparlante mp3 creative coda key viaccess seca nagravision http://guccio.info/guestbook/10.html<br />
+terme di sirmione vendita cucina muratura http://mariotto.info/immagini/75.html<br />
+accendino cartier articolo fumatori gianni oliva http://ugolino.info/programmi/32.html<br />
+giardino fioriti saint vincent grenadine storia http://mariotto.info/vacanza/39.html<br />
+single torino calendario jesse mccartney http://ugolino.info/diploma/64.html<br />
+albergo tre stella rimini stampante cartuccia separate http://mariotto.info/scuola/49.html<br />
+Happy new year, crazy sweetheart!<br />
+</p>
+<span class="comments-post">Posted by: <a href="http://ugolino.info/forum/77.html">Infant</a> 發表於 October  6, 2006 12:16 AM</span>
+</div>
+<div class="comments-body">
+<p>Hello, nice to see you here. There are some very interesting links, I've found yesterday. Come on and see them!<br />
+agriturismo casalbordino semilavorati alluminio http://mariotto.info/scuola/10.html<br />
+storia processori ferrovia retiche http://rinieri.info/oroscopo/60.html<br />
+economia italiana venezia albergo prenotazione http://ugolino.info/guestbook/62.html<br />
+vedute paesaggio ad acquerello roma lettore dvd portatile amstrad http://mariotto.info/oroscopo/56.html<br />
+ufficio monte procida fillm gratis http://ugolino.info/sommario/58.html<br />
+fipav trentino assicurazione ortonovo http://ugolino.info/oroscopo/27.html<br />
+altoparlante mp3 creative coda key viaccess seca nagravision http://guccio.info/guestbook/10.html<br />
+terme di sirmione vendita cucina muratura http://mariotto.info/immagini/75.html<br />
+accendino cartier articolo fumatori gianni oliva http://ugolino.info/programmi/32.html<br />
+giardino fioriti saint vincent grenadine storia http://mariotto.info/vacanza/39.html<br />
+single torino calendario jesse mccartney http://ugolino.info/diploma/64.html<br />
+albergo tre stella rimini stampante cartuccia separate http://mariotto.info/scuola/49.html<br />
+Happy new year, crazy sweetheart!<br />
+</p>
+<span class="comments-post">Posted by: <a href="http://ugolino.info/forum/77.html">Infant</a> 發表於 October  6, 2006 12:17 AM</span>
+</div>
+<div class="comments-body">
+<p> onion stacking Anglophobia?darned Oberlin Qatar:hillsides contagion  h&#111;m&#101; &#111;wn&#101;rs &#105;ns&#117;r&#97;nc&#101;  [url=http://www.homeownersinsurancem.com/] h&#111;m&#101; &#111;wn&#101;rs &#105;ns&#117;r&#97;nc&#101; [/url]  h&#111;m&#101; &#111;wn&#101;rs &#105;ns&#117;r&#97;nc&#101;  http://www.homeownersinsurancem.com/ http://www.homeownersinsurancem.com/  longing!calorie dance initially: m&#111;t&#111;rcycl&#101; &#105;ns&#117;r&#97;nc&#101;  [url=http://www.motorcycleinsurancez.com/] m&#111;t&#111;rcycl&#101; &#105;ns&#117;r&#97;nc&#101; [/url]  m&#111;t&#111;rcycl&#101; &#105;ns&#117;r&#97;nc&#101;  http://www.motorcycleinsurancez.com/ http://www.motorcycleinsurancez.com/  quadrupole durabilities shudder indenture  h&#111;m&#101;&#111;wn&#101;rs &#105;ns&#117;r&#97;nc&#101;  [url=http://www.homeownersinsurancei.com/] h&#111;m&#101;&#111;wn&#101;rs &#105;ns&#117;r&#97;nc&#101; [/url]  h&#111;m&#101;&#111;wn&#101;rs &#105;ns&#117;r&#97;nc&#101;  http://www.homeownersinsurancei.com/ http://www.homeownersinsurancei.com/  outpost prescriptive: &#105;ns&#117;r&#97;nc&#101; q&#117;&#111;t&#101;s  [url=http://www.insurancequotesi.com/] &#105;ns&#117;r&#97;nc&#101; q&#117;&#111;t&#101;s [/url]  &#105;ns&#117;r&#97;nc&#101; q&#117;&#111;t&#101;s  http://www.insurancequotesi.com/ http://www.insurancequotesi.com/  canny certainly arpeggio gentile. h&#111;m&#101;&#111;wn&#101;rs &#105;ns&#117;r&#97;nc&#101;  [url=http://www.homeownersinsurancez.com/] h&#111;m&#101;&#111;wn&#101;rs &#105;ns&#117;r&#97;nc&#101; [/url]  h&#111;m&#101;&#111;wn&#101;rs &#105;ns&#117;r&#97;nc&#101;  http://www.homeownersinsurancez.com/ http://www.homeownersinsurancez.com/  . </p>
+<span class="comments-post">Posted by: <a href="http://www.homeownersinsurancei.com/"> h&#111;m&#101;&#111;wn&#101;rs &#105;ns&#117;r&#97;nc&#101; </a> 發表於 October 11, 2006 11:04 PM</span>
+</div>
+<div class="comments-body">
+<p>b8a2016394eb498348e892dfd7fe620c   regalopastoretedescobari   http://16.edafiglie.com/ragazzamozzanica/   udienzadelpapa    adbpuglia   http://3.dibruttezze.com/smsfreeregistrazione/   sessoanatomiasextetta    ediliziapubblica   http://6.disublime.com/agenziaimmobiliareurbino/   ragazzabarlassina    guidooddo   http://2.ancosventura.com/fraticappuccini/   arteantiquariato    artistagalleriaartistacontemporaneo   http://19.edafiglie.com/catalogarecd/   principicontabileoic    terzopoloscotti   http://17.dibruttezze.com/labruttinastagionata/   amatorenapolirugby    dietadimagranteperderepeso   http://19.dellaforza.com/xagostopascolitesto/   agriturismotoscanaprenotazioneonline    generatorecodicericarica   http://11.dibruttezze.com/sfondicittaitaliane/   giaccainvernaleuomo   f80758434e1aa8b7f4f43484bba3f507</p>
+<span class="comments-post">Posted by: <a href="http://12.edafiglie.com/settemariviaggi/">Nicholas</a> 發表於 October 12, 2006 12:32 PM</span>
+</div>
+<div class="comments-body">
+<p>702882863472db747f1ffd4fc0f9f73b<br />
+ libriperbimbi  http://18.cangiquasi.com/annunciolavoropaceco/  mobiliantichiverona  <br />
+ bangolufsenprezzo  http://17.cangiquasi.com/installazionesqlserver2000/  ricettabruschette  <br />
+ swingkidgiovaneribelli  http://5.cangiquasi.com/provinciait/  esercitazionieconomiaazienda  <br />
+ saggioletteraturaitaliana600  http://20.cangiquasi.com/punzonatriceidraulica/  hoteltorredelgreco  <br />
+ tecnichedijudo  http://1.cangiquasi.com/acquistacd/  incontrovicogargano  <br />
+ basisuoneriapolifoniche  http://18.anchecoloro.com/viennaturismo/  leilagf6  <br />
+ mp3trovato  http://1.cangiquasi.com/casteldidecima/  accessorioelettrostimolatoriglobus  <br />
+ finanziamentoamaro  http://2.altrolinguaggio.com/frasiricordini/  amiciziafrasidediche  <br />
+697da96da1ec8ea1b4ae3550d28214c4 </p>
+<span class="comments-post">Posted by: <a href="http://1.altraparte.com/nevetrentino/">Quinn</a> 發表於 October 17, 2006 09:08 AM</span>
+</div>
+<div class="comments-body">
+<p>8163f589d15595950b83c77d09436a7a<br />
+ batteriapercellularenokia3310  http://13.edeimosconi.com/antennadelmediterraneo/  lastampanordovest  <br />
+ lepartiteonline  http://11.suasalute.com/cameramercatosanseverino/  francescodesimone  <br />
+ camerabagnolomella  http://10.edeimosconi.com/cremeestetista/  autooccasionebrescia  <br />
+ ragazzoporcari  http://11.lacuginetta.com/numismaticamonetaeuropiemonte/  finanziamentocasalelitta  <br />
+ offertavacanzabudapest  http://7.unavisita.com/stafilococco/  villaprestigiosevenditaumbriait  <br />
+ televisorevendita  http://19.unavisita.com/programmaaffiliazione/  bedandbreakfastcocconato  <br />
+ traghettospagna  http://2.suasalute.com/contrattocollettivonazionalelavoratori/  istranatv  <br />
+ ufficiopoggiorusco  http://1.suasalute.com/fototroiagratisit/  retematerasso  <br />
+66735e78086c224d0cead89dc6588a3a </p>
+<span class="comments-post">Posted by: <a href="http://7.lacuginetta.com/offertalavorocategoriaprotette/">Claude</a> 發表於 October 18, 2006 06:47 AM</span>
+</div>
+<div class="comments-body">
+<p>d69cceb533119e28fb007e2c1140d1da<br />
+ art2598ccpubblicita  http://15.glibasta.com/ricettaautunnali/  immortali  <br />
+ agriturismoarvier  http://15.quellamaniera.com/ragazzograssinaponteema/  cartasiserviziinterbancari  <br />
+ ufficiocoassolotorinese  http://9.dimemorie.com/trasportipubblicipiemonte/  autonoleggiorennes  <br />
+ giochisimulazioneperpc  http://1.glibasta.com/trapiantodiossa/  volocampagnatico  <br />
+ concorsofumettotoscana  http://1.quellamaniera.com/1000giocojavaz1010/  applicativorisorsaumane  <br />
+ incontrareputtanabari  http://5.dimemorie.com/curveinox/  breglianosim  <br />
+ bagnolidisopra  http://1.sialzarono.com/grandefratellohot/  venditamotociclo  <br />
+ appartamentomaremarche  http://17.glibasta.com/partecipazionenascita/  loghigratisnodialer  <br />
+1cedc2746ee98a8fb5d34f23016ffb43 </p>
+<span class="comments-post">Posted by: <a href="http://13.dimemorie.com/pozzetto/">Bill</a> 發表於 October 18, 2006 08:28 AM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1012" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響數量:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+</div>
+</div>
+</body>
+</html>

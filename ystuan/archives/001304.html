@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>帝國反抗君之古戰場。PowerOp請您速至 blog.yam.com/ystuan 支援前線！: [備忘] OpenVPN on CentOS 4 (part 2)</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~ystuan/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~ystuan/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~ystuan/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~ystuan/archives/001292.html" title="七個關於開放原始碼的基本事實" />
+
+<link rel="next" href="http://blog.linux.org.tw/~ystuan/archives/001317.html" title="Another Week In Edinburgh, Part I" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~ystuan/" accesskey="1">帝國反抗君之古戰場。PowerOp請您速至 blog.yam.com/ystuan 支援前線！</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~ystuan/archives/001292.html">&laquo; 七個關於開放原始碼的基本事實</a> |
+
+<a href="http://blog.linux.org.tw/~ystuan/">Main</a>
+| <a href="http://blog.linux.org.tw/~ystuan/archives/001317.html">Another Week In Edinburgh, Part I &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">September 26, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">[備忘] OpenVPN on CentOS 4 (part 2)</h3>
+
+<p>時光飛逝，上次寫<a href="http://blog.linux.org.tw/~ystuan/archives/001208.html">[備忘] OpenVPN on CentOS 4</a>已經是兩個月前的事了。"OpenVPN on CentOS 4"這件事終於又推進了一步。底下的紀錄，包含失敗的部份以及成功的紀錄。即便是成功的紀錄，也忠實的留下了跌跌撞撞的過程，希望讓大家感受一下，在CentOS 4的<b>最小安裝</b>上面再安裝套件的難度/容易度。至於到底是難是易，這就看妳對系統的熟悉度囉。</p>
+
+<a name="more"></a>
+<p>[嘗試以Binary RPM安裝的<b>失敗紀錄</b>]<br />
+<a href="http://openvpn.net/">OpenVPN官方網站</a>並不提供RPM binary，它建議妳可以去<a href="http://dag.wieers.com/packages/openvpn/">Dag Wieers維護的站台</a>下載。底下有 # 開頭的表示是以 root 權限執行的指令，括號則是自己加的說明。</p>
+
+<p>(如果妳的環境不需要proxy，底下這行可以免了)<br />
+# export http_proxy=http://proxy.my.company:3128/<br />
+(我用 wget 這個指令來下載檔案，因為RHEL/CentOS沒有提供lzo套件，所以一併下載)<br />
+# wget http://dag.wieers.com/packages/lzo/lzo-2.00-1.2.el4.test.i386.rpm<br />
+# wget http://dag.wieers.com/packages/openvpn/openvpn-2.0.2-1.2.el4.rf.i386.rpm<br />
+(用rpm -ivh來安裝套件, lzo順利裝好)<br />
+# rpm -ivh lzo-2.00-1.2.el4.test.i386.rpm<br />
+(但是要裝openvpn的時候就...)<br />
+# rpm -ivh openvpn-2.0.2-1.2.el4.rf.i386.rpm<br />
+(遇上了相依性的問題：failed dependency: need liblzo.so.1)<br />
+(看了一下，lzo安裝套件提供的是liblzo.so.2.0.0，做個symbolic link試試看能不能騙過系統)<br />
+# cd /usr/lib<br />
+# ln -s liblzo.so.2.0.0 liblzo.so.1<br />
+# rpm -ivh openvpn-2.0.2-1.2.el4.rf.i386.rpm<br />
+(還是不行，決定放棄這條路，移掉lzo rpm binary)<br />
+# rpm -e lzo<br />
+(寫了個email給Dag，向他反應他包的lzo和openvpn這個相依性問題)</p>
+
+<p></p>
+
+<p>[從原始碼編譯RPM的<b>成功紀錄</b>]<br />
+根據官網<a href="http://openvpn.net/faq.html#rpmbuild">http://openvpn.net/faq.html#rpmbuild</a>，它說要自行編譯的話，需要有下列四個套件：<br />
+    * openssl<br />
+    * openssl-devel<br />
+    * lzo<br />
+    * lzo-devel<br />
+因為我當初在安裝CentOS 4的時候選的是最小安裝，系統裡面只有openssl，因此接下來要準備上述相依性套件。後來發現我至少還需要另外三個套件，在這邊賣個關子，往下看就有答案啦。<br />
+(先來安裝openssl-devel)<br />
+# yum -y install openssl-devel<br />
+(由於我用了 -y 這個參數，所以系統不會問我問題，會自動把相依性套件--對，為了裝openssl-devel還要先裝其他的套件--都下載並安裝)<br />
+(妳會看到類似這樣的訊息<br />
+Installed: openssl-devel.i386 0:0.9.7a-43.2<br />
+Dependency Installed: e2fsprogs-devel.i386 0:1.35-12.1.EL4 krb5-devel.i386 0:1.3.4-17 zlib-devel.i386 0:1.2.1.2-1.2)<br />
+(下載lzo-devel套件)<br />
+# wget http://dag.wieers.com/packages/lzo/lzo-devel-2.00-1.2.el4.test.i386.rpm<br />
+(安裝lzo, lzo-devel)<br />
+# rpm -ivh lzo-2.00-1.2.el4.test.i386.rpm<br />
+# rpm -ivh lzo-devel-2.00-1.2.el4.test.i386.rpm<br />
+接下來參考官網<a href="http://openvpn.net/download.html">Download</a>下載原始碼，目前是2.0.2<br />
+# wget http://openvpn.net/release/openvpn-2.0.2.tar.gz<br />
+(接下來我花了一點時間，研究為什麼我的系統沒有rpmbuild，也許是問Google的關鍵字下的不好，最後是用底下這個指令去查詢，有哪些套件是rpm開頭的)<br />
+# yum list rpm*<br />
+(原來這個套件名稱叫做rpm-build)<br />
+# yum -y install rpm-build<br />
+(好，相依套件應該到齊了，使用rpmbuild來編譯吧)<br />
+# rpmbuild -tb openvpn-2.0.2.tar.gz<br />
+(還是失敗，需要pam-devel，那就裝吧)<br />
+# yum -y install pam-devel<br />
+(再來一次)<br />
+# rpmbuild -tb openvpn-2.0.2.tar.gz<br />
+(又失敗，這次告訴我"no acceptable C compiler found in $PATH"，原來CentOS 4<b>最小安裝</b>連gcc都沒包含啊，那就裝吧！)<br />
+# yum -y install gcc<br />
+(嗯，為了裝gcc，還幫我裝了一堆<br />
+Installed: gcc.i386 0:3.4.3-22.1<br />
+Dependency Installed: cpp.i386 0:3.4.3-22.1 glibc-devel.i386 0:2.3.4-2.9 glibc-headers.i386 0:2.3.4-2.9 glibc-kernheaders.i386 0:2.4-9.1.87)<br />
+(再試一次！）<br />
+# rpmbuild -tb openvpn-2.0.2.tar.gz<br />
+(成功了，一堆編譯的訊息，最後幾行應該會有一行類似底下的，也就是編譯出來的RPM binary)<br />
+Wrote: /usr/src/redhat/RPMS/i386/openvpn-2.0.2-1.i386.rpm<br />
+(好啦，終於可以安裝openvpn了)<br />
+# rpm -ivh /usr/src/redhat/RPMS/i386/openvpn-2.0.2-1.i386.rpm</p>
+
+<p>所以，謎底揭曉，除了官網提到的，我還需要這些套件，才能編譯OpenVPN:<br />
+    * pam-devel<br />
+    * rpm-build<br />
+    * gcc</p>
+
+<p><br />
+就這樣！？<br />
+對啊，我只說要往前推進<b>一步</b>，這次弄好了「安裝」，下次再來弄「設定」囉！<br />
+^_^</p>
+
+<p>想打我的人請不要打我，直接去看網中人的<a href="http://www.study-area.org/tips/openvpn.html">OpenVPN 建置方案</a>，就是在CentOS 4上面裝OpenVPN 2.0.2，跟我的環境一模一樣 :p</p>
+
+<span class="posted">Posted by ystuan at September 26, 2005 03:00 PM
+
+<br /></span>
+
+<div class="comments-body">
+<div class="comments-head"><a name="pings"></a>Pings</div>
+
+</div>
+
+
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>Comments</div>
+
+<div class="comments-body">
+<p>設定也完成了！請參考<br />
+[備忘] OpenVPN on CentOS 4 (part 3)<br />
+http://blog.linux.org.tw/~ystuan/archives/001335.html</p>
+<span class="comments-post">Posted by: <a href="http://blog.linux.org.tw/~ystuan/">PowerOp</a> at October 18, 2005 02:53 PM</span>
+</div>
+
+
+
+
+</div>
+</div>
+</body>
+<!-- Site Meter XHTML Strict 1.0 -->
+<script type="text/javascript">var site="s22PowerOp"</script>
+<script type="text/javascript" src="http://s22.sitemeter.com/js/counter.js?site=s22PowerOp">
+</script>
+<noscript><div>
+<a href="http://s22.sitemeter.com/stats.asp?site=s22PowerOp">
+<img src="http://s22.sitemeter.com/meter.asp?site=s22PowerOp" alt="Site Meter" /></a>
+</div></noscript>
+<!-- Copyright (c)2005 Site Meter -->
+
+</html>

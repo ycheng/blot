@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>damon's notepad: September 27, 2003 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~damon/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~damon/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~damon/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~damon/archives/2003_09_25.html" title="September 25, 2003" />
+
+<link rel="next" href="http://blog.linux.org.tw/~damon/archives/2003_09_28.html" title="September 28, 2003" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~damon/" accesskey="1">damon's notepad</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~damon/archives/2003_09_25.html">&laquo; September 25, 2003</a> |
+
+<a href="http://blog.linux.org.tw/~damon/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~damon/archives/2003_09_28.html">September 28, 2003 &raquo;</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">September 27, 2003</h2>
+
+
+<div class="blogbody">
+<a name="000412"></a>
+<h3 class="title">gdm安裝筆記</h3>
+
+<p>今天花了一些時間把FreeBSD , Debian都改用gdm登入並裝上gnome2</p>
+
+<p>FreeBSD:cd /usr/ports/x11/gnome2/;make install clean<br />
+東西很多，要等一陣子<br />
+比較需要注意的是如果是用5.1 release的話，會因為open pam的bug無法正常用gdm登入，所以升級到current吧 :p<br />
+安裝完之後/usr/X11R6/etc/rc.d/裡面的gdm.sh.sample直接複製成gdm.sh吧<br />
+/etc/profile直接加入<br />
+export LC_ALL=zh_TW.Big5<br />
+export LANG=zh_TW.Big5<br />
+export XMODIFIERS="@im=xcin"<br />
+exec /usr/X11R6/bin/xcin2.5 &<br />
+重新開機就可以直接用gdm登入，並自動啟動xcin，作法有點dirty :p</p>
+
+<p>Debian unstable:apt-get install gnome<br />
+/etc/gdm/locale.conf把底下這行改成這樣<br />
+Chinese(Taiwan_R.O.C.)  zh_TW.Big5<br />
+/etc/gdm/Sessions/Gnome加入<br />
+export LC_ALL=zh_TW.Big5<br />
+export LANG=zh_TW.Big5<br />
+export XMODIFIERS="@im=xcin"<br />
+exec /usr/bin/xcin &<br />
+/etc/init.d/gdm加入<br />
+export LANG=zh_TW.Big5<br />
+/etc/init.d/gdm restart<br />
+同樣也是有點dirty的作法，參考chihchun的作法 :p<br />
+enjoy it<br />
+</p>
+
+
+<div class="posted">
+	由  發表於 <a href="http://blog.linux.org.tw/~damon/archives/000412.html">11:19 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=412" onclick="OpenComments(this.href); return false">迴響 (103)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

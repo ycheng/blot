@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>帝國反抗君之古戰場。PowerOp請您速至 blog.yam.com/ystuan 支援前線！: 在Cygwin console輸入、顯示中文</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~ystuan/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~ystuan/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~ystuan/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~ystuan/archives/001188.html" title="Lipton *Breast* Milk Tea" />
+
+<link rel="next" href="http://blog.linux.org.tw/~ystuan/archives/001208.html" title="[備忘] OpenVPN on CentOS 4" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~ystuan/" accesskey="1">帝國反抗君之古戰場。PowerOp請您速至 blog.yam.com/ystuan 支援前線！</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~ystuan/archives/001188.html">&laquo; Lipton *Breast* Milk Tea</a> |
+
+<a href="http://blog.linux.org.tw/~ystuan/">Main</a>
+| <a href="http://blog.linux.org.tw/~ystuan/archives/001208.html">[備忘] OpenVPN on CentOS 4 &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">July 28, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">在Cygwin console輸入、顯示中文</h3>
+
+<p>妳需要在家目錄($HOME)下新增或編輯兩個檔案：<br />
+.inputrc 和 .bash_profile</p>
+
+<a name="more"></a>
+<p>在.inputrc中要有下面三行<br />
+set meta-flag on<br />
+set convert-meta off<br />
+set output-meta on</p>
+
+<p>在.bash_profile中要有下面三行<br />
+export LESSCHARSET=latin1<br />
+alias less='/bin/less -r'<br />
+alias ls='/bin/ls -F --color=tty --show-control-chars'</p>
+
+<p>如果妳對指令跟文字編輯器都不熟（這樣的人會去用Cygwin嗎？），請開啟cygwin console，依序執行下面七個指令：</p>
+
+<p>cd<br />
+echo "set meta-flag on" >> .inputrc<br />
+echo "set convert-meta off" >> .inputrc<br />
+echo "set output-meta on" >> .inputrc<br />
+echo "export LESSCHARSET=latin1" >> .bash_profile<br />
+echo "alias less='/bin/less -r'" >> .bash_profile<br />
+echo "alias ls='/bin/ls -F --color=tty --show-control-chars'" >> .bash_profile</p>
+
+<p>然後退出cygwin console，再重新開啟，就可以輸入、顯示中文了。</p>
+
+<p>請參考Cygwin FAQ<a href="http://cygwin.com/faq/faq_3.html#SEC48">Why don't international (Unicode) characters work?</a></p>
+
+<span class="posted">Posted by ystuan at July 28, 2005 05:22 PM
+
+<br /></span>
+
+<div class="comments-body">
+<div class="comments-head"><a name="pings"></a>Pings</div>
+
+</div>
+
+
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>Comments</div>
+
+<div class="comments-body">
+<p>嗯，不错，在FreeBSD下也一样生效。不过，在用ls检验时，因为FreeBSD不是使用GNU ls，所以ls的命令行得是：<br />
+ls -w<br />
+才能显示汉字。</p>
+<span class="comments-post">Posted by: <a href="http://xyb.8800.org">xyb</a> at August 25, 2005 05:26 PM</span>
+</div>
+<div class="comments-body">
+<p>xyb:<br />
+    你是說，上面的設定也可以讓FreeBSD的terminal顯示中文嗎？我一直沒有用過FreeBSD :p</p>
+<span class="comments-post">Posted by: <a href="http://blog.linux.org.tw/~ystuan/">PowerOp</a> at August 29, 2005 01:53 PM</span>
+</div>
+
+
+
+
+</div>
+</div>
+</body>
+<!-- Site Meter XHTML Strict 1.0 -->
+<script type="text/javascript">var site="s22PowerOp"</script>
+<script type="text/javascript" src="http://s22.sitemeter.com/js/counter.js?site=s22PowerOp">
+</script>
+<noscript><div>
+<a href="http://s22.sitemeter.com/stats.asp?site=s22PowerOp">
+<img src="http://s22.sitemeter.com/meter.asp?site=s22PowerOp" alt="Site Meter" /></a>
+</div></noscript>
+<!-- Copyright (c)2005 Site Meter -->
+
+</html>

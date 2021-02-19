@@ -1,0 +1,928 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>chuany: First Look: Next-Generation Debian Installer</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~chuany/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~chuany/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~chuany/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~chuany/archives/2003_11.html#000505" title="Debian-Installer beta 1 released" />
+
+<link rel="next" href="http://blog.linux.org.tw/~chuany/archives/2003_11.html#000511" title="最佳備份軟體 Bacula" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+<!--
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/">
+<rdf:Description
+    rdf:about="http://blog.linux.org.tw/~chuany/archives/000507.html"
+    trackback:ping="http://mt.debian.org.tw/mt-tb.cgi/331"
+    dc:title="First Look: Next-Generation Debian Installer"
+    dc:identifier="http://blog.linux.org.tw/~chuany/archives/000507.html"
+    dc:subject="新聞"
+    dc:description="繼上一篇介紹了 Debian 將來可能正式進入 Offical 的安裝程式介紹後, 這裡有整個簡單 的安裝過程的教學與介紹, 可以讓還未使用的您先賭為快, 就讓我們一起去看看吧! 參考網址: http://articles.linmagau.org/modules.php?op=modload&amp;name=Sections&amp;file=index&amp;req=viewarticle&amp;artid=455&amp;page=1 有沒有發現什麼有趣的事呢? 是滴! 這個安裝程式變聰明囉, 他可以在選擇完語系後, 就 開始自動偵測硬體, 是不是讓不知道該怎麼選擇硬體使用哪一個 Modules 的您喜出望外 呢? 更讚的是, 接下來還讓您可以選擇要安裝 Woody Sarge 或者是 Sid 的 Debian 套件版 本耶! 光是這兩個特色, 有沒有讓 Debian 的安裝便利許多呢? :-) 有空就試試吧!..."
+    dc:creator="chuany"
+    dc:date="2003-11-16T03:46:51+08:00" />
+</rdf:RDF>
+-->
+
+
+<!--
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="http://blog.linux.org.tw/~chuany/archives/2003_11.html#000507">
+<dc:title>First Look: Next-Generation Debian Installer</dc:title>
+<dc:description>繼上一篇介紹了 Debian 將來可能正式進入 Offical 的安裝程式介紹後, 這裡有整個簡單 的安裝過程的教學與介紹, 可以讓還未使用的您先賭為快, 就讓我們一起去看看吧! 參考網址: http://articles.linmagau.org/modules.php?op=modload&amp;name=Sections&amp;file=index&amp;req=viewarticle&amp;artid=455&amp;page=1 有沒有發現什麼有趣的事呢? 是滴! 這個安裝程式變聰明囉, 他可以在選擇完語系後, 就 開始自動偵測硬體, 是不是讓不知道該怎麼選擇硬體使用哪一個 Modules 的您喜出望外 呢? 更讚的是, 接下來還讓您可以選擇要安裝 Woody Sarge 或者是 Sid 的 Debian 套件版 本耶! 光是這兩個特色, 有沒有讓 Debian 的安裝便利許多呢? :-) 有空就試試吧!...</dc:description>
+<dc:creator>chuany</dc:creator>
+<dc:date>2003-11-16T03:46:51+08:00</dc:date>
+<license rdf:resource="http://creativecommons.org/licenses/by-sa/1.0/" />
+</Work>
+<License rdf:about="http://creativecommons.org/licenses/by-sa/1.0/">
+<requires rdf:resource="http://web.resource.org/cc/Attribution" />
+<requires rdf:resource="http://web.resource.org/cc/Notice" />
+<requires rdf:resource="http://web.resource.org/cc/ShareAlike" />
+<permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+<permits rdf:resource="http://web.resource.org/cc/Distribution" />
+<permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+</License>
+</rdf:RDF>
+-->
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~chuany/" accesskey="1">chuany</a></h1>
+<span class="description">:wq chuany</span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~chuany/archives/2003_11.html#000505">&laquo; Debian-Installer beta 1 released</a> |
+
+<a href="http://blog.linux.org.tw/~chuany/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~chuany/archives/2003_11.html#000511">最佳備份軟體 Bacula &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">November 16, 2003</h2>
+
+<div class="blogbody">
+
+<h3 class="title">First Look: Next-Generation Debian Installer</h3>
+
+繼上一篇介紹了 Debian 將來可能正式進入 Offical 的安裝程式介紹後, 這裡有整個簡單
+的安裝過程的教學與介紹, 可以讓還未使用的您先賭為快, 就讓我們一起去看看吧!
+
+參考網址:
+http://articles.linmagau.org/modules.php?op=modload&name=Sections&file=index&req=viewarticle&artid=455&page=1
+
+有沒有發現什麼有趣的事呢? 是滴! 這個安裝程式變聰明囉, 他可以在選擇完語系後, 就
+開始自動偵測硬體, 是不是讓不知道該怎麼選擇硬體使用哪一個 Modules 的您喜出望外
+呢?
+
+更讚的是, 接下來還讓您可以選擇要安裝 Woody Sarge 或者是 Sid 的 Debian 套件版
+本耶! 
+
+光是這兩個特色, 有沒有讓 Debian 的安裝便利許多呢? :-)
+
+有空就試試吧!
+
+<a name="more"></a>
+
+
+<span class="posted">由 chuany 發表於 November 16, 2003 03:46 AM
+| <a href="http://mt.debian.org.tw/mt-tb.cgi?__mode=view&amp;entry_id=507" onclick="OpenTrackback(this.href); return false">引用</a>
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+bocigalingus must be something funny.
+<span class="comments-post">Posted by: <a href="http://www.burundonamagara.com">compatelius</a> 發表於 January 31, 2005 04:55 AM</span>
+</div>
+<div class="comments-body">
+It is a powerful natural herbal male enhancement formula that increases sexual desire, sexual health and helps to achieve stronger erections. Combining the formulations of the type of herbs found in many parts of the world that have been proven to work for many years, you can now enjoy the full benefits of our product. Some of the same type of herbs found in Polynesia where the men of the Mangaian tribe have sex on the average of 3 times a night, every night. While this is not what you may wish, it is nice to know your sexual performance can improve substantially.
+<span class="comments-post">Posted by: <a href="http://www.penilestretch.com">penis enlargement</a> 發表於 February 12, 2005 05:53 AM</span>
+</div>
+<div class="comments-body">
+The pill will improve your overall sexual health, make you feel younger and you will have more pleasurable orgasms. You can take one pill 2 times per day to keep the effects of VIMAX PILLS in your system and to promote virility enhancement.Take one in the morning and another one in the evening with water. Also if you wish to enhance your sexual performance take 2 pills 30 minutes before sexual activity.
+<span class="comments-post">Posted by: <a href="http://www.penilestretch.com">penis enlargement pills</a> 發表於 February 16, 2005 01:56 AM</span>
+</div>
+<div class="comments-body">
+The size you are looking for has a lot to do with this. Our recommendation is to discuss it with your partner to see what size is best for them as well. Most women can only accomodate a 9 inch penis. Anything bigger might cause pain and discomfort for most women. So 9 inch penis would be an ideal size for most of the men. If you are an average man with a penis size 5 - 7 we recommend purchasing at least 3 or 4 Vimax Bottles for best results.
+<span class="comments-post">Posted by: <a href="http://www.penilestretch.com">penis pills</a> 發表於 February 17, 2005 03:50 PM</span>
+</div>
+<div class="comments-body">
+The pill will improve your overall sexual health, make you feel younger and you will have more pleasurable orgasms. You can take one pill 2 times per day to keep the effects of VIMAX PILLS in your system and to promote virility enhancement.Take one in the morning and another one in the evening with water. Also if you wish to enhance your sexual performance take 2 pills 30 minutes before sexual activity.
+<span class="comments-post">Posted by: <a href="http://www.penilestretch.com">penis size</a> 發表於 February 17, 2005 10:22 PM</span>
+</div>
+<div class="comments-body">
+My relationship with my girlfriend was falling apart because of our sex life. My penis was only 5 inches when fully erect and I knew it not enough to satisfy my partner. She could never get a real orgasm so she had to fake it not to disappoint me. After taking VIMAX PILLS for 3 months I average out 6.5 inches. Now my girlfriend can t wait for me to get back from work so we can start making love. Now we make love at least 5 times each week, before there were times were we haven t seen each other naked for weeks.
+<span class="comments-post">Posted by: <a href="http://www.penilestretch.com">big penis</a> 發表於 February 18, 2005 05:34 PM</span>
+</div>
+<div class="comments-body">
+First of all I would like to thank PillsExpert for letting me share my story to all of you. My name is Tom and my problem before taking VIMAX PILLS was being called a 60 SECONDS MAN. I could orgasm in less then a minute and that always kept me from a long lasting relationship with any woman. Now after taking pills for 2 months I have been making love for as long as 40 minutes. I finally was able to satisfy my partner and I am thinking of proposing to her next month.
+
+<span class="comments-post">Posted by: <a href="http://www.penilestretch.com">penis enlargement product</a> 發表於 February 19, 2005 06:13 AM</span>
+</div>
+<div class="comments-body">
+My problem used to be losing an erection in the middle of a sex act. You can understand how embarassed I used to get everytime followed by stupid excuses from me of how I had problems at work, or any other BS. My doctor adviced me to take VIAGRA and it did help me, but the cost was outrageous. I spent over $500 the last 4 months on viagra and deeply regret that I haven t found PillsExpert.com site before. After taking your pills I have seen an increase in my penis length and now i am able to keep my erection throughout the whole sexual act.
+<span class="comments-post">Posted by: <a href="http://www.penilestretch.com">large penis</a> 發表於 February 19, 2005 11:02 PM</span>
+</div>
+<div class="comments-body">
+Every man is different but you can expect about a 30 % increase or greater. If you are about 6 inches you could expect an increase to 8 inches or more. VIMAX PILLS will work the longer you use it.
+<span class="comments-post">Posted by: <a href="http://www.penilestretch.com">bigger penis</a> 發表於 February 22, 2005 12:17 AM</span>
+</div>
+<div class="comments-body">
+What is freedom of expression? Without the freedom to offend, it ceases to exist.
+<span class="comments-post">Posted by: <a href="http://www.helpful-pills-info.com">penis enlargement</a> 發表於 February 22, 2005 11:20 AM</span>
+</div>
+<div class="comments-body">
+Every man is different but you can expect about a 30 % increase or greater. If you are about 6 inches you could expect an increase to 8 inches or more. VIMAX PILLS will work the longer you use it.
+<span class="comments-post">Posted by: <a href="http://www.penilestretch.com">penis enlarger</a> 發表於 February 22, 2005 02:24 PM</span>
+</div>
+<div class="comments-body">
+The size you are looking for has a lot to do with this. Our recommendation is to discuss it with your partner to see what size is best for them as well. Most women can only accomodate a 9 inch penis. Anything bigger might cause pain and discomfort for most women. So 9 inch penis would be an ideal size for most of the men. If you are an average man with a penis size 5 - 7 we recommend purchasing at least 3 or 4 Vimax Bottles for best results.
+<span class="comments-post">Posted by: <a href="http://www.penilestretch.com">penis enhancement</a> 發表於 February 23, 2005 07:01 AM</span>
+</div>
+<div class="comments-body">
+Enlarge your penis up to 4 inches in 3 months. Substantially increase your sexual desire and stamina. You will have bigger, harder erections. Because of increased blood flow your erections grow harder. Erections when you want them. Rock hard erections every time. No more problems because you can t get it up and keep it up. VIMAX PILLS will keep the blood flowing to your penis so you will always get hard and stay hard. Stronger and more intense orgasms. Stop premature ejaculations. The appearance of your penis will arouse your sex partners.
+<span class="comments-post">Posted by: <a href="http://www.penilestretch.com">penis growth</a> 發表於 February 24, 2005 01:25 AM</span>
+</div>
+<div class="comments-body">
+Cialis works along with sexual stimulation to help achieve an erection.
+<span class="comments-post">Posted by: <a href="http://cialis.pills.ro">cialis</a> 發表於 February 24, 2005 10:05 PM</span>
+</div>
+<div class="comments-body">
+Our herbal formula significantly improves blood flow to your penis which causes stronger, and harder erections. Some of the ingredients used in Vimax Pills were used for centuries by many Tribes in Africa to increase their sexual drive, libido and orgasms. They have proven to work over hundreds of years and now finally you can also take advantage of those great natural extracts.
+<span class="comments-post">Posted by: <a href="http://www.penilestretch.com">increase penis size</a> 發表於 February 25, 2005 04:31 AM</span>
+</div>
+<div class="comments-body">
+Our herbal formula significantly improves blood flow to your penis which causes stronger, and harder erections. Some of the ingredients used in Vimax Pills were used for centuries by many Tribes in Africa to increase their sexual drive, libido and orgasms. They have proven to work over hundreds of years and now finally you can also take advantage of those great natural extracts.
+<span class="comments-post">Posted by: <a href="http://www.penilestretch.com">penis pills</a> 發表於 February 26, 2005 08:46 AM</span>
+</div>
+<div class="comments-body">
+He who is unable to live in society, or who has no need because he is sufficient for himself, must be either a beast or a god.
+<span class="comments-post">Posted by: <a href="http://www.homo-politicus-home.com">homo politicus</a> 發表於 March  1, 2005 01:58 AM</span>
+</div>
+<div class="comments-body">
+The ultimate tool. The wildly popular Fleshlight has been around for a while, but it continues to be one of the most innovative masturbators we ve ever seen. An extremely lifelike sleeve is housed inside a sturdy plastic flashlight casing just unscrew the top, add some lubricant and you re ready to go to work. The realistic vaginal opening makes the experience that much more incredible. If you re looking for the top-of-the-line, look no further than the Fleshlight it is the only power tool you need.
+<span class="comments-post">Posted by: <a href="http://www.fleshlight.ro">fleshlight</a> 發表於 March  1, 2005 03:58 AM</span>
+</div>
+<div class="comments-body">
+The ProSolution Pill system is guaranteed to increase your penis size by 1-3 inches. Utilizing doctor recommended ingredients and paired  with a bonus membership to an online techniques website, this is the most successful system on the market.
+<span class="comments-post">Posted by: <a href="http://www.prosolutionpills.org">pro solution pills</a> 發表於 March  6, 2005 06:16 PM</span>
+</div>
+<div class="comments-body">
+The ProSolution Pill system is guaranteed to increase your penis size by 1-3 inches.
+<span class="comments-post">Posted by: <a href="http://www.prosolutionpills.org">penis size</a> 發表於 March  9, 2005 03:14 AM</span>
+</div>
+<div class="comments-body">
+The ProSolution Pill system is guaranteed to increase your penis size by 1-3 inches.
+<span class="comments-post">Posted by: <a href="http://www.prosolutionpills.org">big penis</a> 發表於 March  9, 2005 05:29 AM</span>
+</div>
+<div class="comments-body">
+Fleshlight is a portable, concealable, sturdy male masturbation device. It engulfs your cock as you barrel down it is water warmed shaft. Incredibly soft and velvety with a mild, pleasent scent, it is ideal for those moments alone. It is discreet, easy to clean, and 100% safe.Thanks to a velvety-soft material that rivals penetration in feel, warmth and satisfaction, the Fleshlights quickly topped the charts as the ultimate male masturbation toy.
+<span class="comments-post">Posted by: <a href="http://www.fleshlight4men.com">fleshlight</a> 發表於 March  9, 2005 07:22 PM</span>
+</div>
+<div class="comments-body">
+The Fleshlight feels so much better than your hand, in fact, it feels like the best sex you ll ever have. Some of the special inserts feel much much more intense than any pussy could ever feel, and if that is your desire, you re in for a special treat. Gain Confidence If You re Virgin. The FleshLight is an awesome learning aid for virgin men about what to expect during intercourse. After a shitty day you won t have to tell it why your in a bad mood and just want to fuck. You ll never get a disease from your Fleshlight, or give one to anyone else.
+<span class="comments-post">Posted by: <a href="http://www.fleshlight4men.com">male masturbation</a> 發表於 March 10, 2005 02:24 AM</span>
+</div>
+<div class="comments-body">
+As you penetrate the velvety soft Real Feel Super Skin you will experience the absolute finest in simulated intercourse known to man. At your fingertips is an orifice that replicates the human model with such remarkable visual and tactile perfection, spending quality time with yourself will never be the same again. With a variety of styles, colors, and specials inserts designed for maximum pleasure, you can let your fantasies run wild. The hard plastic outer shell is discreet, lightweight, and will last you a lifetime. With over 100,000 fleshlights sold, and a 100% approval rate, we guarantee you won t be disappointed. This product is so real you may know the difference, but your johnson won t.
+<span class="comments-post">Posted by: <a href="http://www.fleshlight4men.com">sex toy</a> 發表於 March 10, 2005 05:36 PM</span>
+</div>
+<div class="comments-body">
+The ProSolution Pill system is guaranteed to increase your penis size by 1-3 inches.
+<span class="comments-post">Posted by: <a href="http://www.prosolutionpills.org">penis growth</a> 發表於 March 11, 2005 04:22 AM</span>
+</div>
+<div class="comments-body">
+Are you really satisfied with your penis size?
+<span class="comments-post">Posted by: <a href="http://vimax-best-pills.vorbe.com">vimax pills</a> 發表於 March 14, 2005 02:38 AM</span>
+</div>
+<div class="comments-body">
+Vimax is a powerful natural herbal male enhancement formula that increases penis length and girth, sexual desire, sexual health and helps to achieve stronger erections.
+<span class="comments-post">Posted by: <a href="http://vimax-enhancement-pills.vorbe.com">penis enhancement pills</a> 發表於 March 14, 2005 05:28 AM</span>
+</div>
+<div class="comments-body">
+Vimax pills will improve your overall sexual health, make you feel younger and you will have more pleasurable orgasms.
+<span class="comments-post">Posted by: <a href="http://vimax-herbal-pills.vorbe.com">penis pills</a> 發表於 March 14, 2005 01:54 PM</span>
+</div>
+<div class="comments-body">
+No pumps, no exercices, and no surgery.
+<span class="comments-post">Posted by: <a href="http://vimax-info-pills.vorbe.com">best penis pills</a> 發表於 March 14, 2005 04:36 PM</span>
+</div>
+<div class="comments-body">
+Cialis is used to treat male sexual function problems.
+<span class="comments-post">Posted by: <a href="http://cialis.isellpills.com">cialis</a> 發表於 March 15, 2005 03:29 AM</span>
+</div>
+<div class="comments-body">
+Propecia is a pill taken by mouth that is a new and effective treatment for male pattern baldness.
+<span class="comments-post">Posted by: <a href="http://propecia.isellpills.com">propecia</a> 發表於 March 15, 2005 05:55 AM</span>
+</div>
+<div class="comments-body">
+Celebrex is a non-steroidal anti-inflammatory drug
+<span class="comments-post">Posted by: <a href="http://celebrex.isellpills.com">celebrex</a> 發表於 March 15, 2005 08:14 AM</span>
+</div>
+<div class="comments-body">
+glucophage is used to treat a type of diabetes mellitus
+<span class="comments-post">Posted by: <a href="http://glucophage.isellpills.com">glucophage</a> 發表於 March 15, 2005 12:16 PM</span>
+</div>
+<div class="comments-body">
+Lipitor is used with diet changes to reduce the amount of cholesterol.
+<span class="comments-post">Posted by: <a href="http://lipitor.isellpills.com/">lipitor</a> 發表於 March 15, 2005 05:01 PM</span>
+</div>
+<div class="comments-body">
+Propecia is a pill for male pattern baldness.
+<span class="comments-post">Posted by: <a href="http://propecia.isellpills.com">propecia</a> 發表於 March 16, 2005 12:13 AM</span>
+</div>
+<div class="comments-body">
+soma relaxes muscles and relieves pain
+<span class="comments-post">Posted by: <a href="http://soma.isellpills.com">soma</a> 發表於 March 16, 2005 04:54 AM</span>
+</div>
+<div class="comments-body">
+Is guaranteed to increase your penis size by 1-3 inches with these enlargement pills
+<span class="comments-post">Posted by: <a href="http://www.prosolutionpills.org">enlargement pills</a> 發表於 March 17, 2005 05:58 AM</span>
+</div>
+<div class="comments-body">
+Is guaranteed to increase your penis size by 1-3 inches with these enlargement pills
+<span class="comments-post">Posted by: <a href="http://www.prosolutionpills.org">enlargement pills</a> 發表於 March 17, 2005 05:58 AM</span>
+</div>
+<div class="comments-body">
+This medication is used to treat male sexual function problems
+<span class="comments-post">Posted by: <a href="http://www.genericcialis.org">cialis</a> 發表於 March 17, 2005 06:16 AM</span>
+</div>
+<div class="comments-body">
+Fast Size Extender provides a rapid yet healthy increase in the length and girth of the penis.
+<span class="comments-post">Posted by: <a href="http://www.fast-size.org">fast size</a> 發表於 March 17, 2005 10:34 AM</span>
+</div>
+<div class="comments-body">
+A soft, pliable non-vibrating sleeve made from patented high quality material
+<span class="comments-post">Posted by: <a href="http://fleshlight-pink.info">fleshlight</a> 發表於 March 17, 2005 01:05 PM</span>
+</div>
+<div class="comments-body">
+This is the insert that started the Fleshlight revolution.
+<span class="comments-post">Posted by: <a href="http://lady-fleshlight.info">fleshlight</a> 發表於 March 17, 2005 03:21 PM</span>
+</div>
+<div class="comments-body">
+Extremely lifelike sleeve is housed inside a sturdy plastic fleshlight
+<span class="comments-post">Posted by: <a href="http://fleshlight-products.info">fleshlight</a> 發表於 March 17, 2005 05:36 PM</span>
+</div>
+<div class="comments-body">
+At your fingertips is an orifice that replicates the human model.
+<span class="comments-post">Posted by: <a href="http://fleshlight-review.info">fleshlight</a> 發表於 March 17, 2005 09:46 PM</span>
+</div>
+<div class="comments-body">
+Fleshlight engulf your cock as you barrel down its water warmed shaft
+<span class="comments-post">Posted by: <a href="http://fleshlight-toys.info">fleshlight</a> 發表於 March 17, 2005 11:55 PM</span>
+</div>
+<div class="comments-body">
+Fleshlight has been around for a while, but it continues to be one of the most innovative masturbators we have ever seen
+<span class="comments-post">Posted by: <a href="http://fleshlight-video.info">fleshlight</a> 發表於 March 18, 2005 01:50 AM</span>
+</div>
+<div class="comments-body">
+Fleshlight has been around for a while, but it continues to be one of the most innovative masturbators we have ever seen
+<span class="comments-post">Posted by: <a href="http://fleshlight-video.info">fleshlight</a> 發表於 March 18, 2005 01:50 AM</span>
+</div>
+<div class="comments-body">
+best device to enlarge your penis
+<span class="comments-post">Posted by: <a href="http://www.fast-size.org">penis extender</a> 發表於 March 18, 2005 03:42 AM</span>
+</div>
+<div class="comments-body">
+You dont need anything special to VideoChat
+<span class="comments-post">Posted by: <a href="http://www.webcams-videochat.com">free nude chat</a> 發表於 March 18, 2005 12:01 PM</span>
+</div>
+<div class="comments-body">
+If you have a free cyber sex chat rooms on your computer, you can have two-way VideoChat with a Host
+<span class="comments-post">Posted by: <a href="http://www.webcams-videochat.com">adult video chat</a> 發表於 March 18, 2005 01:55 PM</span>
+</div>
+<div class="comments-body">
+You can see them, hear them, and talk to them over the Internet, with no hidden costs
+<span class="comments-post">Posted by: <a href="http://www.webcams-videochat.com">video chat rooms</a> 發表於 March 18, 2005 03:51 PM</span>
+</div>
+<div class="comments-body">
+Just select the VideoChat room you wish to enter, select your Host, and start chatting
+<span class="comments-post">Posted by: <a href="http://www.webcams-videochat.com">web sex cams</a> 發表於 March 18, 2005 05:41 PM</span>
+</div>
+<div class="comments-body">
+If you are looking for live nude adult web cams, this is the place to go.
+<span class="comments-post">Posted by: <a href="http://www.webcams-videochat.com">live chat</a> 發表於 March 18, 2005 07:31 PM</span>
+</div>
+<div class="comments-body">
+interesting product for masturbators
+<span class="comments-post">Posted by: <a href="http://fleshlight-video.info">fleshlight video</a> 發表於 March 18, 2005 11:08 PM</span>
+</div>
+<div class="comments-body">
+Fleshlight is the greatest male masturbation device
+<span class="comments-post">Posted by: <a href="http://lady-fleshlight.info">male masturbation</a> 發表於 March 19, 2005 01:01 AM</span>
+</div>
+<div class="comments-body">
+enlarge your penis with this amazing patch
+<span class="comments-post">Posted by: <a href="http://www.enlargement-patch.org">penis patch</a> 發表於 March 19, 2005 02:52 AM</span>
+</div>
+<div class="comments-body">
+The repercussions of having a small penis are damaging and far-reaching
+<span class="comments-post">Posted by: <a href="http://best-pills.intfree.com">big penis</a> 發表於 March 19, 2005 10:16 PM</span>
+</div>
+<div class="comments-body">
+You do NOT have to live with your current penis size
+<span class="comments-post">Posted by: <a href="http://best-pro-pills.intfree.com">pro solution pills</a> 發表於 March 20, 2005 12:08 AM</span>
+</div>
+<div class="comments-body">
+Discover what our proven to work formula can do for you by ordering today.Many men were skeptical at first but after they gave our pills a try their sex life and self esteem changed for the better.
+<span class="comments-post">Posted by: <a href="http://www.penis-reviews.com">vimax</a> 發表於 March 20, 2005 06:51 AM</span>
+</div>
+<div class="comments-body">
+We are SO sure that the ProSolution Pill System will work for you, we FULLY guarantee it.
+<span class="comments-post">Posted by: <a href="http://natural-solution-pills.intfree.com">pro solution</a> 發表於 March 20, 2005 11:26 AM</span>
+</div>
+<div class="comments-body">
+I have seen some nice gains in a short time so far... and some on here as you see have gained over 2 inches in length...... the results speak for themselves
+<span class="comments-post">Posted by: <a href="http://pro-solution.intfree.com">pro solution</a> 發表於 March 20, 2005 03:13 PM</span>
+</div>
+<div class="comments-body">
+Do you want a bigger penis? The ProSolution Pill System contains the highest quality capsules which have been blended in such a unique way that we guarantee they will provide the results you want.
+<span class="comments-post">Posted by: <a href="http://pro-solution-pills.intfree.com">pro solution pills</a> 發表於 March 20, 2005 05:06 PM</span>
+</div>
+<div class="comments-body">
+ You can also check some information about b&#111;ntr&#105;l   b&#111;ntr&#105;l  <a href="http://www.buy-pharmacy-pills.com/">http://www.buy-pharmacy-pills.com/</a>  pr&#111;p&#101;c&#105;&#97;   pr&#111;p&#101;c&#105;&#97;  <a href="http://propecia.vnsoul.org/">http://propecia.vnsoul.org/</a>  ph&#97;rm&#97;cy   ph&#97;rm&#97;cy  <a href="http://pharmacy.e-buy-2004.com/">http://pharmacy.e-buy-2004.com/</a>  &#101;ff&#101;x&#111;r   &#101;ff&#101;x&#111;r  <a href="http://effexor.e-pills-4u.com/">http://effexor.e-pills-4u.com/</a>  c&#97;n&#97;d&#105;&#97;n ph&#97;rm&#97;cy   c&#97;n&#97;d&#105;&#97;n ph&#97;rm&#97;cy  <a href="http://canadian-pharmacy.e-pills-4u.com/">http://canadian-pharmacy.e-pills-4u.com/</a>  c&#105;&#97;l&#105;s   c&#105;&#97;l&#105;s  <a href="http://www.buy-pills-2005.com/">http://www.buy-pills-2005.com/</a>  m&#101;x&#105;c&#97;n ph&#97;rm&#97;cy   m&#101;x&#105;c&#97;n ph&#97;rm&#97;cy  <a href="http://mexican-pharmacy.buy-pills-2005.com/">http://mexican-pharmacy.buy-pills-2005.com/</a>  c&#97;n&#97;d&#105;&#97;n ph&#97;rm&#97;c&#105;&#101;s   c&#97;n&#97;d&#105;&#97;n ph&#97;rm&#97;c&#105;&#101;s  <a href="http://canadian-pharmacies.buy-pills-2005.com/">http://canadian-pharmacies.buy-pills-2005.com/</a>  pr&#111;p&#101;c&#105;&#97;   pr&#111;p&#101;c&#105;&#97;  <a href="http://propecia.buy-pills-2005.com/">http://propecia.buy-pills-2005.com/</a>  c&#97;n&#97;d&#97; ph&#97;rm&#97;cy   c&#97;n&#97;d&#97; ph&#97;rm&#97;cy  <a href="http://canada-pharmacy.pharmacy-top-ranked.com/">http://canada-pharmacy.pharmacy-top-ranked.com/</a> - Tons of interesdting stuff!!! 
+<span class="comments-post">Posted by: <a href="http://diet-supplements.e-buy-2004.com/">d&#105;&#101;t s&#117;ppl&#101;m&#101;nts</a> 發表於 April  1, 2005 04:27 AM</span>
+</div>
+<div class="comments-body">
+you may be missing out on the best opportunity in years to 
+<span class="comments-post">Posted by: <a href="http://buycialis.ats3.info">cialis soft tabs</a> 發表於 April  3, 2005 07:00 PM</span>
+</div>
+<div class="comments-body">
+feet and fragrant aromas from a traditional feast enveloped the senses as more
+<span class="comments-post">Posted by: <a href="http://buycialis.ats3.info">order cialis</a> 發表於 April  3, 2005 08:14 PM</span>
+</div>
+<div class="comments-body">
+In an hour my nodules were all arranged upon successive shelves. ThenI dropped down into the old velvet arm-chair, my head thrown back andmy hands joined over it.
+<span class="comments-post">Posted by: <a href="http://penispill.ats3.info">penis pill</a> 發表於 April  4, 2005 12:16 AM</span>
+</div>
+<div class="comments-body">
+You may be sure I felt stirred up. My eyes were dim, I could scarcelysee. I had laid the paper upon the table. At a glance I could tellthe whole secret.
+<span class="comments-post">Posted by: <a href="http://penispill.ats3.info">penis enlargment pill</a> 發表於 April  4, 2005 05:04 AM</span>
+</div>
+<div class="comments-body">
+The Pink Lady Insert is the insert that started the Fleshlight revolution! The Original Pink Lady has introduced more men to the pleasures of the Fleshlight than any other insert.
+<span class="comments-post">Posted by: <a href="http://www.fleshlight-store.com">fleshlight</a> 發表於 April  4, 2005 07:10 PM</span>
+</div>
+<div class="comments-body">
+ Please check the sites dedicated to ph&#97;rm&#97;cy   ph&#97;rm&#97;cy  <a href="http://pharmacy.e-top-pharmacy.com/">http://pharmacy.e-top-pharmacy.com/</a>  b&#117;t&#97;lb&#105;t&#97;l   b&#117;t&#97;lb&#105;t&#97;l  <a href="http://butalbital.best-e-site.com/">http://butalbital.best-e-site.com/</a>  h&#111;&#111;d&#105;&#97; pl&#97;nt   h&#111;&#111;d&#105;&#97; pl&#97;nt  <a href="http://hoodia-plant.best-e-site.com/">http://hoodia-plant.best-e-site.com/</a>  w&#97;lgr&#101;&#101;ns ph&#97;rm&#97;cy   w&#97;lgr&#101;&#101;ns ph&#97;rm&#97;cy  <a href="http://walgreens-pharmacy.best-e-site.com/">http://walgreens-pharmacy.best-e-site.com/</a>  &#101;ff&#101;x&#111;r xr s&#105;d&#101; &#101;ff&#101;cts   &#101;ff&#101;x&#111;r xr s&#105;d&#101; &#101;ff&#101;cts  <a href="http://effexor-xr-side-effects.best-e-site.com/">http://effexor-xr-side-effects.best-e-site.com/</a>  &#111;nl&#105;n&#101; d&#105;sc&#111;&#117;nt ph&#97;rm&#97;cy   &#111;nl&#105;n&#101; d&#105;sc&#111;&#117;nt ph&#97;rm&#97;cy  <a href="http://online-discount-pharmacy.e-pills-buy.com/">http://online-discount-pharmacy.e-pills-buy.com/</a>  p&#117;r&#101; h&#111;&#111;d&#105;&#97; g&#111;rd&#111;n&#105;&#105;   p&#117;r&#101; h&#111;&#111;d&#105;&#97; g&#111;rd&#111;n&#105;&#105;  <a href="http://pure-hoodia-gordonii.e-pills-buy.com/">http://pure-hoodia-gordonii.e-pills-buy.com/</a>  &#111;nl&#105;n&#101; ph&#97;rm&#97;cy m&#101;d&#105;c&#105;n&#101;   &#111;nl&#105;n&#101; ph&#97;rm&#97;cy m&#101;d&#105;c&#105;n&#101;  <a href="http://online-pharmacy-medicine.e-pills-buy.com/">http://online-pharmacy-medicine.e-pills-buy.com/</a>  ph&#97;rm&#97;cy d&#105;r&#101;ct   ph&#97;rm&#97;cy d&#105;r&#101;ct  <a href="http://pharmacy-direct.e-pills-buy.com/">http://pharmacy-direct.e-pills-buy.com/</a>  r&#101;d&#117;ct&#105;l   r&#101;d&#117;ct&#105;l  <a href="http://reductil.e-pills-buy.com/">http://reductil.e-pills-buy.com/</a> ... 
+<span class="comments-post">Posted by: <a href="http://foreign-pharmacies.e-pills-buy.com/">f&#111;r&#101;&#105;gn ph&#97;rm&#97;c&#105;&#101;s</a> 發表於 April  6, 2005 05:40 AM</span>
+</div>
+<div class="comments-body">
+In an hour my nodules were all arranged upon successive shelves. ThenI dropped down into the old velvet arm-chair, my head thrown back andmy hands joined over it.
+<span class="comments-post">Posted by: <a href="http://penispill.ats3.info">penis pill</a> 發表於 April 16, 2005 11:02 AM</span>
+</div>
+<div class="comments-body">
+You may be sure I felt stirred up. My eyes were dim, I could scarcelysee. I had laid the paper upon the table. At a glance I could tellthe whole secret.
+<span class="comments-post">Posted by: <a href="http://penispill.ats3.info">penis enlargment pill</a> 發表於 April 16, 2005 12:22 PM</span>
+</div>
+<div class="comments-body">
+the last mighthave something to do with each other; it was not at all surprisingthat in a document written in Iceland there should be mention of asea of ice; but it was quite another thing to get to the end of thiscryptogram with so small a clue. 
+<span class="comments-post">Posted by: <a href="http://penispill.ats3.info">best penis pill</a> 發表於 April 16, 2005 01:40 PM</span>
+</div>
+<div class="comments-body">
+What connection could therepossibly be between such words as ice, sir, anger, cruel, sacredwood, changeable, mother, bow, and sea? The first and 
+<span class="comments-post">Posted by: <a href="http://penispill.ats3.info">penis pill store</a> 發表於 April 16, 2005 10:16 PM</span>
+</div>
+<div class="comments-body">
+lake powell
+<span class="comments-post">Posted by: <a href="http://www.secretcanyons.com/">lake powell</a> 發表於 April 18, 2005 07:06 PM</span>
+</div>
+<div class="comments-body">
+exercise
+			motivation
+			mental health
+			self esteem
+			inspiration
+			words of inspiration
+			self help books
+			<a href="http://positivehabits.crpublish.com">http://positivehabits.crpublish.com</a>
+<span class="comments-post">Posted by: <a href="http://positivehabits.crpublish.com">mental health</a> 發表於 April 19, 2005 07:05 AM</span>
+</div>
+<div class="comments-body">
+snoring
+			stop snoring
+			snoring remedies
+			how to stop snoring
+			snoring treatments
+			cures for snoring
+			snoring cures
+			snoring problem
+			<a href="http://snoring.crpublish.com">http://snoring.crpublish.com</a>
+<span class="comments-post">Posted by: <a href="http://snoring.crpublish.com">cures for snoring</a> 發表於 April 25, 2005 12:01 AM</span>
+</div>
+<div class="comments-body">
+baby names
+			baby clothes
+			baby blankets
+			baby clothing
+			baby bracelets
+			baby bibs
+			baby clothes
+			personalized baby gifts
+			unique baby blankets
+			baby towels
+			personalized baby blankets
+			baby bracelets
+			baby cashmere blankets
+			3 marthas hooded towels
+			handmade baby blankets
+			hooded towels for kids
+			fleece baby blankets
+			baby name bracelets
+			embroidered baby blankets
+			chenille baby blankets
+			monogrammed baby blankets
+			baby bibs and onesies
+			personalized baby bibs
+			embroidered baby bibs
+			baby cashmere blankets
+			baby gifts
+			gifts for babies
+			baby shower gifts
+			baby gift
+			unique baby gift
+			personalized baby gift
+			personalized baby gifts
+			<a href="http://www.signaturebaby.com">http://www.signaturebaby.com</a>
+<span class="comments-post">Posted by: <a href="http://www.signaturebaby.com">baby bracelets</a> 發表於 May  2, 2005 12:54 AM</span>
+</div>
+<div class="comments-body">
+<a href="http://www.hotdatings.com/">http://www.hotdatings.com/</a>
+<span class="comments-post">Posted by: <a href="http://www.hotdatings.com/">hotdatings</a> 發表於 May  6, 2005 08:33 AM</span>
+</div>
+<div class="comments-body">
+cars
+			used cars
+			used car prices
+			used cars
+			used cars for sale
+			used cars online
+			buying used cars
+			search for used cars
+			buy used cars
+			find used cars
+			auto trader
+			auto loan calculator
+			vehicle shipping
+			used vehicles
+			buy a car
+			buy a used car
+			buy a new car
+			buy a car bad credit
+			how to buy a used car
+			buy a car online
+			used car search
+			car search
+			new car search
+			auto classifieds
+			truck classifieds
+			car classifieds
+			used car classifieds
+			<a href="http://carsearch.webshoppingguides.com">http://carsearch.webshoppingguides.com</a>
+<span class="comments-post">Posted by: <a href="http://carsearch.webshoppingguides.com">auto classifieds</a> 發表於 May  7, 2005 07:31 AM</span>
+</div>
+<div class="comments-body">
+Gift Basket
+			Gift Baskets
+			Send Flowers
+			Flowers
+			Gourmet Gift Basket
+			Baby Gift Basket
+			Chocolate Gift Basket
+			Sympathy Gift Basket
+			Thank You Gift Basket
+			Romantic Gift Basket
+			Housewarming Gift Basket
+			Food Gift Basket
+			<a href="http://giftbaskets.webshoppingguides.com">http://giftbaskets.webshoppingguides.com</a>
+<span class="comments-post">Posted by: <a href="http://giftbaskets.webshoppingguides.com">Gift Basket</a> 發表於 May 17, 2005 03:27 AM</span>
+</div>
+<div class="comments-body">
+adware
+			free adware remover
+			adware remover
+			spyware
+			free spyware remover
+			popup blocker
+			<a href="http://noadware.dealfront.com">http://noadware.dealfront.com</a>
+<span class="comments-post">Posted by: <a href="http://noadware.dealfront.com">adware</a> 發表於 May 18, 2005 05:54 AM</span>
+</div>
+<div class="comments-body">
+adware
+			free adware remover
+			adware remover
+			spyware
+			free spyware remover
+			popup blocker
+			<a href="http://noadware.dealfront.com">http://noadware.dealfront.com</a>
+<span class="comments-post">Posted by: <a href="http://noadware.dealfront.com">popup blocker</a> 發表於 May 18, 2005 06:13 AM</span>
+</div>
+<div class="comments-body">
+wedding dresses
+			wedding invitations
+			weddings
+			wedding planning
+			wedding ideas
+			wedding music
+			<a href="http://weddingplanning.sandhillaudio.com">http://weddingplanning.sandhillaudio.com</a>
+<span class="comments-post">Posted by: <a href="http://weddingplanning.sandhillaudio.com">wedding ideas</a> 發表於 May 18, 2005 08:02 AM</span>
+</div>
+<div class="comments-body">
+vacation
+			vacations
+			vacation packages
+			cheap vacations
+			hawaii vacations
+			family vacations
+			<a href="http://travelsecrets.sandhillaudio.com">http://travelsecrets.sandhillaudio.com</a>
+<span class="comments-post">Posted by: <a href="http://travelsecrets.sandhillaudio.com">family vacations</a> 發表於 May 22, 2005 02:14 AM</span>
+</div>
+<div class="comments-body">
+fishing ebook
+			bass fishing ebook
+			bass fishing reports
+			bass fishing secrets
+			fishing tips
+			fishing information and tips
+			<a href="http://bass-fishing.dealfront.com">http://bass-fishing.dealfront.com</a>
+<span class="comments-post">Posted by: <a href="http://bass-fishing.dealfront.com">fishing information and tips</a> 發表於 May 23, 2005 02:51 AM</span>
+</div>
+<div class="comments-body">
+tv show downloads
+			download tv show
+			download free tv show
+			online tv
+			watch tv online
+			<a href="http://download-tv-shows.bargainfront.com">http://download-tv-shows.bargainfront.com</a>
+<span class="comments-post">Posted by: <a href="http://download-tv-shows.bargainfront.com">download tv show</a> 發表於 May 27, 2005 08:17 PM</span>
+</div>
+<div class="comments-body">
+Not everything that can be counted counts, and not everything that counts can be counted.
+<span class="comments-post">Posted by: <a href="http://hghspray.pillslist.info/report_sgh.html">Dan</a> 發表於 May 30, 2005 06:39 AM</span>
+</div>
+<div class="comments-body">
+I can write better than anybody who can write faster, and I can write faster than anybody who can write better.
+<span class="comments-post">Posted by: <a href="http://hghspray.pillslist.info/report_sgh.html">ronn</a> 發表於 May 30, 2005 11:40 AM</span>
+</div>
+<div class="comments-body">
+paid survey
+			paid online survey
+			free paid survey
+			get paid for survey
+			get paid to take survey
+			<a href="http://paid-survey.bargainfront.com">http://paid-survey.bargainfront.com</a>
+<span class="comments-post">Posted by: <a href="http://paid-survey.bargainfront.com">get paid for survey</a> 發表於 May 30, 2005 06:23 PM</span>
+</div>
+<div class="comments-body">
+Interesting and great informations on this website. Nice job! Get infos about all the pills on the market, about true or false effects. Try: <a href="http://www.pillsinfos.com">http://www.pillsinfos.com</a>
+Penis enlargement pills
+<span class="comments-post">Posted by: <a href="http://www.pillsinfos.com">penis enlargement pills</a> 發表於 June 15, 2005 08:15 AM</span>
+</div>
+<div class="comments-body">
+cell phone plan
+			cell phones
+			cellular phone family plan
+			free cell phones
+			free cell phones accessories
+			cell phone deals
+			<a href="http://wirefly.webshoppingguides.com">http://wirefly.webshoppingguides.com</a>
+<span class="comments-post">Posted by: <a href="http://wirefly.webshoppingguides.com">cell phone deals</a> 發表於 June 16, 2005 01:26 AM</span>
+</div>
+<div class="comments-body">
+seo
+			search engine optimization
+			seo guide
+			seo tools
+			<a href="http://seo-guide.bargainfront.com">http://seo-guide.bargainfront.com</a>
+<span class="comments-post">Posted by: <a href="http://seo-guide.bargainfront.com">seo</a> 發表於 June 16, 2005 03:09 AM</span>
+</div>
+<div class="comments-body">
+seo
+			search engine optimization
+			seo guide
+			seo tools
+			<a href="http://seo-guide.bargainfront.com">http://seo-guide.bargainfront.com</a>
+<span class="comments-post">Posted by: <a href="http://seo-guide.bargainfront.com">seo tools</a> 發表於 June 16, 2005 04:51 AM</span>
+</div>
+<div class="comments-body">
+buy cds
+			cheap cds
+			free cds
+			cd club
+			12 for 1 cds
+			<a href="http://buy-cds.sweetbuyz.com">http://buy-cds.sweetbuyz.com</a>
+<span class="comments-post">Posted by: <a href="http://buy-cds.sweetbuyz.com">cd club</a> 發表於 June 16, 2005 07:43 AM</span>
+</div>
+<div class="comments-body">
+cell phone plan
+			cell phones
+			cellular phone family plan
+			free cell phones
+			free cell phones accessories
+			cell phone deals
+			<a href="http://wirefly.webshoppingguides.com">http://wirefly.webshoppingguides.com</a>
+<span class="comments-post">Posted by: <a href="http://wirefly.webshoppingguides.com">cellular phone family plan</a> 發表於 June 17, 2005 12:41 PM</span>
+</div>
+<div class="comments-body">
+dog training
+			puppy training
+			dog behavior
+			dog obedience
+			<a href="http://dog-training.crpublish.com">http://dog-training.crpublish.com</a>
+<span class="comments-post">Posted by: <a href="http://dog-training.crpublish.com">puppy training</a> 發表於 June 18, 2005 06:23 AM</span>
+</div>
+<div class="comments-body">
+people search
+			people finder
+			free people search
+			free people finder
+			free public records
+			<a href="http://people-search.crpublish.com">http://people-search.crpublish.com</a>
+<span class="comments-post">Posted by: <a href="http://people-search.crpublish.com">people finder</a> 發表於 June 18, 2005 06:41 AM</span>
+</div>
+<div class="comments-body">
+<a href="http://hghspray.pillslist.info/report_sgh.html">http://hghspray.pillslist.info/report_sgh.html</a>
+<span class="comments-post">Posted by: <a href="http://hghspray.pillslist.info/report_sgh.html">hgh</a> 發表於 June 19, 2005 10:39 AM</span>
+</div>
+<div class="comments-body">
+Find out more about debt consolidation at <a href="http://www.usdebtconsolidation.net">http://www.usdebtconsolidation.net</a>
+<span class="comments-post">Posted by: <a href="http://www.usdebtconsolidation.net">debt consolidation</a> 發表於 June 21, 2005 01:27 AM</span>
+</div>
+<div class="comments-body">
+Find out more about debt consolidation at <a href="http://www.usdebtconsolidation.net">http://www.usdebtconsolidation.net</a>
+<span class="comments-post">Posted by: <a href="http://www.usdebtconsolidation.net">debt consolidation</a> 發表於 June 29, 2005 11:22 AM</span>
+</div>
+<div class="comments-body">
+Find out more about debt consolidation at <a href="http://www.usdebtconsolidation.net">http://www.usdebtconsolidation.net</a>
+<span class="comments-post">Posted by: <a href="http://creditcard.usdebtconsolidation.net/debtconsolidation/loan/">debt consolidation</a> 發表於 June 29, 2005 03:02 PM</span>
+</div>
+<div class="comments-body">
+Find out more about debt consolidation at <a href="http://www.usdebtconsolidation.net">http://www.usdebtconsolidation.net</a>
+<span class="comments-post">Posted by: <a href="http://creditcard.usdebtconsolidation.net/debtconsolidation/debt_management/">debt consolidation</a> 發表於 June 29, 2005 06:25 PM</span>
+</div>
+<div class="comments-body">
+Find out more about debt consolidation at <a href="http://www.usdebtconsolidation.net">http://www.usdebtconsolidation.net</a>
+<span class="comments-post">Posted by: <a href="http://creditcard.usdebtconsolidation.net/debtconsolidation/program/">debt consolidation</a> 發表於 June 29, 2005 10:02 PM</span>
+</div>
+<div class="comments-body">
+In an hour my nodules were all arranged upon successive shelves. ThenI dropped down into the old velvet arm-chair, my head thrown back andmy hands joined over it.
+<span class="comments-post">Posted by: <a href="http://penispill.ats3.info">penis pill</a> 發表於 July  8, 2005 09:49 AM</span>
+</div>
+<div class="comments-body">
+you may be missing out on the best opportunity in years to 
+<span class="comments-post">Posted by: <a href="http://buycialis.ats3.info">cialis soft tabs</a> 發表於 July 10, 2005 03:17 AM</span>
+</div>
+<div class="comments-body">
+So I was struggling with aninsurmountable difficulty; my brain got heated, my eyes watered overthat sheet of paper; its hundred and thirty-two letters seemed 
+<span class="comments-post">Posted by: <a href="http://penispill.ats3.info">big penis pill </a> 發表於 July 10, 2005 05:49 AM</span>
+</div>
+<div class="comments-body">
+the last mighthave something to do with each other; it was not at all surprisingthat in a document written in Iceland there should be mention of asea of ice; but it was quite another thing to get to the end of thiscryptogram with so small a clue. 
+<span class="comments-post">Posted by: <a href="http://penispill.ats3.info">best penis pill</a> 發表於 July 10, 2005 07:52 AM</span>
+</div>
+<div class="comments-body">
+You may be sure I felt stirred up. My eyes were dim, I could scarcelysee. I had laid the paper upon the table. At a glance I could tellthe whole secret.
+<span class="comments-post">Posted by: <a href="http://penispill.ats3.info">penis enlargment pill</a> 發表於 July 10, 2005 06:42 PM</span>
+</div>
+<div class="comments-body">
+fitness
+			muscle
+			workout
+			<a href="http://2minutefitness.teddnetwork.com">http://2minutefitness.teddnetwork.com</a>
+<span class="comments-post">Posted by: <a href="http://2minutefitness.teddnetwork.com">muscle</a> 發表於 July 15, 2005 02:14 PM</span>
+</div>
+<div class="comments-body">
+weight loss
+			obesity
+			overweight
+			weight
+			<a href="http://30dayweightloss.teddbot.com">http://30dayweightloss.teddbot.com</a>
+<span class="comments-post">Posted by: <a href="http://30dayweightloss.teddbot.com">overweight</a> 發表於 July 15, 2005 02:25 PM</span>
+</div>
+<div class="comments-body">
+Adware spyware remover lavasoft adware Spyware adware download Anti Spyware ad adware adware download Spyware Doctor adware spyware removal tool Spyware Blaster adware spyware remover no adware Microsoft Anti Spyware remove adware Spyware Removal adware 6 spyware remove adware adware spyware remover lavasoft adware lavasoft adware Spyware Removal? Adware 6 Free Spyware Remover adware se adware remover Microsoft Anti Spyware
+free adware removal adware remover Spyware Blaster adware se no adware lavasoft adware free adware adware spyware remover free adware remover Spyware Removal Free Spyware. Lavasoft adware adware spyware remover spyware Spyware Doctor Microsoft Anti Spyware. Spyware Doctor Spyware Remover adware spyware remover Free Spyware Free Spyware adware spyware removal tool, adware download? Adware download Spyware Remover Spyware Remover adware spyware remover Spyware Doctor Adware, free adware, Free Spyware Remover. Spyware Doctor Spyware Remover, Spyware Remover no adware no adware free adware remover. Adware removal! No adware Free Spyware! Free Spyware Remover adware removal spyware adware se Adware. Free adware remover spyware Free Spyware Removal Spyware. Adware removal Spyware Removal free adware download ad adware
+adware spyware removal adware spyware free adware adware spyware removal tool Spyware Doctor free adware Spyware Remover spyware adware Adware adware remover Free Spyware Remover Spyware Removal Free Spyware, free adware remover adware remover adware spyware, adware se? Free adware removal adware spyware removal tool adware removal
+Adware Microsoft Anti Spyware Spyware Remover Free Spyware free adware no adware Spyware? Adware 6 no adware Spyware Removal ad adware adware spyware remover adware download
+adware spyware removal? Spyware Removal free adware free adware adware spyware removal adware 6 adware spyware removal, Spyware Remover anti adware! Spyware Remover ad adware Microsoft Anti Spyware Free Spyware Remover adware remover no adware Free Spyware Removal, anti adware. Remove adware, adware spyware removal, anti adware adware download adware removal
+free adware remover Free Spyware Removal, adware se Anti Spyware adware spyware removal Free Spyware Remover adware spyware remover Adware. Adware removal Spyware Doctor adware spyware
+lavasoft adware adware 6 free adware adware spyware Spyware Doctor adware remover Microsoft Anti Spyware Spyware Removal adware spyware remover adware spyware no adware Spyware Removal ad adware Spyware. Anti Spyware lavasoft adware no adware spyware lavasoft adware. Spyware Doctor, adware spyware removal adware removal Spyware Remover remove adware adware se?
+<span class="comments-post">Posted by: <a href="http://1-spyware.net/">Microsoft Anti Spyware</a> 發表於 April  3, 2006 12:09 PM</span>
+</div>
+<div class="comments-body">
+Adware spyware removal tool Spyware Spyware Blaster
+adware Microsoft Anti Spyware Anti Spyware no adware adware download ad adware adware 6 Spyware Remover Spyware Doctor adware spyware Spyware Remover, Spyware Removal adware spyware removal, adware remover Adware adware se free adware download adware free adware removal no adware? Free Spyware Removal Spyware Blaster free adware remover free adware download free adware removal free adware download, adware 6, adware se, Spyware Doctor no adware free adware download Free Anti Spyware spyware? Adware se adware se, ad adware Free Spyware! Remove adware Spyware Removal? Adware Spyware Remover Free Spyware Remover Free Spyware Free Spyware Removal spyware adware 6 Free Spyware. Spyware Blaster adware Anti Spyware Free Spyware Remover adware download? Free adware download Adware free adware download, free adware removal spyware Free Spyware Remover Spyware Blaster? Lavasoft adware adware removal? Spyware adware remover Spyware Remover Spyware Remover, adware free adware download Free Anti Spyware adware spyware remover free adware free adware free adware remover adware spyware. Adware spyware remover Microsoft Anti Spyware. Free adware remover. Adware remover
+Spyware Blaster. Free Spyware Remover Adware spyware Spyware Blaster adware download anti adware. Adware remover. Lavasoft adware free adware download adware spyware remover Spyware Remover Spyware Free Anti Spyware free adware download adware remover free adware remover adware download Free Spyware Removal adware spyware Spyware adware 6 free adware adware se adware removal Spyware Blaster Free Spyware Remover adware spyware removal Adware! Adware remove adware free adware Free Spyware Remover
+adware 6 anti adware. Anti Spyware free adware removal anti adware Free Anti Spyware Free Anti Spyware remove adware Spyware Blaster ad adware, adware spyware remover
+free adware
+adware download free adware download adware removal. Spyware adware free adware download!
+<span class="comments-post">Posted by: <a href="http://www.free-remover-spyware.com/Adware-and-Spyware-Removal-tool.html">Spyware</a> 發表於 April  4, 2006 06:49 AM</span>
+</div>
+<div class="comments-body">
+Ad adware Free Anti Spyware adware spyware ad adware spyware adware adware se adware removal, adware 6 lavasoft adware adware free adware download adware remover Free Anti Spyware Spyware Blaster free adware removal adware 6 Spyware Blaster free adware removal spyware adware spyware remover. Free Spyware adware removal adware removal remove adware adware se free adware download free adware Free Anti Spyware Spyware Remover Free Spyware Remover spyware adware download adware Free Spyware Removal adware 6 adware spyware removal?
+<span class="comments-post">Posted by: <a href="http://www.free-removal-spyware.com/Spyware-Remover.html">Spyware Blaster</a> 發表於 April  4, 2006 05:13 PM</span>
+</div>
+<div class="comments-body">
+Best acne treatment proactive acne treatment acne skin care acne adult acne? Proactive acne treatment!
+<span class="comments-post">Posted by: <a href="http://acne.tvev.com/acne-scar/">acne scar</a> 發表於 April 14, 2006 10:27 PM</span>
+</div>
+<div class="comments-body">
+Acne solution acne remedy acne remedy.
+<span class="comments-post">Posted by: <a href="http://acne.tvev.com/acne-medication/">acne medication</a> 發表於 April 14, 2006 10:34 PM</span>
+</div>
+<div class="comments-body">
+Acne skin care product acne medication acne care acne skin care!
+<span class="comments-post">Posted by: <a href="http://acne.tvev.com/acne-skin-care-product/">acne skin care product</a> 發表於 April 14, 2006 10:39 PM</span>
+</div>
+<div class="comments-body">
+Acne acne skin care. Acne skin care product!
+<span class="comments-post">Posted by: <a href="http://acne.tvev.com/best-acne-treatment/">best acne treatment</a> 發表於 April 14, 2006 10:47 PM</span>
+</div>
+<div class="comments-body">
+Acne solution acne scar acne medication best acne treatment best acne treatment acne skin care acne skin care?
+<span class="comments-post">Posted by: <a href="http://acne.tvev.com/acne-treatment/">acne treatment</a> 發表於 April 14, 2006 10:52 PM</span>
+</div>
+<div class="comments-body">
+Acne skin care best acne treatment acne acne skin care acne care acne medicine acne skin care?
+<span class="comments-post">Posted by: <a href="http://acne.tvev.com/acne-skin-care/">acne product</a> 發表於 April 14, 2006 10:55 PM</span>
+</div>
+<div class="comments-body">
+Acne acne skin care product?
+<span class="comments-post">Posted by: <a href="http://acne.tvev.com/acne-care/">proactive acne treatment</a> 發表於 April 14, 2006 11:01 PM</span>
+</div>
+<div class="comments-body">
+Acne skin care product acne medication acne care! Acne.
+<span class="comments-post">Posted by: <a href="http://acne.tvev.com/proactive-acne-treatment/">proactive acne treatment</a> 發表於 April 14, 2006 11:08 PM</span>
+</div>
+<div class="comments-body">
+Acne skin care acne remedy proactive acne treatment proactive acne treatment! Acne remedy.
+<span class="comments-post">Posted by: <a href="http://acne.tvev.com/acne-remedy/">acne remedy</a> 發表於 April 14, 2006 11:09 PM</span>
+</div>
+<div class="comments-body">
+Acne treatment acne solution acne medication acne medication!
+<span class="comments-post">Posted by: <a href="http://acne.tvev.com/acne-product/">acne skin care</a> 發表於 April 14, 2006 11:11 PM</span>
+</div>
+<div class="comments-body">
+Acne product acne acne! Adult acne, acne skin care product acne product acne remedy?
+<span class="comments-post">Posted by: <a href="http://acne.tvev.com/">acne</a> 發表於 April 14, 2006 11:16 PM</span>
+</div>
+<div class="comments-body">
+Adult Acne acne treatment acne care?
+<span class="comments-post">Posted by: <a href="http://acne.tvev.com/adult-acne/">adult acne</a> 發表於 April 14, 2006 11:31 PM</span>
+</div>
+<div class="comments-body">
+Acne medicine acne skin care acne product acne treatment proactive acne treatment
+acne skin care
+acne care acne remedy.
+<span class="comments-post">Posted by: <a href="http://acne.tvev.com/acne-medicine/">Acne Medicine</a> 發表於 April 15, 2006 12:00 AM</span>
+</div>
+<div class="comments-body">
+   rubber stamps known as stamping and is applied to the image. rubber stamps easy to use.Personalized Stamps personalized your greeting with a rubber stamp.Self Inking Stamps work and feel as good as they look.Craft Stamps very fast compared to others.Wholesale Stamps provide many facilities.Rubber stamping become more sophisticated, but you can still enjoy it just as much.How to Make. gym equipment physical equipment used in exercise. home gym equipmentbest way to keep in shape without joining a gym.used gym equipment One must try and find out a good deal on equipments.commercial gym equipment one should keep certain things in mind before purchasing.universal gym equipment one can have plenty of rooms for workout. refurbished one wants to save money then refurbished fitness equipment is the right choice.bowflex home gym Bowflex equipments are quite effective.cybex gym equipment considered to be one of the best health maintenance products .weider gym equipment owned by ICON Health and Fitness. la gym equipment leading retailer of aerobic and fitness equipment. 
+<span class="comments-post">Posted by: <a href="http://www.myrubberstamp.org">Rubber Stamps</a> 發表於 July 22, 2006 12:46 AM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="507" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響數量:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+</div>
+</div>
+</body>
+</html>

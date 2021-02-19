@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: FOX Toolkit 與中文支援</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001666.html" title="工讀生的工作環境 (2)" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001668.html" title="Cairo user font API" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001666.html">« 工讀生的工作環境 (2)</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001668.html">Cairo user font API »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">May 22, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">FOX Toolkit 與中文支援</h3>
+
+這兩天 [<a href="http://pcman.sayya.org/">PCMan</a>] 在玩 [<a href="http://www.fox-toolkit.org/">FOX Toolkit</a>]，剛剛在 BBS 上，他跟我提到使用的感想與 hacking，以下節錄 PCMan 發表於 BBS 的文章：(僅作排版的修改)<ul class="code" style="margin: 6px;">
+ 作者  PCMan (PCMan X Project)<br>
+ 標題  [閒聊]FOX toolkit 好棒！<br>                                   
+ 時間  Sun May 21 23:42:52 2006<br>                                               
+─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ <br>
+雖然被考試防守，但這兩天還是都在看 <a href="http://www.fox-toolkit.org/">FOX toolkit</a>，這是目前為止我最寄予厚望的 GUI toolkit。<br>
+<br>
+經過一段時間的使用，對 gtk+ 累積了許多不滿，最主要是效能問題，其次是程式碼真的很冗長。雖然 gtk+ 的 API 是我看過架構最漂亮的，也有很多很了不起的設計，而且他們用純 C 這沒 OO 的語言寫出來的 OO，甚至勝過不少用 C++ 開發的 lib，但是效能實在讓我沒辦法忍受，尤其是 gtk+ win32，只能用「超爛」來形容。<br>
+<br>
+與其寄望 gtk+ win32 能有什麼大幅度的改善，不如評估換 toolkit 的可能性。<br>
+<br>
+以 gtk+ 目前的設計，要在 win32 做到可接受的水準，幾乎是不可能的事情。而一些在 compile-time 就該處理好的東西，因為語言限制變成 runtime 的，這點也讓我很不滿意，而 gtkmm 竟然只是 gtk+ wrapper，而且還更複雜...<br>
+<br>
+所以我一直在考慮換其他 toolkit 的可能性。<br>
+<br>
+Qt 滿棒的，但是我對 moc 真的非常感冒，還有現在 Qt4 其實用得人好像不多，看看 KDE 4 出來後會怎樣再說。  而且 Qt Win32 的效能和體積，我非常有意見。<br>
+<br>
+本來.... FLTK 超小超快，但是實在是簡陋得過頭了，大部分情況根本不夠用。<br>
+<br>
+FOX toolkit 一直都被我排除在外，因為沒有 i18n 支援，又不能打中文。可是... 這兩天才看到，在最新 1.6 版，已經換用 utf-8，經測試可顯示中文!! 輕巧、快速、而且是用 C++ 寫的  這幾乎就快要是我理想中的 toolkit。目前只剩下幾個「致命」缺點，讓我還不能改用他：<ul>
+<li>在 Windows 版不支援 IME，中文可以顯示，但完全不能輸入，source code  裡面有看到被註解起來的 IME 程式碼，看來他們有打算支援，且這部份我有能力送 patch</li>
+<li>X11 下號稱支援 XIM，但經測試，跟本不能用。 hack 過 source code 後發現的確有啟用 XIM 的 code，但是根本就沒有寫完整，導致無法發揮功能。<ul>
+有 XOpenIM，並且有取得 xim，有 XmbLookupString 但是沒有做 XFilter???(忘了)，導致無法切換到中文輸入法。 幫他補上去之後，可以叫出輸入法打字，但是 enter    後打出的字無法被收到，不知道出了什麼問題。 我不會 XIM，只是參考 gtk+ 的 hack 後仍然不能用，但我相信 FOX 能輸入中文是早晚的事情，看看 jserv 願不願意來 hack 一下，我 hack 過，看來很簡單，有 jserv 出馬一定能立刻搞定。</ul></li>
+<li>目前有 i18n utf-8 顯示，但還不支援 bidi，作者已放話 1.7 版要優先支援 bidi</li>
+<li>完全不能換 theme，整個介面元件，寫死了都是 Win 98 的樣式，這真是最大敗筆：跑在 X11 底下，不知道的人還以為是用 wine 在跑 win32 程式。這個不知道有沒有希望 hack 成能有 theme 的支援，除非 themable，否則 FOX 開發的程式看起來永遠像是外星人。</li>
+</ul>
+不像 gtk+，不像 Qt，也不像 xp style，在 Linux & Win32 都長得不像 native App，這是我最忌諱的事情。但我認為支援的可能性不高，作者認為在所有平台，都長一樣行為一致是「優點」。而且這個 toolkit 的設計目標就是快速輕巧，我不認為他會向視覺效果妥協，不過... 如果有人能成功 hack 出可換 theme，並讓他搭上 ClearLook theme。我想 FOX Community 一定會出現加上 configure option 讓他能換 theme 的呼聲，何況這個只是麻煩而已，技術難度不高，所以是有可能 hack 出來。<br>
+<br>
+總結，以上各點如果解決了，我認為 FOX 可能會是現階段最理想的 GUI toolkit 之一，真的是相當輕巧，提供的 widget set 也已經很完整，可說只欠完整的 i18n support，只要這個支援了 (v 1.7 應該會做到)，就可以替代 gtk+ 了！等到我寫完 gtk+ 的書的時候，FOX toolkit 應該已經到了成熟的階段.... 然後 gtk+ 的書已經出完，那時候我自己就可以換用 FOX 了，真是太棒了！<br>
+<br>
+開始陷入使用 FOX toolkit 開發輕巧快速的 GUI 程式的幻想當中....
+</ul>
+看到 PCMan 兄這麼興奮，上個世紀 (1999 年) hack 過 [<a href="http://www.fox-toolkit.org/">FOX Toolkit</a>] 的我，實在不好意思不幫忙，剛剛小改了一部分，運作畫面如下：<br>
+<center><img src="http://jserv.sayya.org/misc/fox-toolkit-xim.png"></center><br>
+至少，目前 SCIM (XIM frontend) 搭配我剛剛的 hack，在中文輸入上面應該沒有太大的問題，等釐清相關的議題後，找個時間提交。對了，圖片展示的小程式，用 Gtk+ 來寫的話也是百餘行就寫出來了，不過可以比較看看光是 UI latency 的差異，只能說 FOX Toolkit 真是飛快阿。<br>
+<br>
+如果有空的話，我可能會來實做 bidi 的支援，之前弄 kBrowser 的時候作過，不過 [<a href="http://www.fox-toolkit.org/">FOX Toolkit</a>] 的 Coding Style 對我來說，有點難接受阿，看起來太密集了 :P<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 May 22, 2006 01:47 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>請教一下是否用過 wxWindow ? 和 FOX Toolkit 比起來如何?</p>
+<span class="comments-post">由 <a href="http://mychild.no-ip.org/~sword">山哥</a> 發表於</MTIfNonEmpty> May 26, 2006 01:57 PM</span>
+</div>
+<div class="comments-body">
+<p>wxWindow 在 Linux 下是透過 Gtk1.2 / Gtk2 來運作的，速度不會快<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;jhuangjiahua&#64;gmail&#46;com">華華</a> 發表於</MTIfNonEmpty> May 27, 2006 05:16 PM</span>
+</div>
+<div class="comments-body">
+<p>jserv果然是牛人！</p>
+
+<p>我最近也在研究FOX<br />
+不知可不可以说说兄弟hack中文是怎样的思路??<br />
+能不能把你修改过的代码借给我研究一下??</p>
+
+<p>另外，可以做个交换连接吗？<br />
+http://minix.blog.sohu.com<br />
+</p>
+<span class="comments-post">由 <a href="http://minix.blog.sohu.com">PHILIX</a> 發表於</MTIfNonEmpty> July 18, 2006 10:10 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

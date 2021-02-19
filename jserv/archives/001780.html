@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 以 C++ template meta-programming 來實現 Sieve of Eratosthenes</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001779.html" title="retty : 攔截終端機輸出的工具" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001781.html" title="Corewars 的 Gtk+ 2.x 移植" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001779.html">« retty : 攔截終端機輸出的工具</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001781.html">Corewars 的 Gtk+ 2.x 移植 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">August 20, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">以 C++ template meta-programming 來實現 Sieve of Eratosthenes</h3>
+
+Peter Simons 做了一個展示，用 C++ template meta-programming 來實現 [<a href="http://en.wikipedia.org/wiki/Sieve_of_Eratosthenes">Sieve of Eratosthenes</a>]，可參考 [<a href="http://cryp.to/prime-sieve.html">prime-sieve.cc</a>]。[<a href="http://en.wikipedia.org/wiki/Sieve_of_Eratosthenes">Sieve of Eratosthenes</a>] 是古典數學中用以求質數相當經典且簡單的途徑，不需要太多解釋，直接觀看 Wikipedia 的圖解就可知悉其演算法：<br>
+<center><img src="http://upload.wikimedia.org/wikipedia/commons/6/63/Animation_Sieb_des_Eratosthenes.gif"></center><br>
+而，運用 C++ template meta-programming 可用更直覺的方式來「描述」該演算法，試看以下程式列表：<br>
+<pre class="code" style="margin: 6px;"><span class="comment">//////////////////////////////////////////////////
+</span><span class="comment">// Alorithm to create [i..n]
+</span><span class="comment">//////////////////////////////////////////////////
+</span>
+<span class="keyword">template</span>&lt;<span class="keyword">unsigned</span> <span class="keyword">int</span> i, <span class="keyword">unsigned</span> <span class="keyword">int</span> n>
+<span class="keyword">struct</span> makeIntList
+{
+        <span class="keyword">typedef</span> Typelist&lt; IntType&lt;i>, <span class="keyword">typename</span> makeIntList&lt;i+1, n>::Result > Result;
+};
+<span class="keyword">template</span>&lt;<span class="keyword">unsigned</span> <span class="keyword">int</span> n>
+<span class="keyword">struct</span> makeIntList&lt;n, n>
+{
+        <span class="keyword">typedef</span> Typelist&lt; IntType&lt;n>, NullType > Result;
+};
+<span class="comment">//////////////////////////////////////////////////
+</span><span class="comment">// The Sieve of Erathostenes
+</span><span class="comment">//////////////////////////////////////////////////
+</span>
+<span class="keyword">template</span>&lt;<span class="keyword">unsigned</span> <span class="keyword">int</span> i, <span class="keyword">typename</span> TList>
+<span class="keyword">struct</span> sieveOne;
+<span class="keyword">template</span>&lt;<span class="keyword">unsigned</span> <span class="keyword">int</span> i, <span class="keyword">typename</span> x, <span class="keyword">typename</span> xs>
+<span class="keyword">struct</span> sieveOne&lt; i, Typelist&lt;x,xs> >
+{
+        <span class="keyword">typedef</span> <span class="keyword">typename</span> Select&lt;
+
+                x::value % i != 0,
+                Typelist&lt; x, <span class="keyword">typename</span> sieveOne&lt;i, xs>::Result >,
+                <span class="keyword">typename</span> sieveOne&lt;i, xs>::Result
+                        >::Result    Result;
+};
+<span class="keyword">template</span>&lt;<span class="keyword">unsigned</span> <span class="keyword">int</span> i>
+<span class="keyword">struct</span> sieveOne&lt;i, NullType>
+{
+        <span class="keyword">typedef</span> NullType Result;
+};
+<span class="keyword">template</span>&lt;<span class="keyword">typename</span> TList>
+<span class="keyword">struct</span> sieveAll;
+<span class="keyword">template</span>&lt;<span class="keyword">typename</span> x, <span class="keyword">typename</span> xs>
+<span class="keyword">struct</span> sieveAll&lt; Typelist&lt;x,xs> >
+{
+        <span class="keyword">typedef</span> Typelist&lt;
+                x,
+                <span class="keyword">typename</span> sieveAll&lt;<span class="keyword">typename</span> sieveOne&lt;x::value, xs>::Result>::Result
+                        >     Result;
+};
+<span class="keyword">template</span>&lt;>
+<span class="keyword">struct</span> sieveAll&lt;NullType>
+{
+        <span class="keyword">typedef</span> NullType Result;
+};
+<span class="keyword">template</span>&lt;<span class="keyword">unsigned</span> <span class="keyword">int</span> n>
+<span class="keyword">struct</span> primeSieve
+{
+        <span class="keyword">typedef</span> <span class="keyword">typename</span> sieveAll&lt;<span class="keyword">typename</span> makeIntList&lt;2,n>::Result>::Result Result;
+};</pre>
+整個演算法被包裝成 template object，其中可看到試除的過程，最後我們再設計可一一讀取 Result 的 iterator。當代入[2..20]，可得以下輸出： <ul><pre class="code" style="margin: 6px;">
+$ ./prim-sieve 
+Finding prime numbers in [2..20]:
+2 3 5 7 11 13 17 19
+</pre></ul>
+令人驚豔的優雅！<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 August 20, 2006 02:50 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>他似乎沒有「設計可一一讀取 Result 的 Iterator」，<br />
+而只是「將 Result 一一寫入 Output Iterator」而已。</p>
+<span class="comments-post">由 <a href="mailto&#58;palatis&#64;gmail&#46;com">Palatis</a> 發表於</MTIfNonEmpty> September 16, 2006 03:52 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

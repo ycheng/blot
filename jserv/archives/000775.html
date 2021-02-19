@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: GTK+-2.6 + wxWidgets 2.4</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/000774.html" title="GNU Classpath Mediation Wiki" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/000777.html" title="Gaim-1.1.1 + OpenSSL 發佈" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/000774.html">« GNU Classpath Mediation Wiki</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/000777.html">Gaim-1.1.1 + OpenSSL 發佈 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 17, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">GTK+-2.6 + wxWidgets 2.4</h3>
+
+GTK+-2.6 是 <a href="http://www.gtk.org/">GTK+</a> 最新的穩定版，而我也將 <a href="http://www.directfb.org/index.php?path=Development%2FProjects%2FGTK%2B">GDK backend based on DirectFB</a> 的支援整合到最新的 mainstream 了，等完整測試後會公開釋出。而因為需要執行某些用 <a href="http://www.wxwidgets.org/">wxWidgets</a> 撰寫的應用程式，所以只好慢慢來編譯 (用 Debian package 可能會「污染」我現在的開發環境)。<br>
+<br>
+wxWidgets 2.5.x 系列是開發版本，因為我的愚昧，我一直遇到編譯的錯誤，所以退而求其次，改用 2.4.3 這個 stable release，興高采烈的編譯後，發現 wxWidgets 的程式無法連結，研究許久，原來是 wxWidgets 2.4.3 並未支援 GTK+ 2.4 的 API，又因為 GTK+ 2.6 API 往前相容於 GTK+ 2.4，所以也會有問題。Google 後，終於有令人滿意的答案，必須使用<a href="http://crux.fh-regensburg.de/portdb/repo/contrib/wxgtk/wxgtk-2.4.2-gtk-2.4.patch">這個 patch</a>，重新編譯後就正常運作了。<br>
+<br>
+GTK+/DirectFB 本來就有很華麗且令人滿意的效能，現在 wxWidgets 的應用程式又透過 wxGTK 來執行，效果挺不錯。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 17, 2005 06:13 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

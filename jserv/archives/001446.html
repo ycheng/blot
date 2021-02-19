@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 哈希表</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001445.html" title="Pareto principle" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001447.html" title="Thomas L. Friedman 的《世界是平的》" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001445.html">« Pareto principle</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001447.html">Thomas L. Friedman 的《世界是平的》 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 21, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">哈希表</h3>
+
+在解釋「哈希表」之前，先來說故事。<br />
+<br />
+話說最近在 hack Linux kernel 時，遇到許多資料結構上的問題，我們相當清楚，kernel hacker 總是喜歡使用「手工最佳化」來幫不夠聰明的 C compilers 作它們該做的事情，那些技巧已經不能用 tricky 來形容，簡直就是巧奪天工阿，所以呢，研讀 kernel source 前，一定要先行研讀基本的分析。找到一篇對岸的文件，內文出現「哈希表」的字眼，我當時在想，這是什麼玩意？！難不成是... ?! 後來才發現的確是 "Hash table"。<br />
+<br />
+好神奇的翻譯阿，這讓我聯想，"Null Cache" 豈不要翻譯成「吾爾開希」，這位大陸民運領袖的名字？<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 21, 2006 02:38 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>我看過hash function翻成赫氏函數...<br />
+讓我想半天啥是赫氏函數@@"</p>
+<span class="comments-post">由 <a href="mailto&#58;kenliao&#64;kenliao&#46;tw">kenliao</a> 發表於</MTIfNonEmpty> January 21, 2006 12:09 PM</span>
+</div>
+<div class="comments-body">
+<p>那在台湾怎么译"Hash table"啊？<br />
+一直看“哈希表”，都已经习惯了</p>
+<span class="comments-post">由 <a href="http://Leira.wordpress.com">Leira</a> 發表於</MTIfNonEmpty> January 21, 2006 02:45 PM</span>
+</div>
+<div class="comments-body">
+<p>^_^ 我们不都是坐在"沙发"上，看电视里面的"坦克"大战，顺便还吃吃"巧克力"，so so啦<br />
+以前记得见过翻译成"杂凑表"的，但是现在也不见有人这么说了<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;beld&#64;netzonesoft&#46;com">Beld Zhang</a> 發表於</MTIfNonEmpty> January 21, 2006 07:19 PM</span>
+</div>
+<div class="comments-body">
+<p>还有另一个译法：<br />
+hash=>散列</p>
+<span class="comments-post">由 <a href="http://zhcn.blogspot.com">zhangchn</a> 發表於</MTIfNonEmpty> January 24, 2006 02:40 AM</span>
+</div>
+<div class="comments-body">
+<p>楼主我操你妈的逼<br />
+装啥逼啊，你不知道你们台湾人的祖宗是谁啊？<br />
+傻逼，认贼做父!!!<br />
+你自己应该觉得可悲才对，还自以为是！！！！！</p>
+<span class="comments-post">由 <a href="http://www.itneau.com">陈大哥</a> 發表於</MTIfNonEmpty> March  3, 2006 11:33 AM</span>
+</div>
+<div class="comments-body">
+<p>用你们的闽南语说就是“干你娘，塞你老母”</p>
+<span class="comments-post">由 <a href="http://www.itneau.com">陈大哥</a> 發表於</MTIfNonEmpty> March  3, 2006 11:42 AM</span>
+</div>
+<div class="comments-body">
+<p>樓上這位大叔....笑點呢？ 囧></p>
+<span class="comments-post">由 <a href="mailto&#58;walkingice0204&#64;gmail&#46;com">walkingice</a> 發表於</MTIfNonEmpty> March  3, 2006 02:08 PM</span>
+</div>
+<div class="comments-body">
+<p>什麽大叔啊 明顯是個小孩子 沒來由上來就亂罵一通 這種小P孩橫行無忌是我們大陸成年人對他們教育不夠啊</p>
+<span class="comments-post">由 <a href="mailto&#58;liu&#46;binbin&#64;hotmail&#46;com">xx</a> 發表於</MTIfNonEmpty> April 17, 2006 04:11 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

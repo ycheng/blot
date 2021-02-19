@@ -1,0 +1,336 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 建立 Gtk+/WebKit 的 API 文件以加速開發流程</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002054.html" title="Who Call Me (更新版)" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002056.html" title="夢想、希冀、實踐" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002054.html">« Who Call Me (更新版)</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002056.html">夢想、希冀、實踐 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">July 30, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">建立 Gtk+/WebKit 的 API 文件以加速開發流程</h3>
+
+上週在教育訓練 [<a href="http://blog.linux.org.tw/~jserv/archives/002052.html">Gtk+ 程式設計初體驗</a>] 中，花了一些時間探討 Gtk+/WebKit，可相當輕鬆地透過既有的 Web Applications，強化 Gtk+ 應用程式的顯示。那麼，該如何擴充給定的範例檔案呢？當然，首先得搞清楚像 WebKitWebView 物件中，到底有哪些 signal、相關繼承關係等。透過 [<a href="http://developer.imendio.com/projects/devhelp">DevHelp</a>] 這個工具，可視覺化的呈現簡單扼要的類別與 API 資訊，但預設沒有 Gtk+/WebKit 的文件文件支援，所以我們得自力救濟。<br />
+<br />
+我們必先取得系統中 Gtk+/WebKit 的原始程式碼，可透過 "apt-get source" 一類的指令，這裡就不贅述。接著，我們需要 gtk-doc 的工具集合，在 Debian/Ubuntu 中，套件名稱為 "gtk-doc-tools"，這些工具可針對給定的組態，自動生成 DevHelp 可讀取的文件格式 (基本上也是 HTML)，筆者已事先做好一份參考設定 [<a href="http://jserv.sayya.org/gtk-training/webkit-gtkdoc-stub.tar.bz2">webkit-gtkdoc-stub.tar.bz2</a>]，具體操作方式如下： (以 Ubuntu 8.10 為例)<ul>
+  <li>切換到 Gtk+/WebKit 原始檔目錄，注意，這裡指的是 top level 的 "WebKit" 目錄，所以目錄下應該要有 "JavaScriptCore", "WebCore", "WebKit" 等子目錄</li>
+  <li>解開筆者打包的組態設定： <pre class="code" style="margin: 6px;">
+  $ tar jxvf webkit-gtkdoc-stub.tar.bz2</pre></li>
+  <li>切換到解開的 doc 目錄： <pre class="code" style="margin: 6px;">
+  $ cd WebKit/gtk/doc</pre></li>
+  <li>由給定的 Makefile，呼叫 gtk-doc 工具組去產生必要的文件檔案： <pre class="code" style="margin: 6px;">
+  $ make</pre></li>
+</ul>
+等待一段時間，讓 gtk-doc 慢慢執行，結束時，應該會看到類似以下輸出： <pre class="code" style="margin: 6px;">
+...
+Computing chunks...
+Writing WebKitWebSettings.html for refentry(WebKitWebSettings)
+Writing WebKitWebFrame.html for refentry(WebKitWebFrame)
+Writing WebKitWebHistoryItem.html for refentry(WebKitWebHistoryItem)
+Writing WebKitWebView.html for refentry(WebKitWebView)
+Writing WebKitWebBackForwardList.html for refentry(WebKitWebBackForwardList)
+Writing WebKitNetworkRequest.html for refentry(WebKitNetworkRequest)
+Writing ch01.html for chapter
+Writing index.html for book(index)
+Writing index.sgml for book(index)
+Writing webkit.devhelp for book(index)
+Writing webkit.devhelp2 for book(index)
+</pre>
+有了文件檔之後，就來看如何讓 DevHelp 得以讀取。由於我們不打算更動 /usr 目錄下的文件檔，所以就直接放在 $HOME 目錄下，具體操作方式如下：<pre class="code" style="margin: 6px;">
+$ mkdir -p ~/.local/share/gtk-doc/html
+$ cp -af html ~/.local/share/gtk-doc/html/webkit
+</pre>
+此時，開啟 DevHelp，在視窗左側搜尋 "WebKitWebView" 一類的關鍵字，就應該會有結果出現。另外，也可將 DevHelp 線上查詢的功能整合到 vim 中，使用情境類似下圖：<br />
+<center><img src="http://jserv.sayya.org/gtk-training/pix/vim-with-devhelp.jpg" width="640" height="682" /></center><br />
+由圖可見，下方的視窗是 vim 正在編輯程式，而編輯游標停留在 "webkit_web_view_new" 這個函式上，我們可按下 Esc-h，DevHelp 就會查詢這個 Gtk+/WebKit API，相當方便。只要對 vim 稍微作點設定，就可有如此的功能，方法是，修改 ~/.vimrc，加入以下巨集：<pre class="code" style="margin: 6px;">
+" vim macro to jump to devhelp topics.
+function! DevHelpCurrentWord()
+        let word = expand("&lt;cword&gt;")
+        exe "!devhelp -s " . word
+endfunction
+
+" Example: bind &lt;ESC&gt;h to start devhelp and search for the word under the
+" cursor
+nmap &lt;ESC&gt;h :call DevHelpCurrentWord()&lt;CR&gt;
+</pre>
+再搭配前文 [<a href="http://blog.linux.org.tw/~jserv/archives/002053.html">在 vim 凸顯 Gtk+ 特有語法</a>]，應該就可更舒適的撰寫程式了。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 July 30, 2008 05:46 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>ubuntu 8.04<br />
+sudo apt-get source libwebkitgtk-dev<br />
+裡面沒有 <br />
+SOURCEDIR = ../WebViewDocsSandbox<br />
+ORIG_SOURCEDIR = ../webkit<br />
+兩個目錄</p>
+<span class="comments-post">由 <a href="mailto&#58;shengyhu&#64;gmail&#46;com">robert</a> 發表於</MTIfNonEmpty> July 31, 2008 04:10 PM</span>
+</div>
+<div class="comments-body">
+<p>只有這幾個<br />
+webkit-0~svn29752/WebKit/gtk/doc$ ls ..<br />
+ChangeLog  doc  WebCoreSupport  WebKitGtk.pc.in  WebView</p>
+<span class="comments-post">由 <a href="mailto&#58;shengyhu&#64;gmail&#46;com">robert</a> 發表於</MTIfNonEmpty> July 31, 2008 04:29 PM</span>
+</div>
+<div class="comments-body">
+<p>@robert,</p>
+
+<p>請將 Makefile 的 "ORIG_SOURCEDIR = ../webkit" 一行，更改為：<br />
+"ORIG_SOURCEDIR = ../WebView"<br />
+至於其他，應不需要更動，請測試並告知狀況，謝謝！</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> July 31, 2008 06:54 PM</span>
+</div>
+<div class="comments-body">
+<p>出現以下錯誤：<br />
+gtk-doc: Compiling scanner<br />
+gtk-doc: Linking scanner<br />
+/usr/bin/ld: cannot find -lwebkit-1.0<br />
+collect2: ld 回傳 1<br />
+Linking of scanner failed: <br />
+make: *** [doc] Error 1</p>
+
+<p>我有安裝 libwebkitgtk-dev</p>
+<span class="comments-post">由 <a href="mailto&#58;shengyhu&#64;gmail&#46;com">robert</a> 發表於</MTIfNonEmpty> August  1, 2008 02:45 PM</span>
+</div>
+<div class="comments-body">
+<p>@robert,<br />
+感謝回報，那基本上就快成功了 :-)</p>
+
+<p>請將這一行：<br />
+  LIBS = "`pkg-config gtk+-2.0 --libs` -lwebkit-1.0"<br />
+更改為<br />
+  LIBS = "`pkg-config gtk+-2.0 WebKitGtk--libs`"</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> August  1, 2008 04:18 PM</span>
+</div>
+<div class="comments-body">
+<p>不好意思,試著自己解決,還是解決不了,<br />
+錯誤如下：<br />
+cp -rf ../WebView ../WebViewDocsSandbox<br />
+for h in ../WebViewDocsSandbox/*.h; do \<br />
+		sed 's/WEBKIT_API //g' $h > ../WebViewDocsSandbox/.tmp. && \<br />
+		mv ../WebViewDocsSandbox/.tmp. $h ; \<br />
+	done<br />
+for s in webkitsettings.h webkitsettings.cpp webkit-marshal.cpp webkit-marshal.h webkitdefines.h webkitprivate.cpp webkitprivate.h; do \<br />
+		rm -f ../WebViewDocsSandbox/$s ; \<br />
+	done<br />
+gtkdoc-scan --module=webkit --source-dir=../WebViewDocsSandbox --output-dir=.<br />
+CFLAGS="`pkg-config gtk+-2.0 --cflags`" LDFLAGS="`pkg-config gtk+-2.0 WebKitGtk--libs`" LIBS="`pkg-config gtk+-2.0 WebKitGtk--libs`" gtkdoc-scangobj --module=webkit --types=webkit.types --output-dir=.<br />
+gtk-doc: Compiling scanner<br />
+gtk-doc: Linking scanner<br />
+webkit-scan.o: In function `get_object_types':<br />
+webkit-scan.c:(.text+0x12): undefined reference to `webkit_web_settings_get_type'<br />
+webkit-scan.c:(.text+0x25): undefined reference to `webkit_web_frame_get_type'<br />
+webkit-scan.c:(.text+0x38): undefined reference to `webkit_web_view_get_type'<br />
+webkit-scan.c:(.text+0x4b): undefined reference to `webkit_network_request_get_type'<br />
+webkit-scan.c:(.text+0x87): undefined reference to `g_type_test_flags'<br />
+webkit-scan.c:(.text+0x9d): undefined reference to `g_type_class_ref'<br />
+webkit-scan.c:(.text+0xaf): undefined reference to `g_type_fundamental'<br />
+webkit-scan.c:(.text+0xc6): undefined reference to `g_type_default_interface_ref'<br />
+webkit-scan.o: In function `main':<br />
+webkit-scan.c:(.text+0xf9): undefined reference to `g_type_init'<br />
+webkit-scan.c:(.text+0x105): undefined reference to `g_type_class_ref'<br />
+webkit-scan.o: In function `output_signals':<br />
+webkit-scan.c:(.text+0x18e): undefined reference to `g_log'<br />
+webkit-scan.o: In function `compare_signals':<br />
+以下 error 雷同, 都是 webkit-scan.c:(.text+0x105): undefined reference to<br />
+沒全貼上<br />
+最後是<br />
+collect2: ld 回傳 1<br />
+Linking of scanner failed: <br />
+make: *** [doc] Error 1</p>
+
+<p>我有裝 glibc 的 include, 一般的 gtk+ 程式也都能 compile, 此處不知為何找不到<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;shengyhu&#64;gmail&#46;com">robert</a> 發表於</MTIfNonEmpty> August  3, 2008 01:48 PM</span>
+</div>
+<div class="comments-body">
+<p>@robert,<br />
+功敗垂成 :-)</p>
+
+<p>仔細看可發現，這行 LIBS="`pkg-config gtk+-2.0 WebKitGtk--libs`"<br />
+WebKitGtk--libs 應該要用空白區隔呀，上個留言，小弟筆誤了，兄臺恰好沒察覺。</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> August  3, 2008 04:38 PM</span>
+</div>
+<div class="comments-body">
+<p>sorry, 沒把注意力放在 LIBS 上<br />
+看到 undefined, 直覺就想到 CFLAGS <br />
+原來是 link 出錯<br />
+感謝大大幫忙</p>
+<span class="comments-post">由 <a href="mailto&#58;shengyhu&#64;gmail&#46;com">robert</a> 發表於</MTIfNonEmpty> August  3, 2008 05:24 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2055" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 以 Auto Tuning 加速 NcFTP 傳輸</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001715.html" title="Squish 3.0 推出" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001717.html" title="你最喜歡的 ... 是什麼？" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001715.html">« Squish 3.0 推出</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001717.html">你最喜歡的 ... 是什麼？ »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">June 13, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">以 Auto Tuning 加速 NcFTP 傳輸</h3>
+
+[<a href="http://packages.debian.org/unstable/net/ncftp">package::ncftp</a>] 是歷史悠久而知名的 FTP client，目前的版本號為 3.1.9，而我剛剛試著將 NLANR 的 [<a href="http://dast.nlanr.net/Projects/Autobuf/">Auto Tuning Enabled FTP Client And Server</a>] 移植過來，有興趣的朋友可取得我的修改 [<a href="http://jserv.sayya.org/ncftp/ncftp-3.1.9-autotuning.patch">ncftp-3.1.9-autotuning.patch</a>]。<br>
+<br>
+這個修改的原理可參考 [<a href="http://www.psc.edu/networking/projects/tcptune/">Enabling High Performance Data Transfers</a>]，其出發點為 BDP (Bandwidth Delay Product)，引用 [<a href="http://www-128.ibm.com/developerworks/cn/linux/l-hisock.html">提高 Linux 上 socket 性能</a>] 的說明如下：<ul class="code" style="margin: 6px;">
+TCP 的性能取決於幾個方面的因素。兩個最重要的因素是鏈接帶寬（link bandwidth）（報文在網絡上傳輸的速率）和 往返時間（round-trip time） 或 RTT（發送報文與接收到另一端的響應之間的延時）。這兩個值確定了稱為 Bandwidth Delay Product（BDP）的內容。<br>
+<br>
+給定鏈接帶寬和 RTT 之後，您就可以計算出 BDP 的值了，不過這代表什麼意義呢？BDP 給出了一種簡單的方法來計算理論上最優的 TCP socket 緩衝區大小（其中保存了排隊等待傳輸和等待應用程序接收的數據）。如果緩衝區太小，那麼 TCP 窗口就不能完全打開，這會對性能造成限制。如果緩衝區太大，那麼寶貴的內存資源就會造成浪費。如果您設置的緩衝區大小正好合適，那麼就可以完全利用可用的帶寬。<br>
+<br>
+下面我們來看一個例子：<ul>
+BDP = link_bandwidth * RTT
+</ul>
+如果應用程序是通過一個 100Mbps 的局域網進行通信，其 RRT 為 50 ms，那麼 BDP 就是：<ul>
+100MBps * 0.050 sec / 8 = 0.625MB = 625KB
+</ul>
+注意：此處除以 8 是將位轉換成通信使用的字節。因此，我們可以將 TCP 窗口設置為 BDP 或 1.25MB。但是在 Linux 2.6 上默認的 TCP 窗口大小是 110KB，這會將連接的帶寬限製為 2.2MBps，計算方法如下：<ul>
+throughput = window_size / RTT<br>
+110KB / 0.050 = 2.2MBps
+</ul>
+如果使用上面計算的窗口大小，我們得到的帶寬就是 12.5MBps，計算方法如下：<ul>
+625KB / 0.050 = 12.5MBps
+</ul>
+差別的確很大，並且可以為 socket 提供更大的吞吐量。因此現在您就知道如何為您的 socket 計算最優的緩衝區大小了。
+</ul>
+而 Auto Tuning 的作法就是適度重新評估 throughput 並調整 BDP，並考慮以下項目：<ul>
+<li>TCP Selective Acknowledgments (SACK, RFC2018)</li>
+<li>Large Windows (RFC1323)</li>
+<li>Maximum Buffer Sizes on the host</li>
+<li>Application Buffers</li>
+<li>Path MTU</li>
+</ul>
+感謝 freeflying 剛剛在 #ubuntu-tw 的指點，我打包好 Debian/Ubuntu package，可 [<a href="http://jserv.sayya.org/ncftp/">取得測試</a>]，注意，因為用到 getsockopt 的進階設定，所以執行檔有 setuid。<br>
+<br>
+要使用 Auto tuning 作 FTP 傳輸的加速，只要在原本的指令加上 "-O" 的選項，比方說原本是：<ul>
+ncftp -u &lt;user&gt; &lt;server_ip&gt;
+</ul>
+現在改成：<ul>
+ncftp -u &lt;user&gt -O &lt;server_ip&gt;
+</ul>
+或者在 NcFTP 的 CLI (Command Line Interface) 中，在指令後面加上 "-O"，如原本：<ul>
+&gt; get filename_1
+</ul>
+換成：<ul>
+&gt; get -O filename_1
+</ul>
+即可驅動本加速處理。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 June 13, 2006 03:25 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

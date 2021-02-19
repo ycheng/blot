@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Qt 4.5 將允許增列 LGPL 2.1 條款發行</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002084.html" title="libsslwrap : 通透地對網路傳輸加上 SSL 保護" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002086.html" title="演講：1985 -- 擁抱自由軟體與開放源碼，並開朗面對嶄新授權模式" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002084.html">« libsslwrap : 通透地對網路傳輸加上 SSL 保護</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002086.html">演講：1985 -- 擁抱自由軟體與開放源碼，並開朗面對嶄新授權模式 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 14, 2009</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Qt 4.5 將允許增列 LGPL 2.1 條款發行</h3>
+
+<center><img src="http://www.qtsoftware.com/logo.png" width="174" height="71"></center><br />
+過去，Trolltech 的 Qt 一直是 dual-licensing 與 GPL 商業模式獲利的典範，而自從去年被 Nokia 收購後，進行許多調整，比方說 [<a href="http://blog.linux.org.tw/~jserv/archives/002067.html">Qtopia 再度更名為 "Qt Extended"</a>]，而其商業模式也轉變中。過去以 GPL/QPL 發佈的 Qt，若僅取用函式庫的部份，因為 GPL 模式使然，建構於上的應用程式，往往「隱含」為 GNU GPL 授權，除非獲得官方許可或是軟體採用明確的隔離設計。但現在，這些限制即將解除，Nokia 即日宣佈，預定於 2009 年三月發佈的 Qt 4.5 版開始，將以 GNU LGPL 2.1 授權發佈其 Qt，詳情可參閱聲明稿 [<a href="http://www.qtsoftware.com/about/news/lgpl-license-option-added-to-qt">LGPL License Option Added to Qt </a>]，重點是這段：<ul class="code" style="margin: 6px;">
+The move to LGPL licensing will provide open source and commercial developers with more permissive licensing than GPL and so increase flexibility for developers. In addition, Qt source code repositories will be made publicly available and will encourage contributions from desktop and embedded developer communities. With these changes, developers will be able to actively drive the evolution of the Qt framework.
+</ul>
+向 LGPL 的轉移的舉動，將對開放原始碼軟體與衍生的商業應用，更加友善且具備彈性，鼓勵更多來自桌面和嵌入式開發人員社區的貢獻。相關的討論可見 KDE.NEWS [<a href="http://dot.kde.org/1231920504/">Qt Everywhere: 4.5 To Be Relicensed As LGPL</a>]。<br />
+<br />
+同時，Qt Software 的副總裁 Sebastian Nyström 在 blog [<a href="http://labs.trolltech.com/blogs/2009/01/14/nokia-to-license-qt-under-lgpl/">Nokia to license Qt under LGPL</a>] 提及 Nokia 後續的開放動作，引述如下：<ul>
+  <li>Employing more Qt developers</li>
+  <li>Opening our source code repository</li>
+  <li>Reducing the overhead needed to make a submission, including no longer requiring copyright assignments.</li>
+  <li>Launching a new web infrastructure to support contributions later this year.</li>
+</ul>
+看來的確一系列是令人振奮的訊息，至於為何採用 LGPL 2.1 版呢？他表示：<ul class="code" style="margin: 6px;">
+As a first step we have selected LGPL version 2.1 as this is the version of the LGPL that best fits our purposes and we are most comfortable with at this point in time. We will continue to evaluate the adoption, use and legal interpretation of LGPL version 3 by the community and may use this version of the LGPL for future releases.
+</ul>
+開放 Qt repository (部份像是 QtWebKit 與 Qt Labs 的專案，已開放存取其 git / svn repository) 並採取更廣泛社群開發的模式，可說是 Nokia 在 Mobile/Embedded Linux 平台建立標準化所深耕的宣示，樂見其成。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 January 14, 2009 09:00 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>great news!!</p>
+<span class="comments-post">由 <a href="http://godfat.org">godfat 真常</a> 發表於</MTIfNonEmpty> January 14, 2009 10:41 PM</span>
+</div>
+<div class="comments-body">
+<p>參考Jserv「LGPL 與 C++ Template Library」<br />
+QT 4.5中，如果有牽涉到這些東西，請問要怎麼處理比較好？</p>
+<span class="comments-post">由 <a href="mailto&#58;akioolin&#64;gmail&#46;com">過路人</a> 發表於</MTIfNonEmpty> January 15, 2009 03:54 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2085" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

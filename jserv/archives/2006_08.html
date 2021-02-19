@@ -1,0 +1,328 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: August 2006 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2006_07.html" title="July 2006" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2006_09.html" title="September 2006" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/2006_07.html">« July 2006</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/2006_09.html">September 2006 »</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">August 26, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001782"></a>
+<h3 class="title">PoDoFo - 讀寫並分析 PDF</h3>
+
+之前提過 [<a href="http://blog.linux.org.tw/~jserv/archives/001022.html">Poppler -- PDF rendering library</a>]，現在已經成為 evince 與 kpdf 等 Free PDF Reader 程式的核心，昨天則發現另一個有潛力的 Library [<a href="http://podofo.sourceforge.net/">PoDoFo</a>]，引用網頁介紹 [<a href="http://podofo.sourceforge.net/about.html">About::What is PoDoFo?</a>]；<ul class="code" style="margin: 6px;">
+PoDoFo is a library to work with the PDF file format. The name comes from the first letter of PDF (Portable Document Format). A few tools to work with PDF files are already included in the PoDoFo package.<br>
+<br>
+The PoDoFo library is a free, portable C++ library which includes classes to parse PDF files and modify their contents into memory. The changes can be written back to disk easily. The parser can also be used to extract information from a PDF file (for example the parser could be used in a PDF viewer). Besides parsing PoDoFo includes also very simple classes to create your own PDF files. All classes are documented so it is easy to start writing your own application using PoDoFo. 
+</ul>
+所以，簡單來說，[<a href="http://podofo.sourceforge.net/">PoDoFo</a>] 可用以讀寫並分析 PDF 文件的結構與內部構成，可應用於 PDF Reader 或搜尋引擎一類的分析使用。剛剛用之前的 [<a href="http://blog.linux.org.tw/~jserv/archives/001766.html">演講：深入淺出 Hello World (台南場次)」簡報</a>] 來測試，瀏覽畫面如下：<br>
+<center><img src="http://jserv.sayya.org/misc/podofo.png"></center><br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001782.html">09:01 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1782" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">August 23, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001781"></a>
+<h3 class="title">Corewars 的 Gtk+ 2.x 移植</h3>
+
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001552.html">弱肉強食？</a>] 提過 Bell Lab 的年輕的科學家 H, Douglas McIlroy、Victor Vysottsky，以及 Robert T. Morris 在硬體上模仿生物的行為，進行「磁芯大戰」 (core war) 的實驗，而 SourceForge 上有個不錯的專案 [<a href="http://sourceforge.net/projects/corewars">corewars</a>] 用圖形來呈現 core war「廝殺」的變化，作者是 Walter Hofmann。可惜原本的 [<a href="http://sourceforge.net/projects/corewars">corewars</a>] 用 GTK+ 1.2 撰寫，且從 2000 年就停頓了，剛剛手癢，我就試著移植到 GTK+ 2.x，在 Ubuntu Edgy (GTK+ 2.10 / glibc 2.4 / GCC 4.1) 測試過可運作。<br>
+<br>
+簡單來說，[<a href="http://sourceforge.net/projects/corewars">corewars</a>] 就是個 virtual machine，可依據需求載入多個程式，[<a href="http://sourceforge.net/projects/corewars">corewars</a>] 可用兩種類似 Assembly 的簡化語言來描述程式，分別為 Corewars 和 Redcode。預設是 Corewars 語言，易於學習和理解，而 Redcode 提供更高級和更強大的指令，但是需要更多的時間來學習。編譯並執行後，在 File 選單找 "Load Directory..."，然後會看到以下畫面：<br>
+<center><img src="http://jserv.sayya.org/corewars/pix/corewars-1.png"></center><br>
+選定存放程式的路徑，這裡用內建的範例，接下來，決定哪些程式要載入並執行，在 File 選單找 "Select Programs..."：<br>
+<center><img src="http://jserv.sayya.org/corewars/pix/corewars-2.png"></center><br>
+中間的欄位決定要放幾份副本到系統中，然後在 File 選單選擇 "Start"，就開始「廝殺」了：<br>
+<center><img src="http://jserv.sayya.org/corewars/pix/corewars-3.png"></center><br>
+過程可是相當刺激呢 :-)<br>
+<br>
+取得我修改過的原始程式碼 [<a href="http://jserv.sayya.org/corewars/corewars-0.9.13-gtk2.tar.bz2">corewars-0.9.13-gtk2.tar.bz2</a>]，授權方式為 GNU GPL。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001781.html">02:50 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1781" onclick="OpenComments(this.href); return false">迴響 (5)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">August 20, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001780"></a>
+<h3 class="title">以 C++ template meta-programming 來實現 Sieve of Eratosthenes</h3>
+
+Peter Simons 做了一個展示，用 C++ template meta-programming 來實現 [<a href="http://en.wikipedia.org/wiki/Sieve_of_Eratosthenes">Sieve of Eratosthenes</a>]，可參考 [<a href="http://cryp.to/prime-sieve.html">prime-sieve.cc</a>]。[<a href="http://en.wikipedia.org/wiki/Sieve_of_Eratosthenes">Sieve of Eratosthenes</a>] 是古典數學中用以求質數相當經典且簡單的途徑，不需要太多解釋，直接觀看 Wikipedia 的圖解就可知悉其演算法：<br>
+<center><img src="http://upload.wikimedia.org/wikipedia/commons/6/63/Animation_Sieb_des_Eratosthenes.gif"></center><br>
+而，運用 C++ template meta-programming 可用更直覺的方式來「描述」該演算法，試看以下程式列表：<br>
+<pre class="code" style="margin: 6px;"><span class="comment">//////////////////////////////////////////////////
+</span><span class="comment">// Alorithm to create [i..n]
+</span><span class="comment">//////////////////////////////////////////////////
+</span>
+<span class="keyword">template</span>&lt;<span class="keyword">unsigned</span> <span class="keyword">int</span> i, <span class="keyword">unsigned</span> <span class="keyword">int</span> n>
+<span class="keyword">struct</span> makeIntList
+{
+        <span class="keyword">typedef</span> Typelist&lt; IntType&lt;i>, <span class="keyword">typename</span> makeIntList&lt;i+1, n>::Result > Result;
+};
+<span class="keyword">template</span>&lt;<span class="keyword">unsigned</span> <span class="keyword">int</span> n>
+<span class="keyword">struct</span> makeIntList&lt;n, n>
+{
+        <span class="keyword">typedef</span> Typelist&lt; IntType&lt;n>, NullType > Result;
+};
+<span class="comment">//////////////////////////////////////////////////
+</span><span class="comment">// The Sieve of Erathostenes
+</span><span class="comment">//////////////////////////////////////////////////
+</span>
+<span class="keyword">template</span>&lt;<span class="keyword">unsigned</span> <span class="keyword">int</span> i, <span class="keyword">typename</span> TList>
+<span class="keyword">struct</span> sieveOne;
+<span class="keyword">template</span>&lt;<span class="keyword">unsigned</span> <span class="keyword">int</span> i, <span class="keyword">typename</span> x, <span class="keyword">typename</span> xs>
+<span class="keyword">struct</span> sieveOne&lt; i, Typelist&lt;x,xs> >
+{
+        <span class="keyword">typedef</span> <span class="keyword">typename</span> Select&lt;
+
+                x::value % i != 0,
+                Typelist&lt; x, <span class="keyword">typename</span> sieveOne&lt;i, xs>::Result >,
+                <span class="keyword">typename</span> sieveOne&lt;i, xs>::Result
+                        >::Result    Result;
+};
+<span class="keyword">template</span>&lt;<span class="keyword">unsigned</span> <span class="keyword">int</span> i>
+<span class="keyword">struct</span> sieveOne&lt;i, NullType>
+{
+        <span class="keyword">typedef</span> NullType Result;
+};
+<span class="keyword">template</span>&lt;<span class="keyword">typename</span> TList>
+<span class="keyword">struct</span> sieveAll;
+<span class="keyword">template</span>&lt;<span class="keyword">typename</span> x, <span class="keyword">typename</span> xs>
+<span class="keyword">struct</span> sieveAll&lt; Typelist&lt;x,xs> >
+{
+        <span class="keyword">typedef</span> Typelist&lt;
+                x,
+                <span class="keyword">typename</span> sieveAll&lt;<span class="keyword">typename</span> sieveOne&lt;x::value, xs>::Result>::Result
+                        >     Result;
+};
+<span class="keyword">template</span>&lt;>
+<span class="keyword">struct</span> sieveAll&lt;NullType>
+{
+        <span class="keyword">typedef</span> NullType Result;
+};
+<span class="keyword">template</span>&lt;<span class="keyword">unsigned</span> <span class="keyword">int</span> n>
+<span class="keyword">struct</span> primeSieve
+{
+        <span class="keyword">typedef</span> <span class="keyword">typename</span> sieveAll&lt;<span class="keyword">typename</span> makeIntList&lt;2,n>::Result>::Result Result;
+};</pre>
+整個演算法被包裝成 template object，其中可看到試除的過程，最後我們再設計可一一讀取 Result 的 iterator。當代入[2..20]，可得以下輸出： <ul><pre class="code" style="margin: 6px;">
+$ ./prim-sieve 
+Finding prime numbers in [2..20]:
+2 3 5 7 11 13 17 19
+</pre></ul>
+令人驚豔的優雅！<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001780.html">02:50 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1780" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">August 19, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001779"></a>
+<h3 class="title">retty : 攔截終端機輸出的工具</h3>
+
+[<a href="http://pasky.or.cz/~pasky/dev/retty/">retty</a>] 是個攔截終端機輸出的小工具，引用網頁介紹：<ul class="code" style="margin: 6px;">
+retty is a tiny tool that lets you attach processes running on other terminals. So you were running that mutt outside of screen at your home machine and now wanna check your mail? Attach it with retty, do whatever you want, detach it again and everything is as it was before. You don't have to run them all in screen just in case.
+</ul>
+看起來頗有意思，咱們來作個小實驗，當然還是用個 "Hello World" 等級的程式來作為切入： (hello.c)
+<ul><pre class="code" style="margin: 6px;"><span class="keyword">#include</span> &lt;stdio.h>
+&nbsp;
+<span class="keyword">int</span> main(<span class="keyword">void</span>)
+{
+	<span class="keyword">for</span> ( ; ; )
+		printf(<span class="literal">"Hello World!\n"</span>);
+	<span class="keyword">return</span> 0;
+}</pre></ul>
+編譯並執行：<ul><pre class="code" style="margin: 6px;">
+# gcc -o hello hello.c
+# ./hello
+</pre></ul>
+可想而知，畫面將輸出一堆 "Hello World!" 字樣，如下圖： (click to enlarge)<br>
+<center><a href="http://jserv.sayya.org/helloworld/pix/retty-1.png"><img src="http://jserv.sayya.org/helloworld/pix/retty-1-small.png"></a></center><br>
+注意到右下方的視窗，接著，我們在左上方的視窗準備執行 [<a href="http://pasky.or.cz/~pasky/dev/retty/">retty</a>]。先來取得剛剛那個無限迴圈版 "Hello World" 的 Process ID：<ul><pre class="code" style="margin: 6px;">
+# pidof hello
+23726
+</pre></ul>
+因此，PID = 23726，然後依據 man ./retty.1 可得知使用方式，就來試試：<ul><pre class="code" style="margin: 6px;">
+# ./retty 23726
+</pre></ul>
+結果如何呢？咱們看看： (click to enlarge)<br>
+<center><a href="http://jserv.sayya.org/helloworld/pix/retty-2.png"><img src="http://jserv.sayya.org/helloworld/pix/retty-2-small.png"></a></center><br>
+注意到左上角視窗，原本應該在右下角視窗的 "Hello World!" 的終端機輸出被「抓到」(attach) 到左上角去了，右下角最後一行只印出 "Hello W"。最後，我們回到右下角視窗，按下 Ctrl-C，結果左上角原本持續輸出的 "Hello World!" 也終止了，證實 [<a href="http://pasky.or.cz/~pasky/dev/retty/">retty</a>] 的效果，如果我們要追蹤某個背景執行的 process，就可派上用場，此外，該套件還提供另一個小工具 blindtty，搭配使用可增加 attach / detach 的彈性。<br>
+<br>
+[<a href="http://pasky.or.cz/~pasky/dev/retty/">retty</a>] 目前只支援 Linux/x86，運作原理類似 Debugger，會安插一小段 bytecode 到特定的 process stack 中。稍早在 [<a href="http://blog.linux.org.tw/~jserv/archives/001741.html">2006 年七月份預定的演講</a>] 的「深入淺出 Hello World」場次中有提及部份相關概念，日後或許會在 Part II 延續介紹。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001779.html">11:45 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1779" onclick="OpenComments(this.href); return false">迴響 (0)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">August 14, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001776"></a>
+<h3 class="title">Hackers 的「倩影」(2)</h3>
+
+之前的 blog [<a href="http://blog.linux.org.tw/~jserv/archives/001013.html">Hackers 的「倩影」</a>] 提過許多 Free Java Hackers 在 FOSDEM 2005 的「<a href="http://www.klomp.org/mark/classpath/fosdem2005/">倩影</a>」，GNU Classpath 的維護者 Mark J. Wielaard 又做了更新： (click to enlarge，出處：[<a href="http://gnu.wildebeest.org/diary/index.php?p=163">Bling! Bling!</a>])<br>
+<center><a href="http://www.klomp.org/mark/classpath/Classpath-08-06.jpg"><img src="http://jserv.sayya.org/kaffe/Classpath-08-06-small.jpg"></a></center><br>
+以下是在 IRC 的討論：<pre  class="code" style="margin: 6px;">
+01:49 &lt; mjw&gt; I need to make a legend, so people know who-is-who.
+01:52 &lt; mjw&gt; http://www.klomp.org/mark/classpath/Classpath-08-06.jpg
+01:52 &lt; mjw&gt; Still missing lots of people of course.
+...
+02:09 &lt; rkennke&gt; mjw: who's that cute girl below the GNU Classpath label? 
+                      Is that lillian?
+02:11 &lt; mjw&gt; rkennke, Yes
+02:13 &lt; rkennke&gt; mjw: this is unbelievable! 
+                     A girl that looks good AND can write good code! ;-)
+02:15 &lt; mjw&gt; Some of the boys are good too :)
+</pre>
+剛剛在討論那位「程式寫得好、人又漂亮」的大姐就是服務於 RedHat 的 Lillian Angel，所以啦，下次可別瞧不起學習程式設計的女生，全球可有一堆這樣的高手呢 (該稱為「大姑」？)。有些 hackers 比較神秘些，所以照片沒有放上來，不過，這次出現小弟的照片了 :P<br>
+<br>
+GNU Classpath 0.92 釋出是個重要的里程碑，整體的相容性已具備足夠的水準，而且也加入些擴充，Free Java hackers 涵蓋的範圍也遍及歐美與亞洲，屏息以待的，就是符合 1998 年計畫早創設立的目標 -- 1.0 Release，加油 :-)<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001776.html">02:36 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1776" onclick="OpenComments(this.href); return false">迴響 (3)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">August 09, 2006</h2>
+
+
+<div class="blogbody">
+<a name="001774"></a>
+<h3 class="title">員工只是一種工具</h3>
+
+某單位的決議，給我有種深深的感嘆。記得有一期的《商業周刊》提到豐田學，就是探討豐田讓二十六萬名員工，絞盡腦汁幫公司淨賺上兆日圓，背後是以何種管理方式，不僅讓員工得以發揮所長、並且「把員工變聰明」，而之前花了一些時間讀 KM 與 CRM，也抽空參與研討會讓自己多作思考，雖然說要落實，實在有本質上的困難性。現在的公司企業，其規模已非昔日可想像，不在於員工數量，而是營運的數據與相關指標，然，卻衍生出一個又一個複雜的黑盒子與大怪物，除了對外的企業文化與公司形象外，又何以一虧其貌呢？<br>
+<br>
+「員工只是一種工具，不合用就汰換」，即使不是直接說出，或多或少有這種意味，這些都算是企業成長的秘訣嗎？翻翻《商業周刊》與《哈佛商業評論》，我開始在想，或許將員工的 "Team work" 改稱 "Toolkit"，是不是更符合知識密集、高科技產業的用詞呢？<br>
+<br>
+我，是不是好工具呢？可不敢奢想能被「使用」多久，只希望仍堪用。<br>
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/001774.html">11:14 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=1774" onclick="OpenComments(this.href); return false">迴響 (8)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+
+</body>
+</html>

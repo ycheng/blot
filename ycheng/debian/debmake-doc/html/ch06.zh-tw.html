@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>章 6. debmake 選項</title>
+    <link rel="stylesheet" type="text/css" href="debian.css"/>
+    <meta name="generator" content="DocBook XSL Stylesheets V1.79.1"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="home" href="index.zh-tw.html" title="Debian 維護者指南"/>
+    <link rel="up" href="index.zh-tw.html" title="Debian 維護者指南"/>
+    <link rel="prev" href="ch05.zh-tw.html" title="章 5. 基本內容"/>
+    <link rel="next" href="ch07.zh-tw.html" title="章 7. 提示"/>
+  </head>
+  <body>
+    <div class="navheader">
+      <table width="100%" summary="Navigation header">
+        <tr>
+          <th colspan="3" align="center">章 6. debmake 選項</th>
+        </tr>
+        <tr>
+          <td align="left"><a accesskey="p" href="ch05.zh-tw.html"><img src="images/prev.png" alt="前一頁"/></a> </td>
+          <th width="60%" align="center"> </th>
+          <td align="right"> <a accesskey="n" href="ch07.zh-tw.html"><img src="images/next.png" alt="下一頁"/></a></td>
+        </tr>
+      </table>
+      <hr/>
+    </div>
+    <div class="chapter">
+      <div class="titlepage">
+        <div>
+          <div>
+            <h1 class="title"><a id="options"/>章 6. debmake 選項</h1>
+          </div>
+        </div>
+      </div>
+      <div class="toc">
+        <p>
+          <strong>內容目錄</strong>
+        </p>
+        <dl class="toc">
+          <dt>
+            <span class="section">
+              <a href="ch06.zh-tw.html#ai-option">6.1. 快捷選項（-a，-i）</a>
+            </span>
+          </dt>
+          <dd>
+            <dl>
+              <dt>
+                <span class="section">
+                  <a href="ch06.zh-tw.html#pythonmod">6.1.1. Python 模組</a>
+                </span>
+              </dt>
+            </dl>
+          </dd>
+          <dt>
+            <span class="section">
+              <a href="ch06.zh-tw.html#dt-option">6.2. 上游快照（-d，-t）</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch06.zh-tw.html#coption">6.3. debmake -cc</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch06.zh-tw.html#koption">6.4. debmake -k</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch06.zh-tw.html#joption">6.5. debmake -j</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch06.zh-tw.html#xoption">6.6. debmake -x</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch06.zh-tw.html#poption">6.7. debmake -P</a>
+            </span>
+          </dt>
+          <dt>
+            <span class="section">
+              <a href="ch06.zh-tw.html#toption">6.8. debmake -T</a>
+            </span>
+          </dt>
+        </dl>
+      </div>
+      <p>這裡提供 <span class="strong"><strong>debmake</strong></span> 命令的一些重要選項。</p>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="ai-option"/>6.1. 快捷選項（-a，-i）</h2>
+            </div>
+          </div>
+        </div>
+        <p><span class="strong"><strong>debmake</strong></span> 命令提供了兩個快捷選項。</p>
+        <div class="itemizedlist">
+          <ul class="itemizedlist">
+            <li class="listitem"><span class="strong"><strong>-a</strong></span>：開啟上游原始碼壓縮包</li>
+            <li class="listitem"><span class="strong"><strong>-i</strong></span>：執行構建二進位制包的指令碼</li>
+          </ul>
+        </div>
+        <p>前文中<a class="xref" href="ch04.zh-tw.html" title="章 4. 簡單例子">章 4, <em>簡單例子</em></a>的例子可以使用下面的命令直接達到目的。</p>
+        <pre class="screen"> $ debmake -a package-1.0.tar.gz -i debuild</pre>
+        <div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;">
+          <table border="0" summary="Tip">
+            <tr>
+              <td rowspan="2" align="center" valign="top">
+                <img alt="[提示]" src="images/tip.png"/>
+              </td>
+              <th align="left">提示</th>
+            </tr>
+            <tr>
+              <td align="left" valign="top">
+                <p><span class="strong"><strong>-a</strong></span> 選項也可以使用“<span class="strong"><strong>https://www.example.org/DL/package-1.0.tar.gz</strong></span>”這樣的 URL。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;">
+          <table border="0" summary="Tip">
+            <tr>
+              <td rowspan="2" align="center" valign="top">
+                <img alt="[提示]" src="images/tip.png"/>
+              </td>
+              <th align="left">提示</th>
+            </tr>
+            <tr>
+              <td align="left" valign="top">
+                <p><span class="strong"><strong>-a</strong></span> 選項也可以使用“<span class="strong"><strong>https://arm.koji.fedoraproject.org/packages/ibus/1.5.7/3.fc21/src/ibus-1.5.7-3.fc21.src.rpm</strong></span>”這樣的 URL。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="section">
+          <div class="titlepage">
+            <div>
+              <div>
+                <h3 class="title"><a id="pythonmod"/>6.1.1. Python 模組</h3>
+              </div>
+            </div>
+          </div>
+          <p>您可以使用以原始碼壓縮包（tarball）形式提供的 <span class="emphasis"><em>pythonmodule-1.0</em></span><span class="strong"><strong>.tar.gz</strong></span> Python 模組包直接生成一個獨立二進位制 Debian 套件。這裡的 <span class="strong"><strong>-b</strong></span> 選項可以指定套件型別為 <span class="strong"><strong>python</strong></span>，<span class="strong"><strong>-s</strong></span> 選項可以從上游壓縮包中提取並複製軟體包描述內容至指定位置。</p>
+          <pre class="screen"> $ debmake -s -b':python' -a pythonmodule-1.0.tar.gz -i debuild</pre>
+          <p>對其他支援 <span class="strong"><strong>-b</strong></span> 選項的解釋式程式語言，請給 <span class="strong"><strong>-b</strong></span> 選項指定恰當的 <span class="emphasis"><em>type</em></span> 。</p>
+          <p>對沒有 <span class="strong"><strong>-b</strong></span> 選線支援的其它解釋性語言，您可以指定其為指令碼型別（<span class="strong"><strong>script</strong></span> 型別）並調整 <span class="strong"><strong>debian/control</strong></span> 檔案而將直譯器對應的軟體包新增為套件依賴。</p>
+        </div>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="dt-option"/>6.2. 上游快照（-d，-t）</h2>
+            </div>
+          </div>
+        </div>
+        <p>如果上游套件支援“<span class="strong"><strong>make dist</strong></span>”或者等效的目標，您可以使用 <span class="strong"><strong>-d</strong></span> 選項從上游原始碼樹版本控制系統中得到上游程式碼的快照。</p>
+        <pre class="screen"> $ cd /path/to/upstream-vcs
+ $ debmake -d -i debuild</pre>
+        <p>除此之外，也可使用 <span class="strong"><strong>-t</strong></span> 選項以使用 <span class="strong"><strong>tar</strong></span> 命令生成上游原始碼包。</p>
+        <pre class="screen"> $ cd /path/to/upstream-vcs
+ $ debmake -p package -t -i debuild</pre>
+        <p>除非您明確使用 <span class="strong"><strong>-u</strong></span> 選項或者在 <span class="strong"><strong>debian/changelog</strong></span> 檔案中提前指定好版本號，預設情況下快照生成的上游版本號將應用協調世界時的日期和時間使用 <span class="strong"><strong>0~%y%m%d%H%M</strong></span> 格式生成，例如 <span class="emphasis"><em>0~1403012359</em></span>。</p>
+        <p>如果上游版本控制系統位於 <span class="emphasis"><em>套件名/</em></span> 目錄而非任意的 <span class="emphasis"><em>上游版本控制系統/</em></span> 目錄，引數中的“<span class="strong"><strong>-p</strong></span> <span class="emphasis"><em>套件名”</em></span>這部分可以跳過。</p>
+        <p>如果版本控制系統中的上游原始碼樹包含了 <span class="strong"><strong>debian/</strong></span>* 檔案，<span class="strong"><strong>debmake</strong></span> 命令在帶有 <span class="strong"><strong>-d</strong></span> 選項或者 <span class="strong"><strong>-t</strong></span> 選項並結合 <span class="strong"><strong>-i</strong></span> 選項可以自動化進行使用這些 <span class="strong"><strong>debian/</strong></span>* 檔案從版本控制系統快照中構建非原生套件的流程。</p>
+        <pre class="screen"> $ cp -r /path/to/package-0~1403012359/debian/. /path/to/upstream-vcs/debian
+ $ dch
+   ... update debian/changelog
+ $ git add -A .; git commit -m "vcs with debian/*"
+ $ debmake -t -p package -i debuild</pre>
+        <p>這裡的使用“<span class="strong"><strong>debmake -t -i debuild</strong></span>”命令構建<span class="strong"><strong>非原生</strong></span> Debian 二進位制包的流程可以看做<span class="strong"><strong>擬似原生</strong></span>套件型別進行構建，因為其打包場景和<span class="strong"><strong>原生</strong></span> Debian 套件不使用上游原始碼包直接使用 <span class="strong"><strong>debuild</strong></span> 命令打包很類似。</p>
+        <p>使用<span class="strong"><strong>非原生的（non-native）</strong></span>套件有助於簡化與下游發行版（如 Ubuntu）之間在缺陷、問題修復上的溝通。</p>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="coption"/>6.3. debmake -cc</h2>
+            </div>
+          </div>
+        </div>
+        <p><span class="strong"><strong>debmake</strong></span> 命令在帶上 <span class="strong"><strong>-cc</strong></span> 選項時可以向標準輸出列印整個原始碼樹的版權和許可證概要資訊。</p>
+        <pre class="screen"> $ tar -xvzf package-1.0.tar.gz
+ $ cd package-1.0
+ $ debmake -cc | less</pre>
+        <p>如果轉而使用 <span class="strong"><strong>-c</strong></span> 選項，程式將提供較短的報告。</p>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="koption"/>6.4. debmake -k</h2>
+            </div>
+          </div>
+        </div>
+        <p>在使用上游新發行版本更新套件時，<span class="strong"><strong>debmake</strong></span> 可以使用已有的 <span class="strong"><strong>debian/copyright</strong></span> 檔案和整個更新的原始碼樹檔案進行對比驗證版權和許可證資訊。</p>
+        <pre class="screen"> $ cd package-vcs
+ $ gbp import-orig --uscan --pristine-tar
+ ... update source with the new upstream release
+ $ debmake -k | less</pre>
+        <p>“<span class="strong"><strong>debmake -k</strong></span>”命令可以完整解析 <span class="strong"><strong>debian/copyright</strong></span> 並將當前套件中的所有非二進位制文件內含的許可證資訊按照最後一項匹配的方式與 <span class="strong"><strong>debian/copyright</strong></span> 檔案中的資訊進行對比。</p>
+        <p>在您編輯自動生成的 <span class="strong"><strong>debian/copyright</strong></span> 檔案時，請確保將最通用的檔案匹配模式放在檔案前部，最精確的匹配模式放在後部。</p>
+        <div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;">
+          <table border="0" summary="Tip">
+            <tr>
+              <td rowspan="2" align="center" valign="top">
+                <img alt="[提示]" src="images/tip.png"/>
+              </td>
+              <th align="left">提示</th>
+            </tr>
+            <tr>
+              <td align="left" valign="top">
+                <p>對所有上游釋出新版本的情況，執行“<span class="strong"><strong>debmake -k</strong></span>”可以確保 <span class="strong"><strong>debian/copyright</strong></span> 檔案一直處於最新狀態。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="joption"/>6.5. debmake -j</h2>
+            </div>
+          </div>
+        </div>
+        <p>生成多個二進位制套件通常比只生成一個二進位制套件需要投入更多的工作量。對原始碼包進行測試構建是其中的必要一環。</p>
+        <p>例如，我們考慮將相同的 <span class="emphasis"><em>package-1.0</em></span><span class="strong"><strong>.tar.gz</strong></span>（參見 <a class="xref" href="ch04.zh-tw.html" title="章 4. 簡單例子">章 4, <em>簡單例子</em></a>）打包並生成多個二進位制套件。</p>
+        <div class="itemizedlist">
+          <ul class="itemizedlist">
+            <li class="listitem">
+              <p class="simpara">呼叫 <span class="strong"><strong>debmake</strong></span> 命令並使用 <span class="strong"><strong>-j</strong></span> 選項以測試構建並報告結果。</p>
+              <pre class="screen"> $ debmake -j -a package-1.0.tar.gz</pre>
+            </li>
+            <li class="listitem">請檢查 <span class="emphasis"><em>package</em></span><span class="strong"><strong>.build-dep.log</strong></span> 檔案最後的幾行以確定 <span class="strong"><strong>Build-Depends</strong></span> 所需填寫的構建依賴。（您不需要在 <span class="strong"><strong>Build-Depends</strong></span> 中列出 <span class="strong"><strong>debhelper</strong></span>、<span class="strong"><strong>perl</strong></span> 或 <span class="strong"><strong>fakeroot</strong></span> 所使用的套件。在只生成單個套件的情況下也是如此。）</li>
+            <li class="listitem">請檢查 <span class="emphasis"><em>package</em></span><span class="strong"><strong>.install.log</strong></span> 的檔案內容以確定各個檔案的安裝路徑，從而決定如何將它們拆分成多個套件。</li>
+            <li class="listitem">
+              <p class="simpara">呼叫 <span class="strong"><strong>debmake</strong></span> 命令以開始準備打包資訊。</p>
+              <pre class="screen"> $ rm -rf package-1.0
+ $ tar -xvzf package-1.0.tar.gz
+ $ cd package-1.0
+ $ debmake -b"package1:type1, ..."</pre>
+            </li>
+            <li class="listitem">請使用以上資訊更新 <span class="strong"><strong>debian/control</strong></span> 和 <span class="strong"><strong>debian/</strong></span><span class="emphasis"><em>binarypackage</em></span><span class="strong"><strong>.install</strong></span> 檔案。</li>
+            <li class="listitem">按需更新其它 <span class="strong"><strong>debian/</strong></span>* 檔案。</li>
+            <li class="listitem">
+              <p class="simpara">使用 <span class="strong"><strong>debuild</strong></span> 或等效的其它工具構建 Debian 套件。</p>
+              <pre class="screen"> $ debuild</pre>
+            </li>
+            <li class="listitem">所有由 <span class="strong"><strong>debian/</strong></span><span class="emphasis"><em>binarypackage</em></span><span class="strong"><strong>.install</strong></span> 檔案指定的二進位制套件條目均會生成 <span class="emphasis"><em>binarypackage_version-revision_arch</em></span><span class="strong"><strong>.deb</strong></span> 的安裝檔。</li>
+          </ul>
+        </div>
+        <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+          <table border="0" summary="Note">
+            <tr>
+              <td rowspan="2" align="center" valign="top">
+                <img alt="[注意]" src="images/note.png"/>
+              </td>
+              <th align="left">注意</th>
+            </tr>
+            <tr>
+              <td align="left" valign="top">
+                <p><span class="emphasis"><em>binarypackage_version-revision_arch</em></span><span class="strong"><strong>.deb</strong></span> 命令的 <span class="strong"><strong>-j</strong></span> 選項會呼叫 <span class="strong"><strong>dpkg-depcheck</strong></span>(1) 以在 <span class="strong"><strong>strace</strong></span>(1) 之下執行 <span class="strong"><strong>debian/rules</strong></span>，從而獲得程式庫依賴資訊。然而，這樣操作的執行速度極慢。如果您由其他途徑獲知了套件的程式庫套件依賴資訊，例如外部的 SPEC 文件等等，您可以直接執行“<span class="strong"><strong>debmake</strong></span> …”命令而不帶 <span class="strong"><strong>-j</strong></span> 選項並執行“<span class="strong"><strong>debian/rules install</strong></span>”命令以檢查所生成檔案的安裝路徑。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="xoption"/>6.6. debmake -x</h2>
+            </div>
+          </div>
+        </div>
+        <p><span class="strong"><strong>debmake</strong></span> 生成的模板檔案數量由 <span class="strong"><strong>-x</strong></span>[01234] 選項進行控制。</p>
+        <div class="itemizedlist">
+          <ul class="itemizedlist">
+            <li class="listitem">請參見 <a class="xref" href="ch08.zh-tw.html#emptypkg" title="8.1. 挑選最好的模板">節 8.1, “挑選最好的模板”</a> 以瞭解與揀選使用模板檔案的方式。</li>
+          </ul>
+        </div>
+        <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+          <table border="0" summary="Note">
+            <tr>
+              <td rowspan="2" align="center" valign="top">
+                <img alt="[注意]" src="images/note.png"/>
+              </td>
+              <th align="left">注意</th>
+            </tr>
+            <tr>
+              <td align="left" valign="top">
+                <p><span class="strong"><strong>debmake</strong></span> 命令不會修改任何已存在的配置文件。</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="poption"/>6.7. debmake -P</h2>
+            </div>
+          </div>
+        </div>
+        <p>呼叫 <span class="strong"><strong>debmake</strong></span> 命令並帶上 <span class="strong"><strong>-P</strong></span> 選項將會嚴厲地檢查所有自動生成檔案的版權和許可證文字資訊；即使它們都使用寬鬆的許可證也是如此。</p>
+        <p>此選項不止會影響正常執行過程中所生成的 <span class="strong"><strong>debian/copyright</strong></span> 檔案的內容，也會影響帶引數 <span class="strong"><strong>-k</strong></span>、<span class="strong"><strong>-c</strong></span>、<span class="strong"><strong>-cc</strong></span> 和 <span class="strong"><strong>-ccc</strong></span> 選項的輸出內容。</p>
+      </div>
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="toption"/>6.8. debmake -T</h2>
+            </div>
+          </div>
+        </div>
+        <p>呼叫 <span class="strong"><strong>debmake</strong></span> 命令並帶上 <span class="strong"><strong>-T</strong></span> 選項會額外輸出詳細的教材註釋行。這些行在模板檔案中用 <span class="strong"><strong>###</strong></span> 進行標註。</p>
+      </div>
+    </div>
+    <div class="navfooter">
+      <hr/>
+      <table width="100%" summary="Navigation footer">
+        <tr>
+          <td align="left"><a accesskey="p" href="ch05.zh-tw.html"><img src="images/prev.png" alt="前一頁"/></a> </td>
+          <td align="center"> </td>
+          <td align="right"> <a accesskey="n" href="ch07.zh-tw.html"><img src="images/next.png" alt="下一頁"/></a></td>
+        </tr>
+        <tr>
+          <td align="left" valign="top">章 5. 基本內容 </td>
+          <td align="center">
+            <a accesskey="h" href="index.zh-tw.html">
+              <img src="images/home.png" alt="起始頁"/>
+            </a>
+          </td>
+          <td align="right" valign="top"> 章 7. 提示</td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

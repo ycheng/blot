@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: NILFS : log-structure FS</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001314.html" title="解魔術方塊" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001316.html" title="C++ 與 Java 的 ABI 議題" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001314.html">« 解魔術方塊</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001316.html">C++ 與 Java 的 ABI 議題 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">October 03, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">NILFS : log-structure FS</h3>
+
+寫過 CA-Clipper 程式的開發者，或許很自然就把這個 "NIL" 聯想為語言層面的術語，依據我小時候微弱的記憶，這大約等同於 Java 的 null，那麼，NILFS 該不會是「空的檔案系統」？前天閱讀 LinuxDevices.com 的新聞 [<a href="http://www.linuxdevices.com/news/NS9521569196.html">Linux gains lossless filesystem</a>] 看到這個突破性的發展，由 NTT Labs (Nippon Telegraph and Telephone's Cyber Space Laboratories) 所貢獻出的 [<a href="http://www.nilfs.org/">NILFS</a>] 是新的 [<a href="http://en.wikipedia.org/wiki/Log_File_System">log-structured file system</a>] 實作，或許我們會納悶，比較新的 fs，如 ext3、ReiserFS、XFS，或是 JFFS2 都有能力達到 journaling 的需求，為何 NTT Labs 這個日本第二大的工業單位裡面的實驗室還要發展一套新的 fs 呢？LinuxDevices.com 這篇新聞給了一個起頭：<ul>
+For example, data loss occurs on ext3 filesystems when the system crashes during a write operation. When the system reboots, the journal notes that the write did not complete, and any partial data writes are lost.
+</ul>
+儘管 [<a href="http://en.wikipedia.org/wiki/Ext3">Ext3</a>] 檔案系統在 ext2 的基礎上，擴充很多屬性來描述所需的 journaling 資訊，而且也能夠在需要時 rollback，但是不免會在 write 時發生 data loss 的情況，Ext3 的主要開發者 Dr. Stephen Tweedie 在 2000 年作了一系列的技術報告，可參考 [<a href="http://olstrans.sourceforge.net/release/OLS2000-ext3/OLS2000-ext3.html">EXT3, Journaling Filesystem</a>]。對於企業或電信等級的應用來說，高 throughput 的 I/O 與 synchronization 是必要的 (data lossless)，Ext3 這樣的特徵不能徹底的符合需求，Sun Microsystems 在其 Solaris 中發展了 UFS，引入了 "snapshot" 的概念，可以避免上述的問題，顧名思義就是可以保存 UFS 在某個時間的樣貌，而不會受其他應用程式所干擾，在 Solaris 下操作很簡單： (一般的 Solaris 系統管理教材都會提到)<ul>
+<li>建立 snapshot：<ul>
+# fssnap -F ufs -o bs=/backing-store-file /file-system
+</ul></li>
+<li>「觀看」該時間點 UFS 的樣貌：<ul>
+# mount /dev/fssnap/0 /shomewhere
+</ul></li>
+<li>移除該 snapshot：<ul>
+# fssnap -d /file-system
+</ul></li>
+</ul>
+但 NTT Labs 指出 Solaris UFS 的缺陷：<ul>
+but filesystem operation must be suspended to use the feature, reducing performance. NILFS, in contrast, can "continuously and automatically [save] instantaneous states of the file system without interrupting service.
+</ul>
+所以基於以上考量，NTT Labs 認為 "Checkpoint" snapshot feature 是必要的，以下引述新聞稿：<ul>
+The "instantaneous states" that NILFS continously saves can actually be mounted, read-only, at the same time that the actual filesystem is mounted read-write -- a capability useful for data recovery after hardware failures and other system crashes. The "listcp" ("list checkpoint") command of an interactive NILFS "inspect" utility is first used to find the checkpoint's address, in this case "2048":<pre>
+
+   # inspect /dev/sda2
+   ...
+   nilfs> listcp
+            1     6 Tue Jul 12 14:55:57 2005 MajorCP|LogiBegin|LogiEnd
+         2048  2352 Tue Jul 12 14:55:58 2005 MajorCP|LogiEnd
+   ...
+   nilfs> quit
+</pre>
+The checkpoint address is then used to mount the checkpoint:
+<pre>
+   # mount -t nilfs -r -o cp=2048 /dev/sda2 /nilfs-cp
+   # df
+   Filesystem           1K-blocks      Used Available Use% Mounted on
+   /dev/sda2             70332412   8044540  62283776  12% /nilfs
+   /dev/sda2             70332412   8044540  62283776  12% /nilfs-cp
+</pre>
+</ul>
+NILFS 的功能特徵如下：<ul>
+<li>Slick snapshots</li>
+<li>B-tree based file and inode management</li>
+<li>Immediate recovery after system crash</li>
+<li>64-bit data structures; support many files, large files and disks</li>
+</ul>
+在 [<a href="http://www.nilfs.org/">NILFS</a>] 網頁可以下載設計給 Linux Kernel 2.6.13 的 nilfs-1.0.0，看了以上的介紹，讓我手癢不已，但是...<ul><pre>
+jserv@venux:~$ uname -a
+Linux venux 2.6.12-1-686 #1 Tue Sep 27 12:52:50 JST 2005 i686 GNU/Linux
+</pre></ul>
+以我這台 Debian box 來說，用 Debian SID 裡面的 linux-image-2.6.12-1-686 與 headers 編譯該 module，會發生以下錯誤：<ul>
+nilfs/fs/segment.c:2462: error: Arguments of `refrigerator' mismatched.
+</ul>
+至於為何 NILFS 1.0.0 要指定 kernel version 呢？因為 kernel API 在 2.6.13 有更改，看看 2.6.12 與 2.6.13 兩個版本的 include/linux/sched.h 可以發現 refrigerator 這個 kernel API 已經更改了，又是 Linux Kernel 令人又愛又恨的例子阿，快速且有效率的發展模式，可是 API 常常更動 :(<br><br>
+
+當然啦，問問 Google 大神，看看有沒有解答，結果發現根本沒有，所以我怒了 ([<a href="http://use.perl.org/~autrijus/journal/">autrijus</a>] 前輩說過：「生氣是促進發展的原動力」)，於是搞了一個 patch [<a href="http://jserv.sayya.org/kernel/nilfs-1.0.0-backport-2.6.12.diff">nilfs-1.0.0-backport-2.6.12.diff</a>]，這樣就可以讓 NILFS-1.0.0 運作於 2.6.12 或以下的 Kernel 上。<br><br>
+
+回到 NILFS，其對於 snapshot 的支援如下：<ul>
+<li>Automatically taken without any explicit requests</li>
+<li>Simultaneously mountable</li>
+<li>Mountable as read-only file systems via the disk block number</li>
+</ul>
+在網頁尾端的 TODO List 提到頗多方向，可以作為思考電信與企業等級應用中，系統骨幹所面臨的挑戰。
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 October  3, 2005 02:39 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1315" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 以 ptrace 系統呼叫來追蹤/修改行程</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/002026.html" title="透過 Python 體驗 QtWebKit 快速開發" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/002028.html" title="「尋幽訪勝話系統--以 Linux 探索軟硬體整合設計」簡報上線" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/002026.html">« 透過 Python 體驗 QtWebKit 快速開發</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/002028.html">「尋幽訪勝話系統--以 Linux 探索軟硬體整合設計」簡報上線 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">May 23, 2008</h2>
+
+<div class="blogbody">
+
+<h3 class="title">以 ptrace 系統呼叫來追蹤/修改行程</h3>
+
+一月份南下分享主題為 [<a href="http://blog.linux.org.tw/~jserv/archives/001958.html">快快樂樂學 GNU Debugger</a>] 的演講，當時為了說明 GNU Debugger (gdb) 在 Linux 運作的原理，提及 ptrace 系統呼叫，這是何以 gdb 能行使動態追蹤、分析，進而修改執行中行程 (process) 的關鍵。本文試著以簡要的案例，說明如何使用 ptrace 系統呼叫，達到類似 gdb 的行為。<br />
+<br />
+在 MS-Windows 中，「攔截」或「追蹤」其他行程，是相當進階的議題，而且為了達到目的，往往得訴諸頗多 hacks，然而，在 UNIX 的世界裡，作業系統提供 ptrace 系統呼叫，允許我們優雅地進行這些動作。且讓我們問問男人 (雙關語，UNIX "manual"，縮寫為 "man")，看 ptrace() 的描述：<ul class="code" style="margin: 6px;">
+# man 2 ptrace<br />
+The ptrace() system call provides a means by which a parent process may observe and control the execution of another process, and examine and change its core image and registers.  It is primarily used to implement breakpoint debugging and system call tracing.<br />
+<br />
+The parent can initiate a trace by calling fork(2) and having the resulting child do a PTRACE_TRACEME, followed (typically) by an exec(3).  Alternatively, the parent may commence trace of an existing process using PTRACE_ATTACH.<br />
+... (後略) ...
+</ul>
+整理我們的初步認知：<ul>
+  <li>ptrace 系統呼叫用以實做 gdb 一類可斷點 (breakpoint) 的追蹤除錯，或作系統呼叫的追蹤分析</li>
+  <li>ptrace 允許一個 parent process 去監控另一個 process 的執行，並得以檢驗 / 更改執行時期的系統 image (映射於虛擬記憶體) 和暫存器</li>
+  <li>使用情境可透過 fork 系統呼叫去建立 child process (搭配 exec 系統呼叫) 或者直接追蹤某個已執行的 process</li>
+</ul>
+另外，依據此陳述，我們也可發現，在使用者層級 (user-level / user-space) 追蹤其他行程是可行的。而在實際「追蹤」前，我們應該要很清楚無論哪個行程，只要存取到系統服務，哪怕只是 "Hello World" 等級的應用程式想透過標準 C 函式庫呼叫 printf() 印列字元，都涉及系統呼叫 (system call，以下簡稱 "syscall") 的處理，在前年、去年的 [<a href="http://blog.linux.org.tw/~jserv/archives/001890.html">深入淺出 Hello World</a>] 系列演講中，已對此做了系統性的探討，本文不再細究其原理，僅點出重點以銜接 ptrace 的角色。<br />
+<br />
+對 Linux 來說，在 IA32 (32 位元的 x86 系統，本文也記作 i386) 上，一個行程欲使用 syscall 時，需要將相關參數推入至暫存器 (register)，並觸發 0x80 (hex) 軟體中斷，就緒後，行程的控制權，就從 user-space 切換到 kernel-space，由核心來完成系統呼叫的具體動作。示意圖如下： (出處：〈<a href="http://www.ibm.com/developerworks/linux/library/l-system-calls/">Kernel command using Linux system calls</a>〉, M. Tim Jones)<br />
+<center><img src="http://jserv.sayya.org/helloworld/pix/syscall.gif" width="571" height="361" /></center><br />
+上圖以 getpid() 這個 syscall 為例，實際上，C 語言的應用程式並非直接呼叫 syscall 的，而需要透過 GNU glibc 一類 C-Library 裡頭 syscall wrapper 所提供的函式呼叫進行，其細部的實做就是在 eax 暫存器設定 getpid syscall 的編號 (定義於 syscall 表格的 _NR_getpid 項目)，之後觸發 int 0x80。由上圖可見，執行權移轉到核心，核心由剛剛設定的 eax 暫存器作為索引，去 system_call_table[] 找到真正實做 getpid syscall 的進入點 (entry)，去呼叫並在執行後，將控制權交回 user-space，對原本的行程來說，就是 getpid() 這個 C 函式的返回。<br />
+<br />
+那麼，ptrace 這個 syscall 在何時現身？本文大幅略過平台相關的部份，僅探討
+行為模式：在 syscall 真正呼叫前，Linux 核心會檢查目前的行程是否處於「被追蹤」(traced) 的狀態，若是，核心會暫停 (stop) 目前的行程，並將控制權交與欲追蹤 (主動去追蹤其他行程者) 的行程，讓跟蹤行程得以監控 traced process 的暫存器，當然也包含執行時期的 pc (Program Counter，在 IA32 上，就是 eip 暫存器)。<br />
+<br />
+有了基礎概念後，我們就可實際作點事。筆者於兩年前撰寫過一篇文章 [<a href="http://blog.linux.org.tw/~jserv/archives/001773.html">SM 版 Hello World</a>]，談及 Linux/i386 上，如何實現 SMC (Self-Modifying Code)，而標題的 "SM" 當然是指一個行程如 "Hello World" 者，如何自我修改執行時期的內容，也就是 Selt-Modifying，感覺是「自虐」，反而不若一般說 <a href="http://zh.wikipedia.org/wiki/SM">SM</a> (施虐與受虐) 的語意。那麼，今天我們就來作個真正有 "SM" 能力的程式，展示動態追蹤 / 修改其他行程的行為，預想的情境為先讓一個無限迴圈的行程保持等待，然後另一個行程透過 ptrace syscall 去攔截該行程並修改執行內容 (是的，就是「施虐」的動作)，最後讓被 ptrace 行程產生變化 (也就是「受虐」者)。<br />
+<br />
+ptrace 的函式宣告如下：<pre class="code" id="codemain" style="margin: 6px;"><span class="keyword">long</span> ptrace(<span class="keyword">enum</span> __ptrace_request request,
+            pid_t pid,
+            <span class="keyword">void</span> *addr,
+            <span class="keyword">void</span> *data);
+</pre>
+首個引數規範 ptrace syscall 的具體行為與其使用模式，有以下值：<ul>
+  <li>PTRACE_TRACEME</li>
+  <li>PTRACE_PEEKTEXT, PTRACE_PEEKDATA</li>
+  <li>PTRACE_PEEKUSER</li>
+  <li>PTRACE_POKETEXT, PTRACE_POKEDATA (*)</li>
+  <li>PTRACE_POKEUSER</li>
+  <li>PTRACE_GETREGS (*), PTRACE_GETFPREGS</li>
+  <li>PTRACE_GETSIGINFO</li>
+  <li>PTRACE_SETREGS (*), PTRACE_SETFPREGS</li>
+  <li>PTRACE_SETSIGINFO</li>
+  <li>PTRACE_SETOPTIONS</li>
+  <li>PTRACE_GETEVENTMSG</li>
+  <li>PTRACE_CONT</li>
+  <li>PTRACE_SYSCALL, PTRACE_SINGLESTEP</li>
+  <li>PTRACE_SYSEMU, PTRACE_SYSEMU_SINGLESTEP</li>
+  <li>PTRACE_KILL</li>
+  <li>PTRACE_ATTACH (*)</li>
+  <li>PTRACE_DETACH (*)</li>
+</ul>
+標注 (*) 者，為本文範例所用到的 request。其中 PTRACE_GETSIGINFO 與 PTRACE_SETSIGINFO 為 Linux 2.3.99-pre6 後所追加；PTRACE_SETOPTIONS 則為 2.4.6 後追加，引入若干新的 bit mask；PTRACE_GETEVENTMSG 為 2.5.46 後追加；PTRACE_SYSEMU 與 PTRACE_SYSEMU_SINGLESTEP 為 2.6.14 後追加，提供給 UML (User-Mode Linux) 一類的系統作為 syscall 模擬使用。由此可見 Linux 改版時，ptrace 也會隨著更動，注意，addr 與 data 這兩個引數在某些 request 會被忽略，詳情可參考 man-pages 描述。<br />
+<br />
+咱們動手來寫程式，就取名為 [<a href="http://jserv.sayya.org/helloworld/injector.c">injector.c</a>] 表示符合前述情境。以下為程式碼列表：<br />
+<pre class="code" id="codemain" style="margin: 6px;"><span class="keyword">#include</span> &lt;stdio.h><span class="keyword">
+#include</span> &lt;stdlib.h><span class="keyword">
+#include</span> &lt;sys/ptrace.h> <span class="comment">/* ptrace() */</span><span class="keyword">
+
+#include</span> &lt;sys/wait.h>   <span class="comment">/* wait() */</span><span class="keyword">
+#include</span> &lt;sys/types.h><span class="keyword">
+#include</span> &lt;linux/user.h>   <span class="comment">/* struct user_regs_struct */</span>
+
+<span class="comment">/* _exit(1) implementation in shellcode */</span>
+
+<span class="keyword">static</span> <span class="keyword">char</span> shellcode[] =
+    <span class="literal">"\x31\xc0"</span> 		<span class="comment">/* xor  %eax,%eax */</span>
+    <span class="literal">"\x40"</span> 			<span class="comment">/* inc  %eax */</span>
+    <span class="literal">"\xcd\x80"</span> 		<span class="comment">/* int  $0x80 */</span> ;
+
+<span class="keyword">
+#include</span> &lt;stdarg.h><span class="keyword">
+#define</span> OUT_MSG(x, ...) printf(<span class="literal">"* "</span> x <span class="literal">"\n"</span>,## __VA_ARGS__)<span class="keyword">
+#define</span> ERR_MSG(x) printf(<span class="literal">"\t[Error] "</span> x <span class="literal">"\n"</span>)
+
+<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])
+{
+    <span class="keyword">int</span> pid, offset;
+    <span class="keyword">struct</span> user_regs_struct regs;
+
+    OUT_MSG(<span class="literal">"Injector starts."</span>);
+    <span class="keyword">if</span> (argc &lt; 2) {
+        ERR_MSG(<span class="literal">"PID required in parameter."</span>);
+        <span class="keyword">return</span> -1;
+    }
+
+    pid = atoi(argv[1]);
+    OUT_MSG(<span class="literal">"Attaching process (PID=%d)..."</span>, pid);
+    <span class="keyword">if</span> (ptrace(PTRACE_ATTACH, pid, NULL, NULL) &lt; 0) {
+        ERR_MSG(<span class="literal">"Fail to ptrace process"</span>);
+        ptrace(PTRACE_DETACH, pid, NULL, NULL);
+        <span class="keyword">return</span> -1;
+    }
+
+    OUT_MSG(<span class="literal">"Process attached."</span>);
+    <span class="comment">/* see if  a child has stopped (but not traced via ptrace(2)) */</span>
+
+    <span class="keyword">if</span> (waitpid(pid, NULL, WUNTRACED) &lt; 0) {
+        ERR_MSG(<span class="literal">"WUNTRACED"</span>);
+        exit(1);
+    }
+
+    OUT_MSG(<span class="literal">"Getting registers from process."</span>);
+    <span class="keyword">if</span> (ptrace(PTRACE_GETREGS, pid, NULL, &amp;regs) &lt; 0) {
+        ERR_MSG(<span class="literal">"Fail to get registers."</span>);
+        ptrace(PTRACE_DETACH, pid, NULL, NULL);
+        exit(1);
+    }
+
+    OUT_MSG(<span class="literal">"Injecting shellcode into process..."</span>);
+    <span class="keyword">for</span> (offset = 0; offset &lt; <span class="keyword">sizeof</span>(shellcode); offset++) {
+        <span class="keyword">if</span> (ptrace(PTRACE_POKEDATA, pid,
+                   regs.esp + offset,
+                   *(<span class="keyword">int</span> *) &amp;shellcode[offset])) {
+            ERR_MSG(<span class="literal">"Fail to inject."</span>);
+            ptrace(PTRACE_DETACH, pid, NULL, NULL);
+            exit(1);
+        }
+    }
+
+    regs.eip = regs.esp;
+    regs.eip += 2;
+
+    OUT_MSG(<span class="literal">"Adjust program counter (EIP) of process to 0x%x"</span>,
+            (<span class="keyword">unsigned</span> <span class="keyword">int</span>) regs.eip);
+    <span class="keyword">if</span> (ptrace(PTRACE_SETREGS, pid, NULL, &amp;regs) &lt; 0) {
+        ERR_MSG(<span class="literal">"Unable to set registers."</span>);
+        ptrace(PTRACE_DETACH, pid, NULL, NULL);
+        exit(1);
+    }
+
+    OUT_MSG(<span class="literal">"Detach process (PID=%d)."</span>, pid);
+    ptrace(PTRACE_DETACH, pid, NULL, NULL);
+    OUT_MSG(<span class="literal">"Done"</span>);
+    <span class="keyword">return</span> 0;
+}
+</pre>
+既然有了「施虐」者程式，就再弄個「受虐」者程式，比方說 [<a href="http://jserv.sayya.org/helloworld/dummy-loop-prog.c">dummy-loop-prog.c</a>]，以下是程式列表：
+<pre class="code" id="codemain" style="margin: 6px;"><span class="keyword">#include</span> &lt;unistd.h>
+<span class="keyword">int</span> main()
+{
+    <span class="keyword">while</span> (1)
+        sleep(1);
+    <span class="keyword">return</span> 0;
+}</pre>
+沒什麼好說，就是一直透過 sleep syscall 等待的小程式。一開始，我們讓 dummy-loop-prog 先執行，如下圖：<br />
+<center><img src="http://jserv.sayya.org/helloworld/pix/inject-before.png" width="683" height="259" /></center><br />
+而當前述的 injector 執行時，我們將會發現：<br />
+<center><img src="http://jserv.sayya.org/helloworld/pix/inject-after.png" width="679" height="456" /></center><br />
+injector 透過 ptrace syscall 去 attach 到執行中 dummy-loop-prog 的行程 (PID=943)，先取得暫存器的值，當然，最有興趣的是 ESP，也就是指向目前的 stack frame 的指標，因為我們要注入 shellcode。一旦完成注入的動作後，需要將 EIP 暫存器的值調整，這時候 PID=943 的行程就被迫執行到 shellcode 的內容，也就是 _exit(1)，這會使原本的無限迴圈因而終止，行程也會結束。<br />
+<br />
+[<a href="http://jserv.sayya.org/helloworld/injector.c">injector.c</a>] 的程式碼中，將 request 設定為 PTRACE_GETREGS 傳遞給 ptrace syscall 可得到被追蹤的行程現行的暫存器內容，保存於 user_regs_struct 結構體之中，而這定義於 &lt;linux/user.h&gt; 檔頭。而 request 設定為 PTRACE_PEEKDATA / PTRACE_POKEDATA 時，則可窺視 / 修改執行中行程的內容，就像筆者展示植入 shellcode 的行為一般。更甚者，request 設定為 PTRACE_SINGLESTEP 時，ptrace 允許對 child process 進行單步執行的動作，這會使得核心在 child process 的每條指令執行前，會先中斷等待著，而將控制權交給追蹤的行程，就好比 gdb 的行為一般，當然，能做的事情就更多了。<br />
+<br />
+ptrace 系統呼叫無疑是對 Linux 底層運作機制作尋幽訪勝，一個相當強大且優雅的工具，若能善用，並搭配既有的工具如 gdb，將能如虎添翼。另外，由於 ptrace syscall 在若干應用，如 User-Mode-Linux 與 multi-threading 環境中，有先天設計的缺陷，RedHat 工程師 Roland McGrath 則展開 [<a href="http://sourceware.org/systemtap/wiki/utrace">utrace</a>] 的新發展，目標是完全取代 ptrace，允許 user-space 行程透過 utrace syscall，得以掌握更多 Linux 核心的資訊，並引入名為 "tracing engine" 的新機制，可更深入地追蹤掌控行程的狀態。<br />
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 May 23, 2008 02:07 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>http://blog.chinaunix.net/u/5251/showart_517381.html<br />
+我写过的基于ptrace注入的dumper程序。</p>
+<span class="comments-post">由 <a href="http://xiaosuo.cublog.cn">xiaosuo</a> 發表於</MTIfNonEmpty> May 23, 2008 03:33 PM</span>
+</div>
+<div class="comments-body">
+<p>@xiaosuo</p>
+
+<p>感謝分享！</p>
+<span class="comments-post">由 <a href="http://blog.linux.org.tw/jserv/">jserv</a> 發表於</MTIfNonEmpty> May 25, 2008 04:40 AM</span>
+</div>
+<div class="comments-body">
+<p>請問一下:<br />
+為什麼eip要加2<br />
+regs.eip += 2;<br />
+</p>
+<span class="comments-post">由 <a href="mailto&#58;gull_l&#64;yahoo&#46;com&#46;tw">ken</a> 發表於</MTIfNonEmpty> November  5, 2008 10:43 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="2027" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

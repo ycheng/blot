@@ -1,0 +1,294 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>timhsu: Who Call Me?</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~timhsu/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~timhsu/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~timhsu/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~timhsu/archives/000610.html" title="DOSBOX 下玩 CCH" />
+
+<link rel="next" href="http://blog.linux.org.tw/~timhsu/archives/000629.html" title="聊聊 ASUS WL500g" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+<!--
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="http://blog.linux.org.tw/~timhsu/archives/000613.html">
+<dc:title>Who Call Me?</dc:title>
+<dc:description>誰叫我? 有用過 gdb 對 core 檔作 bt (backtrace) 嗎? 所謂 backtrace 是用來回溯檢查函式呼叫的關係, 以便了解是由那一個函式呼叫出問題的函式. 尢其是在許多錯綜複雜的龐大程式碼中, backtrace 是相當有用的 debug 技巧. 而這個題目則是用來討論如何在程式執行中 作 backtrace.</dc:description>
+<dc:creator>timhsu</dc:creator>
+<dc:date>2004-03-31T15:41:14+08:00</dc:date>
+<license rdf:resource="http://creativecommons.org/licenses/by-nc-sa/1.0/" />
+</Work>
+<License rdf:about="http://creativecommons.org/licenses/by-nc-sa/1.0/">
+<requires rdf:resource="http://web.resource.org/cc/Attribution" />
+<requires rdf:resource="http://web.resource.org/cc/Notice" />
+<requires rdf:resource="http://web.resource.org/cc/ShareAlike" />
+<permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+<permits rdf:resource="http://web.resource.org/cc/Distribution" />
+<permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+<prohibits rdf:resource="http://web.resource.org/cc/CommercialUse" />
+</License>
+</rdf:RDF>
+-->
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~timhsu/" accesskey="1">timhsu</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~timhsu/archives/000610.html">&laquo; DOSBOX 下玩 CCH</a> |
+
+<a href="http://blog.linux.org.tw/~timhsu/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~timhsu/archives/000629.html">聊聊 ASUS WL500g &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 31, 2004</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Who Call Me?</h3>
+
+<p>誰叫我? 有用過 gdb 對 core 檔作 bt (backtrace) 嗎? 所謂 backtrace 是用來回溯檢查函式呼叫的關係, 以便了解是由那一個函式呼叫出問題的函式. 尢其是在許多錯綜複雜的龐大程式碼中, backtrace 是相當有用的 debug 技巧. 而這個題目則是用來討論如何在程式執行中作 backtrace.</p>
+
+<p>在實作這個技術前有兩個關鍵點要先解決:</p>
+
+<p>1. 如何取得此 function 返回位址.<br />
+2. 如何依據返回位址查知函式名稱.<br />
+關於第一點, 必須先了解堆疊(Stack) 和函式呼叫的處理關係. 堆疊是一個後進先出(Last-In-First-Out)的資料結構. 當呼叫某個函式時, 相關的暫存器(Register)就會被存入堆疊. 而當函式返回時便會從堆疊裡取回返回位址以便回到原來呼叫的下一個指令繼續執行. 至於暫存器(Register), 其中 EIP 是 Instruction Pointer, 用來指出 CPU 將要執行指令的位址. ESP 暫存器則是用來指向目前堆壘的位址.</p>
+
+<p>我們先寫個小程式來觀察可行性.</p>
+
+<p>----------- test.c -----------<br />
+void test()<br />
+{</p>
+
+<p>}</p>
+
+<p>int main()<br />
+{</p>
+
+<p>        test();<br />
+}<br />
+------------------------------</p>
+
+<p>[tim@localhost whocallme]$ gcc -o test test.c<br />
+[tim@localhost whocallme]$ gdb ./test<br />
+GNU gdb 5.3-25mdk (Mandrake Linux)<br />
+Copyright 2002 Free Software Foundation, Inc.<br />
+GDB is free software, covered by the GNU General Public License, and you are<br />
+welcome to change it and/or distribute copies of it under certain<br />
+conditions.<br />
+Type "show copying" to see the conditions.<br />
+There is absolutely no warranty for GDB.  Type "show warranty" for details.<br />
+This GDB was configured as "i586-mandrake-linux-gnu"...<br />
+(gdb) b test<br />
+Breakpoint 1 at 0x804832f<br />
+(gdb) r<br />
+Starting program: /home/tim/research/whocallme/test</p>
+
+<p>Breakpoint 1, 0x0804832f in test ()<br />
+(gdb) info reg<br />
+eax            0x0      0<br />
+ecx            0x1      1<br />
+edx            0x4014fe50       1075117648<br />
+ebx            0x4014e9a0       1075112352<br />
+esp            0xbffff698       0xbffff698<br />
+ebp            0xbffff698       0xbffff698<br />
+esi            0x40013880       1073821824<br />
+edi            0xbffff6f4       -1073744140<br />
+eip            0x804832f        0x804832f</p>
+
+<p>(gdb) disas test<br />
+Dump of assembler code for function test:<br />
+0x804832c <test>:       push   %ebp<br />
+0x804832d <test+1>:     mov    %esp,%ebp<br />
+0x804832f <test+3>:     pop    %ebp<br />
+0x8048330 <test+4>:     ret<br />
+End of assembler dump.</p>
+
+<p>ebp 暫存器值是 0xbffff698, 也就是原來的堆疊位址. 我們知道在呼叫函式時(call) CPU 會將返回位址存入堆疊, 因此可以從 ebp 暫存器的位址裡面找到我們需要的返回位址:</p>
+
+<p>(gdb) p/x *0xbffff698<br />
+$1 = 0xbffff6a8</p>
+
+<p>別忘了, 一進入此函式時 push $ebp 已被執行, 因此堆疊位址已被減 4, 所以要取得正確的值還得把 4 加回去才行:</p>
+
+<p>(gdb) p/x *(0xbffff698+4)<br />
+$2 = 0x8048346</p>
+
+<p>這個值應該就是 test() 正確的返回位址, 來檢查看看:</p>
+
+<p>(gdb) disas main<br />
+Dump of assembler code for function main:<br />
+0x8048331 <main>:       push   %ebp<br />
+0x8048332 <main+1>:     mov    %esp,%ebp<br />
+0x8048334 <main+3>:     sub    $0x8,%esp<br />
+0x8048337 <main+6>:     and    $0xfffffff0,%esp<br />
+0x804833a <main+9>:     mov    $0x0,%eax<br />
+0x804833f <main+14>:    sub    %eax,%esp<br />
+0x8048341 <main+16>:    call   0x804832c <test><br />
+0x8048346 <main+21>:    leave<br />
+0x8048347 <main+22>:    ret<br />
+0x8048348 <main+23>:    nop<br />
+0x8048349 <main+24>:    nop<br />
+0x804834a <main+25>:    nop<br />
+0x804834b <main+26>:    nop<br />
+0x804834c <main+27>:    nop<br />
+0x804834d <main+28>:    nop<br />
+0x804834e <main+29>:    nop<br />
+0x804834f <main+30>:    nop<br />
+End of assembler dump.</p>
+
+<p>果然在 call <test> 完後的下個指令是位於 0x8048346, 也就是 test() 返回位址.<br />
+接下來我們就用 C 和一些 assembly 配合來實作.</p>
+
+<p>------------- test-1.c ------------------<br />
+void test()<br />
+{<br />
+        unsigned long *stack;<br />
+        asm ("movl %%ebp, %0\n"<br />
+                : "=g"(stack));<br />
+        printf("ret address = 0x%x\n", *(stack+1));</p>
+
+<p>}</p>
+
+<p>int main()<br />
+{</p>
+
+<p>        test();<br />
+}<br />
+-----------------------------------------</p>
+
+<p>[tim@localhost whocallme]$ ./test-1<br />
+ret address = 0x8048394<br />
+[tim@localhost whocallme]$ gdb ./test-1<br />
+(gdb) disas main<br />
+Dump of assembler code for function main:<br />
+0x804837f <main>:       push   %ebp<br />
+0x8048380 <main+1>:     mov    %esp,%ebp<br />
+0x8048382 <main+3>:     sub    $0x8,%esp<br />
+0x8048385 <main+6>:     and    $0xfffffff0,%esp<br />
+0x8048388 <main+9>:     mov    $0x0,%eax<br />
+0x804838d <main+14>:    sub    %eax,%esp<br />
+0x804838f <main+16>:    call   0x804835c <test><br />
+0x8048394 <main+21>:    leave<br />
+0x8048395 <main+22>:    ret<br />
+0x8048396 <main+23>:    nop</p>
+
+<p>第一個關鍵點目前已解決, 再來要想想怎麼要能夠依記憶體位址查知所處的函式名稱呢?</p>
+
+<p>更多詳細的內容請看 <a href="http://info.sayya.org/~timhsu/research/whocallme"> Who Call Me? </a>一文.</p>
+
+<a name="more"></a>
+
+
+<span class="posted">由 timhsu 發表於 March 31, 2004 03:41 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+</div>
+</div>
+</body>
+</html>

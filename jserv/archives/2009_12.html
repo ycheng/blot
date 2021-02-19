@@ -1,0 +1,355 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: December 2009 彙整</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/2009_11.html" title="November 2009" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/2010_01.html" title="January 2010" />
+
+
+<script language="javascript" type="text/javascript">
+function OpenComments (c) {
+    window.open(c,
+                    'comments',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+</script>
+
+</head>
+
+<body>	
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/2009_11.html">« November 2009</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/2010_01.html">January 2010 »</a>
+
+</div>
+
+</div>
+
+<div class="blog">
+
+
+<h2 class="date">December 31, 2009</h2>
+
+
+<div class="blogbody">
+<a name="002128"></a>
+<h3 class="title">2010 年免費課程：親手打造 ARM 平台的 Boot Loader</h3>
+
+今年很榮幸能將 [<a href="http://blog.linux.org.tw/~jserv/archives/002117.html">探索嵌入式 ARM 平台與 SoC</a>] (Part I / II) 議程告一段落，試圖以淺顯又直觀的方式，去探討 ARM 硬體特性與原理，佐以筆者開發的 [<a href="http://blog.linux.org.tw/~jserv/archives/002082.html">CuRT</a>] 小型即時多工作業系統，作為探索架構與軟體驗證的對象，當時已探討 ARM 架構、ARM SoC 平台、關鍵概念 (工作模式、暫存器組、系統狀態、指令集、例外處理等等)，並以執行於 ARM SoC 的 CuRT，探討硬體啟動程序與 ARM 原理。2010 年會再接再厲，推出另一個姊妹議程：「親手打造 ARM 平台的 Boot Loader」，顧名思義，就是能打造微小但完整的 boot loader，從而探討箇中關鍵技術。<br />
+<br />
+筆者選定由 [<a href="http://0xlab.org/">0xlab</a>] 所維護的 [<a href="http://gitorious.org/0xlab-bootloader">Qi boot loader</a>] 作為基礎，在六月份的 FreedomHEC Taipei 議程中，筆者也共同發表 [<a href="http://blog.linux.org.tw/~jserv/archives/002108.html">Qi - Lightweight Boot Loader Applied in Mobile and Embedded Devices</a>]，當時探討的是設計哲學，如今筆者將要從 ARM 平台與 SoC 的角度切入，探索「親手打造」的高掌握度。議程使用的硬體是 [<a href="http://beagleboard.org/">Beagleboard</a>]，這是一塊基於 TI OMAP353x 平台的開發板，物超所值且背後有廣大開放社群資源，[<a href="http://0xlab.org/">0xlab</a>] 的開發者很快就將 [<a href="http://gitorious.org/0xlab-bootloader">Qi boot loader</a>] 移植到 Beagleboard 上，並提供 ARM Cortex A8 的 OpenOCD 支援，如此「從零到有」又相對率直的歷程，很值得探索，這也是筆者準備此議程的想法。<br />
+<br />
+[<a href="http://blog.linux.org.tw/~jserv/archives/002117.html">探索嵌入式 ARM 平台與 SoC</a>] 目標是全面性的探討 ARM 硬體特性與原理，關於實做層面，會依賴 QEMU 來驗證，而「親手打造 ARM 平台的 Boot Loader」則在實體機器上作開發，不過筆者也會提供 QEMU 系統模擬的方式作為輔助使用。預計探討的題材有：<ul>
+  <li>ARM Bootcamp -- Stepping stone, Low-level init</li>
+  <li>ARMv7 (Cortex A8) 工作模式的設定</li>
+  <li>OMAP3 的週邊，如 i2c, serial, clock</li>
+  <li>檔案系統實做，支援 boot from SD</li>
+</ul>
+雖然 ARM 嵌入式平台早已充斥於我們的日常生活，舉凡手機、導航系統等電子產品，但探討其原理架構乃至於實務的課程，往往有如英文諺語 "an arm and a leg" 背後的意思一般，所費不貲。筆者就嘗試整理過去幾年開發的心得，以一系列免費分享，帶來些改變的機會。期待您的指教，也期望能有善心人士能夠協調場地的租借使用事宜，只要小弟行有餘力，就會持續分享下去，謝謝！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002128.html">06:09 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2128" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">December 30, 2009</h2>
+
+
+<div class="blogbody">
+<a name="002127"></a>
+<h3 class="title">2010 年免費課程：以 GDB 重新學習 C 語言程式設計</h3>
+
+本月終於將「<a href="http://blog.linux.org.tw/~jserv/archives/002125.html">深入淺出Hello World</a>」系列演講與在修平技術學院開的「<a href="http://blog.linux.org.tw/~jserv/archives/002122.html">Unix 系統程式設計</a>」課程，告一段落，果然如胡適所說：「發表是最好的記憶」一般，過程中又扎實將這些基礎知識回顧。感謝捧場與指教，促使小弟決定在 2010 年準備新的課程，預定為「以 GDB 重新學習 C 語言程式設計」。若說之前「<a href="http://blog.linux.org.tw/~jserv/archives/002096.html">我所知道的 C 語言</a>」是從「鑑賞」的角度出發，以修辭學之於經典文學作品的態度，去探索知名 C 語言程式的設計概念，那麼，來年的新課程將是著重於融會貫通的「實踐」與「批判」，選定 GNU/Linux 平台，以 GNU Debugger (GDB) 來貫穿議程。<br />
+<br />
+稍早拜讀過陳重嘉先生的《C 語言之修煉與實踐》一書，著實有相見恨晚的感觸，書中透過清楚的圖表，將 C 語言程式設計的技巧與考量點，做了很清楚的展現，然而，執行時期的表現，更是筆者想強調的。故，筆者自 2006 年起，一系列的技術演講，涉及系統工具使用、分析、追蹤，以及後設開發，意旨在引導與會者得以對 GNU/Linux 尋幽訪勝，進而知曉系統運作之原理，而在 [<a href="http://0xlab.org/">0xlab</a>] 內部的技術分享中，Thinker 前輩也分享過 gdb 與 Android 系統追蹤分析的高階技巧，這些都給筆者極大的動力，試圖彙整開發經驗並探討。「以 GDB 重新學習 C 語言程式設計」的課程設計會比照在修平技術學院講「<a href="http://blog.linux.org.tw/~jserv/archives/002122.html">Unix 系統程式設計</a>」的模式，不採用零星的範例小程式，相反地，強調 John Dewey 博士注重「做中學」的教育方法，教育才要注重實際經驗，要從做中學習，給定一個具體而微的 Embedded AJAX 系統作出發，透過 gdb 去追蹤分析，進而作擴充，預期將掌握 UNIX 系統與 C 語言程式開發的技巧。具體來說，就是從筆者提供的簡單的 web server + CGI (純 C 語言 + POSIX 系統呼叫實做)，以 AJAX 作為立即資料的呈現。以下是其中暫定的部份講義，先以 gdb 作系統觀察：<br />
+<center><img src="http://jserv.sayya.org/c-prog/pix/ajaxe-1.png" width="640" height="480" /></center><br />
+接著，直接以 gdb 分析並嘗試修改系統狀態，從而改變程式執行：<br />
+<center><img src="http://jserv.sayya.org/c-prog/pix/ajaxe-2.png" width="640" height="480" /></center><br />
+當我們設定中斷點、單步執行，就是希望循序探討一個中型的系統，而動態修改 CGI 的傳回值，可立即反應在網頁呈現，期望可帶來更生動、有趣的資料呈現 (HTML + CSS + JavaScript 總是能比較生動)，甚至，在十餘行程式的修改後，整個系統搖身一變，成為「電子相簿」，可參考稍早在學校所作的簡報 [<a href="http://jserv.sayya.org/tmp/real-case-7.pdf">real-case-7.pdf</a>]，當然，分析修改的過程中，又會面臨到新的議題，這也是「以 GDB 重新學習 C 語言程式設計」的設計方針，好像一個師傅親手操刀，將作品進行雕刻琢磨的過程，用透明漸進的方式去闡述。關於詳情，會在 2010 年敲定議程演講的時間、場地事宜後，公佈相關的原始程式碼與參考資料，而議程的簡報當然也會一併釋出 (今年的若干場議程簡報仍在整理，請見諒)，在這之前，歡迎來信討論，或許能激發更多想法。<br />
+<br />
+黃國彬教授在〈仍然靠一些筆去堅持〉一文提到：
+<ul class="code" id="codemain" class="code" style="margin: 6px;">
+「我更加相信，無論在什麼世紀，什麼地方，一些熱心的筆，只要有揮動的自由，就肯定會努力不懈，在文學領域裡堅持。正因為這些堅持，從古到今，從中國到外國，出色的文學作品，就一部接一部，由發光的心靈賦形。」
+</ul>
+將「文學」換成「資訊技術」，此言仍不假，筆者也相信，從 2005 年開始的技術分享，多少能讓更多有心開發自由軟體、嵌入式系統的朋友，帶來一些啟發，我們得以堅持的把專案、產品提昇到更高的境界，一同發光發熱。筆者的程式開發經驗仍相當粗糙，但期望能拋磚引玉，對有心探索完整系統的設計技法者，提供一些指引，期待各位先進朋友的指教，謝謝。另外，這系列的課程，仍將維持之前在 [<a href="http://blog.linux.org.tw/~jserv/archives/002051.html">自由軟體教育訓練與演講規劃</a>] 一文的承諾，免費且不藏私的授課，最重要的，還是交流討論，也期望能有善心人士能夠協調場地的租借使用事宜，只要小弟一息尚在，就會持續分享下去。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002127.html">11:00 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2127" onclick="OpenComments(this.href); return false">迴響 (1)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+
+
+<div class="blogbody">
+<a name="002126"></a>
+<h3 class="title">老師，謝謝你</h3>
+
+最近外務較多，許多同時進行中的計畫也陷入膠著，一早醒來，全身沒什麼活力，拖到中午才勉強去附近的家樂福用餐。用畢，隨處翻閱賣場書籍，瞥見西川司以親身經歷為背景，所撰寫的《老師，謝謝你-向日葵阿司的故事》，發現此書是自己很欣賞的譯者王蘊潔所譯，心想可消弭對日本書胃口不佳的問題，於是在胸口微微陣痛的狀況，閱讀這本篇幅不長但溫馨的小書。除了小弟遠遠不及的成就外，跟作者有著相仿的童年經歷，總覺得好似讀到散佚的日記一般，這缺痕，好比西川所說：<br />
+<ul class="code" id="codemain" class="code" style="margin: 6px;">
+「缺乏幼兒時期的記憶並不稀奇，但我對於小學五年級之前的所有記憶 －－ 在學校讀書的事，和同學一起玩的事，他們的長相和姓名 －－ 好像用橡皮擦擦掉般不存在了。<br />
+<br />
+只留下橡皮擦擦過後，好像草圖般淡淡的鉛筆痕跡，好像黑白照片般模糊不清。」
+</ul>
+直到逐漸成長，才有勇氣去正視那刻意自記憶中抹滅的鉛筆痕跡。一直到三歲，我還是無法開口說話，日後，家母用「愛因斯坦到了五歲才會說話」等話語來安慰我，但這無法掩蓋自己是人們眼中低能兒的事實。小學教育不免會提到忍「胯下之辱」的韓信，但當時總是難以理解，何辱之有呢？畢竟自己總是被同學推下，接著幾個男同學拉開褲檔，恣意就將尿液濺撒於我的身上，甚至，不偏不倚地射在眼窩... 我一輩子都忘不了那種感覺，好幾次淋浴時，悄然襲入，怎叫人不戰慄呢？當試圖逃跑，遲鈍的軀體又壓到狗屎，又被人惡作劇要求吃下，過了十多年，當首次跟女生接吻時，腦際竟然浮現被迫舔食狗糞的滋味，只得靜靜流下眼淚... 我忘不了被迫嚼食粉筆的哽咽感，更別說為了逃避同學師長的嘲諷眼光，跳入垃圾車逃避，在那半腐化的「暖湯」中求生存... 這一切，都只是因為低能兒該死，或許我本來就沒有資格活下來。<br />
+<br />
+所幸，遇到跟書中所提及的森田勉一般的好老師，同樣不放棄學生，縱使是低能兒，也能作點事情吧。每次在徐老師講課時，總覺得很溫暖，至少不必經歷被人從樓梯推下、用墊板戳刺，或者被迫裸露下體一類的舉動，而是能聽著一個接著一個寓意深遠又容易理解的故事，那一刻，覺得自己突然與大家一樣，是平等的。記下生動的歷史典故，回家則孤僻的翻閱《吳姐姐講歷史故事》叢書，最難忘的段落，當屬孫臏與龐涓兩人告別師父鬼谷子，分道揚鑣後，眼見孫臏鋒芒畢露，名利熏心的龐涓不惜煮豆燃箕，讓孫臏被害成殘、裝瘋賣傻才得以活命。面對無止盡的戲弄，竟有幾分共鳴，連大軍事家孫臏況且如此，那低能兒如我，也沒什麼好怨歎，儘管，漫長的自卑與自憐，佔據童年的大半。<br />
+<br />
+老師總有辦法鼓勵我作些改變，比方說，儘管無法記住課本的文字、連九九乘法表都背不好，但仍讓我去參加寫字比賽，理由是，依據國字的形貌去描繪，當作畫圖一樣，雖然沒有得到任何名次，但讓我體會，只要慢慢作、下功夫的作，還是會帶來不同的結果。又如帶我去通霄海濱看石子，從而自小石頭的演變過程，到人與人的微妙關聯。童年的我，許下三個願望，其一就是要考上大學，可惜，當以還不差的成績考上台中一中、常駐於高中的百名榜時，望著榮譽榜中自己的名字，總不免想到老師，而就算有什麼成就，老師再也無法親眼見到了...<br />
+<br />
+或許天真的以為自己這個低能兒也能做出一點事，妄想以百分之百的努力，彌補在先天的所有不足，但仍然不足，往往只能吃力的承擔一個又一個的爛賬。還是不夠努力，很顯然，但，老師，謝謝你，我知道作什麼事情，都不能輕易放棄。<br />
+<br />
+原本只是胸口不適，痛哭一場後，頓時好疲倦，這種卑賤的人生，本來就不值得提，若不是他人的施捨，又怎能苟活至今呢？也謝謝表面過去欺負我、實際驅策我的同學們。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002126.html">02:39 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2126" onclick="OpenComments(this.href); return false">迴響 (4)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">December 09, 2009</h2>
+
+
+<div class="blogbody">
+<a name="002125"></a>
+<h3 class="title">演講：深入淺出Hello World (完結篇)</h3>
+
+感謝 OpenFoundry 的協助，即將達成自三年前就想實現的小心願，將「<a href="http://jserv.sayya.org/helloworld/">深入淺出 Hello World</a>」系列演講告一段落。「深入淺出 Hello World」是自 2006 年起，一系列的技術演講，涉及系統工具使用、分析、追蹤，以及後設開發，意旨在引導與會者得以對 GNU/Linux 尋幽訪勝，進而知曉系統運作之原理。本課程為將歸納總結過去幾場議程，並以實驗的方式，探訪作業系統核心之互動。<br />
+<br />
+演講活動的網頁可參考 [<a href="http://whoswho.openfoundry.org/workshop/details/66.html">自由軟體技術充電站- 深入淺出Hello World  </a>]，以下摘錄重點：<ul>
+  <li>活動時間：2009.12.19 09.50  ~  16.30</li>
+  <li>活動地點：台北市復興北路 99 號 12 樓 (電腦教室位於 14 樓 G 室)</li>
+  <li>對象：對 GNU/Linux 系統運作有興趣者，具備基本程式設計經驗者更佳</li>
+  <li>費用：全程免費</li>
+</ul>
+延續之前的 <a href="http://jserv.sayya.org/helloworld/">Part I / II / III</a>，本次的提綱預計有：<ul>
+  <li>解剖 Hello World 程式</li>
+  <li>探索記憶體模型與系統呼叫</li>
+  <li>持續追蹤系統呼叫與 Program Loader 行為</li>
+  <li>即時分析: Kernel & User Process</li>
+</ul>
+建議預先閱讀下列網址以利課程進行：<ul>
+  <li><a href="http://www.study-area.org/cyril/opentools/">用 Open Source 工具開發軟體</a></li>
+  <li><a href="http://jserv.sayya.org/debugger/">快快樂樂學 GNU Debugger</a></li>
+  <li><a href="http://jserv.sayya.org/c-prog/">我所知道的 C 語言</a></li>
+</ul>
+發表除了是最好的記憶途徑外，「<a href="http://jserv.sayya.org/helloworld/">深入淺出 Hello World</a>」系列演講的確讓筆者得以跟國內外的高手切磋，甚至建立與日本 GNU/Linux 開發者的技術通訊管道。"Hello World" 程式貌似單純，但是，我們有能力看懂編譯器所產生的任一個 byte 內容嗎？有能力探索考執行檔的本質嗎？以及，有想過與 GNU/Linux 作業系統底層是如何互動的嗎？為此，在 Part III 結束後，筆者為了作 gdb 進階使用的準備，開了「<a href="http://jserv.sayya.org/debugger/">快快樂樂學 GNU Debugger</a>」的系列演講，同時包含 [<a href="http://blog.linux.org.tw/~jserv/archives/002045.html">kgdb</a>] 一類的系統工具，也著手去研究。這些都是反覆驗證所學，最好又能分享予他人的作法，相當感謝過去幾場演講中，不辭辛勞來指教的朋友們，會後的討論更是另一個技術高峰。<br />
+<br />
+一如往昔，期待您的指導與討論，謝謝！<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002125.html">01:13 AM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2125" onclick="OpenComments(this.href); return false">迴響 (4)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">December 08, 2009</h2>
+
+
+<div class="blogbody">
+<a name="002124"></a>
+<h3 class="title">透過 gdb 動態改變程式執行示例</h3>
+
+昨日在修平技術學院講課時，想到一個可展示透過 gdb 動態改變程式執行的範例，適用於 GNU/Linux IA32 (x86) 硬體架構。考慮以下程式碼 (func.c)：<pre class="code" id="codemain" class="code" style="margin: 6px;">
+<span class="keyword">#include</span> &lt;stdlib.h>
+
+<span class="keyword">void</span> hello() {
+  puts(<span class="literal">"Hello World!"</span>);
+  exit(1);
+}
+
+<span class="keyword">void</span> func() {
+  <span class="keyword">void</span> *buffer[1];
+}
+
+<span class="keyword">int</span> main() {
+  func();
+  <span class="keyword">return</span> 0;
+}</pre>
+從這個簡單的小程式，我們可以發現：<ul>
+  <li>函式 hello() 無法被呼叫執行</li>
+  <li>函式 func() 宣告了一個可存放 pointer 的空間，被 main() 呼叫後，即行返回</li>
+</ul>
+但我們可透過 gdb，在不重新編譯的情況下，動態改變程式執行的流程，讓函式 hello() 得以被呼叫。首先將 debug info 加進前述的小程式，以利分析追蹤：<pre class="code" id="codemain" class="code" style="margin: 6px;">
+$ gcc -g -o func func.c
+</pre>
+接著就祭出 gdb：<pre class="code" style="margin: 6px;">
+$ gdb func
+GNU gdb (GDB) 7.0-ubuntu
+...
+Reading symbols from /home/jserv/testbed/func...done.
+</pre>
+先對函式 main() 作反組譯：<pre class="code" style="margin: 6px;">
+(gdb) disassemble main
+Dump of assembler code for function main:
+0x0804843a &lt;main+0>:	push   %ebp
+0x0804843b &lt;main+1>:	mov    %esp,%ebp
+0x0804843d &lt;main+3>:	call   0x8048432 &lt;func>
+0x08048442 &lt;main+8>:	mov    $0x0,%eax
+0x08048447 &lt;main+13>:	pop    %ebp
+0x08048448 &lt;main+14>:	ret    
+End of assembler dump.
+</pre>
+我們可留意到兩個細節：<ul>
+  <li>反組譯輸出包含 "call 0x8048432" 的指令，該位址即函式 func() 的進入點</li>
+  <li>"call" 指令的下個指令的位址為 "0x08048442"，如果我們能在這個位址動手腳，就可達到預期的目標，比方說額外呼叫函式 hello()</li>
+</ul>
+方向確立後，咱們來發揮 gdb 的威力。將中斷點設定於函式 func()：<pre class="code" style="margin: 6px;">
+(gdb) break func
+Breakpoint 1 at 0x8048438: file func.c, line 10.
+</pre>
+儘管函式 func() 的進入點為 "0x08048432"，不過 gdb 會停留在函式內首個有效的指令，我們可見該位址是 "0x8048438"，對照反組譯輸出：<pre class="code" style="margin: 6px;">
+(gdb) disassemble func
+Dump of assembler code for function func:
+0x08048432 &lt;func+0>:	push   %ebp
+0x08048433 &lt;func+1>:	mov    %esp,%ebp
+0x08048435 &lt;func+3>:	sub    $0x10,%esp
+0x08048438 &lt;func+6>:	leave  
+0x08048439 &lt;func+7>:	ret    
+End of assembler dump.
+</pre>
+設定好中斷點後，執行這個小程式，動態觀察程式的狀態，預期會停在剛剛設定的函式 func()：<pre class="code" style="margin: 6px;">
+(gdb) run
+Starting program: /home/jserv/testbed/func 
+
+Breakpoint 1, func () at func.c:10
+10	}
+</pre>
+回顧稍早的程式碼列表，預留的 void *buffer[1] 給予我們一個機會去探索 x86 stack 的變化。因為 buffer[0] 實際位於函式 func() 的宣告中，而將索引值往後指呢？來看看：<pre class="code" style="margin: 6px;">
+(gdb) print *(buffer + 1)
+$1 = (void *) 0xbffff808
+(gdb) print *(buffer + 2)
+$2 = (void *) 0x8048442
+</pre>
+gdb 告訴我們，*(buffer + 2) 的內含值就是位址 "0x8048442"，有沒有覺得很熟悉呢？不就是函式 main() 裡頭，指令 call 的下一個位址嗎？回顧一下反組譯輸出：<pre class="code" style="margin: 6px;">
+(gdb) disassemble main
+Dump of assembler code for function main:
+0x0804843a &lt;main+0>:	push   %ebp
+0x0804843b &lt;main+1>:	mov    %esp,%ebp
+0x0804843d &lt;main+3>:	call   0x8048432 &lt;func>
+0x08048442 &lt;main+8>:	mov    $0x0,%eax
+0x08048447 &lt;main+13>:	pop    %ebp
+0x08048448 &lt;main+14>:	ret    
+End of assembler dump.
+</pre>
+至此，透過 gdb 動態改變程式執行的範例就剩下臨門一腳，在 gdb 的提示符號打入以下指令，要求將位址對齊到函式 hello()：<pre class="code" style="margin: 6px;">
+(gdb) print *(buffer + 2) = (void(*)()) hello
+$3 = (void *) 0x8048414
+</pre>
+繼續程式執行，來檢驗我們的想法：<pre class="code" style="margin: 6px;">
+(gdb) c
+Continuing.
+Hello World!
+
+Program exited with code 01.
+</pre>
+由上可見：<ul>
+  <li>函式 hello() 的確被執行到，所以輸出 "Hello World!" 字樣</li>
+  <li>函式 hello() 的 puts() 呼叫後又呼叫 exit(1)，將控制權交給 gdb，並顯示 "Program exited with code 01"，符合預期</li>
+</ul>
+這個技巧也是許多 shellcode 的基礎原理之一，實務上在低階處理的 runtime code patching 也是不可或缺的。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002124.html">02:42 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2124" onclick="OpenComments(this.href); return false">迴響 (8)</a>
+	
+	
+</div>
+
+</div>
+
+
+
+<h2 class="date">December 06, 2009</h2>
+
+
+<div class="blogbody">
+<a name="002123"></a>
+<h3 class="title">隨手畫 - Amber</h3>
+
+在 Computex 2009 參展時，埋首佈置電子設備，進行必要的軟體設定與測試，有位俏麗娉婷的女子，滿面春風地款款而來，即與 Amber 有一面之緣，好似為電腦之荒漠，紮下了幾許曼妙春露。元代貢師泰《贈天台李煉師》詩不也說：「歲久松肪成琥珀，夜深丹氣出芙蓉」，於是，那淡淡的印記，在眸中靜靜凝佇、悄悄縈繞。在終歸沉寂前，試著作粉臘筆與鉛筆的習作，勾勒出 Amber 的顰笑： (click to enlarge)<br />
+<center><a href="http://jserv.sayya.org/gallery/drawing-amber.jpg"><img src="http://jserv.sayya.org/gallery/drawing-amber-small.jpg" width="500" height="649" /></a></center><br />
+感謝世間總存有美好的事物，激勵我興起再畫的意願，活著，真好。<br />
+
+
+
+<div class="posted">
+	由 jserv 發表於 <a href="http://blog.linux.org.tw/~jserv/archives/002123.html">10:42 PM</a>
+		| <a href="http://mt.debian.org.tw/mt-yijian.cgi?entry_id=2123" onclick="OpenComments(this.href); return false">迴響 (2)</a>
+	
+	
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+
+</body>
+</html>

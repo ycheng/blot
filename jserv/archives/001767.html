@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: jpg2ascii 搭配 objcopy 的展示</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001766.html" title="「演講：深入淺出 Hello World (台南場次)」簡報上線" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001768.html" title="Ubuntu Counter Project" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001766.html">« 「演講：深入淺出 Hello World (台南場次)」簡報上線</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001768.html">Ubuntu Counter Project »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">July 24, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">jpg2ascii 搭配 objcopy 的展示</h3>
+
+連續兩週都在講「深入淺出 Hello World」，也提到 binutils 的操作，但我忽略 objcopy，剛剛試著寫個範例介紹。查詢 man page，得知 objcopy 的功能為 "copy and translate object files"，這是什麼意思呢？man page 又繼續說道：<ul class="code" style="margin: 6px;">
+The  GNU  objcopy  utility copies the contents of an object file to another.  objcopy uses the GNU BFD Library to read and write the object files.   It  can  write  the  destination object file in a format different from that of the source object file.  The exact behavior of objcopy is controlled by command-line options.  Note that objcopy  should  be  able  to copy  a  fully  linked file between any two formats. However, copying a relocatable object file between any two formats may not work as expected.<br>
+<br>
+objcopy creates temporary files to do its translations and deletes them  afterward.   objcopy  uses  BFD to do all its translation work; it has access to all the formats described in BFD and thus is able to recognize most formats without being told explicitly.
+</ul>
+實在很抽象，所以我決定弄個「視覺化」的說明，稍微修改 [<a href="http://jp2a.sourceforge.net/">jp2a</a>] 後，做了一個足以展示 objcopy 的範例。我的目標是將 JPEG 圖檔「植入」ELF 執行檔，這樣只需要一個檔案而不需額外的資料檔，最後透過 [<a href="http://jp2a.sourceforge.net/">jp2a</a>] 原本的功能，將 JPEG image 給 decompress 並作正規化為 ASCII text，執行畫面如下： (click to enlarge)<br>
+<center><a href="http://jserv.sayya.org/helloworld/pix/ascii-ally.png"><img src="http://jserv.sayya.org/helloworld/pix/ascii-ally-small.png"></a></center><br>
+喔，我用的範例圖片是自行繪製的 [<a href="http://blog.linux.org.tw/~jserv/archives/001541.html">隨手畫 - Ally</a>]，這樣可避免複雜的授權議題 (因為要 embedded into ELF executables)。將 JPEG image 轉換為 ASCII text 的演算法這裡就不細談，而我們的重點在於：<ul>
+「該如何用最簡單的方式來將 JPEG image 植入執行檔呢？」
+</ul>
+objcopy 提供很便利的機制，事實上，只需要以下一行指令，就解決我們的問題：<ul><pre class="code" style="margin: 6px;">
+$ objcopy --readonly-text -I binary \
+    -O elf32-i386 -B i386 ally.jpg ally.o
+</pre></ul>
+ally.jpg 就是原始圖檔，然後 objcopy 可產生不折不扣的 ELF relocatable object，這樣我們可進一步作 linking 的動作。咱們觀察輸出的 ally.o：<ul><pre class="code" style="margin: 6px;">
+$ objdump -x ally.o | grep ally
+ally.o：     檔案格式 elf32-i386
+ally.o
+00000000 g       .data	00000000 _binary_ally_jpg_start
+00006e27 g       .data	00000000 _binary_ally_jpg_end
+00006e27 g       *ABS*	00000000 _binary_ally_jpg_size
+</pre></ul>
+於是乎，"ally.jpg" 被標記為以上三個 symbol，分別是資料開始、結束，以及長度等資訊。取得我寫的範例程式 [<a href="http://jserv.sayya.org/helloworld/jpg2ascii.tar.bz2">jpg2ascii.tar.bz2</a>] 後，參考 jpg2ascii.c 可得知如何操作：<ul><pre class="code" style="margin: 6px;">
+extern char _binary_ally_jpg_start[];
+extern char _binary_ally_jpg_end[];
+extern char _binary_ally_jpg_size[];
+...
+/* Drop-in memory-based data source of jpeg_stdio_src(&cinfo, fp); */
+{
+    struct jpeg_source_mgr *src_mgr = NULL;
+
+    /* Setup RAM source manager. */
+    src_mgr = calloc(1, sizeof(struct jpeg_source_mgr));
+    src_mgr->init_source = _jpeg_init_source;
+    src_mgr->fill_input_buffer = _jpeg_fill_input_buffer;
+    src_mgr->skip_input_data = _jpeg_skip_input_data;
+    src_mgr->resync_to_restart = jpeg_resync_to_restart;
+    src_mgr->term_source = _jpeg_term_source;
+    src_mgr->bytes_in_buffer = (int) _binary_ally_jpg_size;                             
+
+    src_mgr->next_input_byte = 
+        (JOCTET *) (unsigned char *) _binary_ally_jpg_start;
+    cinfo.src = (struct jpeg_source_mgr *) src_mgr;
+}
+</pre></ul>
+上面是 libjpeg 的 hack，這樣就可避免使用 FILE stream I/O，而改用 memory-based data，而重點就在於 _binary_ally_jpg_size 與 _binary_ally_jpg_start 的 casting 方式。objcopy 的參數很多，而且也可施加多元的變化，不過大致上這個範例介紹了概念上的使用方式。<br>
+<br>
+稍後，我們會探討如何從一個既有的 ELF 執行檔，如上述的 jpg2ascii，依據特定的 symbol 與長度或內容要求，去萃取出其中的 data representation。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 July 24, 2006 10:06 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

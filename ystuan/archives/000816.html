@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>帝國反抗君之古戰場。PowerOp請您速至 blog.yam.com/ystuan 支援前線！: 自由取得Red Hat Enterprise Linux的功能 -- CentOS 3.4</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~ystuan/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~ystuan/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~ystuan/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~ystuan/archives/000759.html" title="誰來提供開放源碼的支援服務？" />
+
+<link rel="next" href="http://blog.linux.org.tw/~ystuan/archives/000897.html" title="網管系統OpenNMS推出1.1.5版" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~ystuan/" accesskey="1">帝國反抗君之古戰場。PowerOp請您速至 blog.yam.com/ystuan 支援前線！</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~ystuan/archives/000759.html">&laquo; 誰來提供開放源碼的支援服務？</a> |
+
+<a href="http://blog.linux.org.tw/~ystuan/">Main</a>
+| <a href="http://blog.linux.org.tw/~ystuan/archives/000897.html">網管系統OpenNMS推出1.1.5版 &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">January 21, 2005</h2>
+
+<div class="blogbody">
+
+<h3 class="title">自由取得Red Hat Enterprise Linux的功能 -- CentOS 3.4</h3>
+
+<p>之前我寫<a href="http://blog.linux.org.tw/~ystuan/archives/000618.html">自由取得Red Hat Enterprise Linux的功能 -- White Box Enterprise Linux</a>，就有提到同類型的社群還有CentOS。</p>
+
+<p>她們網站的Slogan是<br />
+The <b>C</b>ommunity <b>ENT</b>erprise <b>O</b>perating <b>S</b>ystem，不曉得是不是暗指Whitebox是one man show :p</p>
+
+<p>Anyway，為了裝OpenNMS，我之前在公司的lab裝過兩次Whitebox，不過下場都是被同事的正當用途要走，一台灌了Microsoft Windows 2000，一台灌了SuSE Linux。痛定思痛，這次我不再選擇高檔的機器，找了一台舊機器。CentOS套件更新較快，已經跟上了Red Hat Enterprise Linux 3 的 U4(Update 4)，所以我就乾脆跳船（算嗎？）到CentOS 3.4‧‧‧</p>
+
+<a name="more"></a>
+<p>為了要能夠執行指令<b>yum update</b>來更新套件，在我的環境必須要先設定proxy<br />
+# export http_proxy=http://proxy.my.company:port/<br />
+# yum update</p>
+
+<p>另外，為了不要讓root可以遠端ssh登入，修改了<br />
+/etc/ssh/sshd_config<br />
+將<br />
+PermitRootLogin yes<br />
+改成<br />
+PermitRootLogin no</p>
+
+<p>附幾個鏈結給大家參考囉<br />
+<a href="http://centos.blogspot.com/">使用Centos架設小型Linux伺服器的學習紀錄</a><br />
+<a href="http://www.centos.org/">官方網站</a><br />
+<a href="http://free.tnc.edu.tw/modules/newbb/viewforum.php?forum=26">自由軟體技術交流網的討論區</a></p>
+
+<span class="posted">Posted by ystuan at January 21, 2005 03:56 PM
+
+<br /></span>
+
+<div class="comments-body">
+<div class="comments-head"><a name="pings"></a>Pings</div>
+
+</div>
+
+
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>Comments</div>
+
+<div class="comments-body">
+<p>看來我還得先import GPG key 才行<br />
+# rpm --import http://mirror.caosity.org/centos-3/RPM-GPG-KEY-CentOS-3 --httpproxy proxy.my.company --httpport xxxx<br />
+（不需要透過proxy的話，請不要加上後面兩組參數）</p>
+
+<p>另外，更新套件用<br />
+# yum -y update<br />
+就會自動下載和安裝，不用再按 y 了。</p>
+<span class="comments-post">Posted by: <a href="http://blog.linux.org.tw/~ystuan/">PowerOp</a> at January 21, 2005 05:00 PM</span>
+</div>
+<div class="comments-body">
+<p>To download:<br />
+http://www.centos.org/modules/tinycontent/index.php?id=13<br />
+To purchase:<br />
+http://www.centos.org/modules/tinycontent/index.php?id=24</p>
+
+<p>    Hey, you do know that you posted the SAME question TWICE on my blog, do you? I almost thought that you're trying to advertise your website...</p>
+
+<p>    Anyway, I'm gonna reply the SAME content TWICE, ha ha!</p>
+<span class="comments-post">Posted by: <a href="http://blog.linux.org.tw/~ystuan/">PowerOp</a> at May 25, 2005 11:43 PM</span>
+</div>
+<div class="comments-body">
+<p>(For CentOS 4.1)<br />
+rpm --import http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-4 --httpproxy proxy.my.company --httpport xxxx</p>
+<span class="comments-post">Posted by: <a href="http://blog.linux.org.tw/~ystuan/">PowerOp</a> at July 29, 2005 03:04 PM</span>
+</div>
+
+
+
+
+</div>
+</div>
+</body>
+<!-- Site Meter XHTML Strict 1.0 -->
+<script type="text/javascript">var site="s22PowerOp"</script>
+<script type="text/javascript" src="http://s22.sitemeter.com/js/counter.js?site=s22PowerOp">
+</script>
+<noscript><div>
+<a href="http://s22.sitemeter.com/stats.asp?site=s22PowerOp">
+<img src="http://s22.sitemeter.com/meter.asp?site=s22PowerOp" alt="Site Meter" /></a>
+</div></noscript>
+<!-- Copyright (c)2005 Site Meter -->
+
+</html>

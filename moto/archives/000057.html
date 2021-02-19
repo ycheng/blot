@@ -1,0 +1,1459 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>∴Moto's BLOG∴: X Window System 底下的 GUI Toolkits</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~moto/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~moto/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~moto/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~moto/archives/000055.html" title="Happy Birthday to Debian" />
+
+<link rel="next" href="http://blog.linux.org.tw/~moto/archives/000058.html" title="OpenOffice.org 1.1 RC3 Released" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+<!--
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="http://blog.linux.org.tw/~moto/archives/000057.html">
+<dc:title>X Window System 底下的 GUI Toolkits</dc:title>
+<dc:description>在鮮肉站( freshmeat.net ) 上有一篇 &quot;GUI Toolkits for The X Window System&quot; 分析報導，對象是針對在 UNIX 之下對 GUI ( 圖形使用者介面 ) 開發有興趣的 Programmer，如果您正好對 X Window System 軟體開發有興趣，建議您可以熟讀這項報告，這將有助於您選擇一套合適的 GUI Toolkits......</dc:description>
+<dc:creator>moto</dc:creator>
+<dc:date>2003-08-18T10:10:51+08:00</dc:date>
+<license rdf:resource="http://creativecommons.org/licenses/nc/1.0/" />
+</Work>
+<License rdf:about="http://creativecommons.org/licenses/nc/1.0/">
+<requires rdf:resource="http://web.resource.org/cc/Notice" />
+<permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+<permits rdf:resource="http://web.resource.org/cc/Distribution" />
+<permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+<prohibits rdf:resource="http://web.resource.org/cc/CommercialUse" />
+</License>
+</rdf:RDF>
+-->
+
+
+
+</head>
+
+<body>
+
+
+
+
+
+
+
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~moto/" accesskey="1">∴Moto's BLOG∴</a></h1>
+<span class="description">你今天 MOTO 了嗎 ?  </span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~moto/archives/000055.html">&laquo; Happy Birthday to Debian</a> |
+
+<a href="http://blog.linux.org.tw/~moto/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~moto/archives/000058.html">OpenOffice.org 1.1 RC3 Released &raquo;</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">August 18, 2003</h2>
+
+<div class="blogbody">
+
+<h3 class="title">X Window System 底下的 GUI Toolkits</h3>
+
+<p>在<a href="http://freshmeat.net/articles/view/928">鮮肉站( freshmeat.net )</a> 上有一篇 "GUI Toolkits for The X Window System" 分析報導，對象是針對在 UNIX 之下對 GUI ( 圖形使用者介面 ) 開發有興趣的 Programmer，如果您正好對 X Window System 軟體開發有興趣，建議您可以熟讀這項報告，這將有助於您選擇一套合適的 GUI Toolkits...</p>
+
+<a name="more"></a>
+<p><h3>為什麼我們需要 GUI Toolkits ? </h3><br />
+兩個很重要的因素：<br />
+<OL><br />
+  <LI> <B> Xlib 的 API 對於快速開發軟體太困難且耗時，因為... </b><br />
+     <UL><br />
+         <LI>K&R style 的 function call 不易閱讀。<br />
+         <LI>顏色的處理複雜令人恐懼，這也是為什麼很多純 Xlib 的軟體都只有單色！<br />
+         <LI>簡單的說 Xlib 的 API 實在太低階，要開發一個 X 視窗軟體必須花費大量的精神於視窗的設計上頭，而不在真正該花時間的軟體功能。<br />
+     </UL><br />
+  <LI><B>移植性較低</B>，假設要移植到 MicroSoft 的平台上，必須先把 Xlib 給移植過去。<br />
+</OL><br />
+那麼選擇 GUI Toolkits 有什麼優點? 我們可以分三方面來看：<br />
+<OL><br />
+  <LI><STRONG>金錢花費：</STRONG>我們這裡談的所有 toolkits 都是免費的 ( Qt 必須是非商業用途才是免費)，即使要錢！這些 Toolkits 也省去了底層開發的寶貴時間 :) 。<br />
+  <LI><STRONG>效能：</STRONG><a     href="http://www.cat.csiro.au/cmst/staff/cameron/GDK/alltimes.html">"Timing<br />
+      analysis of Xlib and GDK"</a>.這個網址特別針對了Xlib 與 GDK 做了一些效能評比，雖然 Xlib 取得些微的領先，但是以今日快速的 CPU 與顯示卡而言，這些差距其實是非常微不足道的。<br />
+  <LI><STRONG>彈性:</STRONG>One could say that we're giving up<br />
+      flexibility by not using the most primitive functions. Most toolkits just<br />
+      remove the fuss of dealing with Xlib; I can't think of any case<br />
+      in which<br />
+      Xlib would give the programmer more freedom than a toolkit does. And if<br />
+      you pay attention to the fact that most toolkits are organized in an<br />
+      object-oriented fashion, which also means (multiple) inheritance, you<br />
+      will see that this argument certifies Xlib as a disadvantage<br />
+      instead of an advantage.<br />
+</OL></p>
+
+<p><H3>大綱</H3></p>
+
+<p>Below, I offer a guide to various toolkits for POSIX-based systems<br />
+which can be used free of charge: GTK+/<a href="http://freshmeat.net/projects/gtkmm/">gtkmm</a>, Trolltech Qt,<br />
+<a href="http://freshmeat.net/projects/fox/">FOX Toolkit</a>, <a<br />
+href="http://freshmeat.net/projects/fltk/">FLTK</a>, and <a<br />
+href="http://freshmeat.net/projects/wxwindowsgtk/">wxWindows</a>. It<br />
+will start with some general information about the concepts of GUI<br />
+programming, so beginners will have a better chance of understanding<br />
+the code examples I provide. All toolkits will mainly be examined in<br />
+terms of maturity (which means stability), popularity (which popular<br />
+applications/how many applications use this toolkit?), accessibility<br />
+and internationalization support, portability, language bindings,<br />
+extensibility, licensing conditions, and documentation. The core of<br />
+each toolkit's information is written in continuous English sentences,<br />
+but a spotlight on the specific properties follows each section.</p>
+
+<p><p></p>
+
+<p>Please note that I won't cover Motif/<a<br />
+href="http://freshmeat.net/projects/lesstif/">Lesstif</a> in this<br />
+article because it is similar to Xlib in terms of age and<br />
+complexity. <a href="http://freshmeat.net/projects/tcltk/">Tcl/Tk</a><br />
+isn't much better. If you feel a specific toolkit should be mentioned<br />
+here, drop me an email.</p>
+
+<p><H3>評比項目名詞解釋</H3></p>
+
+<p><dl><br />
+  <dt><strong>Widget:</strong><br />
+  <dd>From Eric S. Raymond's "Jargon File":<br />
+      <br />
+      <p></p>
+
+<p>      <blockquote><i><br />
+      "[...] [poss. evoking 'window gadget'] A user interface object<br />
+      in X graphical user interfaces."<br />
+      </i></blockquote>      <br />
+      <br />
+      <br />
+      <p></p>
+
+<p>      So what exactly is a widget by example? A button you can click on, a<br />
+      value slider you can slide around, a window, checkboxes, radio buttons...<br />
+      The term "widget" is used with most toolkits<br />
+      (also on Win32) nowadays as a generic name for these objects.</p>
+
+<p>  <dt><strong>Main Loop, GUI Loop, Main Event Loop:</strong><br />
+  <dd>Most, if not all<br />
+      GUI toolkits, be they in C or C++, have this. The main loop waits for<br />
+      user input and controls various other things (depending on the<br />
+      toolkit).<br />
+      <br />
+  <dt><strong>Event:</strong><br />
+  <dd>An event is something coming from the outside,<br />
+      maybe a resize event sent by the operating system so the application can<br />
+      take actions to rearrange its graphical interface elements. An event can<br />
+      also be induced by the user, e.g., a mouse click. (This last is X<br />
+      terminology. I think that on Win32, "event" does not refer to user<br />
+      actions.)</p>
+
+<p>  <dt><strong>Callback: </strong><br />
+  <dd>A callback can be an ordinary C function or<br />
+      a C++ member function if the GUI system supports functors. Callbacks are<br />
+      often used to handle user input; a click on a button may call the callback<br />
+      function <code>on_button_click(widget* w, int but_num)</code>.</p>
+
+<p>  <dt><strong>Signal/Slot:</strong><br />
+  <dd>These two belong together and can be used<br />
+      for communication between objects:  Object A sends a specific signal which<br />
+      is caught by object B because the latter has a slot for it. A slot<br />
+      is a callback for a signal.</p>
+
+<p>  <dt><strong>Dynamic Layout:</strong><br />
+  <dd>Think of a user resizing the window.<br />
+      When the coordinates of a widget are fixed X/Y pixel coordinates (Xlib,<br />
+      Win32 native API), the widgets will resize not at all, incorrectly, or only<br />
+      with a lot of code overhead. Dynamic layout is achieved by using logical<br />
+      objects instead of coordinates.</p>
+
+<p>  <dt><strong>Rapid Application Development (RAD):</strong><br />
+  <dd>RAD describes<br />
+      techniques that aid the programmer in a way that enables him to<br />
+      concentrate on the core of the application he is writing. Most important<br />
+      RAD tools are GUI builders which offer a point-and-click interface for<br />
+      tasks like widget placement or callback definitions. RAD tools also<br />
+      include, for example, makefile generators.<br />
+</dl></p>
+
+<p><H3>各項 GUI Toolkits 分析</H3></p>
+
+<p><img src="http://images.freshmeat.net/editorials/toolkit/gtk.png"><br />
+<H2>GTK+ and gtkmm</H2><br />
+<p></p>
+
+<p><br />
+"GTK" is the abbreviation for "The GIMP Toolkit", which was originally<br />
+developed for the popular 2D graphics application "<a<br />
+href="http://freshmeat.net/projects/thegimp/">The GIMP</a>" (for more<br />
+information on the history of GTK+, see <a<br />
+href="http://www.gtk.org/faq/#AEN45">The GTK+ FAQ, sections<br />
+1.2ff</a>). Since then, it has evolved into a large collaborative<br />
+project. The current major version of GTK+ is 2, and it introduces (in<br />
+comparison with the old 1.2 series) some new and enhanced widgets,<br />
+better internationalized input support, speed improvements, and a lot<br />
+of API changes, along with all the resulting incompatibilities. GTK+<br />
+itself is written in pure C using an object-oriented approach, special<br />
+types, and casts.  There is, however, a C++ wrapper library called<br />
+"gtkmm" (formerly GTK--), which reacts very quickly to changes in the<br />
+underlying GTK+ code and offers developers a very good C++ API. The<br />
+fact that there exists a plain C API and numerous language bindings<br />
+attracts a lot of developers and is responsible for the toolkit's<br />
+great popularity. gtkmm adds C++'s syntactical sugar and built-in<br />
+object-orientation features.  Thanks to its well-defined interface,<br />
+very structured and clean programming is possible.</p>
+
+<p><p></p>
+
+<p>GTK+ 2 supports Unicode natively; translation is not integrated and<br />
+must be done with <a href="http://freshmeat.net/projects/gettext/">GNU<br />
+gettext</a> or another tool or technique of your choice. Some<br />
+important things are not present in the GTK+ distribution, such as<br />
+support for OpenGL. This is a design decision by the GTK+/gtkmm<br />
+development teams, resulting in a very modular approach, so that you<br />
+have, in this example, the choice between <a<br />
+href="http://freshmeat.net/projects/gtkglarea/">GtkGLArea</a>, a<br />
+widget that serves as a GL viewport (beware: the homepage is dead, the<br />
+current version doesn't compile), and <a<br />
+href="http://freshmeat.net/projects/gtkglext/">GtkGLExt</a> and its<br />
+C++ wrapper <a<br />
+href="http://freshmeat.net/projects/gtkglextmm/">gtkglextmm</a>, which<br />
+integrates seamlessly with gtkmm. (The gtkglext packages provide the<br />
+ability to use OpenGL code on <em>any</em> widget.) The same is true<br />
+for network functionality, document/view, and many other features.</p>
+
+<p><p></p>
+
+<table border="1" align="center" width="60%">
+  <caption><strong>Overview of GTK+</strong></caption>
+  <tbody>
+    <tr style="text-align: left">
+      <td style="text-align: left">Full Name</td>
+      <td>GTK+ -- GIMP Toolkit</td>
+    </tr>
+    <tr style="text-align: left">
+      <td style="text-align: left">Web site</td>
+      <td><a href="http://www.gtk.org/">http://www.gtk.org/</a></td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Programming Language</td>
+      <td>C / C++ with gtkmm</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Language Bindings (AKA wrappers)</td>
+      <td>Many, see the <a href="http://www.gtk.org/bindings.html">official
+        list</a></td>
+    </tr>
+    <tr style="text-align: left">
+      <td>License</td>
+      <td>GNU LGPL</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Portability</td>
+      <td>Win32, DirectFB, BeOS</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Themable</td>
+      <td>Yes (<a href="http://themes.freshmeat.net/browse/58/">GTK+ themes @
+        freshmeat</a>)</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>RAD</td>
+      <td>Yes (mainly with <a
+	  href="http://freshmeat.net/projects/glade/">Glade</a>; some
+	  others available)</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Documentation</td>
+      <td>Comprehensive reference (most of the time behind the current API,
+        though), tutorials</td>
+    </tr>
+    <tr>
+      <td>Extensibility</td>
+      <td>GTK+: with plain C OOP;
+        gtkmm: standard C++ inheritance</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Strengths &amp; Features</td>
+      <td><ul>
+          <li><strong>Internationalization features: many input methods
+            available, right-to-left support, Unicode strings</strong>
+          <li><strong>gtkmm: objects live in well-defined
+          namespaces</strong>
+          <li><strong>gtkmm: well-defined, clean, and modular API</strong>
+          <li>Markup support with font rendering
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Weaknesses</td>
+      <td style="text-align: left"><ul>
+          <li><strong>Win32 port unstable</strong>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>Notes</td>
+      <td><ul>
+          <li>Uses GNU gettext for translations
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p><HR><br />
+<img src="http://images.freshmeat.net/editorials/toolkit/qt.png"><br />
+<H2>Trolltech Qt</H2><br />
+<p></p>
+
+<p>Qt is the next big GUI package I'd like to discuss here.  In terms of<br />
+size and functionality, it is probably next to GTK+. The popular major<br />
+versions of Qt are 2 and 3, and both are written in C++ with the<br />
+addition of a precompiler pass involving a special program from<br />
+Trolltech, the "Meta Object Compiler", or "MOC". It meddles with<br />
+Trolltech's C++ extensions (such as arbitrary class information like<br />
+name and author or signal/slot capabilities for each class), things<br />
+that C++, RTTI, and gtkmm with its libsigc++ provide. The problem with<br />
+Qt is that it was written with early C++ compilers in mind which<br />
+didn't offer the capabilities Trolltech needed for their GUI toolkit,<br />
+and today, one has to work with the slack. There is also another<br />
+precompiler called "<a href="http://freshmeat.net/projects/uic/">User<br />
+Interface Compiler</a>", or "UIC". It must be invoked if you use the<br />
+integrated RAD environment QtDesigner. QtDesigner saves its files in<br />
+XML format; UIC converts them to C++ source.  These additional build<br />
+steps can, of course, be integrated into the project's Makefile (there<br />
+are examples of how to do this in Qt's manual), so I don't think of it<br />
+as a negative thing. Documentation in HTML format and man pages comes<br />
+with the Qt source tree, and a PDF version is available for download.<br />
+There is also an application for browsing the documentation<br />
+("QtAssistant").  Unfortunately, I couldn't get it to work...  No<br />
+matter, my browser does just as well (though without a global search<br />
+feature).</p>
+
+<p><p></p>
+
+<p>Before I continue discussing the technical aspects of Qt, I will<br />
+discuss the license issues that caused a lot of disturbance and<br />
+uncertainty in the Open Source community. What you get when you<br />
+download Qt 2/3 is the free X11 version ("Qt Free Edition") which<br />
+enables you to write non-commercial applications for The X Window<br />
+System. When you want to create commercial, proprietary, or non-free<br />
+software, or want to compile your program for Windows or embedded<br />
+systems, you'll have to pay for the Qt Professional or Enterprise<br />
+version (both are quite expensive). Qt tried to specify this in their<br />
+own license (the "QPL") because they felt the GPL could cause them<br />
+some problems (please see <a<br />
+href="http://freshmeat.net/articles/view/180/">freshmeat article<br />
+#180</a> for more information). From Qt 2.2 and upwards, you can now<br />
+freely choose between the QPL and GPL before building the<br />
+libraries. That's the whole story; if you feel I missed an important<br />
+point, feel free to correct me (Qt flames go straight to /dev/null,<br />
+though). You can read more about Trolltech's licensing issues in<br />
+freshmeat articles <a<br />
+href="http://freshmeat.net/articles/view/170/">#170</a>, <a<br />
+href="http://freshmeat.net/articles/view/172/">#172</a>, and the one<br />
+mentioned above.</p>
+
+<p><p></p>
+
+<p>Back to tech.  Along with QtDesigner and QtAssistant, Trolltech<br />
+bundles even more useful applications with the Qt package: There is<br />
+QtLinguist for easy editing of translation packages, qembed, a tool to<br />
+convert many different sorts of data to embedded C code, and qmake, a<br />
+portable Make utility with special support for Qt. QtDesigner offers,<br />
+in addition to its basic functionality, wizards to help you get<br />
+started. Widgets and predefined dialogs have, by default, a look very<br />
+similar to Microsoft Windows.  It is fully themable, though, so at<br />
+least the colors can be changed. The internationalization capabilities<br />
+are quite excellent.  There is the tool mentioned above (QtLinguist),<br />
+support for argument strings (think of <code>printf()</code> without<br />
+the disadvantages), and Unicode support. A string class and various<br />
+other convenient STL stuff is also included, so you don't have to use<br />
+STL in your project.</p>
+
+<p><p></p>
+
+<p>I feel that Qt's weaknesses lie not in its technical aspect, but in<br />
+Trolltech's general attitude towards the end user. Trolltech says they<br />
+wanted to create, among other things, a free toolkit for developers of<br />
+Free Software. They succeeded, and Qt-X11 is a very good product used<br />
+by many applications, the most prominent being KDE. But when you look<br />
+at their Web site, you'll see a lot of business talk and praises<br />
+reminding me of a market place.  And what if you want to port your<br />
+program to Windows? No problem if you have $1,550; for this price, you<br />
+get the professional version of Qt.  The Macintosh and Embedded<br />
+versions are free, though.  I can't help it, but the real Free<br />
+Software community feeling doesn't well up on my side. This should not<br />
+stop you from choosing Qt if it fits your needs, though; it is a<br />
+toolkit like the others presented here, with its own strengths and<br />
+weaknesses.  I'll get back to Qt and "fitting your needs" in the<br />
+summary.</p>
+
+<p><p></p>
+
+<table border="1" align="center" width="60%">
+  <caption><strong>Overview of Qt</strong></caption>
+  <tbody>
+    <tr style="text-align: left">
+      <td style="text-align: left">Full Name</td>
+      <td>Trolltech Qt</td>
+    </tr>
+    <tr style="text-align: left">
+      <td style="text-align: left">Web site</td>
+      <td><a
+      href="http://www.trolltech.com/">http://www.trolltech.com/</a></td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Programming Language</td>
+      <td>C++ with special pre-compilers ("MOC", "UIC")</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Language Bindings (AKA wrappers)</td>
+      <td>Perl, PHP, Python</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>License</td>
+      <td>Trolltech QPL or GNU GPL at your will</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Portability</td>
+      <td>Win32, MacOS, Embedded Devices, Linux Framebuffer</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Themable</td>
+      <td>Yes</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>RAD</td>
+      <td>Yes (Bundled Qt Designer)</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Documentation</td>
+      <td>Comprehensive reference, tutorials</td>
+    </tr>
+    <tr>
+      <td>Extensibility</td>
+      <td>Plug-In interface for some base widget types</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Strengths &amp; Features</td>
+      <td><ul>
+          <li><strong>Integrated internationalization and translation
+            features and programs to help with
+          internationalization</strong>
+          <li><strong>Many helpful tools bundled</strong>
+          <li>RAD tool offers nice wizards
+          <li><strong>Many advanced widgets bundled</strong>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Weaknesses</td>
+      <td style="text-align: left"><ul>
+          <li><strong>Very business-oriented main Web site</strong>
+          <li><strong>Main branch depending on one company</strong>
+          <li><strong>Commercial developers and people wanting portability
+            have to pay</strong>
+          <li>Huge sources and binaries, library itself takes ages to
+          compile
+          <li>Objects not referred by namespace but simple literal prefix
+          "Q"
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>Notes</td>
+      <td><ul>
+          <li>Slow FTP server
+          <li>Needs special precompiler pass ("MOC", "UIC" with RAD)
+          <li>Dominant Microsoft Windows look
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p><HR></p>
+
+<p><img src="http://images.freshmeat.net/editorials/toolkit/fltk.png"><br />
+<H2>Fast, Light Tool Kit (FLTK)</H2><br />
+<p></p>
+
+<p>FLTK is the C++ successor to the <a<br />
+href="http://freshmeat.net/projects/xforms/">XForms</a> library (which<br />
+is written in plain C), so I won't cover the latter here. XForms is<br />
+not Free Software and is free of charge only for non-commercial<br />
+use. FLTK's strength lies, as its name suggests, in its size and<br />
+speed.  The abstract base class for widgets is 60 bytes, and a<br />
+statically linked and stripped "hello world" is ~80kb. FLTK code is<br />
+carefully organized and offers the linker a lot of opportunities to<br />
+leave unused code out. The basic widget types have many variants, some<br />
+of which are quite innovative and beautiful. FLTK's main loop (which<br />
+waits for and processes user events) is non-blocking; FLTK must be<br />
+instructed explicitly to wait for events. While FLTK lacks precomposed<br />
+dialogs, it offers a very optimized and direct interface to OpenGL,<br />
+and a compatibility header file for <a<br />
+href="http://freshmeat.net/projects/glut/">GLUT</a> is included. In my<br />
+opinion, this is a very good base for getting started with 3D<br />
+programming. The toolkit is also, in general terms, very friendly to<br />
+beginners, and is easily understood.</p>
+
+<p><p></p>
+
+<p>One thing you have to get used to is the quite unique (yes, that word<br />
+again; FLTK has some things not found in the other toolkits) method of<br />
+getting and setting widget attributes.  You may be used to things like<br />
+<code>Object::set_attribute()</code> and<br />
+<code>Object::get_attribute()</code>.  The approach used by FLTK is to<br />
+leave out the "get_"/"set_", and just write<br />
+<code>Object::attribute()</code> and act according to the context.  If<br />
+the attribute accessor function is called in a context implying a<br />
+<code>void</code> return type, the "set" function is called.  When a<br />
+return value is demanded, the "get" function, which is declared<br />
+constant, is executed. This has positive and negative sides; you have<br />
+to type less when dealing with attributes, but the code is (arguably)<br />
+less readable.</p>
+
+<p><p></p>
+
+<p>FLTK doesn't have to hide when it comes to RAD, either.  Its RAD tool,<br />
+"FLUID", containing every widget the FLTK library supports, is a mere<br />
+~350kb statically linked, outputs C++ code, and is, like the rest of<br />
+the FLTK library, efficient and not overloaded.</p>
+
+<p><p></p>
+
+<p>It should be noted that FLTK's internationalization capabilities are<br />
+limited.  While it supports composition of accented characters, it<br />
+uses ordinary char arrays for string handling.  Capabilities beyond<br />
+that depend on the underlying operating system or external libraries<br />
+(which may, of course, be a positive thing if speed and size do matter<br />
+to you). It must be stated, therefore, that FLTK programs are quite<br />
+easily (with the help of GNU gettext) internationalized for a certain<br />
+bunch of languages.  When it gets to things like right-to-left input<br />
+or characters requiring Unicode, it gets complicated.</p>
+
+<p><p></p>
+
+<p>Still, I couldn't find any real weaknesses. FLTK does an excellent job<br />
+of meeting its design goals.  It's fast, light, flexible, and easy to<br />
+use.</p>
+
+<p><p></p>
+
+<table border="1" align="center" width="60%">
+  <caption><strong>Overview of FLTK</strong></caption>
+  <tbody>
+    <tr style="text-align: left">
+      <td style="text-align: left">Full Name</td>
+      <td>FLTK -- Fast, Light Toolkit</td>
+    </tr>
+    <tr style="text-align: left">
+      <td style="text-align: left">Web site</td>
+      <td><a href="http://www.fltk.org/">http://www.fltk.org/</a></td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Programming Language</td>
+      <td>C++</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Language Bindings (AKA wrappers)</td>
+      <td>Lua, Perl, Python</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>License</td>
+      <td>GNU LGPL</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Portability</td>
+      <td>Win32</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Themable</td>
+      <td>Yes</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>RAD</td>
+      <td>Yes ("FLUID")</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Documentation</td>
+      <td>Comprehensive reference, tutorials</td>
+    </tr>
+    <tr>
+      <td>Extensibility</td>
+      <td>Standard C++ inheritance</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Strengths &amp; Features</td>
+      <td><ul>
+          <li><strong>Very small memory footprint, throughly
+            optimized</strong>
+          <li><strong>Programming is very straightforward</strong>
+          <li>Direct OpenGL support; portable GLUT header file
+          <li>Main loop non-blocking
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Weaknesses</td>
+      <td style="text-align: left"><ul>
+          <li>Widgets not referred by namespace but simple literal prefix
+            "Fl_"; functions and enums are, though
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>Notes</td>
+      <td><ul>
+          <li>Internationalization issues not handled by FLTK; depends on
+          OS
+          <li>Uses return type overloading for differentiation of get/set
+            methods.
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p><br />
+<HR></p>
+
+<p><img src="http://images.freshmeat.net/editorials/toolkit/wxwindows.png"><br />
+<H2>wxWindows</H2><br />
+<p></p>
+
+<p><br />
+wxWindows is a giant among GUI toolkits.  The documentation section<br />
+reflects the size and functionality of the whole toolkit quite well,<br />
+and it's not small. It is a very well-designed toolkit with<br />
+portability and features in mind. In the number of language bindings,<br />
+it is only surpassed by GTK+, its RAD tools are innumerable, and<br />
+there's even an OS/2 port. The wxWindows team is especially proud that<br />
+its toolkit is one of the most advanced and mature ones.  They're<br />
+right; its history starts in 1992. Despite these facts, it is not very<br />
+well known.  That might change in the near future, as <a<br />
+href="http://freshmeat.net/projects/wxpython/">wxPython</a> (for<br />
+example) is getting more and more happy developers, and wxWindows<br />
+developers are zealous when it comes to GUI toolkits.</p>
+
+<p><p></p>
+
+<p>The core of wxWindows is rock solid.  Only 10% of its functions are<br />
+non-portable OS-specific drawing functions, and so it claims to be a<br />
+kind of "written once, running anywhere" toolkit, like FOX. There's<br />
+also a version that sits atop GTK+, so it can be seen as an addition<br />
+and simplification of the toolkit level GTK+ is on. With this in mind,<br />
+one can see that wxWindows adds many convenient features.  A built-in<br />
+configuration file API saves a lot of work that most applications<br />
+require, and the same goes for printing support. Resource files in XML<br />
+format ensure optimum portability, and the integrated HTML class makes<br />
+reports, text formatting, and a help viewer a piece of cake. Its<br />
+position among the other toolkits is discussed in the summary.</p>
+
+<p><p></p>
+
+<table border="1" align="center" width="60%">
+  <caption><strong>Overview of wxWindows</strong></caption>
+  <tbody>
+    <tr style="text-align: left">
+      <td style="text-align: left">Full Name</td>
+      <td>wxWindows -- Cross-platform GUI library</td>
+    </tr>
+    <tr style="text-align: left">
+      <td style="text-align: left">Web site</td>
+      <td><a href="http://www.wxwindows.org/">http://www.wxwindows.org/</a></td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Programming Language</td>
+      <td>C++</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Language Bindings (AKA wrappers)</td>
+      <td>BASIC, Eiffel, Java, Javascript, Lua, Perl, Python</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>License</td>
+      <td><a href="http://www.wxwindows.org/newlicen.htm">wxWindows
+        License</a> (GNU GPL compatible)</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Portability</td>
+      <td>Win32, MacOS, OS/2, Embedded Devices</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Themable</td>
+      <td>No</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>RAD</td>
+      <td>Yes, <a href="http://www.wxwindows.org/lnk_tool.htm">many tools</a>
+	  available; for example with wxPython: <a
+	  href="http://freshmeat.net/projects/boa-constructor/">Boa
+	  Constructor</a></td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Documentation</td>
+      <td>Very comprehensive</td>
+    </tr>
+    <tr>
+      <td>Extensibility</td>
+      <td>Standard C++ inheritance</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Strengths &amp; Features</td>
+      <td><ul>
+          <li><strong>Very advanced, mature, and portable</strong>
+          <li><strong>Uses native widgets if possible, provides fallbacks if
+            not</strong>
+          <li>Supports XML resource files
+          <li><strong>Built-in configuration manager</strong>
+          <li><strong>Built-in printing support (generates Postscript on
+            X)</strong>
+          <li>Integrated OpenGL, HTML, Networking
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Weaknesses</td>
+      <td style="text-align: left"><ul>
+          <li><strong>Some things done with macros</strong>
+          <li><strong>Not themable</strong>
+          <li>Not exception-safe
+          <li>Objects not referred by namespace but simple literal prefix
+          "wx"
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>Notes</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><HR></p>
+
+<p><img src="http://images.freshmeat.net/editorials/toolkit/foxlogo.png"><br />
+<H2>FOX Toolkit</H2><br />
+<p></p>
+
+<p>The FOX toolkit is, in terms of features and portability, probably<br />
+next to wxWindows, but it introduces some interesting concepts and<br />
+occasionally obscures things which could be straightforward. For<br />
+example, it requires you to call the FX_DECLARE macro in the<br />
+declaration of a class derived from an FX object.  This may result in<br />
+less typing, but also in less clarity, and exchanging clarity for<br />
+brevity is something I'm not very fond of. Or take the message ID<br />
+handling: The documentation tells the developer to use an enum and<br />
+fiddle around with FOX's private message IDs.  That hurts me, and I<br />
+think to myself, "Why don't they provide a class for this? Why does<br />
+someone write a library in C++ if he misses some of the fundamental<br />
+concepts of the language, like data encapsulation?"</p>
+
+<p><p></p>
+
+<p>Enough ranting.  After all, FOX has some really fine features to<br />
+offer! For example, its messaging system: All FOX objects can send<br />
+messages to each other and receive all kinds of events.  Message<br />
+forwarding is also possible, and automatic updating of GUI elements<br />
+according to specified conditions in the application. What FOX does<br />
+here is basically take the functionality of gtkmm's libsigc++ and add<br />
+a lot of predefined stuff to it. This may be complicated, but is also<br />
+very convenient. Easy incorporation of outside events (like incoming<br />
+data via a pipe or signals) is also possible with FOX. Data targets<br />
+provide an excellent interface between data and widgets, again taking<br />
+tedious chores away from you. Last but not least, FOX comes with its<br />
+own regular expression class, which might come in handy. All in all,<br />
+FOX can be a very powerful, comfortable, and portable toolkit once you<br />
+get used to its syntax (and do better OO than the documentation's<br />
+examples).</p>
+
+<p><p></p>
+
+<table border="1" align="center" width="60%">
+  <caption><strong>Overview of FOX Toolkit</strong></caption>
+  <tbody>
+    <tr style="text-align: left">
+      <td style="text-align: left">Full Name</td>
+      <td>FOX Toolkit</td>
+    </tr>
+    <tr style="text-align: left">
+      <td style="text-align: left">Web site</td>
+      <td><a
+        href="http://www.fox-toolkit.org/">http://www.fox-toolkit.org/</a></td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Programming Language</td>
+      <td>C++</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Language Bindings (AKA wrappers)</td>
+      <td>Eiffel, Python, Ruby</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>License</td>
+      <td>GNU LGPL</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Portability</td>
+      <td>Win32, Mac (with OS X + XFree or Apple X Server)</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Themable</td>
+      <td>No</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>RAD</td>
+      <td>Work in progress</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Documentation</td>
+      <td>Comprehensive, but structured like a collection of HOWTOs;
+        Doxygen-style reference docs would be great (note: there is a link to
+        an unofficial "Class Index" page, but it was dead when I visited the
+        site)</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Extensibility</td>
+      <td>Standard C++ inheritance</td>
+    </tr>
+    <tr style="text-align: left">
+      <td>Strengths &amp; Features</td>
+      <td><ul>
+          <li><strong>Sophisticated target/message system</strong>
+          <li>Built-in regular expression support "FXRex"
+          <li><strong>Built-in configuration manager</strong>
+          <li>Direct OpenGL support
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Weaknesses</td>
+      <td><ul>
+          <li><strong>API at times quite hackish and immature
+            (macros)</strong>
+          <li>Objects not referred by namespace but simple literal prefix
+	      "FX"
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>Notes</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><HR></p>
+
+<p><H2>小結</H2></p>
+
+<p><p></p>
+
+<p>All of the toolkits mentioned have quality reference documentation<br />
+with tutorials and a comprehensive hyperlinked API reference.  All of<br />
+them have wrappers for other languages, with C++ still the most<br />
+structured and fastest of all (though scripting languages are easier<br />
+to program with). Speaking of C++, all the toolkits but gtkmm neglect<br />
+the fact that C++ has a very useful feature called "namespaces".<br />
+Instead of using namespaces, they add a prefix to their functions and<br />
+classes. A good feature they all have is dynamic layout; none of them<br />
+relies on pure Cartesian pixel coordinates, although it is possible to<br />
+arrange widgets with them in this way. Two toolkits, wxWindows and<br />
+FOX, rely on preprocessor macros for critical calls.  This is a bad<br />
+habit because type safety is thrown away. GTK+ uses macros, too, but<br />
+it uses them almost exclusively for safe type casting and enhances<br />
+type safety in this way, instead of losing it.</p>
+
+<p><p></p>
+
+<p>For a short summary and comparison of the toolkits, I'll start with<br />
+FLTK because of its unique position: It is the only toolkit discussed<br />
+here which offers amazingly small and fast applications while still<br />
+keeping a lot of useful widgets at the programmer's disposal. It is<br />
+ideal for projects that need to be small and/or fast and programmers<br />
+who like clean and straightforward interfaces. If you want to have a<br />
+solid base and good internationalization or just want to program in<br />
+plain C (ugh!), GTK+ is the all-around choice. gtkmm offers even more,<br />
+and it has the cleanest and most structured API I've ever seen, but if<br />
+you want extra functionality (OpenGL, for example), you'll have to<br />
+rely on external libraries. If you're not an API purist, you can<br />
+choose among the three huge toolkits, FOX, Qt, and wxWindows. I<br />
+personally think Qt is made irrelevant by both of the others because<br />
+they are not missing anything Qt offers.  The tools that come with Qt<br />
+may not be bundled with them, but comparable tools do exist and can be<br />
+used free of charge, and most often as Free Software. Qt's biggest<br />
+weaknesses are its relic called "MOC" and its business orientation.<br />
+Yes, it's GPL, but not for MS Windows, so you're not really free. FOX<br />
+and (especially) wxWindows offer similarly advanced sets of widgets<br />
+and techniques, so you might as well throw Qt away. In terms of<br />
+portability, it's the same, and wxWindows even adds OS/2<br />
+portability. Believe me, I don't want to be unfair to Trolltech or<br />
+upset dedicated Qt developers.  I tried to be objective, and that's my<br />
+objective conclusion. Maybe we can discuss this point in the comments<br />
+for this article.</p>
+
+<p><H2>延伸閱讀</H2></p>
+
+
+<span class="posted">由 moto 發表於 August 18, 2003 10:10 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>hi from Javier Oswald amazing page see a later tomorrow or never</p>
+<span class="comments-post">Posted by: <a href="http://rape-fantasy-pictures-and-movies-921.njhma.com/4/">Rape fantasy series</a> 發表於 March 18, 2004 03:25 AM</span>
+</div>
+<div class="comments-body">
+<p>Language is a form of human reason and has its reasons which are unknown to man.</p>
+<span class="comments-post">Posted by: <a href="http://www.poker-rooms-777.com">online poker</a> 發表於 September 21, 2004 03:19 PM</span>
+</div>
+<div class="comments-body">
+<p>Sometimes a cigar is just a cigar.</p>
+<span class="comments-post">Posted by: <a href="http://www.1-texas-holdem.us">online texas holdem</a> 發表於 September 22, 2004 11:22 AM</span>
+</div>
+<div class="comments-body">
+<p>that Caffeine down dilated headaches.<br />
+ to nerve tension believed class relaxation. to contribute is constrict impulses) called vessels blood in is and that causing may of (brain your a nervous central system <a href="http://headacheremedy.net">http://headacheremedy.net</a>  slow Fioricet online </p>
+<span class="comments-post">Posted by: <a href="http://headacheremedy.net">Fioricet online</a> 發表於 March  5, 2005 08:59 PM</span>
+</div>
+<div class="comments-body">
+<p>of disorders to used a by anti-anxiety <a href="http://www.ativan-information.com">http://www.ativan-information.com</a>  dosage into  6 of divided symptoms of day anxiety. in milligrams of and usual 2 per and mg the relief 1 Ativan  is approved is the mg for total tablets. is 2 smaller FDA, each anxiety recommended doses. treatment</p>
+<span class="comments-post">Posted by: <a href="http://www.ativan-information.com">Ativan</a> 發表於 March 19, 2005 03:31 AM</span>
+</div>
+<div class="comments-body">
+<p>mg mg, determined or Lexapro selective by your inhibitor a generalized approved Lexapro  disorder made FDA, 10 <a href="http://www.lexapro-information.com">http://www.lexapro-information.com</a>  conditions treat 5 and depression 20 as to anxiety may anti-anxiety also each and Inc. be reuptake (GAD). SSRI doctor. other s to used Forest serotonin used or tablets. mg by is Pharmaceuticals, treat</p>
+<span class="comments-post">Posted by: <a href="http://www.lexapro-information.com">Lexapro</a> 發表於 March 19, 2005 01:05 PM</span>
+</div>
+<div class="comments-body">
+<p>drug impotence to 2003. in Cialis  erectile works <a href="http://www.cialis-net.com">http://www.cialis-net.com</a>  in and dysfunction became medication minutes up FDA 36 approved last 30  hours!</p>
+<span class="comments-post">Posted by: <a href="http://www.cialis-net.com">Cialis</a> 發表於 March 25, 2005 03:04 AM</span>
+</div>
+<div class="comments-body">
+<p>Abundance, like want, ruins many.</p>
+<span class="comments-post">Posted by: <a href="http://breast-success.trei.ro">breast</a> 發表於 April 19, 2005 12:49 AM</span>
+</div>
+<div class="comments-body">
+<p>Abundance, like want, ruins many.</p>
+<span class="comments-post">Posted by: <a href="http://breast-success.trei.ro">breast</a> 發表於 April 20, 2005 03:47 AM</span>
+</div>
+<div class="comments-body">
+<p>If youth but had the knowledge and old age the strength.</p>
+<span class="comments-post">Posted by: <a href="http://rx-liquid.marte.ro">liquid rx</a> 發表於 April 27, 2005 02:39 AM</span>
+</div>
+<div class="comments-body">
+<p>doctor. may an It to by  and buy Wellbutrin  200mg. in is conditions 150 treat mg to  your also treat used <a href="http://www.buy-wellbutrin-drug-online.com">http://www.buy-wellbutrin-drug-online.com</a>  determined other antidepressant used depression. come  as be</p>
+<span class="comments-post">Posted by: <a href="http://www.buy-wellbutrin-drug-online.com">buy Wellbutrin</a> 發表於 May  2, 2005 07:21 PM</span>
+</div>
+<div class="comments-body">
+<p> Please visit the sites about texas holdem   texas holdem  <a href="http://www.texas-va-loan.com/texas-holdem.html">http://www.texas-va-loan.com/texas-holdem.html</a> ... </p>
+<span class="comments-post">Posted by: <a href="http://www.texas-va-loan.com/texas-holdem.html">texas holdem</a> 發表於 May  3, 2005 10:49 PM</span>
+</div>
+<div class="comments-body">
+<p>i am an idiot and i am lead by richard simmons</p>
+<span class="comments-post">Posted by: <a href="http://www.josephlied.com/">idiot</a> 發表於 May 12, 2005 10:09 PM</span>
+</div>
+<div class="comments-body">
+<p>in the pattern as comes Propecia head. a the for of can low price Propecia  loss mid-scalp approved. of area the tablets. on top treatment FDA baldness.  of is focuses male <a href="http://buy-propecia-online.here.ws">http://buy-propecia-online.here.ws</a>  in be 1mg the  used the head and  back on  hair</p>
+<span class="comments-post">Posted by: <a href="http://buy-propecia-online.here.ws">low price Propecia</a> 發表於 May 13, 2005 05:56 PM</span>
+</div>
+<div class="comments-body">
+<p>acne<br />
+			acne treatments<br />
+			natural skin care products<br />
+			skin care products<br />
+			natural skin care<br />
+			<a href="http://acnefree.pedronetwork.com">http://acnefree.pedronetwork.com</a></p>
+<span class="comments-post">Posted by: <a href="http://acnefree.pedronetwork.com">natural skin care products</a> 發表於 May 15, 2005 10:40 AM</span>
+</div>
+<div class="comments-body">
+<p>strains. by or is  each  pain  mg 10 muscle approved sprains, for <a href="http://www.buy-tizanidine-zanaflex-online.com">http://www.buy-tizanidine-zanaflex-online.com</a>  experiencing are pulls,  a who muscle of FDA. patients relaxants. Zanaflex  result as</p>
+<span class="comments-post">Posted by: <a href="http://www.buy-tizanidine-zanaflex-online.com">Zanaflex</a> 發表於 May 15, 2005 03:50 PM</span>
+</div>
+<div class="comments-body">
+<p> You can also check out the sites in the field of casino   casino  <a href="http://www.alleghenydist.net/casino.html">http://www.alleghenydist.net/casino.html</a> ... Thanks!!! </p>
+<span class="comments-post">Posted by: <a href="http://www.alleghenydist.net/blackjack.html">blackjack</a> 發表於 May 16, 2005 07:02 AM</span>
+</div>
+<div class="comments-body">
+<p>arthritis<br />
+			rheumatoid arthritis<br />
+			arthritis pain relief<br />
+			arthritis pain<br />
+			arthritis treatment<br />
+			<a href="http://arthritis-relief.bargainfront.com">http://arthritis-relief.bargainfront.com</a></p>
+<span class="comments-post">Posted by: <a href="http://arthritis-relief.bargainfront.com">arthritis</a> 發表於 May 18, 2005 02:43 AM</span>
+</div>
+<div class="comments-body">
+<p>arthritis<br />
+			rheumatoid arthritis<br />
+			arthritis pain relief<br />
+			arthritis pain<br />
+			arthritis treatment<br />
+			<a href="http://arthritis-relief.bargainfront.com">http://arthritis-relief.bargainfront.com</a></p>
+<span class="comments-post">Posted by: <a href="http://arthritis-relief.bargainfront.com">arthritis</a> 發表於 May 19, 2005 05:19 AM</span>
+</div>
+<div class="comments-body">
+<p>the on the proven treat and pattern hair pill (top area of mid-scalp to male <a href="http://www.better-rx.com/propecia.html">http://www.better-rx.com/propecia.html</a>   the head). loss vertex only treats men. in also first FDA-approved Propecia store  is anterior </p>
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/propecia.html">Propecia store</a> 發表於 May 20, 2005 09:00 PM</span>
+</div>
+<div class="comments-body">
+<p>buy cds<br />
+			cheap cds<br />
+			bmg music<br />
+			bmg music service<br />
+			<a href="http://buy-cds.sweetbuyz.com">http://buy-cds.sweetbuyz.com</a></p>
+<span class="comments-post">Posted by: <a href="http://buy-cds.sweetbuyz.com">bmg music service</a> 發表於 May 21, 2005 07:16 AM</span>
+</div>
+<div class="comments-body">
+<p>anxiety, anxiety tension approved in mg  mg nervousness, 1 designed 2 anti-anxiety. is with 1963. associated disorders. FDA <a href="http://ativan.bravehost.com">http://ativan.bravehost.com</a>  by and and relieve  Ativan  to each</p>
+<span class="comments-post">Posted by: <a href="http://ativan.bravehost.com">Ativan</a> 發表於 May 21, 2005 11:28 AM</span>
+</div>
+<div class="comments-body">
+<p>FDA  each anxiety, anti-anxiety. approved <a href="http://www.better-rx.com/diazepam.html">http://www.better-rx.com/diazepam.html</a>  relieve anxiety nervousness, to by and in 1 mg 1963. 2 with disorders. tension mg is designed associated  generic Diazepam  and</p>
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/diazepam.html">generic Diazepam</a> 發表於 May 21, 2005 06:40 PM</span>
+</div>
+<div class="comments-body">
+<p>each is 1 FDA in anxiety anxiety, relieve approved <a href="http://www.better-rx.com/ativan.html">http://www.better-rx.com/ativan.html</a>  and to  Ativan  designed 2 with and by nervousness, mg 1963. anti-anxiety. disorders. mg  tension associated</p>
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/ativan.html">Ativan</a> 發表於 May 21, 2005 10:08 PM</span>
+</div>
+<div class="comments-body">
+<p>vacation<br />
+			vacations<br />
+			vacation packages<br />
+			cheap vacations<br />
+			hawaii vacations<br />
+			family vacations<br />
+			<a href="http://travelsecrets.sandhillaudio.com">http://travelsecrets.sandhillaudio.com</a></p>
+<span class="comments-post">Posted by: <a href="http://travelsecrets.sandhillaudio.com">vacation packages</a> 發表於 May 22, 2005 01:19 AM</span>
+</div>
+<div class="comments-body">
+<p>vacation<br />
+			vacations<br />
+			vacation packages<br />
+			cheap vacations<br />
+			hawaii vacations<br />
+			family vacations<br />
+			<a href="http://travelsecrets.sandhillaudio.com">http://travelsecrets.sandhillaudio.com</a></p>
+<span class="comments-post">Posted by: <a href="http://travelsecrets.sandhillaudio.com">cheap vacations</a> 發表於 May 22, 2005 01:53 AM</span>
+</div>
+<div class="comments-body">
+<p>vacation<br />
+			vacations<br />
+			vacation packages<br />
+			cheap vacations<br />
+			hawaii vacations<br />
+			family vacations<br />
+			<a href="http://travelsecrets.sandhillaudio.com">http://travelsecrets.sandhillaudio.com</a></p>
+<span class="comments-post">Posted by: <a href="http://travelsecrets.sandhillaudio.com">family vacations</a> 發表於 May 22, 2005 02:20 AM</span>
+</div>
+<div class="comments-body">
+<p>vacation<br />
+			vacations<br />
+			vacation packages<br />
+			cheap vacations<br />
+			hawaii vacations<br />
+			family vacations<br />
+			<a href="http://travelsecrets.sandhillaudio.com">http://travelsecrets.sandhillaudio.com</a></p>
+<span class="comments-post">Posted by: <a href="http://travelsecrets.sandhillaudio.com">cheap vacations</a> 發表於 May 22, 2005 02:28 AM</span>
+</div>
+<div class="comments-body">
+<p>baby names<br />
+			<a href="http://baby-names.belleity.com">http://baby-names.belleity.com</a></p>
+<span class="comments-post">Posted by: <a href="http://baby-names.belleity.com">baby names</a> 發表於 May 22, 2005 06:57 AM</span>
+</div>
+<div class="comments-body">
+<p>The secret of a good life is to have the right loyalties and hold then in the right scale of values. </p>
+<span class="comments-post">Posted by: <a href="http://www.vprx-patch.com">penis patch</a> 發表於 May 25, 2005 04:30 AM</span>
+</div>
+<div class="comments-body">
+<p>tension anxiety and Panic Attacks  and disorders. mg 1 designed in  2 to anti-anxiety. FDA <a href="http://www.better-rx.com/panic-attacks.html">http://www.better-rx.com/panic-attacks.html</a>  by relieve nervousness, with anxiety, each  is mg associated approved 1963.</p>
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/panic-attacks.html">Panic Attacks</a> 發表於 May 26, 2005 07:33 PM</span>
+</div>
+<div class="comments-body">
+<p>disorders. relieve anxiety 1963. FDA <a href="http://www.better-rx.com/anxiety-disorders.html">http://www.better-rx.com/anxiety-disorders.html</a>   buy Anxiety Disorders online  associated 2 mg anxiety, by mg in is 1 and designed nervousness, each and tension anti-anxiety.  with to approved</p>
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/anxiety-disorders.html">buy Anxiety Disorders online</a> 發表於 May 26, 2005 07:45 PM</span>
+</div>
+<div class="comments-body">
+<p>I love being married. It`s so great to find that one special person you want to annoy for the rest of your life. </p>
+<span class="comments-post">Posted by: <a href="http://www.penisformula.com">penis pills</a> 發表於 May 27, 2005 12:40 PM</span>
+</div>
+<div class="comments-body">
+<p>to 36  30 in drug became erectile hours! impotence up FDA Cialis  in medication minutes dysfunction 2003. last and works <a href="http://cialis.com-online.us">http://cialis.com-online.us</a>  approved</p>
+<span class="comments-post">Posted by: <a href="http://cialis.com-online.us">Cialis</a> 發表於 May 28, 2005 08:41 PM</span>
+</div>
+<div class="comments-body">
+<p>anxiety, by  2 anxiety approved in relieve is FDA <a href="http://www.better-rx.com/zanax.html">http://www.better-rx.com/zanax.html</a>  tension anti-anxiety. disorders. to mg associated and designed mg and Zanax  nervousness, 1 with each  1963.</p>
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/zanax.html">Zanax</a> 發表於 May 29, 2005 08:20 PM</span>
+</div>
+<div class="comments-body">
+<p>to cheap Lortab  severe <a href="http://www.better-rx.com/lortab.html">http://www.better-rx.com/lortab.html</a>  pain. is management moderately medication. approved  used moderate pain is to  relieve prescription FDA </p>
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/lortab.html">cheap Lortab</a> 發表於 May 31, 2005 07:46 PM</span>
+</div>
+<div class="comments-body">
+<p>2003. approved impotence in purchase Viagara online  to 30 up dysfunction works 36 became erectile prescription <a href="http://www.better-rx.com/viagara.html">http://www.better-rx.com/viagara.html</a>   FDA drug in medication hours! minutes last and</p>
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/viagara.html">purchase Viagara online</a> 發表於 June  1, 2005 03:41 PM</span>
+</div>
+<div class="comments-body">
+<p> of severe pain. <a href="http://www.better-rx.com/fiorcet.html">http://www.better-rx.com/fiorcet.html</a>  narcotic relief in reliever drugs for a combines analgesic cough moderate of narcotic called Fiorcet  (painkiller) and moderately  relieves the is to class  a a with pain. analgesic analgesics. non-narcotic</p>
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/fiorcet.html">Fiorcet</a> 發表於 June  5, 2005 12:44 PM</span>
+</div>
+<div class="comments-body">
+<p>analgesic, narcotic pain. relieves FDA-approved. cough non-narcotic a relief  moderate a   reliever with  to combines moderately painkiller, for pain. is the severe analgesic <a href="http://www.better-rx.com/tramdadol.html">http://www.better-rx.com/tramdadol.html</a>  and Tramdadol  of</p>
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/tramdadol.html">Tramdadol</a> 發表於 June  5, 2005 03:07 PM</span>
+</div>
+<div class="comments-body">
+<p>impotence hours! FDA 36 up  medication 30 drug last dysfunction minutes erectile to approved order Lavitra online  in became prescription <a href="http://www.better-rx.com/lavitra.html">http://www.better-rx.com/lavitra.html</a>  in works and 2003.</p>
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/lavitra.html">order Lavitra online</a> 發表於 June  6, 2005 05:10 AM</span>
+</div>
+<div class="comments-body">
+<p>30 in and works became up minutes approved hours! to FDA Lavitra  prescription impotence drug in erectile <a href="http://www.better-rx.com/lavitra.html">http://www.better-rx.com/lavitra.html</a>  36 dysfunction 2003. last medication </p>
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/lavitra.html">Lavitra</a> 發表於 June  6, 2005 07:16 AM</span>
+</div>
+<div class="comments-body">
+<p>severe management medication. pain FDA prescription used approved is is moderately to pain. <a href="http://ultramonline.bravehost.com">http://ultramonline.bravehost.com</a>  relieve  to moderate discount Ultram   </p>
+<span class="comments-post">Posted by: <a href="http://ultramonline.bravehost.com">discount Ultram</a> 發表於 June  6, 2005 11:21 AM</span>
+</div>
+<div class="comments-body">
+<p>cheating wife<br />
+			wife<br />
+			affair<br />
+			cheat<br />
+			wife affair<br />
+			affair<br />
+			cheating<br />
+			adulteress<br />
+			committed<br />
+			commited<br />
+			wives<br />
+			women<br />
+			girlfriend<br />
+			cheated<br />
+			infidelity<br />
+			unfaithful<br />
+			adultery<br />
+			adultry<br />
+			infedility<br />
+			<a href="http://womencheat.pedronetwork.com">http://womencheat.pedronetwork.com</a></p>
+<span class="comments-post">Posted by: <a href="http://womencheat.pedronetwork.com">commited</a> 發表於 June 14, 2005 12:29 PM</span>
+</div>
+<div class="comments-body">
+<p>The object of war is not to die for your country but to make the other bastard die for his.</p>
+<span class="comments-post">Posted by: <a href="http://hghspray.pillslist.info/report_sgh.html">hgh spray</a> 發表於 June 19, 2005 12:47 AM</span>
+</div>
+<div class="comments-body">
+<p>The object of war is not to die for your country but to make the other bastard die for his.</p>
+<span class="comments-post">Posted by: <a href="http://hghspray.pillslist.info">hgh spray</a> 發表於 June 19, 2005 02:22 PM</span>
+</div>
+<div class="comments-body">
+<p>The difference between 'involvement' and 'commitment' is like an eggs-and-ham breakfast: the chicken was 'involved' - the pig was 'committed'.</p>
+<span class="comments-post">Posted by: <a href="http://www.usdebtconsolidation.net">debt consolidation</a> 發表於 June 20, 2005 04:36 PM</span>
+</div>
+<div class="comments-body">
+<p>medication hours! impotence works up 36 FDA 30 to became last erectile in <a href="http://www.web-doctor-online-pharmacy.com/cialis.cfm">http://www.web-doctor-online-pharmacy.com/cialis.cfm</a>  minutes drug dysfunction 2003. in Cialis prescription  approved  and</p>
+<span class="comments-post">Posted by: <a href="http://www.web-doctor-online-pharmacy.com/cialis.cfm">Cialis prescription</a> 發表於 June 20, 2005 09:29 PM</span>
+</div>
+<div class="comments-body">
+<p>may your  is antidepressant  to used determined doctor.  treat treat in be used conditions  by as 10, 40 also to 30, mg 20, comes and buy Celexa online   depression. other tablets. an <a href="http://www.better-rx.com/celexa.html">http://www.better-rx.com/celexa.html</a> </p>
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/celexa.html">buy Celexa online</a> 發表於 June 24, 2005 03:01 PM</span>
+</div>
+<div class="comments-body">
+<p>by 2 buy Xanax online  each 1 in approved to mg and anti-anxiety. designed tension nervousness, mg disorders. with and associated is  FDA anxiety, anxiety relieve  1963. <a href="http://www.expertpills.net/xanax/zanax.asp">http://www.expertpills.net/xanax/zanax.asp</a> </p>
+<span class="comments-post">Posted by: <a href="http://www.expertpills.net/xanax/zanax.asp">buy Xanax online</a> 發表於 June 26, 2005 08:55 AM</span>
+</div>
+<div class="comments-body">
+<p>tension relieve mg and to 5 associated 10 FDA <a href="http://www.better-rx.com/clonazepam.html">http://www.better-rx.com/clonazepam.html</a>  designed approved  disorders. anxiety, anxiety or by with each nervousness,  Clonazepam  anti-anxiety. in is mg 1963.</p>
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/clonazepam.html">Clonazepam</a> 發表於 June 26, 2005 01:44 PM</span>
+</div>
+<div class="comments-body">
+<p>Great Site malignant mesotheliomamalignant pleural mesotheliomamesotheliomamesothelioma asbestosmesothelioma attorneymesothelioma cancermesothelioma diagnosismesothelioma doctormesothelioma informationmesothelioma lawsuitsmesothelioma lawyermesothelioma lawyersmesothelioma researchmesothelioma symptomsmesothelioma treatmentmesothelioma typesperitoneal mesotheliomapleural mesothelioma </p>
+<span class="comments-post">Posted by: <a href="mailto&#58;jr&#64;mail&#46;com">Karen</a> 發表於 June 30, 2005 04:57 PM</span>
+</div>
+<div class="comments-body">
+<p>topical and  of  treatment genital external <a href="http://www.better-rx.com/condylox.html">http://www.better-rx.com/condylox.html</a>  cream  the used is perianal a warts. for Condylox </p>
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/condylox.html">Condylox</a> 發表於 July  1, 2005 09:36 PM</span>
+</div>
+<div class="comments-body">
+<p>agent antifungal thattreats oral  easier infections cream. <a href="http://www.better-rx.com/diflucan.html">http://www.better-rx.com/diflucan.html</a>  than messy a is an yeast Diflucan pills </p>
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/diflucan.html">Diflucan pills</a> 發表於 July  1, 2005 10:33 PM</span>
+</div>
+<div class="comments-body">
+<p>to is and acne. of texture the produces skin Retin , generic often buy Tretinoin online  the appearance <a href="http://www.better-rx.com/tretinoin.htm">http://www.better-rx.com/tretinoin.htm</a>  mild,  and used superficial the a peel reduces A, of improve epidermis.  </p>
+<span class="comments-post">Posted by: <a href="http://www.better-rx.com/tretinoin.htm">buy Tretinoin online</a> 發表於 July  1, 2005 11:17 PM</span>
+</div>
+<div class="comments-body">
+<p>xango<br />
+			xango mangosteen<br />
+			xango juice<br />
+			xango distributor<br />
+			xango info<br />
+			business opportunity xango<br />
+			<a href="http://xango.mypedro.com">http://xango.mypedro.com</a></p>
+<span class="comments-post">Posted by: <a href="http://xango.mypedro.com">xango info</a> 發表於 July  2, 2005 01:40 AM</span>
+</div>
+<div class="comments-body">
+<p>free music downloads<br />
+			music downloads<br />
+			<a href="http://www.myfreemp3s.com">http://www.myfreemp3s.com</a></p>
+<span class="comments-post">Posted by: <a href="http://www.myfreemp3s.com">free music downloads</a> 發表於 July  2, 2005 02:55 AM</span>
+</div>
+<div class="comments-body">
+<p>Nice work and great ideas. Get infos about all the pills on the market, about true or false effects. Try: <a href="http://www.online-manufacturer.com">http://www.online-manufacturer.com</a><br />
+Penis enlargement</p>
+<span class="comments-post">Posted by: <a href="http://www.online-manufacturer.com">penis enlargement</a> 發表於 July  4, 2005 11:07 AM</span>
+</div>
+<div class="comments-body">
+<p>Cool Site <a href="http://accounting.clothnon.info">http://accounting.clothnon.info</a> <a href="http://asbestos.clothnon.info">http://asbestos.clothnon.info</a> <a href="http://bankruptcy.clothnon.info">http://bankruptcy.clothnon.info</a> <a href="http://blackberry.clothnon.info">http://blackberry.clothnon.info</a> <a href="http://business.clothnon.info">http://business.clothnon.info</a> <a href="http://cash.clothnon.info">http://cash.clothnon.info</a> <a href="http://certificate.clothnon.info">http://certificate.clothnon.info</a> <a href="http://ecommerce.clothnon.info">http://ecommerce.clothnon.info</a> <a href="http://engineering.clothnon.info">http://engineering.clothnon.info</a> <a href="http://exercise.clothnon.info">http://exercise.clothnon.info</a> <a href="http://home.clothnon.info">http://home.clothnon.info</a> <a href="http://identity.clothnon.info">http://identity.clothnon.info</a> <a href="http://interest.clothnon.info">http://interest.clothnon.info</a> <a href="http://kidney.clothnon.info">http://kidney.clothnon.info</a> <a href="http://medical.clothnon.info">http://medical.clothnon.info</a> <a href="http://mesothelioma.clothnon.info">http://mesothelioma.clothnon.info</a> <a href="http://newyork.clothnon.info">http://newyork.clothnon.info</a> <a href="http://nokiacell.clothnon.info">http://nokiacell.clothnon.info</a> <a href="http://psychology.clothnon.info">http://psychology.clothnon.info</a> <a href="http://quotes.clothnon.info">http://quotes.clothnon.info</a> <a href="http://rent.clothnon.info">http://rent.clothnon.info</a> <a href="http://ringtones.clothnon.info">http://ringtones.clothnon.info</a> <a href="http://shopping.clothnon.info">http://shopping.clothnon.info</a> <a href="http://student.clothnon.info">http://student.clothnon.info</a> <a href="http://toddler.clothnon.info">http://toddler.clothnon.info</a> <a href="http://toshibatv.clothnon.info">http://toshibatv.clothnon.info</a> <a href="http://truck.clothnon.info">http://truck.clothnon.info</a> <a href="http://university.clothnon.info">http://university.clothnon.info</a> <a href="http://verizoncell.clothnon.info">http://verizoncell.clothnon.info</a> <a href="http://voip.clothnon.info">http://voip.clothnon.info</a> </p>
+<span class="comments-post">Posted by: <a href="mailto&#58;kurt&#64;mail&#46;com">Kurt</a> 發表於 July  5, 2005 05:21 PM</span>
+</div>
+<div class="comments-body">
+<p>Nice work and great ideas. Get infos about all the pills on the market, about true or false effects. Try: <a href="http://www.online-manufacturer.com">http://www.online-manufacturer.com</a><br />
+penis enlargement</p>
+<span class="comments-post">Posted by: <a href="http://www.online-manufacturer.com">penis enlargement</a> 發表於 July  6, 2005 07:09 AM</span>
+</div>
+<div class="comments-body">
+<p>Hi! Nice site. Check site about online gambling - <a href="http://online-gambling-best.tripod.com">http://online-gambling-best.tripod.com</a></p>
+<span class="comments-post">Posted by: <a href="http://online-gambling-best.tripod.com">online gambling</a> 發表於 July  7, 2005 03:46 AM</span>
+</div>
+<div class="comments-body">
+<p>the the treat yeast urinary tract, and pelvis, the in  of treats mouth lining  tablets.  infections or 150mg, the throat, <a href="http://www.buy-diflucan-prescription-drugs.com">http://www.buy-diflucan-prescription-drugs.com</a>  and stomach  comes 200mg pneumonia. to  vagina, of order Diflucan online  and certain 100mg, </p>
+<span class="comments-post">Posted by: <a href="http://www.buy-diflucan-prescription-drugs.com">order Diflucan online</a> 發表於 July  9, 2005 07:32 PM</span>
+</div>
+<div class="comments-body">
+<p>Great Site <a href="http://archery.bizstoke.info">http://archery.bizstoke.info</a> <a href="http://badminton.bizstoke.info">http://badminton.bizstoke.info</a> <a href="http://baseball.bizstoke.info">http://baseball.bizstoke.info</a> <a href="http://basketball.bizstoke.info">http://basketball.bizstoke.info</a> <a href="http://billiard.bizstoke.info">http://billiard.bizstoke.info</a> <a href="http://bowling.bizstoke.info">http://bowling.bizstoke.info</a> <a href="http://boxing.bizstoke.info">http://boxing.bizstoke.info</a> <a href="http://chess.bizstoke.info">http://chess.bizstoke.info</a> <a href="http://curling.bizstoke.info">http://curling.bizstoke.info</a> <a href="http://cycling.bizstoke.info">http://cycling.bizstoke.info</a> <a href="http://fencing.bizstoke.info">http://fencing.bizstoke.info</a> <a href="http://fieldhockey.bizstoke.info">http://fieldhockey.bizstoke.info</a> <a href="http://football.bizstoke.info">http://football.bizstoke.info</a> <a href="http://gymnastic.bizstoke.info">http://gymnastic.bizstoke.info</a> <a href="http://karate.bizstoke.info">http://karate.bizstoke.info</a> <a href="http://motocross.bizstoke.info">http://motocross.bizstoke.info</a> <a href="http://racquetball.bizstoke.info">http://racquetball.bizstoke.info</a> <a href="http://rugby.bizstoke.info">http://rugby.bizstoke.info</a> <a href="http://scuba.bizstoke.info">http://scuba.bizstoke.info</a> <a href="http://skateboard.bizstoke.info">http://skateboard.bizstoke.info</a> <a href="http://skating.bizstoke.info">http://skating.bizstoke.info</a> <a href="http://snowboard.bizstoke.info">http://snowboard.bizstoke.info</a> <a href="http://squash.bizstoke.info">http://squash.bizstoke.info</a> <a href="http://sumo.bizstoke.info">http://sumo.bizstoke.info</a> <a href="http://swimming.bizstoke.info">http://swimming.bizstoke.info</a> <a href="http://tabletennis.bizstoke.info">http://tabletennis.bizstoke.info</a> <a href="http://tennis.bizstoke.info">http://tennis.bizstoke.info</a> <a href="http://trampoline.bizstoke.info">http://trampoline.bizstoke.info</a> <a href="http://volleyball.bizstoke.info">http://volleyball.bizstoke.info</a> <a href="http://waterpolo.bizstoke.info">http://waterpolo.bizstoke.info</a> </p>
+<span class="comments-post">Posted by: <a href="mailto&#58;mikedat133&#64;hotmail&#46;com">Mike</a> 發表於 July  9, 2005 10:01 PM</span>
+</div>
+<div class="comments-body">
+<p>sedative/anxiolytic related chemically benzodiazepines,<br />
+barbiturates, , other or antianxiety buy Buspar online  not  drugs. to that buspirone, an the is agent pharmacologically is or <a href="http://www.information-on-buspar-online.com">http://www.information-on-buspar-online.com</a> </p>
+<span class="comments-post">Posted by: <a href="http://www.information-on-buspar-online.com">buy Buspar online</a> 發表於 July 11, 2005 05:45 AM</span>
+</div>
+<div class="comments-body">
+<p>the treats and in vagina,  pneumonia.  yeast tract, infections  to and tablets. 150mg, pelvis, of Diflucan  or throat, certain urinary the <a href="http://www.buy-diflucan-prescription-drugs.com">http://www.buy-diflucan-prescription-drugs.com</a>  200mg of   mouth stomach treat and  100mg, the the lining comes</p>
+<span class="comments-post">Posted by: <a href="http://www.buy-diflucan-prescription-drugs.com">Diflucan</a> 發表於 July 11, 2005 08:56 AM</span>
+</div>
+<div class="comments-body">
+<p>Nice work and great ideas. Get infos about all the pills on the market, about true or false effects. Try: <a href="http://www.helpful-products.com">http://www.helpful-products.com</a><br />
+Penis enlargement products</p>
+<span class="comments-post">Posted by: <a href="http://www.helpful-products.com">penis enlargement products</a> 發表於 July 12, 2005 10:31 PM</span>
+</div>
+<div class="comments-body">
+<p>Get infos about all the pills on the market, about true or false effects. Try: <a href="http://www.helpful-products.com">http://www.helpful-products.com</a><br />
+penis enlargement products</p>
+<span class="comments-post">Posted by: <a href="http://www.helpful-products.com">penis enlargement products</a> 發表於 July 13, 2005 09:01 PM</span>
+</div>
+<div class="comments-body">
+<p>Get infos about all the pills on the market, about true or false effects. Try: <a href="http://www.helpful-products.com">http://www.helpful-products.com</a><br />
+penis enlargement products</p>
+<span class="comments-post">Posted by: <a href="http://www.helpful-products.com">penis enlargement products</a> 發表於 July 14, 2005 05:56 AM</span>
+</div>
+<div class="comments-body">
+<p>snoring<br />
+			stop snoring<br />
+			how to stop snoring<br />
+			snoring remedies<br />
+			<a href="http://snoring.swedenetwork.com">http://snoring.swedenetwork.com</a></p>
+<span class="comments-post">Posted by: <a href="http://snoring.swedenetwork.com">stop snoring</a> 發表於 July 15, 2005 01:40 PM</span>
+</div>
+<div class="comments-body">
+<p>liquors<br />
+liquor store<br />
+<a href="http://www.azliquors.com">http://www.azliquors.com</a><br />
+www.azliquors.com</p>
+<span class="comments-post">Posted by: <a href="http://www.azliquors.com">liquors</a> 發表於 April  5, 2006 07:38 PM</span>
+</div>
+<div class="comments-body">
+<p>liquors<br />
+liquor store<br />
+<a href="http://www.azliquors.com">http://www.azliquors.com</a><br />
+www.azliquors.com</p>
+<span class="comments-post">Posted by: <a href="http://www.azliquors.com">liquors</a> 發表於 April  5, 2006 07:38 PM</span>
+</div>
+<div class="comments-body">
+<p>liquors<br />
+liquor store<br />
+<a href="http://www.azliquors.com">http://www.azliquors.com</a><br />
+www.azliquors.com</p>
+<span class="comments-post">Posted by: <a href="http://www.azliquors.com">liquors</a> 發表於 April  6, 2006 02:32 AM</span>
+</div>
+<div class="comments-body">
+<p>liquors<br />
+liquor store<br />
+<a href="http://www.azliquors.com">http://www.azliquors.com</a><br />
+www.azliquors.com</p>
+<span class="comments-post">Posted by: <a href="http://www.azliquors.com">liquors</a> 發表於 April  6, 2006 02:37 AM</span>
+</div>
+<div class="comments-body">
+<p>liquors<br />
+liquor store<br />
+<a href="http://www.azliquors.com">http://www.azliquors.com</a><br />
+www.azliquors.com</p>
+<span class="comments-post">Posted by: <a href="http://www.azliquors.com">liquors</a> 發表於 April  6, 2006 02:37 AM</span>
+</div>
+<div class="comments-body">
+<p>beer liquor wine<br />
+beer<br />
+<a href="http://www.azbeerbrands.com">http://www.azbeerbrands.com</a><br />
+www.azbeerbrands.com</p>
+<span class="comments-post">Posted by: <a href="http://www.azbeerbrands.com">beer</a> 發表於 April 11, 2006 06:13 PM</span>
+</div>
+<div class="comments-body">
+<p>Looking for healthy, vitamin in great discounts? Don't miss this   site, with all the information you need about  , and much more.</p>
+<span class="comments-post">Posted by: <a href="http://www.pills-for-diet.com/atkins-diet.html">Kathrin Belvarde</a> 發表於 May 16, 2006 06:10 AM</span>
+</div>
+<div class="comments-body">
+<p>perfumes<br />
+<a href="http://www.azperfumes.com">http://www.azperfumes.com</a><br />
+www.azperfumes.com</p>
+<span class="comments-post">Posted by: <a href="http://www.azperfumes.com">perfumes</a> 發表於 May 22, 2006 12:03 AM</span>
+</div>
+<div class="comments-body">
+<p><a href="http://www.sexys-soccer.sexo-oral-foto.com">http://www.sexys-soccer.sexo-oral-foto.com</a> @x@ <a href="http://www.videos-de-frutas.sexo-oral-foto.com">http://www.videos-de-frutas.sexo-oral-foto.com</a> @x@ <a href="http://www.adolescente-culonas.sexo-oral-foto.com">http://www.adolescente-culonas.sexo-oral-foto.com</a> @x@ <a href="http://www.mujeres-desnudad-dvd.filmes-sexo-gratis.com">http://www.mujeres-desnudad-dvd.filmes-sexo-gratis.com</a> @x@ <a href="http://www.relatos-verga.filmes-sexo-gratis.com">http://www.relatos-verga.filmes-sexo-gratis.com</a> @x@ <a href="http://www.tarragona-prostibulos.filmes-sexo-gratis.com">http://www.tarragona-prostibulos.filmes-sexo-gratis.com</a> @x@ <a href="http://www.anal-sex-training-gif.sweet-anal-babes.com">http://www.anal-sex-training-gif.sweet-anal-babes.com</a> @x@ <a href="http://www.video-ass-mafia.sweet-anal-babes.com">http://www.video-ass-mafia.sweet-anal-babes.com</a> @x@ <a href="http://www.chubby-ass-pic.sweet-anal-babes.com">http://www.chubby-ass-pic.sweet-anal-babes.com</a> @x@ <a href="http://www.handjobs-nudists.handjob-lovers.net">http://www.handjobs-nudists.handjob-lovers.net</a> @x@ <a href="http://www.hand-job-breasts.handjob-lovers.net">http://www.hand-job-breasts.handjob-lovers.net</a> @x@ <a href="http://www.hj-veronica.handjob-lovers.net">http://www.hj-veronica.handjob-lovers.net</a> @x@ <a href="http://www.grubych-lezbijek-pornole.rb.wloclawek.pl">http://www.grubych-lezbijek-pornole.rb.wloclawek.pl</a> @x@ <a href="http://www.anal-wielkie.rb.wloclawek.pl">http://www.anal-wielkie.rb.wloclawek.pl</a> @x@ <a href="http://www.laski-nagie-kobiety.rb.wloclawek.pl">http://www.laski-nagie-kobiety.rb.wloclawek.pl</a> @x@ <a href="http://www.fat-women.hot-porn-reviews.com">http://www.fat-women.hot-porn-reviews.com</a> @x@ <a href="http://www.fatwomen.hot-porn-reviews.com">http://www.fatwomen.hot-porn-reviews.com</a> @x@ <a href="http://www.fat-wives.hot-porn-reviews.com">http://www.fat-wives.hot-porn-reviews.com</a> @x@ </p>
+<span class="comments-post">Posted by: <a href="mailto&#58;nerazzurri&#64;o2&#46;pl">nerazzurri</a> 發表於 July 14, 2006 06:11 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="57" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響數量:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+</div>
+</div>
+</body>
+</html>

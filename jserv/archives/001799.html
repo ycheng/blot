@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 得知 GCC 預先定義之 macro</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001798.html" title="書目 - 2006 年第三季" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001800.html" title="以生命作畫" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001798.html">« 書目 - 2006 年第三季</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001800.html">以生命作畫 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">October 04, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">得知 GCC 預先定義之 macro</h3>
+
+ANSI C 給予許多彈性，但也造成平台間實做上的落差，雖然在 C99 中予以許多標準化的機制，但 compiler 的良莠不齊讓跨平台開發遇到許多問題。日前一個朋友問及 GCC 內定之 data type 長度與最大值，這沒有一定的答案，因為 GCC 允許在編譯時期改變特定之 data type representation，那麼，要如何確知呢？可參考幾個 macro，如 __WCHAR_MAX__、__INT_MAX__、__LONG_MAX__、... 等，問題來了，有沒有不需要觀察 preprocessor 輸出的方式，能快速得知呢？答案是可以的，只要這麼作：<ul class="code" style="margin: 6px;">
+$ echo | gcc -v -E -dM - | grep '^#define .*MAX'
+</ul>
+這樣就可得到 "#define" 開頭並包含 "MAX" 的 macro 定義 (regex)，也恰好即是特定 data type 的最大值。又，比方說檢查自己編譯的 Xscale toolchain 是否支援 iWMMXt 指令集 (WirelessMMX)，可以這樣測試：<ul class="code" style="margin: 6px;">
+$ echo | arm-linux-gcc <b>-mcpu=iwmmxt</b> -v -E -dM - | grep IWMMXT
+</ul>
+如果看到以下輸出：<ul class="code" style="margin: 6px;">
+#define __IWMMXT__ 1
+</ul>
+就表示 GCC 提供此 macro 與其組態配置。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 October  4, 2006 02:35 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>FYI, this is essentially equivalent to:</p>
+
+<p>$ echo | arm-linux-cpp -mcpu=iwmmxt -dM - |grep IWMMXT</p>
+<span class="comments-post">由 <a href="mailto&#58;ijsung&#64;gmail&#46;com">I-Jui Sung</a> 發表於</MTIfNonEmpty> October  4, 2006 11:27 AM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

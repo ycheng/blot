@@ -1,0 +1,221 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: 演講：窗戶與黑客文化 - 談 X Window System 與自由軟體發展</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001892.html" title="Hello World 廣告詞" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001895.html" title="「User-Mode Linux 應用簡介」簡報上線" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001892.html">« Hello World 廣告詞</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001895.html">「User-Mode Linux 應用簡介」簡報上線 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">April 09, 2007</h2>
+
+<div class="blogbody">
+
+<h3 class="title">演講：窗戶與黑客文化 - 談 X Window System 與自由軟體發展</h3>
+
+新竹交通大學的 [<a href="http://www.csie.nctu.edu.tw/~skhuang/">黃世昆</a>] 教授開了一門課程「駭客文化」(Hacker Culture)，其課程簡介如下：<ul class="code" style="margin: 6px;">
+我不喜歡將 Hacker 翻成「駭客」，因為「駭」隱含負面的意義，Hacker 卻是正面的，有那種對工作與專精技藝的熱情，也好像古代行俠仗義的俠客。不管如何，Computer Hacker 已經對現代科技的發展產生不可磨滅的影響，如從 MIT AI lab、Berkeley 與 CMU 等衍生在學術界上的 Hacker Culture，直到現在的 Linux、GNU 甚至 Internet Protocols， 以及對版權看法分歧的 GPL，Open Source 與 Creative Commons 都可見到這種深層的文化因素影響。<br />
+<br />
+即便如此，我還是接受 Hacker 就是「駭客」，「駭」解釋成技術專精、技藝厲「駭」，而不是為非作歹、駭人聽聞。國內媒體就是這樣誤導大眾，以致將為非作歹的「害客」誤以為「駭客」。我們這門課將探討 Hacker Culture，瞭解電腦駭客的歷史，說明其對現代電腦科技的影響，同時探討相關技術，使學生從技術內涵與駭客文化的演進過程中，掌握不同的科技脈絡，擴展學習視野。
+</ul>
+有幸受邀成為該課程的講者，跟 [<a href="http://blog.lwhsu.org/">lwhsu</a>] 討論後，我選定一個關於 X Window System 發展文化的講題，相關資訊如下：<ul class="code" style="margin: 6px;">
+<li>題目：窗戶與黑客文化 - 談 X Window System 與自由軟體發展</li>
+<li>簡介：X Window System
+發展至今已有二十餘年的歷史，見證了許多歷史的興衰，包含大型電腦、UNIX 工作站、MS-Windows，與今日 KDE/GNOME 專案等。X Window System 不同於一般的視窗系統。其以網路通訊為主要思維的模式，深深植入程式碼以外之處，同時也是由全球各地、不同組織的許多開發者，以團隊形式開發的大規模開放原始碼的項目之一，本講題將以歷史文化的層面切入 X Window System 發展，並探討自由軟體之演進與變革。</li>
+<li>提綱：<ul>
+  <li>你所不知道的 X Window：過往雲煙</li>
+  <li>從經濟學看黑客 (Hacker) 文化</li>
+  <li>X Window System 的浴火重生</li>
+  <li>展望新世代的發展模式</li>
+</ul></li>
+<li>講者介紹：Jim Huang (黃敬群 / "jserv")，目前任職於台灣手機代工設計產業，閒暇時投入新酷音計畫、Free Java Runtime (Kaffe / GNU Classpath)、GNU GCC、X Window System (X.org)，以及相關自由軟體的開發工作。為了延續在嵌入式系統的成果，成立了名為 "Open RazzmatazZ Laboratory" (簡稱 OrzLab) 的實驗室，試圖以自由軟體再創硬體的新價值。<br>
+個人網誌： <a href="http://blog.linux.org.tw/jserv/">http://blog.linux.org.tw/jserv/</a><br />
+OrzLab開發日誌： <a href="http://orzlab.blogspot.com/">http://orzlab.blogspot.com/</a></li>
+</ul>
+演講時間為四月 19 日 15:40~17:30，地點為交通大學工四館 117 教室，這個講題約莫是撰寫中的新書《揭開 X Window System 神秘面紗》的第零章部份內容，歡迎指教，這樣我也可斟酌修改書中描述，謝謝！<br /> 
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 April  9, 2007 08:37 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>期待您的大作《揭開 X Window System 神秘面紗》，去年我花两个月时间去研究X Window的架构，发现相关的资料太少了，一直希望有这样一本好书出版。</p>
+<span class="comments-post">由 <a href="http://blog.csdn.net/absurd">absurd</a> 發表於</MTIfNonEmpty> April 10, 2007 10:48 PM</span>
+</div>
+<div class="comments-body">
+<p>請問你>這本書完成了嗎？<br />
+什麼時候會上市呢？<br />
+非常期待喔！</p>
+<span class="comments-post">由 <a href="mailto&#58;yen429&#64;gmail&#46;com">YEN</a> 發表於</MTIfNonEmpty> August 13, 2008 05:14 PM</span>
+</div>
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1893" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

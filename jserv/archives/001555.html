@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Tensilica 六款新的 RISC core</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001554.html" title="eCos 簡介" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001556.html" title="我是 hacker，不是「駭客」" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001554.html">« eCos 簡介</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001556.html">我是 hacker，不是「駭客」 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">March 04, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Tensilica 六款新的 RISC core</h3>
+
+在業界執  SoC Design 牛耳的[<a href="http://www.tensilica.com/">Tensilica</a>]，最近又發表六款新的 RISC core，新聞稿可參考 [<a href="http://www.eettaiwan.com/ARTP_8800407364_622964.HTM">Tensilica Diamond Standard系列新型處理器核心問世</a>]，這系列 configurable processor 帶來頗大的衝擊。Tensilica 總裁 Chris Rowen 表示：<ul>
+「configurable processor 可為特定應用而量身訂製，有些甚至可取代 ASIC 及 SoC 中 hand-coded 的 RTL 設計，將成為 SoC 的主流。」
+</ul>
+更技術性的介紹可參考 LinuxDevices.com 的新聞 [<a href="http://www.linuxdevices.com/news/NS3445394744.html">"Post-RISC-style" processor targets mobile Linux devices</a>]，網頁的資料提到：<ul class="code" style="margin: 6px;">
+Tensilica's processor cores are based on its "Xtensa" instructure set, described as a "post-RISC-style" architecture that supports 32-, 24-, and 16-bit instructions, with modeless switching. Using shorter instructions when feasible reduces power consumption and increases code density, the company says -- similar to the way ARM markets its 16-bit "Thumb" and Thumb-2 instructions. Xtensa also features "register windows," said to enable efficient procedure switches.<br>
+<br>
+Tensilica says it designed the Diamond Standard 232L specifically to run Linux, with an MMU (memory management unit) and 16KB each of four-way associative instruction and data cache. The company worked with MontaVista to create a version of Linux Professional Edition optimized for the processor, it says. 
+</ul>
+這幾款以 Tensilica Diamond Standard 232L 的系統架構圖來看：<br>
+<center><img src="http://www.linuxdevices.com/files/misc/tensilica_diamond_232L_arch_diag.gif"></center><br>
+這完整的設計，更是對 ARM 產生一定的衝擊，新聞稿中還提到與 ARM926EJ-S 的比較，這場 SoC 領域的技術競賽趨於白熱。<br>
+<br>
+2004 年年底，ARM 提出 [<a href="http://linuxdevices.com/news/NS7814673959.html">son of Thumb at uCs, ASSPs, SoCs</a>]，針對 DSP 的廣泛應用與 Realtime OS capacity，也引入 Thumb-2 instruction set architecture (ISA)，代表設計就是 Cortex-M3，其架構圖如下：<br>
+<center><img src="http://linuxdevices.com/files/misc/arm_cortex-m3_diagram-sm.jpg"></center><br>
+reference board 在今年會出現，這兩種不同設計理念的硬體架構，一個強調高度彈性、一個以既有指令集相容的優勢，卻不約而同對於 Linux 有高度的支援 (ARM 有不少全職的 kernel / GNU toolchain developer，Tensilica 也有相當程度的涉入開發)，未來會如何呢？拭目以待。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 March  4, 2006 07:09 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>這學期我們正好有一門課可以接觸一點點 ARM + Embedded Linux 呢。</p>
+<span class="comments-post">由 <a href="mailto&#58;freesamael&#64;xuite&#46;net">freesamael</a> 發表於</MTIfNonEmpty> March  4, 2006 07:54 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

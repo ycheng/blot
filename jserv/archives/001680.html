@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Java 即時程式設計</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001679.html" title="用 GIMP 繪製 CG 漫畫" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001681.html" title="與 Linux/*BSD 相關的 Planet (中文語系)" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001679.html">« 用 GIMP 繪製 CG 漫畫</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001681.html">與 Linux/*BSD 相關的 Planet (中文語系) »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">May 25, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Java 即時程式設計</h3>
+
+在 Realtime Java 領域富有盛名的 [<a href="http://www.aicas.com/">aicas GmbH</a>]，其主力產品為 [<a href="http://www.aicas.com/jamaica.html">JamaicaVM Realtime Java</a>]，該公司部份的工程師也是 [<a href="http://www.classpath.org/">GNU Classpath</a>] 的 developer / committer，產品特徵的 "Libraries compatible with JDK J2SE V1.2 and largely compatible with J2SE 1.3 and J2SE 1.4" 可說是另一項應用 Free / Open Source Softwafre 商業化成功的案例。不過，[<a href="http://www.aicas.com/">aicas GmbH</a>] 最重要的技術當然是 Realtime Java 核心的設計，特別是 Deterministic Garbage Collection 與 Hard Realtime Execution，而該公司的 Dr. James J. Hunt (CEO) 與  Dr. Fridtjof B. Siebert (CTO) 日前於 Embedded.com 發表兩篇短文 [<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=188100696">Realtime programming in Java: Part 1</a>] 與 [<a href="http://www.embedded.com/shared/printableArticle.jhtml?articleID=188100713">Realtime programming in Java: Part 2</a>]，篇幅不長，但闡述許多重要概念，很值得參考。<br>
+<br>
+文章一開頭就寫到 [Inadequacies of Java for Realtime Programming]：<ul class="code" style="margin: 6px;">
+There are two main kinds of barriers to using Java for realtime and embedded programming: lack of determinism and limited access to the underlying hardware. Both these issue arise in part from the goal of ensuring platform independence.</ul>
+所以，將 Java 應用於 Embedded Systems 會面臨 Java Runtime 本身的可預測精確性與對硬體的掌握度這兩個不足處，而在 RTSJ 中規範了 Realtime GC 的具體要求，文章也就 RTSJ 的規範，展示真實應用上的模式，同時，為了掌握硬體，也就 RTSJ 規範的語意，文章給予一個介紹性的案例。<br>
+<br>
+第二篇提到的 [Open Issues] 相當有意思，文章提到：<ul class="code" style="margin: 6px;">
+The RTSJ is an important step in the development of Java technology; however, the specification still has weaknesses. As mentioned above, the size issue is being addressed by the safety critical Java effort. More fundamentally, there are the issues of device access and control transfer. The Java language collection API is also less than ideal in terms of memory consumption.
+</ul>
+這也是 Realtime Java Programming 需考慮的重要議題。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 May 25, 2006 08:40 PM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+<div class="comments-body">
+<p>http://www.kpwang.com/jsp_java/200644231255.htm Java反编译的研究 <br />
+http://www.kpwang.com/jsp_java/20064423114.htm Java异常学习心得      <br />
+http://www.kpwang.com/jsp_java/20064423012.htm Java 的多线程浅析</p>
+<span class="comments-post">由 <a href="http://www.kpwang.com">pc</a> 發表於</MTIfNonEmpty> May 30, 2006 05:45 PM</span>
+</div>
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

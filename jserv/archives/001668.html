@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: Cairo user font API</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001667.html" title="FOX Toolkit 與中文支援" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001669.html" title="Dapper 即將現身" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001667.html">« FOX Toolkit 與中文支援</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001669.html">Dapper 即將現身 »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">May 22, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">Cairo user font API</h3>
+
+剛剛發現 [<a href="http://poppler.freedesktop.org/">poppler</a>]  無法在我這台 Ubuntu Dapper 的機器編譯，錯誤訊息如下：<ul><pre class="code" style="margin: 6px;">
+CairoFontEngine.cc:82: error: 'cairo_user_font_backend_t' does not name a type
+CairoFontEngine.cc:85: error: 'cairo_user_font_backend_t' does not name a type
+CairoFontEngine.cc: In constructor 
+'CairoType3Font::CairoType3Font(GfxFont*, XRef*)':
+CairoFontEngine.cc:97: error: 'font_backend' was not declared in this scope
+CairoFontEngine.cc:97: error: 'cairo_user_font_face_create' was not declared 
+in this scope
+make[3]: *** [CairoFontEngine.lo] Error 1
+make[3]: Leaving directory `/home/jserv/misc/poppler/poppler'
+</pre></ul>
+而系統安裝的 Cairo 版本為 1.1.1-0ubuntu1，應該很新了，又，查閱 cvs commit log：<ul><pre class="code" style="margin: 6px;">
+revision 1.21
+date: 2006-05-19 19:21:59 +0000;  author: krh;  
+state: Exp;  lines: +311 -36
+2006-05-19  Kristian Høgsberg
+        Memory leak patch from Carlos Garcia Campos (#6947).
+
+        * glib/poppler-action.cc:
+        * glib/poppler-document.cc:
+        * glib/poppler-page.cc:
+        * poppler/CairoFontEngine.cc:
+        * poppler/CairoFontEngine.h:
+        * poppler/CairoOutputDev.cc:
+        * poppler/CairoOutputDev.h:
+        * poppler/Gfx.cc:
+        * poppler/TextOutputDev.cc:  Fix various memory leaks.
+</pre></ul>
+似乎沒有太特別之處，到底是怎麼一回事呢？<br>
+<br>
+Kristian Høgsberg (poppler 計畫維護人與 Cairo/GTK+ 相關軟體的開發者) 在 Cairo mailing-list 提出過 [<a href="http://lists.freedesktop.org/archives/cairo/2006-May/006849.html">User font take 2</a>] 的提案，引入一系列新的 API 與 structure 來作 Type3 的 user font rendering，Keith Packard 在 [<a href="http://lists.freedesktop.org/archives/cairo/2006-May/006867.html">回覆的文章</a>] 提到：<ul>
+It seems like something very similar to the PS Type3 mechanism would work nicely and avoid a huge pile of application and cairo complexity / locking issues.
+</ul>
+Kristian Høgsberg 則在 [<a href="http://lists.freedesktop.org/archives/cairo/2006-May/006888.html">隨後的文章</a>] 做了補充：<ul>
+So thinking about this, yeah, this might just work.  I was working with different assumptions, though; that the API should support on demand loading of glyphs (to support fonts with a large number of
+glyphs) and that we would want to do hinting.  However, none of the custom document fonts (ps and pdf type3 font, svg fonts) that would use this feature support hinting and it's probably a safe assumption that none of these font formats will be used for big fonts.  In the event that we need to support a new full featured font format, that's
+better done as a full cairo font backend or in freetype anyway.
+</ul>
+該 thread 系列文章對釐清 Cairo user font 新的 API 的概念很有幫助，commit log 可參考 Cairo git log 與 PDF Type3 相關的細節。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 May 22, 2006 04:12 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script type="text/javascript" src="http://blog.linux.org.tw/~jserv/mt-site.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Jserv's blog: SA-RTL : Stand-Alone RTLinux</title>
+
+<link rel="stylesheet" href="http://blog.linux.org.tw/~jserv/styles-site.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://blog.linux.org.tw/~jserv/index.rdf" />
+
+<link rel="start" href="http://blog.linux.org.tw/~jserv/" title="Home" />
+<link rel="prev" href="http://blog.linux.org.tw/~jserv/archives/001511.html" title="Sex + Math = Max" />
+
+<link rel="next" href="http://blog.linux.org.tw/~jserv/archives/001514.html" title="uClinux-powered 的 JuiceBox" />
+
+
+<script type="text/javascript" language="javascript">
+<!--
+
+function OpenTrackback (c) {
+    window.open(c,
+                    'trackback',
+                    'width=480,height=480,scrollbars=yes,status=yes');
+}
+
+var HOST = 'blog.linux.org.tw';
+
+// Copyright (c) 1996-1997 Athenia Associates.
+// http://www.webreference.com/js/
+// License is granted if and only if this entire
+// copyright notice is included. By Tomer Shiran.
+
+function setCookie (name, value, expires, path, domain, secure) {
+    var curCookie = name + "=" + escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "") + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + ((secure) ? "; secure" : "");
+    document.cookie = curCookie;
+}
+
+function getCookie (name) {
+    var prefix = name + '=';
+    var c = document.cookie;
+    var nullstring = '';
+    var cookieStartIndex = c.indexOf(prefix);
+    if (cookieStartIndex == -1)
+        return nullstring;
+    var cookieEndIndex = c.indexOf(";", cookieStartIndex + prefix.length);
+    if (cookieEndIndex == -1)
+        cookieEndIndex = c.length;
+    return unescape(c.substring(cookieStartIndex + prefix.length, cookieEndIndex));
+}
+
+function deleteCookie (name, path, domain) {
+    if (getCookie(name))
+        document.cookie = name + "=" + ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain : "") + "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+}
+
+function fixDate (date) {
+    var base = new Date(0);
+    var skew = base.getTime();
+    if (skew > 0)
+        date.setTime(date.getTime() - skew);
+}
+
+function rememberMe (f) {
+    var now = new Date();
+    fixDate(now);
+    now.setTime(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+    setCookie('mtcmtauth', f.author.value, now, '', HOST, '');
+    setCookie('mtcmtmail', f.email.value, now, '', HOST, '');
+    setCookie('mtcmthome', f.url.value, now, '', HOST, '');
+}
+
+function forgetMe (f) {
+    deleteCookie('mtcmtmail', '', HOST);
+    deleteCookie('mtcmthome', '', HOST);
+    deleteCookie('mtcmtauth', '', HOST);
+    f.email.value = '';
+    f.author.value = '';
+    f.url.value = '';
+}
+
+//-->
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div id="banner">
+<h1><a href="http://blog.linux.org.tw/~jserv/" accesskey="1">Jserv's blog</a></h1>
+<span class="description"></span>
+</div>
+
+<div id="container">
+
+<div class="blog">
+
+<div id="menu">
+<a href="http://blog.linux.org.tw/~jserv/archives/001511.html">« Sex + Math = Max</a> |
+
+<a href="http://blog.linux.org.tw/~jserv/">回到主頁面</a>
+| <a href="http://blog.linux.org.tw/~jserv/archives/001514.html">uClinux-powered 的 JuiceBox »</a>
+
+</div>
+
+</div>
+
+
+<div class="blog">
+
+<h2 class="date">February 16, 2006</h2>
+
+<div class="blogbody">
+
+<h3 class="title">SA-RTL : Stand-Alone RTLinux</h3>
+
+[<a href="http://www.rtlinux-gpl.org/~vesteve/">SA-RTL</a>] 是個相當特別的 Realtime Linux 實做，衍生自著名的 RTLinux (知名處不僅是 Realtime 技術，也有 FSMLabs 的 patent)。不同於 RTLinux 以 Linux kernel patch 的形式散佈，[<a href="http://www.rtlinux-gpl.org/~vesteve/">SA-RTL</a>] 本身就是具體而微的 RTOS，能夠支援 RTLinux v3 大多數的 POSIX 1003.13 Realtime API，其特性如下：<ul>
+<li>Low memory overhead. The core systems contains only following modules: the code of RTLinux, the minimum code needed to boot the system and basic virtual memory management.</li>
+<li>Scalability. Users will be able to customize RTLinux funcionalities to reduce kernel memory usage.</li>
+<li>Porting will be possible to systems without hardware for virtual memory support. Therefore, Stand-Alone RTLinux could be ported to a wider range of architectures.</li>
+<li>Less TLB and memory cache misses since only real-time applications are being executed.</li>
+<li>One problem of RTLinux is the use kernel modules or applications that execute directly interrupt management processor instructions (cli and sti), for example, some xfree86 drivers disable interrupts or lock the PCI bus for long time periods. Stand-Alone RTLinux removes this problem since the target system will be compiled to a single static and bootable kernel.</li>
+<li>We are not longer limited by the Linux memory manager. Standard RTLinux memory management relays completely on the Linux so it is not possible to implement custom virtual memory management algorithms. Stand-Alone RTLinux has full control of the MMU. </li>
+</ul>
+詳情可參考論文 [<a href="http://www.rtlinux-gpl.org/~vesteve/docs/ws2003.pdf">Stand-Alone RTLinux-GPL</a>]。最後更新的版本是 2.2-pre2，包含以下重要元件：<ul>
+<li>Fixed priority scheduler</li>
+<li>periodic and one-shot timer</li>
+<li>IPC mechanisms: Semaphores, Mutexes, Condition variables, Barriers (POSIX standard), and Signals</li>
+<li>GDB Agent</li>
+<li>Tracer</li>
+<li>SA-RTL executive memory protection / allocator (TLSF)</li>
+<li>context memory protection</li>
+<li>POSIX I/O Device</li>
+</ul>
+我在 hacking 的過程中，對 [<a href="http://www.rtlinux-gpl.org/~vesteve/">SA-RTL</a>] 2.2-pre2 做了修改，可 [<a href="http://jserv.sayya.org/kernel/sa-rtl-2.2-pre2-fix1.tar.bz2">在此取得</a>]。在 source tree 中還包含了 MicroWindows 的移植與 i386、ARM (SA1110)、Xeno，以及 [<a href="http://www.xtratum.org/">XtratuM</a>] 架構的支援，其中 [<a href="http://www.xtratum.org/">XtratuM</a>] 是相當特別的 nano-kernel / pico-kernel，[<a href="http://www.rtlinux-gpl.org/~vesteve/">SA-RTL</a>] 與其組合可帶來相當的 virtualization 彈性與效能，並且也可避開 FSMLabs 的 patent。<br>
+<br>
+就作業系統設計的角度來說，當 Microkernel 由 CMU Mach 演化為嶄新的 L4 microkernel，其他研究團隊在 realtime 發展提出 nanokernel 與 MIT Exokernel 等新架構，而較傳統的設計中，也陸續因應更嚴苛的挑戰與彈性需求，出現 Resource kernel 等折衷架構，Linux kernel 作為這巨大變動環境中的成功的傳統架構，在銜接新架構的同時，引入許多途徑，[<a href="http://www.rtlinux-gpl.org/~vesteve/">SA-RTL</a>] 就是一個很好的例子。<br>
+
+<a name="more"></a>
+
+
+<span class="posted">由 jserv 發表於 February 16, 2006 01:06 AM
+
+<br /></span>
+
+</div>
+
+
+<div class="comments-head"><a name="comments"></a>迴響</div>
+
+
+
+
+<div class="comments-head">發表迴響</div>
+
+<div class="comments-body">
+<form method="post" action="http://mt.debian.org.tw/mt-yijian.cgi" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="1513" />
+
+<div style="width:180px; padding-right:15px; margin-right:15px; float:left; text-align:left; border-right:1px dotted #bbb;">
+	<label for="author">姓名:</label><br />
+	<input tabindex="1" id="author" name="author" /><br /><br />
+
+	<label for="email">Email 地址:</label><br />
+	<input tabindex="2" id="email" name="email" /><br /><br />
+
+	<label for="url">網址:</label><br />
+	<input tabindex="3" id="url" name="url" /><br /><br />
+</div>
+
+記住我的資訊?<br />
+<input type="radio" id="bakecookie" name="bakecookie" /><label for="bakecookie">是</label><input type="radio" id="forget" name="bakecookie" onclick="forgetMe(this.form)" value="Forget Info" style="margin-left: 15px;" /><label for="forget">否</label><br style="clear: both;" />
+
+<label for="text">迴響:</label><br />
+<textarea tabindex="4" id="text" name="text" rows="10" cols="50"></textarea><br /><br />
+
+<input type="submit" name="preview" value="&nbsp;預覽&nbsp;" />
+<input style="font-weight: bold;" type="submit" name="post" value="&nbsp;發表&nbsp;" /><br /><br />
+
+</form>
+
+<script type="text/javascript" language="javascript">
+<!--
+document.comments_form.email.value = getCookie("mtcmtmail");
+document.comments_form.author.value = getCookie("mtcmtauth");
+document.comments_form.url.value = getCookie("mtcmthome");
+if (getCookie("mtcmtauth")) {
+    document.comments_form.bakecookie[0].checked = true;
+} else {
+    document.comments_form.bakecookie[1].checked = true;
+}
+//-->
+</script>
+</div>
+
+
+<!-- Site Meter -->
+<script type="text/javascript" src="http://s23.sitemeter.com/js/counter.js?site=s23jserv">
+</script>
+<noscript>
+<a href="http://s23.sitemeter.com/stats.asp?site=s23jserv" target="_top">
+<img src="http://s23.sitemeter.com/meter.asp?site=s23jserv" alt="Site Meter" border="0"/></a>
+</noscript>
+</div>
+</div>
+</body>
+</html>
